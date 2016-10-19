@@ -1,0 +1,8 @@
+{
+	"statusCode":"200",
+	"message":"${msg}",
+	"navTabId":"${navTabId}",
+	"rel":"",
+	"callbackType":"${callbackType}",
+	"forwardUrl":"${forwardUrl}"
+}

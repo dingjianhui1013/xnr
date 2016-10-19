@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>小农人儿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="stylesheet" type="text/css" href="./css/base.css" charset="gbk">
+<link rel="stylesheet" type="text/css" href="./css/tab_style.css" charset="gbk">
+<script src="./js/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="./js/xnrutil.js" type="text/javascript" ></script>
+<base target="_self">
+<script type="text/javascript">
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+	 WeixinJSBridge.call('hideToolbar');
+	 WeixinJSBridge.call('hideOptionMenu');
+});
+</script>
+</head>
+
+<body >
+<script type="text/javascript">
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+	 WeixinJSBridge.call('hideToolbar');
+	 WeixinJSBridge.call('hideOptionMenu');
+});
+$(function () {
+   $('.tab ul.menu li').click(function(){
+        //获得当前被点击的元素索引值
+        var Index = $(this).index();
+		//给菜单添加选择样式
+	    $(this).addClass('active').siblings().removeClass('active');
+		//显示对应的div
+		$('.tab').children('div').eq(Index).show().siblings('div').hide();
+   });
+});
+</script>
+<script type="text/javascript">
+ $( document.body ).ready(function(){
+	 getShoppingCartList();
+	});
+ 
+ function getShoppingCartList(){
+	var isCheck = getUid();
+	if(isCheck != "0"){
+ 		alert(isCheck);
+ 	  	alert("请登录！");
+ 		location.href = "login.html";
+ 	}
+	var url = "/page/wx/client/web/business/orderrecord/businessWaitting.action";
+	var res = null;
+	var _temp = JSON.parse(localStorage["userInfo"]);
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : "staffId="+_temp["id"],
+		async : false,
+		success : function(data) {
+			console.log(data);
+			res = data;
+		}
+	});
+
+	var htmlsCon1="";
+	var htmlsCon2="";
+	var htmlsCon3="";
+	for(var i=0;i<res.voList.length;i++){
+		if(res.voList[i].businessOrderRecord.paymentStatus==201){
+			htmlsCon1+='<div class="list_tro">';
+			for(j=0;j<res.voList[i].businessGoodsList.length;j++){
+				htmlsCon1+='<p><strong>'+ res.voList[i].businessGoodsList[j].goodsName +'</strong></p>';
+				//htmlsCon1+='<p style="line-height:70px;"><img src="'+res.voList[i].businessGoodsList[j].goodsLogo+'" width="90" height="60" style=" margin:5px 5px 5px 0;float:left">';
+				//if(res.voList[i].businessGoodsList[j].isDiscountGoods==190){
+				//	htmlsCon1+='单价：<label class="red">￥'+res.voList[i].businessGoodsList[j].goodsPreferentialPrice+'</label> ';
+				//	htmlsCon1+='数量：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount+'</label>';
+				//	htmlsCon1+='总价：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount*res.voList[i].businessGoodsList[j].goodsPreferentialPrice+'</label></p>';
+				//}else{
+					htmlsCon1+='单价：<label class="red">￥'+res.voList[i].businessGoodsList[j].goodsOriginalPrice+'</label> ';
+					htmlsCon1+='数量：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount+'</label> ';
+					var totalPrice = (res.voList[i].businessOrderGoodsRelationList[j].goodsCount*res.voList[i].businessGoodsList[j].goodsOriginalPrice);
+					htmlsCon1+='总价：<label class="red">'+totalPrice.toFixed(2)+'</label></p>';
+					//htmlsCon1+='总价：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount*res.voList[i].businessGoodsList[j].goodsOriginalPrice+'</label></p>';
+				//}
+			}
+			htmlsCon1+='<p>订单编号：'+res.voList[i].businessOrderRecord.orderNo+'</p>';
+			htmlsCon1+='<p>支付方式：'+res.voList[i].businessOrderRecord.paymentProviderName+'</p>';
+			htmlsCon1+='<p>下单时间：'+res.voList[i].businessOrderRecord.createTime.replace("T"," ")+'</p>';
+			htmlsCon1+='<p><label class="red">'+res.voList[i].businessOrderRecord.paymentStatusName+'  '+res.voList[i].businessOrderRecord.operateStatusName+'</label> <span class="sum">总价：<label class="red">￥'+res.voList[i].businessOrderRecord.totalPrice+'</label>(含快递)</span></p>';
+			if(res.voList[i].businessOrderRecord.paymentProvider==196){
+				htmlsCon1+='<p><input name="del" id=click_id_'+i+' type="image" value="'+res.voList[i].businessOrderRecord.id+'" src="image/btn_bill.png" width="90" height="30" style="margin-top:5px;" onClick="goToOrder('+i+')"></p>';
+			}
+			htmlsCon1+='</div>';
+		}
+		if(res.voList[i].businessOrderRecord.operateStatus==204){
+			htmlsCon2+='<div class="list_tro">';
+			for(j=0;j<res.voList[i].businessGoodsList.length;j++){
+				htmlsCon2+='<p><strong>'+ res.voList[i].businessGoodsList[j].goodsName +'</strong></p>';
+				//htmlsCon2+='<p style="line-height:70px;"><img src="'+res.voList[i].businessGoodsList[j].goodsLogo+'" width="90" height="60" style=" margin:5px 5px 5px 0;float:left">';
+				if(res.voList[i].businessGoodsList[j].isDiscountGoods==190){
+					htmlsCon2+='单价：<label class="red">￥'+res.voList[i].businessGoodsList[j].goodsPreferentialPrice+'</label> 数量：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount+'</label></p>';
+				}else{
+					htmlsCon2+='单价：<label class="red">￥'+res.voList[i].businessGoodsList[j].goodsOriginalPrice+'</label> 数量：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount+'</label></p>';
+				}
+			}
+			htmlsCon2+='<p>订单编号：'+res.voList[i].businessOrderRecord.orderNo+'</p>';
+			htmlsCon2+='<p>支付方式：'+res.voList[i].businessOrderRecord.paymentProviderName+'</p>';
+			htmlsCon2+='<p>下单时间：'+res.voList[i].businessOrderRecord.createTime.replace("T"," ")+'</p>';
+			htmlsCon2+='<p><label class="red">'+res.voList[i].businessOrderRecord.paymentStatusName+'  '+res.voList[i].businessOrderRecord.operateStatusName+'</label> <span class="sum">总价：<label class="red">￥'+res.voList[i].businessOrderRecord.totalPrice+'</label>(含快递)</span></p>';
+			htmlsCon2+='</div>';
+		}
+		if(res.voList[i].businessOrderRecord.operateStatus==209){
+			htmlsCon3+='<div class="list_tro">';
+			for(j=0;j<res.voList[i].businessGoodsList.length;j++){
+				htmlsCon3+='<p><strong>'+ res.voList[i].businessGoodsList[j].goodsName +'</strong></p>';
+				//htmlsCon3+='<p style="line-height:70px;"><img src="'+res.voList[i].businessGoodsList[j].goodsLogo+'" width="90" height="60" style=" margin:5px 5px 5px 0;float:left">';
+				if(res.voList[i].businessGoodsList[j].isDiscountGoods==190){
+					htmlsCon3+='单价：<label class="red">￥'+res.voList[i].businessGoodsList[j].goodsPreferentialPrice+'</label> 数量：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount+'</label></p>';
+				}else{
+					htmlsCon3+='单价：<label class="red">￥'+res.voList[i].businessGoodsList[j].goodsOriginalPrice+'</label> 数量：<label class="red">'+res.voList[i].businessOrderGoodsRelationList[j].goodsCount+'</label></p>';
+				}
+			}
+			htmlsCon3+='<p>订单编号：'+res.voList[i].businessOrderRecord.orderNo+'</p>';
+			htmlsCon3+='<p>支付方式：'+res.voList[i].businessOrderRecord.paymentProviderName+'</p>';
+			htmlsCon3+='<p>下单时间：'+res.voList[i].businessOrderRecord.createTime.replace("T"," ")+'</p>';
+			htmlsCon3+='<p><label class="red">'+res.voList[i].businessOrderRecord.paymentStatusName+'  '+res.voList[i].businessOrderRecord.operateStatusName+'</label> <span class="sum">总价：<label class="red">￥'+res.voList[i].businessOrderRecord.totalPrice+'</label>(含快递)</span></p>';
+			htmlsCon3+='</div>';
+		}
+	}
+	$("#htmlsCon1").html(htmlsCon1);
+	$("#htmlsCon2").html(htmlsCon2);
+	$("#htmlsCon3").html(htmlsCon3);
+ }
+
+</script>
+<script>
+ 	function searchGoods()
+ 	{
+		var goodsName = $('#search').attr("value");
+		location.href = "search.html?goodsName="+goodsName;
+ 	}
+</script>
+<script>
+ 	function goToOrder(pos)
+ 	{
+ 		var oid = $("#click_id_"+pos).val();
+ 		location.href = "http://admin.17xnr.com/mall/portal/wx/xnrpay.jsp?showwxpaytitle=1&orderId="+oid;
+ 	}
+</script>
+	<div id="main">
+		<div id="" class="">
+            <img width="100%" height="100%" src="img/login_logo.gif"/>
+        </div>
+        <div class="list_bill_business_con" id="htmltext">
+                <p>我的订单 | 客服电话:<a href="tel:4006158618">点击呼叫：400-615-8618</a>
+                </p>
+            </div>
+         <div class="list_bill_business_con" id="htmltext">
+                <p><a href="favorite.html">点击进入我的收藏</a>
+                </p>
+            </div>
+		<div class="tab">
+			<ul class="menu">
+				<li class="active">待付款</li>
+				<li>处理中</li>
+				<li>已完成</li>
+			</ul>
+			<div id="htmlsCon1" class="con1" style="display: block;">
+ 			</div>
+			<div id="htmlsCon2" class="con2">	
+			</div>
+			<div id="htmlsCon3" class="con3">
+			</div>
+		</div>
+		 <div class="footerbar">
+        
+        <div class="clear"></div>
+
+        <div class="bottom_nav">
+            <ul>
+                <li>
+                	<a href="list.html">
+                    <div class="icon2">
+                    </div>
+                    返回列表页</a></li>
+                    <li>
+                	<a href="gwc.html">
+                    <div class="icon4">
+                    </div>
+                    购物车</a></li>
+                <li>
+                	 <a href="password.html">
+                    <div class="icon1">
+                    </div>
+                   修改密码</a></li>
+                <li>
+                	 <a href="javascript:void(0)" onclick="xnrlogout();">
+                    <div class="icon3">
+                    </div>
+                   退出登录</a></li>
+            </ul>
+                
+        </div>
+        <br />
+        </div>
+	</div>
+</body>
+</html>

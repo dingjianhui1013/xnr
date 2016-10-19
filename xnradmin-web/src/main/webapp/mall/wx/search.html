@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>小农人儿</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="css/base.css" charset="gbk">
+    <link rel="stylesheet" type="text/css" href="css/common.css" charset="gbk">
+    <script src="./js/jquery.js" type="text/javascript"></script>
+	<script src="js/xnrutil.js" type="text/javascript" ></script>
+	<style type="text/css">
+        div#Loadding { text-align: center; margin-top: 10px; width:100%; display: none; color:#000; z-index:100000; position:absolute; bottom:15px; }
+        div.content {   color:#fff; height:100%;}
+		div.content p{ padding:0}
+	</style> 
+    <base target="_self">
+   	<script type="text/javascript">
+		
+		
+		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+			 WeixinJSBridge.call('hideToolbar');
+			 WeixinJSBridge.call('hideOptionMenu');
+		});
+		
+		
+		var w,h,className;
+		function getSrceenWH(){
+			w = $(window).width();
+			h = $(window).height();
+			$('#dialogBg').width(w).height(h);
+		}
+		
+		window.onresize = function(){  
+			getSrceenWH();
+		}  
+		$(window).resize();  
+		
+		function win(goodsId){
+			//显示弹框
+			getSrceenWH();
+			addShoppingCart(goodsId);
+			className = $(this).attr('class');
+			$('#dialogBg').fadeIn(300);
+			$('#dialog').removeAttr('class').addClass('animated '+className+'').fadeIn();
+			//关闭弹窗
+			$('.claseDialogBtn').click(function(){
+				$('#dialogBg').fadeOut(300,function(){
+					$('#dialog').addClass('bounceOutUp').fadeOut();
+				});
+			});
+		};
+		
+		function addShoppingCart(goodsId){
+			var url = "/page/wx/client/web/shoppingcartweb/add.action";
+			var res = null;
+			var uid = getUid();
+			$.ajax({
+				type : "POST",
+				url : url,
+				data : "goodsId="+goodsId+"&uid="+uid,
+				async : false,
+				success : function(data) {
+					console.log(data);
+					res = data;
+				}
+			});
+		}
+		
+		function refresh()
+		{
+			window.location.reload();
+		}
+		</script>
+		<!-- 弹出 -->
+<script type="text/javascript">
+ $( document.body ).ready(function(){
+		getGoodsList();
+	});
+ 
+ function getGoodsList(){
+	var url = "/page/wx/client/web/goodslist/searchList.action";
+	var res = null;
+	var goodsName = getQueryString("goodsName");
+	var uid = getUid();
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : "goodsName="+goodsName+"&uid="+uid,
+		async : false,
+		success : function(data) {
+			console.log(data);
+			res = data;
+		}
+	});
+	var htmls="";
+	for(var i=0;i<res.goodsList.length;i++){	
+		htmls+='<div class="list_left">';
+		htmls+='<div class="listImgBox">';
+		htmls+='<a href="content.html?goodsId='+ res.goodsList[i].id +'&uid='+ uid +'">';
+		htmls+='<div class="title">'+res.goodsList[i].goodsName+'</div>';
+		htmls+='<img class="ims" src="'+ res.goodsList[i].goodsBigLogo +'"></a>';
+		htmls+='</div>';
+		htmls+='<div class="p_box">';
+		if(res.goodsList[i].isDiscountGoods==120){
+			htmls+='<p class="priceBox">价格:<span>'+ res.goodsList[i].goodsPreferentialPrice +'元</span> </p>';
+			htmls+='<p class="y_price">原价:'+res.goodsList[i].goodsOriginalPrice+'元</p>';
+		}else{
+			htmls+='<p class="priceBox">价格:<span>'+res.goodsList[i].goodsOriginalPrice+'元</span> </p>';
+			htmls+='<p class="y_price">.</p>';
+		}
+		htmls+='</div>';
+		htmls+='<div class="o-Btn">';
+		htmls+='<a class="viewBtn"  href="content.html?goodsId='+res.goodsList[i].id+'&uid='+ uid +'"><img src="css/images/viewBtn.png"></a>';
+		htmls+='<a class="addBtn" onclick="win('+ res.goodsList[i].id +');"  href="javascript:;"><img src="css/images/addBtn.png"></a>';
+		htmls+=' </div> </div>';
+		
+		/**
+		htmls+='<a href="content.html?goodsId='+ res.goodsList[i].id +'&uid='+ uid +'"><div class="title">'+ res.goodsList[i].goodsName +'</div><img src="'+ res.goodsList[i].goodsBigLogo +'" class="ims"></a>';
+		if(res.goodsList[i].isDiscountGoods==120){
+			htmls+='<p>价格:'+ res.goodsList[i].goodsPreferentialPrice +'元</p>';
+			htmls+='<p><span class="ui-last-price">原价：'+res.goodsList[i].goodsOriginalPrice+'元</span></p>';
+			
+		}else{
+			htmls+='<p>价格:'+ res.goodsList[i].goodsOriginalPrice +'元 </p>';
+		}
+		
+		htmls+='<p><a href="javascript:;" onclick="win('+ res.goodsList[i].id +');" class="bounceIn"><img src="image/btn_buy.png" width="70" height="25"></a>';
+		htmls+='</span></p></div>';
+		*/
+	}
+	$("#htmls").html(htmls);
+	
+	/**
+	var currentPrice = "";
+	currentPrice = res.currentPrice;
+	goodsCount = res.goodsCount;
+	var htmlgw="";
+	htmlgw+='<p>购物车商品： '+ res.goodsCount +'件</p><p>您的商品共计: '+ res.totalPrice +'元</p>';
+	$("#htmlgw").html(htmlgw);
+	*/
+	if(res.goodsCount>0){
+		var goodsStr = '<label class="message">'+res.goodsCount+'</label>';
+		$("#goodscount").html(goodsStr);
+	}
+ }
+ 
+ </script>
+   <script>
+ 	function searchGoods()
+ 	{
+		var goodsName = $('#search').attr("value");
+		location.href = "search.html?goodsName="+goodsName;
+ 	}
+  </script>
+</head>
+<body>
+    <div id="main">
+        <div class="top_search">
+            <input name="search" type="text" id="search" onkeydown='if(event.keyCode==13)searchGoods();'  class="search_txt">
+           <input name="btn" id="seh" type="button" class="s_btn" value="搜索" onClick="searchGoods()">
+        </div>
+        <div id="divContainer">
+            
+			
+            </div>
+             <div class="clear"></div>
+			<div id="" class="list_con content">
+            	 <div id="htmls"></div>
+			</div>
+        </div>
+          
+
+<div class="footerbar">
+        
+        <div class="clear"></div>
+
+        <div class="bottom_nav">
+            <ul>
+                <li>
+                	<a onClick="javascript:history.go(-1);">
+                    <div class="icon1">
+                    </div>
+                    返回</a></li>
+                <li>
+                	<a href="index.html">
+                    <div class="icon2">
+                    </div>
+                    主页</a></li>
+                <li>
+                	 <a href="waitting.html">
+                    <div class="icon3">
+                    </div>
+                   我的订单</a></li>
+                <li class="nonebg">
+                	<a href="trolley.html">
+                    <div class="icon4">
+                    </div>
+                    购物车</a><div id="goodscount"></div></li>
+            </ul>
+                
+        </div>
+        <br />
+        </div>
+    </div>
+    
+    
+<div id="dialogBg"></div>
+		<div id="dialog" class="small_box">
+			 <p style="margin-top:15px;">提示</p>
+			 <p>加入购物车成功</p>
+			 <p>
+				<input type="button" value="确定" onClick="refresh();" class="claseDialogBtn"/>
+			  </p>
+		</div>
+</body>
+</html>

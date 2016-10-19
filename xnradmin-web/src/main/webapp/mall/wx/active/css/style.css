@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+/*全局控制*/
+	body{margin:0; padding:0; font-size:14px; font-family:"微软雅黑"; background:#e7f1ff;}
+/*重置浏览器默认样式*/
+	h1,p,img,dl,dt,dd{margin:0; padding:0; list-style:none; outline:none; border:0;}
+/*body*/
+	h1{ padding:0 10px; color:red;}
+	p{ padding:0 10px;text-align:center;}
+	span{ color:#999; font-weight:bold;}
+	img{ padding:0 20px;}
+	.a1{ text-decoration:line-through;}
+	.a2{ color:red; font-size:18px;text-align:center;}
+	.a3{ color:red;}	
+	dt{ text-align:center;}
+	dd{ text-align:center;}
+	

@@ -1,0 +1,53 @@
+﻿@charset "utf-8";
+@import "site.css";
+/** 微商城-宝贝详情页 */
+/** wsc-products-banner */
+.wsc-products-banner{height:200px;background:#707070;overflow:hidden;}
+.wsc-products-banner .ui-box{position:relative;width:200px;height:160px;margin:0 auto;top:20px;}
+.wsc-products-banner .ui-box ul{position:absolute;top:0;left:0;width:10000px;}
+.wsc-products-banner .ui-box li{float:left;width:200px;height:160px;text-align:center;}
+.wsc-products-banner img{background-color:#777;}
+/** wsc-products-info */
+.wsc-products-info{padding:10px;}
+.wsc-products-info .ui-info{color:#000;line-height:16px;}
+.wsc-products-info .ui-much{color:#000;line-height:20px;}
+.wsc-products-info .ui-red{color:#F00;}
+.wsc-products-info .ui-freight{line-height:20px;color:#999;}
+.wsc-products-info .ui-fav{height:24px;line-height:24px;padding-top:5px;}
+.wsc-products-info .ui-fav a{float:left;padding:0 10px 0 25px;background:url("../../img/mall/personal-head.png") no-repeat 2px -64px #F70;color:#FFF;border-radius:10000px;}
+.wsc-products-info .ui-fav a.ui-touch{background-color:#F40;}
+.wsc-products-info .ui-last-price{color:#999;text-decoration:line-through;}
+.wsc-products-info .ui-now-price{font-weight:bold;font-size:18px;}
+.content .ui-last-price{color:#999;text-decoration:line-through;}
+/** wsc-products-sort */
+.wsc-products-sort{padding:5px;color:#000;line-height:28px;}
+.wsc-products-sort .ui-chose{font-size:0;line-height:0;}
+.wsc-products-sort .ui-chose a{display:inline-block;line-height:16px;font-size:12px;color:#000;background:#FFF;border:1px solid #cdcdcd;padding:7px 10px;margin:0 5px 5px 0;border-radius:3px;}
+.wsc-products-sort .ui-chose a.ui-cheched{background:#F70;border-color:#F60;color:#FFF;}
+.wsc-products-sort .ui-chose a.ui-touch{background:#F70;color:#FFF;border-color:#F60;}
+.wsc-products-sort .ui-chose a.ui-disabled{background:#e1e1e1;color:#999;border-color:#cdcdcd;}
+.wsc-products-sort .ui-chose input{display:none;}
+.wsc-products-sort .ui-quantity{line-height:28px;color:#999;}
+.wsc-products-sort .ui-quantity a{display:inline-block;width:30px;vertical-align:top;height:30px;color:#000;border:1px solid #cdcdcd;background:#FFF;text-align:center;line-height:30px;font-size:18px;overflow:hidden;}
+.wsc-products-sort .ui-quantity input{vertical-align:top;height:18px;background:#FFF;border:1px solid #cdcdcd;border-left:none;border-right:none;text-align:center;line-height:18px;font-size:12px;width:40px;padding:6px 0;color:#000;}
+.wsc-products-sort .ui-quantity a.ui-touch{background:#F70;color:#FFF;}
+.wsc-products-sort .ui-quantity a.jsRed{border-top-left-radius:3px;border-bottom-left-radius:3px;}
+.wsc-products-sort .ui-quantity a.jsAdd{border-top-right-radius:3px;border-bottom-right-radius:3px;}
+/** wsc-products-btn */
+.wsc-products-btn{padding:10px 0;text-align:center;}
+.wsc-products-btn a{display:inline-block;width:130px;height:35px;line-height:35px;color:#FFF;margin:0 5px;font-size:14px;}
+.wsc-products-btn .ui-add-cart{background:#000;background:-webkit-gradient(linear, 0 0, 0 100%, from(#4d4d4d), to(#000));}
+.wsc-products-btn .ui-buy-now{background:#F33;background:-webkit-gradient(linear, 0 0, 0 100%, from(#F33), to(#d40000));}
+.wsc-products-btn a.ui-touch{background:#F40;}
+/** wsc-products-detail */
+.wsc-products-detail{padding:10px;}
+.wsc-products-detail .ui-tit{line-height:30px;color:#000;}
+.wsc-products-detail .ui-det{line-height:18px;color:#666;height:90px;overflow:hidden;}
+.wsc-products-detail .ui-det img{ width:100%;}
+/** wsc-view-more */
+.wsc-view-more{height:50px;text-align:center;}
+.wsc-view-more .ui-btn{display:inline-block;position:relative;width:75px;height:36px;background:#FFF;top:-2px;background:url("../../img/mall/viewall.gif") no-repeat 0 0;background-size:75px;}
+.wsc-view-more .ui-open{background-position:0 -36px;}
+/** wsc-products-list */
+.wsc-products-list a{display:block;height:40px;line-height:40px;padding:0 28px 0 16px;color:#000;background:url("../../img/mall/jiantou2.png") no-repeat 97% 2px;background-size:10px;}
+.wsc-products-list a.ui-touch{color:#F40;background-position:97% -33px;}

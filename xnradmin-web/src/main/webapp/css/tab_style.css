@@ -1,0 +1,43 @@
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, del, dfn, em, img, ins, kbd, q, samp, small, strong, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, table, tbody, tfoot, thead, tr, th, td, article, aside, footer, header, nav, section {margin:0;padding:0;border:0;outline:0;font-size:100%;}
+
+p{margin-bottom:1em;}
+/*box-163css*/
+.box-163css{ width:100%;  position:relative; height:auto; margin-bottom:0px; float:left; }
+/*swipe*/
+.swipe{ padding-top:10px; width:100%; float:left; height:auto; position: relative; padding-bottom:20px;}
+.box01_list{position:relative; -webkit-transition: left 600ms ease-out;   width:100%; left:0; height:auto;padding:0; margin:0}
+.li_list{width:100%;position:relative; float: left; height:auto;}
+
+
+/*page*/
+.page{ text-align:left; background:#f3f3f3; height:38px; line-height:38px; width:100%;display:-webkit-box;}
+.page li{-webkit-box-flex:1; font-size:18px; display:block; color:#000; height:38px; line-height:38px; text-align:center; }
+.page li a{ color:#000; display:block; height:38px; font-size:14px}
+.page a.active{color:#f00;border-bottom:2px solid #fcb231;}
+
+
+/*信息列表*/
+.list_message{ width:96%; height:300px; padding:10px 0; float:left; margin:5px 2% 0; border:1px #ddd solid; color:#666; font-size:13px;}
+.list_message p{ padding:0 10px; line-height:20px;}
+.list_message span.sum{ float:right}
+.list_message_none{ width:96%; height:200px; text-align:center; padding:10px 0; float:left; margin:5px 2% 0; border:1px #eee solid; color:#666; font-size:13px;}
+.list_message_none p{ line-height:30px; margin-top:60px;}
+
+
+
+
+/* tab */
+.tab{width:100%;margin:10px auto; height:auto; float:left; background:#fff; padding-bottom:20px; position:relative;}
+.tab ul.menu{height:34px;}
+.tab ul.menu li{float:left;text-align:center;width:33%;height:32px;background:#F66F1D; color:#fff; line-height:32px;list-style:none;font-size:16px;cursor:pointer;}
+.tab ul.menu li.active{background:#D7D7D9;color:#F56E1D;}
+label.num{ position:absolute; top:2px; right:40%; background:#FF9900; color:#fff; width:15px; height:15px; font-size:10px; line-height:15px; display:block; z-index:3000}
+.con1,.con2,.con3{height:190px;border-top:2px solid #fcb231;margin-top:-2px;}
+.con2,.con3{display:none;}
+.con1 ul,.con2 ul,.con3 ul{padding:5px;}
+.con1 ul li,.con2 ul li,.con3 ul li{background:url(images/point.png) no-repeat left center;padding:0 0 0 10px;font-size:14px;line-height:180%;color:#252525;}
+.con1 ul li:hover,.con2 ul li:hover,.con3 ul li:hover{color:#ba2636;cursor:pointer;text-decoration:underline;}
+
+
+
+
