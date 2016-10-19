@@ -1,0 +1,390 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="format-detection" content="telephone=no">
+  <title>购物车详细</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <div class="nav" style="position:relative;">
+    <div class="fr"></div>
+    <div class="ml10 tl" style="width:50%;"><a href="list.html">返回全部菜品</a></div>
+  </div>
+  <div style="height: 560px;" class="scroll-y js-content">
+    <div style="background-color:#fafafa;font-size: 1em;font-weight:bold;border-bottom: 1px solid #ccc;" class="p10">
+      <span class="fl">购物清单</span>
+      <a href="javascript:void(0)" class="js-clear-cart fr">清空</a>
+      <span class="clear" style="display:block"></span>
+    </div>
+    <table class="table">
+      <tbody class="js-list" style="position:relative;"></tbody>
+    </table>
+
+    <div style="margin-top:-10px;margin-bottom:10px;" class="pl10">
+      <div class="tl" style="overflow: hidden;"><span>品类数：</span><span class="js-item-count price">1</span> <span style="margin-left:20px;">总价：</span><span class="js-item-total price">14</span>元</div>
+    </div>
+
+    <h4 style="background-color:#fafafa;">备注</h4>
+    <div class="p5">
+      如有问题请您直接拔打客服电话：<p><a href="tel:4006158618">点击呼叫：400-615-8618</a>
+      <textarea class="p5 js-userDesc mr10" id="userDesc"  style="height:80px;width:100%;border:1px solid #999;font-size:1em;display:none;" 
+      	placeholder="请填写备注"></textarea>
+    </div>
+
+    <h4 style="background-color:#fafafa;" class="mb5">收货信息</h4>
+    <table class="table" style="margin-bottom:50px;">
+      <tbody>
+        <tr>
+          <td style="width:70px;">
+          	收货日期:<p>
+          	<input value="2014-11-23" class="js-deal-receive-date" disabled="disabled" type="date"><p>
+          	<span class="mr10 js-day">星期日</span><p><span class="mr10 js-stime-etime"></span><p>
+          	
+          </td>
+        </tr>
+        <tr>
+          <td colspan=2><span class="js-select hide mr10"></span></td>
+        </tr>
+        <tr>
+          <td>选择区县：</td>
+          <td><span class="js-area hide mr10"></span></td>
+        </tr>
+        <tr>
+          <td>收货人：</td>
+          <td><span class="js-user hide mr10"></span></td>
+        </tr>
+        <tr>
+          <td>联系号码：</td>
+          <td><span class="js-mobile hide mr10"></span></td>
+        </tr>
+        <tr>
+          <td>收货地址：</td>
+          <td><span class="js-address hide mr10"></span></td>
+        </tr>
+        
+        <tr>
+          <td>付款方式：</td>
+          <td>货到付款</td>
+        </tr>
+        
+        
+      </tbody>
+    </table>
+  </div>
+  <div class="tc cp js-deal btn-white" style="width:100%;border-top:1px solid #ccc;bottom:0;padding:13px 0;">
+
+  </div>
+  <!--js load -->
+  <script src="js/all.js"></script>
+  <script src="js/xnrutil.js"></script>
+  <script type="text/javascript">
+    (function(){
+      if (!window.localStorage){return false;}
+      window.clearCache();
+      var isCheck = getUid();
+  	  if(isCheck != "0"){
+  	  	alert("请登录！");
+  		location.href = "login.html";
+  	  }
+      if (!PlusMinus.isLowerAndriod3()) {
+        $(".js-content").css("height", ($(window).height() - $(".nav").height() - $(".js-deal").height() - $(".js-reminder").height()) + "px");
+      }
+
+      var tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      var month = (tomorrow.getMonth()+1) > 10 ? (tomorrow.getMonth()+1) : ("0"+(tomorrow.getMonth()+1));
+      var day = tomorrow.getDate() > 9 ? tomorrow.getDate() : ("0"+tomorrow.getDate());
+      var userInfo = JSON.parse(localStorage[USERKEY]);
+      var dateFormat = tomorrow.getFullYear() + "-" + month + "-" + day;
+      var stimeetime =  userInfo["stime"] + "点到" + userInfo["etime"] + "点";
+      $(".js-deal-receive-date").val(dateFormat);
+      $(".js-day").html(window.dayMapping[tomorrow.getDay()]);
+      $(".js-stime-etime").html(stimeetime);
+      $(".js-clear-cart").click(function(){
+        var res = window.confirm("确定要清空购物车里面全部的菜品吗？");
+        if(res){
+          var _tmp = localStorage[window.USERKEY];
+          localStorage.clear();
+          setLoginid(_tmp);
+          genFoodList(data);
+          // deactivateDealBtn("购物车为空，不能下单！");
+        }
+      });
+
+      function deactivateDealBtn(info){
+        $(".js-deal").css({
+          "color" : "#000",
+          "background-color": "#fff"
+        }).unbind("click").text(info);
+      }
+
+      function activateDealBtn(){
+        $(".js-deal").css({
+          "color" : "#fff",
+          "background-color": "#ffbc57"
+        }).click(bindDealFunc).text("下单");
+      }
+
+      function bindFavoriteEvent($list){
+        PlusMinus.bindToggleFavorite($list, true, true);
+      }
+
+      function genFoodList(allList){
+        //initial items data
+        var $tbody = $(".js-list");
+        var listHTML = "";
+        for(var key in localStorage){
+          if(key !== USERKEY && /^\d+$/i.test(key)){
+            updateFoodExist(allList, key);
+            listHTML += PlusMinus.detailHTMLTemple(JSON.parse(localStorage[key]), true);
+          }
+        }
+        $tbody.html(listHTML);
+        bindFavoriteEvent($tbody);
+        var options = {
+          countChangeCallBack : function(){
+            // var count = PlusMinus.totalCount();
+            // if(count == 0){
+            //   deactivateDealBtn("品类数量为0，不能下单！");
+            // }else{
+            //   activateDealBtn();
+            // }
+          }
+        };
+        _.each($tbody.find("tr"), function(tr){PlusMinus.bindPlusMinusEvent(tr,options)});
+
+        //initial Data
+        if(localStorage.length > 0 && $itemCount && $itemTotal){
+          $itemCount.html(PlusMinus.totalCount());
+          $itemTotal.html(PlusMinus.totalPrice());
+        }
+      }
+
+      function updateFoodExist(allList, key){
+        var obj = JSON.parse(localStorage[key]);
+        var findObj = _.find(allList, function(item){
+          return item.id === obj.id;
+        })
+        if(!findObj){
+          obj["count"] = 0;
+          obj["outOfDate"] = true;
+        }else{
+          var count = obj["count"];
+          obj = findObj;
+          obj["count"] = count;
+        }
+        localStorage[key] = JSON.stringify(obj);
+      }
+
+      function bindDealFunc(){
+        var t = tomorrow;
+        var areaId = $('#S3').attr("value");
+        var clientUserRegionId = $('input[name="clientUserRegionId"]:checked').val();
+        var userRealName = $('#userRealName').attr("value");
+    	var userRealMobile = $('#userRealMobile').attr("value");
+    	var userRealAddress = $('#userRealAddress').attr("value");
+    	var userDesc = $('#userDesc').attr("value");
+    	var count = PlusMinus.totalCount();
+        if(count == 0){
+            alert("品类数为0,请添加菜品！")
+            return false;
+        }
+        
+    	if(clientUserRegionId=='new'){
+    		if(userRealName.length==0){
+				alert("请输入收件人名称！");
+				return false;
+			}
+			else if(userRealMobile.length==0 ){
+				alert("请输入收件人手机号！");
+				return false;
+			}
+			else if(areaId.length==0){
+				alert("请选择所在区县！");
+				return false;
+			}
+			else if(userRealAddress.length==0){
+				alert("请输入详细地址！");
+				return false;
+			}
+			else if(JSON.parse(localStorage[USERKEY]).id.length==0){
+				alert("请登录！");
+		  		location.href = "login.html";
+			}
+    	}
+        var goods = {goods:[]};
+        for(var key in localStorage){
+          if(key !== USERKEY && /^\d+$/i.test(key)){
+            var obj = JSON.parse(localStorage[key]);
+            if(!obj["outOfDate"]){
+            	goods["goods"].push({
+                "goodsId": obj.id,
+                "goodsCount": obj.count,
+              })
+            }
+          }
+        }
+        
+        var userReal = {userReal:[]};
+        userReal["userReal"].push({
+        	"areaId": areaId,
+        	"clientUserRegionId": clientUserRegionId,
+        	"userRealName": userRealName,
+        	"userRealMobile": userRealMobile,
+        	"userRealAddress": userRealAddress,
+        	"payType": "197",
+        	"staffId": JSON.parse(localStorage[USERKEY]).id,
+        })
+        
+        $.ajax({
+      		type : "POST",
+      		url : "/page/wx/client/web/business/orderrecord/add.action",
+      		data : "goods="+JSON.stringify(goods)+"&userReal="+JSON.stringify(userReal)+"&requiredDeliveryTime="+dateFormat+"&userDesc="+userDesc,
+      		async : false,
+      		success : function(datas) {
+      			console.log(datas);
+      			res = datas;
+      			if(res.errorMsg==0){
+      	          	var _tmp = localStorage[window.USERKEY];
+      	          	localStorage.clear();
+      	          	setLoginid(_tmp);
+      		        var _id = res.orderRecordId;
+      		            window.location.href = 'confirm.html?orderId='+_id;
+      		    }else{
+      		    	alert("下单失败！"+res.errorMsg)
+      		    }
+      		}
+      	});
+        $(".js-deal").text("正在下单").unbind("click");
+      }
+
+    //改动
+  	var res = null;
+  	var listJson = null;
+  	$.ajax({
+  		type : "POST",
+  		url :  "/page/wx/client/web/business/businessIndex/webGwc.action",
+  		data : "staffId="+JSON.parse(localStorage[USERKEY]).id,
+  		async : false,
+  		success : function(datas) {
+  			console.log(datas);
+  			res = datas;
+  			listJson = res.listJson;
+  			eval('data=' + res.listJson + ';');
+  		}
+  	});
+  	
+  	
+  	$.ajax({
+  	    type: "POST",
+  	    url: "/page/wx/client/web/bill/findArea.action?cityId=1",
+  	    areadata : "",
+  	    async : false,
+  	    success : function(areadata) {
+  	    console.log(areadata);
+  	    	areares = areadata;
+  	    }
+  	 })
+    	
+ 
+      function initialPage(){
+    	var htmltext="";
+    	if(res.clientUserRegionInfoList.length>0){
+    		for(var i=0;i<res.clientUserRegionInfoList.length;i++){
+    			if(i==0){
+    				htmltext+='<p><input type="radio" name="clientUserRegionId" value="'+res.clientUserRegionInfoList[i].id+'" checked="checked">'+res.clientUserRegionInfoList[i].provinceName+res.clientUserRegionInfoList[i].cityName+res.clientUserRegionInfoList[i].areaName+res.clientUserRegionInfoList[i].userRealAddress+'</p>';
+    				htmltext+='<p>收件人：'+res.clientUserRegionInfoList[i].userRealName+'</p>';
+    				htmltext+='<p>手机号：'+res.clientUserRegionInfoList[i].userRealMobile+' <span class="del"><input name="del" type="image" src="image/btn_del.png" onClick="del('+res.clientUserRegionInfoList[i].id+')" width="16" height="12" style="margin-top:7px;"></span></p>';
+    			}
+    			else{
+    				htmltext+='<p><input type="radio" name="clientUserRegionId" value="'+res.clientUserRegionInfoList[i].id+'">'+res.clientUserRegionInfoList[i].provinceName+res.clientUserRegionInfoList[i].cityName+res.clientUserRegionInfoList[i].areaName+res.clientUserRegionInfoList[i].userRealAddress+'</p>';
+    				htmltext+='<p>收件人：'+res.clientUserRegionInfoList[i].userRealName+'</p>';
+    				htmltext+='<p>手机号：'+res.clientUserRegionInfoList[i].userRealMobile+' <span class="del"><input name="del" type="image" src="image/btn_del.png" onClick="del('+res.clientUserRegionInfoList[i].id+')" width="16" height="12" style="margin-top:7px;"></span></p>';
+    			}
+    		}
+			htmltext+='<input type="radio" name="clientUserRegionId" value="new">新地址';
+    	}else{
+			htmltext+='<input type="radio" name="clientUserRegionId" value="new" checked="checked">新地址';
+    	}
+      
+    	var htmllocal = "";
+    	htmllocal+='<select name="areaId" id="S3">';
+    	for (var i = 0; i < areares.areaList.length; i++) {
+    		htmllocal+="<option value=" + areares.areaList[i].id + ">" + areares.areaList[i].area + "</option>";
+      	}
+    	htmllocal+='</select>';
+
+    	var htmluser = '<input name="userRealName" size=40 id="userRealName" type="text" value="" style="border:1px solid #000000;">';
+    	var htmlmobile = '<input name="userRealMobile" size=40 id="userRealMobile" type="text" value="" style="border:1px solid #000000;">';
+    	var htmladdress = '<textarea name="userRealAddress" id="userRealAddress" cols="35" rows="2" style="border:1px solid #000000;"></textarea>';
+    	var userDesc = '<textarea name="userDesc" id="userDesc" cols="35" rows="2" style="border:1px solid #000000;"></textarea>';
+        var _now = new Date();
+        var userInfo = JSON.parse(localStorage[USERKEY]);
+        //$(".js-custom-modify").text("修改");
+        var userHtml = userInfo["name"] + "( " + userInfo["mobile"] + ")";
+        $(".js-select").show().html(htmltext);
+        $(".js-area").show().html(htmllocal);
+        $(".js-user").show().html(htmluser);
+        $(".js-mobile").show().html(htmlmobile);
+        $(".js-address").show().html(htmladdress);
+        $(".js-userDesc").show();
+        // if(false){
+      	
+        if(_now.getHours() < 13 ){
+          deactivateDealBtn("下单时间为13:00以后");
+          return false;
+        }
+        
+       	
+       // alert($(".js-company-add").attr("value"));
+
+
+        if(localStorage.length > 1 && PlusMinus.totalPrice() > 0){
+          activateDealBtn();
+        }else{
+          deactivateDealBtn("购物车为空，不能下单！");
+        }
+      }
+	
+
+    
+    window.hasFavorite = 0;
+      //console.log(data);
+      genFoodList(data);
+   	
+      if(localStorage[USERKEY]){
+    	  initialPage();
+      }else{
+        //$(".js-custom-modify").text("请选择收货人").click(function(){
+        //  alert("请先注册或者登录，才能填写收货人！");
+        //  return false;
+        //});
+        //$(".js-company-add").click(function(){
+        //  alert("请先注册或者登录，才能填写门店信息！");
+        //  return false;
+        //});
+      }
+
+    })();
+  </script>
+	<script>
+	  //删除地址
+   	function del(clientUserRegionInfoId){
+   		var url = "/page/wx/client/web/bill/del.action?clientUserRegionInfoId="+clientUserRegionInfoId;
+   		var res = null;
+   		$.ajax({
+   			type : "POST",
+   			url : url,
+   			data : "",
+   			async : false,
+   			success : function(data) {
+   				console.log(data);
+   				res = data;
+   			}
+   		});
+   		window.location.reload();
+   	}
+	</script>
+<div id="xunlei_com_thunder_helper_plugin_d462f475-c18e-46be-bd10-327458d045bd"></div></body></html>

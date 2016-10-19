@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>小农人儿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" type="text/css" href="css/base.css" charset="gbk">
+<script src="js/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="js/xnrutil.js" type="text/javascript" ></script>
+<base target="_self">
+</head>
+
+<body >
+
+<script type="text/javascript">
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+	 WeixinJSBridge.call('hideToolbar');
+	 WeixinJSBridge.call('hideOptionMenu');
+});
+
+ $( document.body ).ready(function(){
+	 getShoppingCartList();
+	});
+ 
+ function getShoppingCartList(){
+	var isCheck = getUid();
+ 	if(isCheck != "0"){
+ 		alert(isCheck);
+ 	  	alert("请登录！");
+ 		location.href = "login.html";
+ 	}
+	var url = "/page/wx/client/web/business/orderrecord/businessConfirm.action";
+	var res = null;
+	var uid = localStorage.getItem("uid");
+	var orderId = getQueryString("orderId");
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : "orderRecordId="+orderId,
+		async : false,
+		success : function(data) {
+			console.log(data);
+			res = data;
+		}
+	});
+	var htmlsCon1="";
+	if(orderId==null || orderId=="error"){
+		htmlsCon1+='<div class="list_bill_con">';
+		htmlsCon1+='<p>订单支付失败</p>';
+		htmlsCon1+='</div>';
+	}else{
+		htmlsCon1+='<div class="list_bill_con">';
+		htmlsCon1+='<p><label class="red">恭喜您订购成功！</label><p>';
+		htmlsCon1+='<p><label class="red"><a href="waitting.html">点击此处返回我的订单查看</a></label><p>';
+		htmlsCon1+='<p>收件人：'+res.voList[0].businessOrderRecord.userRealName+'</p>';
+		htmlsCon1+='<p>手机号：'+res.voList[0].businessOrderRecord.userRealMobile+'</p>';
+		htmlsCon1+='<p>收货地址：'+res.voList[0].businessOrderRecord.provinceName+''+res.voList[0].businessOrderRecord.cityName+''+res.voList[0].businessOrderRecord.areaName+''+res.voList[0].businessOrderRecord.userRealAddress+'</p>';
+		htmlsCon1+='<p>支付方式：'+res.voList[0].businessOrderRecord.paymentProviderName+'</p>';
+		htmlsCon1+='<p>配送方式：'+res.voList[0].businessOrderRecord.logisticsCompanyName+'</p>';
+		if(res.voList[0].orderRecordUserRealDescription!=null){
+			htmlsCon1+='<p>备注：'+res.voList[0].orderRecordUserRealDescription+'</p>';
+		}
+		htmlsCon1+='<p>订单生成时间：'+res.voList[0].businessOrderRecord.createTime.replace("T"," ")+'</p>';
+		htmlsCon1+='</div>';
+		htmlsCon1+='<div class="list_tro">';
+		for(j=0;j<res.voList[0].businessGoodsList.length;j++){
+			htmlsCon1+='<ul>';
+			htmlsCon1+='<li class="line"><span class="title">商品信息：</span></li>';
+			htmlsCon1+='<li class="line con">';
+			//htmlsCon1+='<p><img src="'+res.voList[0].businessGoodsList[j].goodsLogo+'" width="150" height="100" style=" margin:5px 10px;float:left"></p>';
+			htmlsCon1+='<p>'+ res.voList[0].businessGoodsList[j].goodsName +'</p>';
+			htmlsCon1+='<p>数量：<label class="red">'+res.voList[0].businessOrderGoodsRelationList[j].goodsCount+'</label></p>';
+			htmlsCon1+='<p>单价：<label class="red">'+res.voList[0].businessOrderGoodsRelationList[j].currentPrice+'元</label></p>';
+			htmlsCon1+='</li>';
+			var pay = res.voList[0].businessOrderGoodsRelationList[j].goodsCount*res.voList[0].businessOrderGoodsRelationList[j].currentPrice;
+			htmlsCon1+='<li><span class="price03">应付金额：<label class="red">￥'+pay.toFixed(2)+'</label></span></li>';
+			htmlsCon1+='</ul>';
+		}
+		htmlsCon1+='</div>';
+		htmlsCon1+='<div class="list_bill_con">';
+		htmlsCon1+='<p class="zong">总额：<label class="red">'+res.voList[0].businessOrderRecord.totalPrice+'元</label></p>';
+		htmlsCon1+='</div>';
+	}
+	$("#htmlsCon1").html(htmlsCon1);
+ }
+</script>
+
+	<div id="main">
+		<div id="" class="">
+            <img width="100%" height="100%" src="img/login_logo.gif"/>
+        </div>
+		<div id="htmlsCon1" class="main01">
+
+		</div>
+<div class="footerbar">
+        
+        <div class="clear"></div>
+
+        <div class="bottom_nav">
+            <ul>
+            	 <li>
+            	 
+                </li>
+                <li>
+                	<a href="list.html">
+                    <div class="icon2">
+                    </div>
+                    主页</a></li>
+                <li>
+                	 <a href="waitting.html">
+                    <div class="icon3">
+                    </div>
+                   我的订单</a></li>
+            </ul>
+                
+        </div>
+        <br />
+        </div>
+</body>
+</html>

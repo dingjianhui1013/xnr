@@ -1,0 +1,505 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>小农人儿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" type="text/css" href="./css/base.css" charset="gbk">
+<link rel="stylesheet" href="./css/common.css"/>
+<base target="_self">
+<script src="./js/jquery-1.4.2.min.js" type="text/javascript" ></script>
+<script src="./js/xnrutil.js" type="text/javascript" ></script>
+<script type="text/javascript">
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+	 WeixinJSBridge.call('hideToolbar');
+	 WeixinJSBridge.call('hideOptionMenu');
+});
+ $( document.body ).ready(function(){
+	 var flag = checkGoods();
+	 if(flag==true){
+	  getShoppingCartList();
+	 }
+	});
+ 
+ var w,h,className;
+ function getSrceenWH(){
+ 	w = $(window).width();
+ 	h = $(window).height();
+ 	$('#dialogBg').width(w).height(h);
+ }
+
+ window.onresize = function(){  
+ 	getSrceenWH();
+ }  
+ $(window).resize();  
+
+ function win(goodsName){
+ 	//显示弹框
+ 	getSrceenWH();
+ 	var htmlgoodsName = goodsName+"未选择主商品，返回购物车";
+ 	$("#htmlgoodsName").html(htmlgoodsName);
+ 	className = $(this).attr('class');
+ 	$('#dialogBg').fadeIn(300);
+ 	$('#dialog').removeAttr('class').addClass('animated '+className+'').fadeIn();
+ 	//关闭弹窗
+ 	$('.claseDialogBtn').click(function(){
+ 		$('#dialogBg').fadeOut(300,function(){
+ 			$('#dialog').addClass('bounceOutUp').fadeOut();
+ 		});
+ 	});
+ };
+
+ function back()
+ {
+	location.href = "trolley.html";
+ }
+ 
+ function checkGoods() {
+	 var url = "/page/wx/client/web/bill/checkGoods.action";
+	 var res = null;
+	 var uid = getUid();
+	 $.ajax({
+		 type : "POST",
+		 url : url,
+		 data : "uid="+uid,
+		 async : false,
+		 success : function(data) {
+			 console.log(data);
+			 res = data;
+		 }
+	 });
+	 var goodsName = "";
+     if(res.isSubGoods==0){
+    	 for(var i=0;i<res.subGoodsList.length;i++){
+    		 goodsName+=res.subGoodsList[i].goodsName+"，";
+    	 }
+    	 //goodsName+="未选择主商品，返回购物车";
+    	 //alert(goodsName);
+    	 //location.href = "trolley.html";
+    	 win(goodsName);
+    	 return false;
+     }
+     else{
+    	 return true;
+     }
+     
+ };
+ 
+ function getShoppingCartList(){
+	var url = "/page/wx/client/web/bill/webList.action";
+	var res = null;
+	var uid = getUid();
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : "uid="+uid,
+		async : false,
+		success : function(data) {
+			console.log(data);
+			res = data;
+		}
+	});
+
+	var htmls="";
+	for(var i=0;i<res.voList.length;i++){
+		htmls+='<ul><li class="line"><span class="title">商品信息：</span></li>';
+		htmls+='<li class="line con">';
+		htmls+='<p><img src="'+res.voList[i].goods.goodsLogo+'" width="150" height="100" style=" margin:5px 10px;float:left"></p>';
+		htmls+='<p>'+ res.voList[i].goods.goodsName +'</p>';
+		htmls+='<p>数量：<label class="red">'+ res.voList[i].shoppingCartGoodsCount +'</label></p>';
+		if(res.voList[i].goods.isDiscountGoods==120){
+			htmls+='<p>单价：<label class="red">'+res.voList[i].goods.goodsPreferentialPrice+'</label></p>';
+		}else{
+			htmls+='<p>单价：<label class="red">'+res.voList[i].goods.goodsOriginalPrice+'</label></p>';
+		}
+		htmls+='</li>';
+		htmls+='<li><span class="price03">应付金额：<label class="red">￥'+res.voList[i].shoppingCartTotalPrice+'</label></span></li>';
+		htmls+='</ul>';
+	}
+	if(res.freeGoodsList!=null){
+		for(var i=0;i<res.freeGoodsList.length;i++){
+			htmls+='<ul><li class="line"><span class="title">商品信息：</span></li>';
+			htmls+='<li class="line con">';
+			htmls+='<p><img src="'+res.freeGoodsList[i].goodsLogo+'" width="150" height="100" style=" margin:5px 10px;float:left"></p>';
+			htmls+='<p>'+ res.freeGoodsList[i].goodsName +'</p>';
+			htmls+='<p>数量：<label class="red">1</label></p>';
+			htmls+='<p>单价：<label class="red">0元</label></p>';
+			htmls+='</li>';
+			htmls+='<li><span class="price03">说明：<label class="red">五份原价菜免费赠送</label></span></li>';
+			htmls+='</ul>';
+		}
+	}
+	if(res.oneGoodsList!=null){
+		for(var i=0;i<res.oneGoodsList.length;i++){
+			htmls+='<ul><li class="line"><span class="title">商品信息：</span></li>';
+			htmls+='<li class="line con">';
+			htmls+='<p><img src="'+res.oneGoodsList[i].goodsLogo+'" width="150" height="100" style=" margin:5px 10px;float:left"></p>';
+			htmls+='<p>'+ res.oneGoodsList[i].goodsName +'</p>';
+			htmls+='<p>数量：<label class="red">1</label></p>';
+			htmls+='<p>单价：<label class="red">0元</label></p>';
+			htmls+='</li>';
+			htmls+='<li><span class="price03">说明：<label class="red">首次购买原价菜下单赠品</label></span></li>';
+			htmls+='</ul>';
+		}
+	}
+	var htmlze="";
+	htmlze+='<p class="zong">总额：<label class="red">'+res.totalPrice+'元</label></p>';
+	$("#htmls").html(htmls);
+	$("#htmlze").html(htmlze);
+	
+	var htmltext="";
+	if(res.clientUserRegionInfoList.length>0){
+		for(var i=0;i<res.clientUserRegionInfoList.length;i++){
+			if(i==0){
+				htmltext+='<p><input type="radio" name="address" value="'+res.clientUserRegionInfoList[i].id+'" checked="checked">'+res.clientUserRegionInfoList[i].provinceName+res.clientUserRegionInfoList[i].cityName+res.clientUserRegionInfoList[i].areaName+res.clientUserRegionInfoList[i].userRealAddress+'</p>';
+				htmltext+='<p>收件人：'+res.clientUserRegionInfoList[i].userRealName+'</p>';
+				htmltext+='<p>手机号：'+res.clientUserRegionInfoList[i].userRealMobile+'</p>';
+			}
+			else{
+				htmltext+='<p><input type="radio" name="address" value="'+res.clientUserRegionInfoList[i].id+'">'+res.clientUserRegionInfoList[i].provinceName+res.clientUserRegionInfoList[i].cityName+res.clientUserRegionInfoList[i].areaName+res.clientUserRegionInfoList[i].userRealAddress+'</p>';
+				htmltext+='<p>收件人：'+res.clientUserRegionInfoList[i].userRealName+'</p>';
+				htmltext+='<p>手机号：'+res.clientUserRegionInfoList[i].userRealMobile+'</p>';
+			}
+			htmltext+='<p><span class="del"><input name="del" type="image" src="image/btn_del.png" onClick="del('+res.clientUserRegionInfoList[i].id+')" width="25" height="25" style="margin-top:7px;"></span></p>';
+		}
+		if(res.clientUserRegionInfoList.length<2){
+			htmltext+='<p><input type="radio" name="address" value="new">使用新地址</p>';
+		}
+	}else{
+		if(res.clientUserRegionInfoList.length<2){
+			htmltext+='<p><input type="radio" name="address" value="new" checked="checked">使用新地址</p>';
+		}
+	}
+	if(res.clientUserRegionInfoList.length<2){
+		htmltext+='<p>收件人：<input name="userRealName" id="userRealName" type="text" value=""></p>';
+		htmltext+='<p>手机号：<input name="userRealMobile" id="userRealMobile" type="text" value=""></p>';
+		htmltext+='<p>选择省：<select name="provinceId" id="S1"></select></p>';
+		htmltext+='<p>选择市：<select name="cityId" id="S2"></select></p>';
+		htmltext+='<p>选择区：<select name="areaId" id="S3"></select></p>';
+		htmltext+='<p>收货地址：<textarea name="userRealAddress" id="userRealAddress" cols="35" rows="2"></textarea>';
+	}
+	htmltext+='<p class="sel"><select name="logisticsCompanyId" id="logisticsCompanyId">';
+	for(var i=0;i<res.logisticsCompanyList.length;i++){
+		htmltext+='<option value='+res.logisticsCompanyList[i].id+' select>配送方式：'+res.logisticsCompanyList[i].companyName+'</option>';
+	}
+	htmltext+='</select></p>';
+	htmltext+='<p class="sel"><select name="userRealTime" id="userRealTime">';
+	for(var i=0;i<res.dateList.length;i++){
+		htmltext+='<option value='+res.dateList[i]+' select>配送时间：'+res.dateList[i]+'</option>';
+	}
+	htmltext+='</select></p>';
+	htmltext+='<p class="sel"><select name="paymentProvider" id="paymentProvider">';
+	for(var i=0;i<res.paymentProviderList.length;i++){
+		if(res.paymentProviderList[i].id==151){
+			htmltext+='<option value='+res.paymentProviderList[i].id+' selected>支付方式：'+res.paymentProviderList[i].statusName+'</option>';
+		}
+		else{
+			htmltext+='<option value='+res.paymentProviderList[i].id+' select>支付方式：'+res.paymentProviderList[i].statusName+'</option>';
+		}
+	}
+	htmltext+='</select></p>';
+	htmltext+='<p>备注：<textarea name="userDescription" id="userDescription" cols="35" rows="2"></textarea></p>';
+	$("#htmltext").html(htmltext);
+	
+	var htmlgoto="";
+	if(res.voList.length>0){
+		htmlgoto+='<p style=" text-align:center"><input name="submit" type="image" src="image/btn_submit.png" width="90%" height="auto" onClick="goToOrder()"></p>';
+	}
+	$("#htmlgoto").html(htmlgoto);
+	if(res.voList.length>0){
+		var goodsStr = '<label class="message">'+res.voList.length+'</label>';
+		$("#goodscount").html(goodsStr);
+	}
+ }
+
+ </script>
+ 
+ <script type="text/javascript"> 
+ function select1() {
+	 var res = null;
+     $.ajax(
+     {
+         type: "post",
+         url: "/page/wx/client/web/bill/findProvince.action",
+         data : "",
+         async : false,
+ 		 success : function(data) {
+ 		 	console.log(data);
+ 		 	res = data;
+ 		 }
+     })
+     for (var i = 0; i < res.provinceList.length; i++) {
+         $("#S1").append("<option value=" + res.provinceList[i].id + ">" + res.provinceList[i].province + "</option>");
+     }
+     select2();
+ };
+ 
+ function select2() {
+	 var res = null;
+     $("#S2").html("");
+     $.ajax(
+     {
+         type: "post",
+         url: "/page/wx/client/web/bill/findCity.action",
+         data : "provinceId="+$('#S1').attr("value"),
+         async : false,
+         success : function(data) {
+      	 	console.log(data);
+      	 	res = data;
+      	 }
+     })
+     for (var i = 0; i < res.cityList.length; i++) {
+      	$("#S2").append("<option value=" + res.cityList[i].id + ">" + res.cityList[i].city + "</option>");
+     }
+     select3();
+ };
+ 
+ function select3() {
+     $("#S3").html("");
+     $.ajax(
+     {
+         type: "post",
+         url: "/page/wx/client/web/bill/findArea.action",
+         data : "cityId="+$('#S2').attr("value"),
+         async : false,
+         success : function(data) {
+       	 	console.log(data);
+       	 	res = data;
+       	 }
+     })
+     for (var i = 0; i < res.areaList.length; i++) {
+     	$("#S3").append("<option value=" + res.areaList[i].id + ">" + res.areaList[i].area + "</option>");
+     } 
+ };
+ 
+ $(function () {
+     select1();
+     $('#S1').bind("change", select2);
+     $('#S2').bind("change", select3);
+ });
+
+ </script>
+  <script>
+  
+  function checkPhone(str){
+     var re = /1((3\d)|(4[57])|(5[01256789])|(8\d))\d{8}/;
+     if(re.test(str)){
+         return 0;
+     }else{
+         return 1;
+     }
+ }
+  
+ function goToOrder() {
+	var uid = getUid();
+	var userRealName = $('#userRealName').attr("value");
+	var userRealMobile = $('#userRealMobile').attr("value");
+	var addres = $('input[name="address"]:checked').val();
+	var provinceId = $('#S1').attr("value");
+	var cityId = $('#S2').attr("value");
+	var areaId = $('#S3').attr("value");
+	var userRealAddress = $('#userRealAddress').attr("value");
+	var logisticsCompanyId = $('#logisticsCompanyId').attr("value");
+	var paymentProvider = $('#paymentProvider').attr("value");
+	var userDescription = $('#userDescription').attr("value");
+	var userRealTime = $('#userRealTime').attr("value");
+	if(addres.length==0){
+		alert("请选择地址信息！");
+	}
+	if(addres=='new'){
+		if(uid.length==0){
+			alert("请重新登录！");
+		}
+		else if(userRealName.length==0){
+			alert("请输入收件人名称！");
+		}
+		else if(userRealMobile.length==0 ){
+			alert("请输入收件人手机号！");
+		}
+		else if(checkPhone(userRealMobile)){
+			alert("请输入正确的手机号！");
+		}
+		else if(provinceId.length==0){
+			alert("请选择所在省份！");
+		}
+		else if(cityId.length==0){
+			alert("请选择所在城市！");
+		}
+		else if(areaId.length==0){
+			alert("请选择所在区县！");
+		}
+		else if(userRealAddress.length==0){
+			alert("请输入详细地址！");
+		}
+		else if(logisticsCompanyId.length==0){
+			alert("请选择配送方式！");
+		}
+		else if(paymentProvider.length==0){
+			alert("请选择支付方式！");
+		}
+		else if(userRealTime.length==0){
+			alert("请选择送货时间！");
+		}
+		else{
+			var res;
+			$.ajax(
+			{
+				type: "post",
+				url: "/page/wx/client/web/orderrecord/add.action",
+				data : "areaId="+$('#S3').attr("value")+"&uid="+uid+"&userRealName="+userRealName
+				+"&userRealMobile="+userRealMobile+"&userRealAddress="+userRealAddress
+				+"&userRealDescription="+userDescription+"&logisticsCompanyId="+logisticsCompanyId
+				+"&paymentProvider="+paymentProvider+"&clientUserRegionInfoId="+addres
+				+"&userRealTime="+userRealTime,
+				async : false,
+				success : function(data) {
+					console.log(data);
+					res = data;
+				}
+			})
+			if(paymentProvider==151){
+				location.href = "http://admin.17xnr.com/mall/portal/wx/xnrpay.jsp?showwxpaytitle=1&orderId="+res.orderRecordId;
+			}else{
+				location.href = "http://www.17xnr.com/confirm.html?orderId="+res.orderRecordId;
+			}
+		}
+	}
+	else{
+		if(uid.length==0){
+			alert("请重新登录！");
+		}
+		else{
+			var res;
+			$.ajax(
+			{
+				type: "post",
+				url: "/page/wx/client/web/orderrecord/add.action",
+				data : "&uid="+uid+"&logisticsCompanyId="+logisticsCompanyId
+				+"&paymentProvider="+paymentProvider+"&clientUserRegionInfoId="+addres
+				+"&userRealDescription="+userDescription+"&userRealTime="+userRealTime,
+				async : false,
+				success : function(data) {
+					console.log(data);
+					res = data;
+				}
+			})
+			if(paymentProvider==151){
+				location.href = "http://admin.17xnr.com/mall/portal/wx/xnrpay.jsp?showwxpaytitle=1&orderId="+res.orderRecordId;
+			}else{
+				location.href = "http://www.17xnr.com/confirm.html?orderId="+res.orderRecordId;
+			}
+		}
+	}
+ };
+ </script>
+ <script>
+ 	function searchGoods()
+ 	{
+		var goodsName = $('#search').attr("value");
+	 	alert(goodsName);
+ 	}
+ 	
+ 	 //删除地址
+ 	function del(clientUserRegionInfoId){
+ 		var url = "/page/wx/client/web/bill/del.action";
+ 		var res = null;
+ 		$.ajax({
+ 			type : "POST",
+ 			url : url,
+ 			data : "clientUserRegionInfoId="+clientUserRegionInfoId,
+ 			async : false,
+ 			success : function(data) {
+ 				console.log(data);
+ 				res = data;
+ 			}
+ 		});
+ 		refresh();
+ 	}
+ 	 
+ 	function refresh()
+ 	{
+ 		window.location.reload();
+ 	}
+  </script>
+</head>
+<body >
+	<div id="main">
+		<div class="top_search">
+            <input name="search" type="text" class="search_txt">
+            <input name="btn" id="seh" type="button" class="s_btn" value="搜索" onClick="searchGoods()">
+        </div>
+		<!--<div class="main01">
+			<div id="htmltext" class="list_bill_con">
+				
+			</div>
+			<div id="htmls" class="list_tro">
+				
+			</div>
+			<div id="htmlze" class="list_bill_con">
+				
+			</div>
+			<div id="htmlgoto" class="list_bill_con">
+				
+			</div>
+		</div>-->
+        <div class="main01 billBox">
+			<div class="list_bill_con" id="htmltext">
+                <p><input type="radio" checked="checked" value="57" name="address">北京市北京市东城区333</p>
+                <p>收件人：123</p>
+                <p>手机号：18321111111</p>
+            </div>
+			<div class="list_tro" id="htmls">
+            <ul>
+            <li class="line"><span class="title">商品信息：</span></li>
+            <li class="line con"><p><img width="150" height="100" style=" margin:5px 10px;float:left" src="../css/images/orderImg.jpg"></p><p>粉绿的心情</p><p>数量：<label class="red">1</label></p><p>单价：<label class="red">13</label></p></li>
+            <li><span class="price03">应付金额：<label class="red">￥13.0</label></span></li>
+            </ul>
+            <ul>
+            <li class="line"><span class="title">商品信息：</span></li>
+            <li class="line con"><p><img width="150" height="100" style=" margin:5px 10px;float:left" src="../css/images/orderImg.jpg"></p><p>粉绿的心情</p><p>数量：<label class="red">1</label></p><p>单价：<label class="red">13</label></p></li>
+            <li><span class="price03">应付金额：<label class="red">￥13.0</label></span></li>
+            </ul>
+            <ul>
+            <li class="line"><span class="title">商品信息：</span></li>
+            <li class="line con"><p><img width="150" height="100" style=" margin:5px 10px;float:left" src="../css/images/orderImg.jpg"></p><p>粉绿的心情</p><p>数量：<label class="red">1</label></p><p>单价：<label class="red">13</label></p></li>
+            <li><span class="price03">应付金额：<label class="red">￥13.0</label></span></li>
+            </ul>
+            </div>
+			<div class="list_bill_con" id="htmlze"><p class="zong">总额：<label class="red">79元</label></p></div>
+			<div class="" id="htmlgoto"><p style=" text-align:center"><input width="90%" type="button" height="auto" onclick="goToOrder()"  name="submit" class="orderSubmitBtn" value="提交订单"></p></div>
+		</div>
+				 <div class="footerbar">
+        
+        <div class="clear"></div>
+
+        <div class="bottom_nav">
+            <ul>
+                <li>
+                	<a onClick="javascript:history.go(-1);" target="_parent">
+                    <div class="icon1">
+                    </div>
+                    返回</a></li>
+                <li>
+                	<a href="index.html" target="_parent">
+                    <div class="icon2">
+                    </div>
+                    主页</a></li>
+                <li>
+                	 <a href="waitting.html" target="_parent">
+                    <div class="icon3">
+                    </div>
+                   我的订单</a></li>
+                <li class="nonebg">
+                	<a href="trolley.html" target="_parent">
+                    <div class="icon4">
+                    </div>
+                    购物车</a><div id="goodscount"></div></li>
+            </ul>
+
+        </div>
+        <br />
+        </div>
+	</div>
+	
+</body>
+</html>

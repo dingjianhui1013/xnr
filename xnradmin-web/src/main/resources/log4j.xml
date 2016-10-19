@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+  
+
+<appender name="console" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern"
+            value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%c{1}]-%m%n" />
+    </layout>
+</appender>
+<!--  -->
+
+<appender name="db" class="org.apache.log4j.DailyRollingFileAppender">    
+    <param name="File" value="${xnradmin_home}/logs/db.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+
+<appender name="c3p0" class="org.apache.log4j.DailyRollingFileAppender">    
+    <param name="File" value="${xnradmin_home}/logs/c3p0.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="ssh" class="org.apache.log4j.DailyRollingFileAppender">    
+    <param name="File" value="${xnradmin_home}/logs/ssh.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="other" class="org.apache.log4j.DailyRollingFileAppender">    
+    <param name="File" value="${xnradmin_home}/logs/other.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="ex" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/ex.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="mongo" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/ex.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="script" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/script.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="client" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/client.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="scriptBusiness" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/scriptBusiness.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+
+<appender name="androiddown" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/androiddown.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="androidclick" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/androidclick.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="iosdown" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/androiddown.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="iosclick" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/iosclick.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="wxport" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/wxport.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="wxpay" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/wxpay.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="businessdata" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/businessdata.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="uploadGoods" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/uploadGoods.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<appender name="coopLog" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${xnradmin_home}/logs/coopLog.log" />
+    <param name="DatePattern" value="'_'yyyyMMdd'.log'" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" />
+    </layout>
+</appender>
+<!--$[gen_config_appender]-->
+
+<!--$[gen_config_appender_end]-->
+<!--
+ ====================================
+                logger setting....
+ ====================================
+-->
+<logger name="org.hibernate" additivity="false">
+	<level value="info" />
+	<appender-ref  ref="db" />
+</logger>
+<logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false">
+	<level value="TRACE" />
+	<appender-ref  ref="db" />
+</logger>
+<logger name="org.hibernate.SQL" additivity="false">
+	<level value="debug" />
+	<appender-ref  ref="db" />
+</logger>
+<logger name="org.hibernate.engine.QueryParameters" additivity="false">
+	<level value="debug" />
+	<appender-ref  ref="db" />
+</logger>
+<logger name="org.hibernate.engine.query.HQLQueryPlan" additivity="false">
+	<level value="debug" />
+	<appender-ref  ref="db" />
+</logger>
+<logger name="com.mchange" additivity="false">
+        <level value="info" />
+        <appender-ref  ref="c3p0" />
+</logger>
+<logger name="org.springframework.security">
+		<level value="DEBUG" />
+		<appender-ref ref="console" />
+</logger>
+<logger name="org.springframework" additivity="false">
+        <level value="info" />
+        <appender-ref  ref="ssh" />
+</logger>
+<logger name="org.apache.struts2" additivity="false">
+        <level value="info" />
+        <appender-ref  ref="ssh" />
+</logger>
+<logger name="ognl" additivity="false">
+        <level value="info" />
+        <appender-ref  ref="other" />
+</logger>
+<logger name="com.xnradmin" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="console" />
+</logger>
+
+
+<logger name="ex" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="ex" />
+</logger>
+
+<logger name="client" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="client" />
+</logger>
+<logger name="script" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="script" />
+</logger>
+<logger name="scriptBusiness" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="scriptBusiness" />
+</logger>
+<logger name="androiddown" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="androiddown" />
+</logger>
+<logger name="androidclick" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="androidclick" />
+</logger>
+<logger name="iosdown" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="iosdown" />
+</logger>
+<logger name="iosclick" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="iosclick" />
+</logger>
+<logger name="wxport" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="wxport" />
+</logger>
+<logger name="wxpay" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="wxpay" />
+</logger>
+<logger name="businessdata" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="businessdata" />
+</logger>
+<logger name="uploadGoods" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="uploadGoods" />
+</logger>
+<logger name="coopLog" additivity="false">
+        <level value="debug" />
+        <appender-ref  ref="coopLog" />
+</logger>
+
+<!--$[gen_config_logger]-->
+
+<!--$[gen_config_logger_end]-->
+
+<!--
+ ====================================
+                root setting....
+ ====================================
+-->
+<root>
+    <level value="debug" />
+    <appender-ref  ref="console" />
+    <!--
+    <appender-ref  ref="db" />
+    <appender-ref  ref="c3p0" />
+    <appender-ref  ref="ssh" />
+    <appender-ref  ref="other" />
+    -->
+</root>
+</log4j:configuration>

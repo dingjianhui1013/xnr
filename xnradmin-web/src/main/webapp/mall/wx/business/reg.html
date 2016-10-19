@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>小农人儿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" type="text/css" href="./css/base.css" charset="gbk">
+<link rel="stylesheet" href="./css/common.css"/>
+<base target="_self">
+<script src="./js/jquery-1.4.2.min.js" type="text/javascript" ></script>
+<script src="./js/verifyCode.js" type="text/javascript" ></script>
+<script src="./js/xnrutil.js" type="text/javascript" ></script>
+
+<script type="text/javascript">
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+	 WeixinJSBridge.call('hideToolbar');
+	 WeixinJSBridge.call('hideOptionMenu');
+});
+</script>
+<script type="text/javascript"> 
+ function select1() {
+	 var res = null;
+     $.ajax(
+     {
+         type: "post",
+         url: "/page/wx/client/web/bill/findProvince.action",
+         data : "",
+         async : false,
+ 		 success : function(data) {
+ 		 	console.log(data);
+ 		 	res = data;
+ 		 }
+     })
+     for (var i = 0; i < res.provinceList.length; i++) {
+         $("#S1").append("<option value=" + res.provinceList[i].id + ">" + res.provinceList[i].province + "</option>");
+     }
+     select2();
+ };
+ 
+ function select2() {
+	 var res = null;
+     $("#S2").html("");
+     $.ajax(
+     {
+         type: "post",
+         url: "/page/wx/client/web/bill/findCity.action",
+         data : "provinceId="+$('#S1').attr("value"),
+         async : false,
+         success : function(data) {
+      	 	console.log(data);
+      	 	res = data;
+      	 }
+     })
+     for (var i = 0; i < res.cityList.length; i++) {
+      	$("#S2").append("<option value=" + res.cityList[i].id + ">" + res.cityList[i].city + "</option>");
+     }
+     select3();
+ };
+ 
+ function select3() {
+     $("#S3").html("");
+     $.ajax(
+     {
+         type: "post",
+         url: "/page/wx/client/web/bill/findArea.action",
+         data : "cityId="+$('#S2').attr("value"),
+         async : false,
+         success : function(data) {
+       	 	console.log(data);
+       	 	res = data;
+       	 }
+     })
+     for (var i = 0; i < res.areaList.length; i++) {
+     	$("#S3").append("<option value=" + res.areaList[i].id + ">" + res.areaList[i].area + "</option>");
+     } 
+ };
+ 
+ $(function () {
+     select1();
+     $('#S1').bind("change", select2);
+     $('#S2').bind("change", select3);
+ });
+
+ </script>
+ <script>
+  
+  function checkPhone(str){
+     var re = /1((\d)|(4[57])|(5[01256789])|(8\d))\d{8}/;
+     if(re.test(str)){
+         return 0;
+     }else{
+         return 1;
+     }
+ }
+  
+ function addUser() {
+	var password = $('#password').attr("value");
+	var addres = $('#addres').attr("value");
+	var provinceId = $('#S1').attr("value");
+	var cityId = $('#S2').attr("value");
+	var areaId = $('#S3').attr("value");
+	var mobile = $('#mobile').attr("value");
+	var staffname = $('#staffname').attr("value");
+	//var validateCode = $('#validateCode').attr("value");
+	var theEarliestTime = $('#theEarliestTime').attr("value");
+	var theLatestTime = $('#theLatestTime').attr("value");
+	if(password.length==0 ){
+		alert("请输入密码！");
+	}
+	else if(checkPhone(mobile)){
+		alert("请输入正确的手机号！");
+	}
+	else if(provinceId.length==0){	
+		alert("请选择所在省份！");
+	}
+	else if(cityId.length==0){
+		alert("请选择所在城市！");
+	}
+	else if(areaId.length==0){
+		alert("请选择所在区县！");
+	}
+	else if(addres.length==0){
+		alert("请输入详细地址！");
+	}
+	else if(staffname.length==0){
+		alert("请输入名称！");
+	}
+	//else if(validateCode.length==0){
+	//	alert("请输入验证码！");
+	//}
+	else if(theEarliestTime.length==0){
+		alert("请选择最早送货时间！");
+	}
+	else if(theLatestTime.length==0){
+		alert("请选择最晚送货时间！");
+	}
+	else{
+		var res;
+		$.ajax(
+		{
+			type: "post",
+			url: "/page/wx/client/business/reg/regAdd.action",
+			data : "areaId="+$('#S3').attr("value")+"&password="+password
+			+"&mobile="+mobile+"&addres="+addres+"&staffname="+staffname
+			+"&theEarliestTime="+theEarliestTime+"&theLatestTime="+theLatestTime,
+			async : false,
+			success : function(data) {
+				console.log(data);
+				res = data;
+			}
+		})
+		if(res.errorMsg==0){
+			setLoginid(res.userInfoJson);
+			location.href = "reg_success.html";
+		}else{
+			alert(res.errorMsg);
+		}
+	}
+ };
+ </script>
+</head>
+<body >
+	<div id="main">
+		<div id="" class="">
+			<img width="100%" height="100%" src="img/login_logo.gif"/>
+		</div>
+        <div class="main01 billBox">
+			<div class="list_bill_con" id="htmltext">
+             
+              	
+                <p><b>用户注册</b></p>
+                <ul class="zc2">
+                <p><li class="z2li">手机号：</li><input type="text" value="" class="zck" id="mobile" name="mobile"></p>
+                <p><li class="z2li">密码 ：</li><input type="password" class="zck" value="" id="password" name="password"></p>
+                <p><li class="z2li">商户名称：</li><input type="text" value="" class="zck" id="staffname" name="staffname"></p>
+            	</ul>
+                <p>选择省：<select id="S1" name="provinceId"><option value="1">北京市</option><option value="2">天津市</option><option value="3">河北省</option><option value="4">山西省</option><option value="5">内蒙古自治区</option><option value="6">辽宁省</option><option value="7">吉林省</option><option value="8">黑龙江省</option><option value="9">上海市</option><option value="10">江苏省</option><option value="11">浙江省</option><option value="12">安徽省</option><option value="13">福建省</option><option value="14">江西省</option><option value="15">山东省</option><option value="16">河南省</option><option value="17">湖北省</option><option value="18">湖南省</option><option value="19">广东省</option><option value="20">广西壮族自治区</option><option value="21">海南省</option><option value="22">重庆市</option><option value="23">四川省</option><option value="24">贵州省</option><option value="25">云南省</option><option value="26">西藏自治区</option><option value="27">陕西省</option><option value="28">甘肃省</option><option value="29">青海省</option><option value="30">宁夏回族自治区</option><option value="31">新疆维吾尔自治区</option><option value="32">台湾省</option><option value="33">香港特别行政区</option><option value="34">澳门特别行政区</option></select></p>
+                <p>选择市：<select id="S2" name="cityId"><option value="1">北京市</option></select></p>
+                <p>选择区：<select id="S3" name="areaId"><option value="1">东城区</option><option value="2">西城区</option><option value="3">崇文区</option><option value="4">宣武区</option><option value="5">朝阳区</option><option value="6">丰台区</option><option value="7">石景山区</option><option value="8">海淀区</option><option value="9">门头沟区</option><option value="10">房山区</option><option value="11">通州区</option><option value="12">顺义区</option><option value="13">昌平区</option><option value="14">大兴区</option><option value="15">怀柔区</option><option value="16">平谷区</option><option value="17">密云县</option><option value="18">延庆县</option></select></p>
+                <p>收货地址：<textarea rows="2" cols="35" id="addres" name="addres"></textarea></p>
+                <p class="sel">
+                	<select name="theEarliestTime" id="theEarliestTime">
+                		<option value="7" selected>最早配送时间 7点</option>
+	                	<option value="8">最早配送时间 8点</option>
+	                	<option value="9">最早配送时间 9点</option>
+	                	<option value="10">最早配送时间 10点</option>
+	                	<option value="11">最早配送时间 11点</option>
+	                	<option value="12">最早配送时间 12点</option>
+	                	<option value="13">最早配送时间 13点</option>
+	                	<option value="14">最早配送时间 14点</option>
+	                	<option value="15">最早配送时间 15点</option>
+	                	<option value="16">最早配送时间 16点</option>
+					</select>
+				<p class="sel">
+                	<select name="theLatestTime" id="theLatestTime">
+                		<option value="8" selected>最晚配送时间 8点</option>
+	                	<option value="9">最晚配送时间 9点</option>
+	                	<option value="10">最晚配送时间 10点</option>
+	                	<option value="11">最晚配送时间 11点</option>
+	                	<option value="12">最晚配送时间 12点</option>
+	                	<option value="13">最晚配送时间 13点</option>
+	                	<option value="14">最晚配送时间 14点</option>
+	                	<option value="15">最晚配送时间 15点</option>
+	                	<option value="16">最晚配送时间 16点</option>
+	                	<option value="17">最晚配送时间 17点</option>
+					</select>
+				</p>
+            </div>
+			<div class="list_tro">
+            <ul>
+            
+			<div class="" id="htmlgoto"><p style=" text-align:center"><input width="90%" type="button" height="auto" onclick="addUser()"  name="submit" class="orderSubmitBtn" value="提交信息"></p></div>
+		</div>
+				 <div class="footerbar">
+        
+        <div class="clear"></div>
+
+        
+        <br />
+        </div>
+	</div>
+	
+</body>
+</html>
