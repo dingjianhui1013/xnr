@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:task="http://www.springframework.org/schema/task" 
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+			http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	
+	
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/conf/server.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>		
+	
+	<!-- master hibernate datasource -->
+	<bean id="datasource_master" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+
+		<property name="driverClass" value="${mysql.master.jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${mysql.master.jdbc.url}" />
+		<property name="user" value="${mysql.master.jdbc.username}" />
+		<property name="password" value="${mysql.master.jdbc.password}" />
+
+		<property name="minPoolSize">
+			<value>5</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>30</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>1800</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>2</value>
+		</property>
+		<property name="maxStatements">
+			<value>100</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>2</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>60</value>
+		</property>
+		<property name="acquireRetryAttempts">
+			<value>30</value>
+		</property>
+		<property name="breakAfterAcquireFailure">
+			<value>false </value>
+		</property>
+		<property name="testConnectionOnCheckout">
+			<value>true</value>
+		</property>
+		<property name="automaticTestTable">
+			<value>Test</value>
+		</property>		
+		<property name="connectionTesterClassName">
+			<value>com.mchange.v2.c3p0.impl.DefaultConnectionTester</value>
+		</property>
+		<property name="checkoutTimeout">
+			<value>3000</value>
+		</property>
+	</bean>
+	
+	<!-- slaver01 hibernate datasource -->
+	<bean id="datasource_slave01" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+
+		<property name="driverClass" value="${mysql.slave01.jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${mysql.slave01.jdbc.url}" />
+		<property name="user" value="${mysql.slave01.jdbc.username}" />
+		<property name="password" value="${mysql.slave01.jdbc.password}" />
+
+		<property name="minPoolSize">
+			<value>5</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>30</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>1800</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>2</value>
+		</property>
+		<property name="maxStatements">
+			<value>100</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>2</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>60</value>
+		</property>
+		<property name="acquireRetryAttempts">
+			<value>30</value>
+		</property>
+		<property name="breakAfterAcquireFailure">
+			<value>false </value>
+		</property>
+		<property name="testConnectionOnCheckout">
+			<value>true</value>
+		</property>
+		<property name="automaticTestTable">
+			<value>Test</value>
+		</property>		
+		<property name="connectionTesterClassName">
+			<value>com.mchange.v2.c3p0.impl.DefaultConnectionTester</value>
+		</property>
+		<property name="checkoutTimeout">
+			<value>3000</value>
+		</property>
+	</bean>
+	
+	
+	
+	<!-- memcache -->
+	<bean id="MemCachedBase" class="com.xnradmin.core.cache.MemCachedBase"
+		init-method="init" lazy-init="false" scope="singleton"
+		destroy-method="shutDown">				
+		
+		<property name="servers"><value>${memcached.server.servers}</value></property>
+		<property name="weights"><value>${memcached.server.weights}</value></property>  
+        <property name="initConn"><value>${memcached.server.iniconn}</value></property>  
+        <property name="minConn"><value>${memcached.server.minconn}</value></property>          
+        <property name="maxConn"><value>${memcached.server.maxconn}</value></property>
+        <property name="maxIdle"><value>${memcached.server.maxidle}</value></property>  
+        <property name="maintSleep"><value>${memcached.server.maintsleep}</value></property>  
+        <property name="nagle"><value>${memcached.server.nagle}</value></property>  
+        <property name="socketTO"><value>${memcached.server.socketto}</value></property>
+        <property name="socketConnectTO"><value>${memcached.server.socketConnectTO}</value></property>        
+        <property name="aliveCheck"><value>${memcached.server.aliveCheck}</value></property>        
+        <property name="defaultExptime"><value>${memcached.object.defaultExptime}</value></property>  
+                      
+    </bean> 
+	
+	<!-- mongodb datasource -->	
+	<bean id="MongoDBSource" class="com.xnradmin.dto.MongoDBSource">				
+		<property name="address" value="${mongo.db.address}" />
+		<property name="port" value="${mongo.db.port}" />		
+		<property name="usernmae" value="${mongo.db.usernmae}" />
+		<property name="password" value="${mongo.db.password}" />
+		<property name="database" value="${mongo.db.database}" />			
+		<property name="socketTimeout" value="${mongo.db.socketTimeout}" />
+		<property name="connectTimeout" value="${mongo.db.connectTimeout}" />
+		<property name="connectionsPerHost" value="${mongo.db.connectionsPerHost}" />	
+		<property name="autoConnectRetry" value="${mongo.db.autoConnectRetry}" />
+		<property name="maxWaitTime" value="${mongo.db.maxWaitTime}" />			
+		<property name="slaveOk" value="${mongo.db.slaveOk}" />
+		<property name="safe" value="${mongo.db.safe}" />
+		<property name="mappackage" value="${morphia.mappackage}" />
+	</bean>
+	
+	
+	<bean id="XnradminHibernateInterceptor" class="com.xnradmin.core.util.XnradminHibernateInterceptor"/>		
+	
+</beans>

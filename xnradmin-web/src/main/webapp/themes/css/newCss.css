@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+.pageFormContent dl.nowrap, .nowrap dl {
+	clear:inherit;
+	clear:none;
+    float: left;
+    height: auto;
+    width: 49%;
+	
+}
+.pageFormContent dl.nowrap dd, .nowrap dd{
+	width:395px;
+	}
+fieldset{ clear:both;}
+.nowrap {width:100%; height:auto; clear: both;}
+.btnCSS{margin:0px auto 0 40%; padding-top:10px;}
+.areaCss{width:314px;width:304px\9;height:30px;overflow-y:auto;}
+.detailCss{background:url(../default/images/button/detailIco.png) no-repeat transparent; display: block;float: left;height: 20px; margin:0 5px;overflow: hidden;text-indent: -1000px;width: 22px;}

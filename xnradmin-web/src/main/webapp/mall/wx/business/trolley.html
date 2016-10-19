@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>小农人儿</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="./css/base.css" charset="gbk">
+	<link rel="stylesheet" type="text/css" href="./css/tab_style.css" charset="gbk">
+    
+    
+    <script src="./js/jquery-1.4.2.min.js" type="text/javascript" ></script>
+	<script src="./js/xnrutil.js" type="text/javascript" ></script>
+    <base target="_self">
+    <script type="text/javascript">
+		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+			 WeixinJSBridge.call('hideToolbar');
+			 WeixinJSBridge.call('hideOptionMenu');
+		});
+	</script>
+	<script type="text/javascript">
+	 $( document.body ).ready(function(){
+		 getShoppingCartList();
+		});
+	 
+	 function getShoppingCartList(){
+		var url = "/page/wx/client/web/shoppingcartweb/webList.action";
+		var res = null;
+		var uid = getUid();
+		$.ajax({
+			type : "POST",
+			url : url,
+			data : "uid="+uid,
+			async : false,
+			success : function(data) {
+				console.log(data);
+				res = data;
+			}
+		});
+		var htmls="";
+		for(var i=0;i<res.voList.length;i++){	
+			htmls+='<div class="list_tro">';
+			htmls+='<ul>';
+			htmls+='<li class="line con">';
+			htmls+='<p><img src="'+ res.voList[i].goods.goodsLogo +'" width="150" height="100" style=" margin:5px 10px;float:left"></p>';
+			htmls+='<p>'+res.voList[i].goods.goodsName+'</p>';
+			if(res.voList[i].goods.isDiscountGoods==120){
+				htmls+='<p>单价：<label class="red">'+res.voList[i].goods.goodsPreferentialPrice+'</label></p>';
+				
+			}else{
+				htmls+='<p>单价：<label class="red">'+res.voList[i].goods.goodsOriginalPrice+'</label></p>';
+			}
+			htmls+='</li>';
+			htmls+='<li class="list_bottom">';
+			htmls+='<span class="del"><input name="del" type="image" src="image/btn_del.png" onClick="del('+res.voList[i].shoppingCartId+')" width="25" height="25" style="margin-top:7px;"></span>';
+			htmls+='<span class="num">数量:<input name="" type="button" onclick="jianCount('+i+','+res.voList[i].goods.id+','+res.voList[i].shoppingCartId+')" value="-" class="set01"><input name="" type="text" id="fname'+i+'" onchange="modifyCount('+i+','+res.voList[i].goods.id+','+res.voList[i].shoppingCartGoodsCount+','+res.voList[i].shoppingCartId+')" value="'+res.voList[i].shoppingCartGoodsCount+'" class="set02">';
+			htmls+='<input name="" type="button" onclick="addCount('+i+','+res.voList[i].goods.id+','+res.voList[i].shoppingCartId+')" value="+" class="set03"></span>';
+			htmls+='<span class="price">总计：<label class="red">'+res.voList[i].shoppingCartTotalPrice+'元</label></span>';
+			htmls+='</li>';
+			htmls+='</ul>';
+			htmls+='</div>';
+		}
+		htmls+='<div class="list_bill">';
+		htmls+='<p>';
+		htmls+='<span class="price02">总价：<label class="red">￥'+res.totalPrice+'元</label></span>';
+		htmls+='<span class="submit"><a href="bill.html"><input name="del" type="image" src="image/btn_bill.png" width="90" height="30" style="margin-top:5px;"></a></span>';
+		htmls+='</p>';
+		htmls+='</div>';
+		$("#htmls").html(htmls);
+		
+		if(res.goodsCount>0){
+			var goodsStr = '<label class="message">'+res.goodsCount+'</label>';
+			$("#goodscount").html(goodsStr);
+		}
+	 }
+	 //捕捉修改数据
+	 function modifyCount(id,goodsId,goodsCount,shoppingCartId)
+	 {
+		id="fname"+id;
+	 	var count=document.getElementById(id).value
+	 	if(!isNaN(count)){
+	 		//是数字
+	 		if(count>1){
+	 			modify(goodsId,count,shoppingCartId);
+	 		}
+	 		else{
+	 			del(shoppingCartId);
+	 		}
+	 	}
+	 	else{
+	 		document.getElementById(id).value = goodsCount;
+	 	}
+	 }
+	 
+	 //增加
+	 function addCount(id,goodsId,shoppingCartId)
+	 {
+		id="fname"+id;
+		var count=document.getElementById(id).value;
+		if(!isNaN(count)){
+			document.getElementById(id).value = parseInt(document.getElementById(id).value)+1;
+			count=document.getElementById(id).value;
+	 		//是数字
+			if(count>1){
+				modify(goodsId,count,shoppingCartId);
+	 		}
+	 		else{
+	 			del(shoppingCartId);
+	 		}
+	 	}
+	 }
+	 
+	 //减少
+	 function jianCount(id,goodsId,shoppingCartId)
+	 {
+		id="fname"+id;
+		var count=document.getElementById(id).value;
+		if(!isNaN(count)){
+	 		//是数字
+			if(count>1){
+				document.getElementById(id).value = parseInt(document.getElementById(id).value)-1;
+				count=document.getElementById(id).value;
+				modify(goodsId,count,shoppingCartId);
+			}
+			else{
+				del(shoppingCartId);
+			}
+		}
+	 }
+	 
+	 //修改购物车数据
+	 function modify(goodsId,goodsCount,shoppingCartId){
+			var url = "/page/wx/client/web/shoppingcartweb/modify.action";
+			var res = null;
+			var uid = getUid();
+			$.ajax({
+				type : "POST",
+				url : url,
+				data : "uid="+uid+"&goodsId="+goodsId+"&goodsCount="+goodsCount+"&shoppingCartId="+shoppingCartId,
+				async : false,
+				success : function(data) {
+					console.log(data);
+					res = data;
+				}
+			});
+			refresh();
+	 }
+	 
+	 //删除购物车数据
+	 function del(shoppingCartId){
+			var url = "/page/wx/client/web/shoppingcartweb/del.action";
+			var res = null;
+			$.ajax({
+				type : "POST",
+				url : url,
+				data : "shoppingCartId="+shoppingCartId,
+				async : false,
+				success : function(data) {
+					console.log(data);
+					res = data;
+				}
+			});
+			refresh();
+	 }
+	 
+	 function refresh()
+	 {
+	 	window.location.reload();
+	 }
+	 </script>
+	 <script>
+	 	function searchGoods()
+	 	{
+			var goodsName = $('#search').attr("value");
+			location.href = "search.html?goodsName="+goodsName;
+	 	}
+	  </script>
+	
+</head>
+<body>
+    <div id="main">
+       <div id="" class="">
+            <img width="100%" height="100%" src="img/login_logo.gif"/>
+        </div>
+        <div class="list_bill_business_con" id="htmltext">
+                <p>购物车 | 客服电话:<a href="tel:4006158618">点击呼叫：400-615-8618</a>
+                </p>
+        </div>
+        <div id='htmls' class="main01">
+        	
+			<div class="list_tro">
+            <ul>
+                <li class="line con">
+                  	 <p><img width="60" height="60" style=" margin:5px 10px;float:left" src="./css/images/shopping1.jpg"></p>
+                    <p class="shopList-tit">大白菜(13元/每斤)  单价：<label class="red">13</label></p>
+                </li>
+                <li class="list_bottom">
+                    <span class="del">
+                    <input width="25" type="image" height="25" style="margin-top:7px;" onclick="del(358)" src="./image/btn_del.png" name="del">
+                </span>
+                    <span class="num"><em class="numZi">数量</em><input type="button" class="set01" value="-" onclick="jianCount(0,101,358)" name=""><input type="text" class="set02" value="1" onchange="modifyCount(0,101,1,358)" id="fname0" name=""><input type="button" class="set03" value="+" onclick="addCount(0,101,358)" name=""></span>
+                    <span class="price">总计：<label class="red">13.0元</label></span>
+                </li>
+            </ul>
+            <ul>
+                <li class="line con">
+                  	<p><img width="60" height="60" style=" margin:5px 10px;float:left" src="./css/images/shopping1.jpg"></p>
+                    <p class="shopList-tit">黄瓜（一袋）(5元/每斤)  单价：<label class="red">13</label></p>
+                </li>
+                <li class="list_bottom">
+                    <span class="del">
+                    <input width="25" type="image" height="25" style="margin-top:7px;" onclick="del(358)" src="./image/btn_del.png" name="del">
+                </span>
+                    <span class="num"><em class="numZi">数量</em><input type="button" class="set01" value="-" onclick="jianCount(0,101,358)" name=""><input type="text" class="set02" value="1" onchange="modifyCount(0,101,1,358)" id="fname0" name=""><input type="button" class="set03" value="+" onclick="addCount(0,101,358)" name=""></span>
+                    <span class="price">总计：<label class="red">13.0元</label></span>
+                </li>
+            </ul>
+        </div>
+        	<div class="list_bill">
+            	<p><span class="price02">总价：<label class="red">￥13元</label></span><span class="submit"><a href="bill.html">
+                <input type="button" class="accoutBtn" value="结算"></a></span></p>
+             </div>
+        </div>
+
+
+        <div class="footerbar">
+
+        
+        <div class="clear"></div>
+
+        <div class="bottom_nav">
+           <ul>
+                <li>
+                	<a onClick="javascript:history.go(-1);">
+                    <div class="icon1">
+                    </div>
+                    返回</a></li>
+                <li>
+                	<a href="index.html">
+                    <div class="icon2">
+                    </div>
+                    主页</a></li>
+                <li>
+                	 <a href="waitting.html">
+                    <div class="icon3">
+                    </div>
+                   我的订单</a></li>
+                <li class="nonebg">
+                	<a href="trolley.html">
+                    <div class="icon4">
+                    </div>
+                    购物车</a><div id="goodscount"></div></li>
+            </ul>
+                
+        </div>
+
+
+        </div>
+
+    
+
+    </div>
+</body>
+</html>
