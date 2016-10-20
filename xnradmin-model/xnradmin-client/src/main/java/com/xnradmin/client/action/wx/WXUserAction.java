@@ -58,6 +58,7 @@ public class WXUserAction extends ParentAction {
 
 	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/wxuser/info.jsp") })
 	public String info() {
+		System.out.println("ceshi");
 		setPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
