@@ -3,6 +3,12 @@
  */
 package com.cntinker.util;
 
+import java.security.MessageDigest;
+import java.util.Arrays;
+
+import com.cntinker.util.wx.connect.AesException;
+
+
 /**
  * @author: liubin
  *  //SHA1加密类，摘自：http://pan.baidu.com/s/1eQ9V77k
@@ -223,4 +229,37 @@ public class SHA1 {
 
 		// System.out.println( ToMD5.convertSHA1(data).toUpperCase());
 	}
+	public static String getSHA1(String token, String timestamp, String nonce, String encrypt)
+		    throws AesException
+		  {
+		    try
+		    {
+		      String[] array = { token, timestamp, nonce, encrypt };
+		      StringBuffer sb = new StringBuffer();
+
+		      Arrays.sort(array);
+		      for (int i = 0; i < 4; ++i) {
+		        sb.append(array[i]);
+		      }
+		      String str = sb.toString();
+
+		      MessageDigest md = MessageDigest.getInstance("SHA-1");
+		      md.update(str.getBytes());
+		      byte[] digest = md.digest();
+
+		      StringBuffer hexstr = new StringBuffer();
+		      String shaHex = "";
+		      for (int i = 0; i < digest.length; ++i) {
+		        shaHex = Integer.toHexString(digest[i] & 0xFF);
+		        if (shaHex.length() < 2) {
+		          hexstr.append(0);
+		        }
+		        hexstr.append(shaHex);
+		      }
+		      return hexstr.toString();
+		    } catch (Exception e) {
+		      e.printStackTrace();
+		      throw new AesException(-40003);
+		    }
+		  }
 }
