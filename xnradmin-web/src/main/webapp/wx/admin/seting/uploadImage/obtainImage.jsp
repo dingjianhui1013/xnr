@@ -115,9 +115,6 @@ function uploadI()
 	        		uploadI(localIds);
 	        	}else
 	        		{
-	        			alert(serverIds);
-	        			$("#dId").val(serverIds);
-// 	        			alert($("#dId").val());
 			       		window.location.href="<%= path %>/page/wx/wxconnect/downloadF.action?serverId="
 									+ serverIds
 									+ "&userId="
