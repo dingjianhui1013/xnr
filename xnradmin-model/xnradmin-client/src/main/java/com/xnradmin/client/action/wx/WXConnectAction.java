@@ -46,7 +46,7 @@ public class WXConnectAction {
 	private static Logger log = Logger.getLogger(WXConnectAction.class);
 	private String userId;
 	private String userName;
-	private String serverId [];
+	private String serverId;
 	private OAuth oAuth;
 
 	public String getUserId() {
@@ -64,16 +64,14 @@ public class WXConnectAction {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
-	public String[] getServerId() {
+
+	public String getServerId() {
 		return serverId;
 	}
 
-	public void setServerId(String[] serverId) {
+	public void setServerId(String serverId) {
 		this.serverId = serverId;
 	}
-
-
 
 	@Autowired
 	private WeiXinConnectService connectService;
@@ -153,7 +151,7 @@ public class WXConnectAction {
 			String userName = userInformation.getString("name");
 			this.userId = userId.getString("UserId");
 			this.userName = userName;
-			
+
 		}
 		return StrutsResMSG.SUCCESS;
 	}
@@ -168,7 +166,7 @@ public class WXConnectAction {
 		}
 	}
 
-	@Action(value = "uploadF" )
+	@Action(value = "uploadF")
 	public void uploadF() {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String access_tokenString = wXGetTokenService.accessTokenIsOvertime();
@@ -193,53 +191,61 @@ public class WXConnectAction {
 		session.setAttribute("userId", userId);
 	}
 
-	@Action(value = "downloadF",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage.jsp") })
-	public void downloadF() {
-		System.out.println("*****************");
-		System.out.println("serverId"+serverId.length);
-		System.out.println("*****************");
+	@Action(value = "ceshi")
+	public void ceshi() {
+		String fileName = ServletActionContext.getServletContext().getRealPath(
+				"/farmerImage");
+		System.out.println(fileName);
+	}
+
+	@Action(value = "downloadF", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage.jsp") })
+	public String downloadF() {
+		String serverIds[] = serverId.split(",");
 		String requestUrl = "https://qyapi.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
 		String access_token = wXGetTokenService.accessTokenIsOvertime();
-		requestUrl = requestUrl
-				.replace("ACCESS_TOKEN", access_token)
-				.replace("MEDIA_ID",
-						serverId[0]);
-		HttpURLConnection conn = null;
-		try {
-			URL url = new URL(requestUrl);
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setDoInput(true);
-			conn.setRequestMethod("GET");
-			conn.setConnectTimeout(30000);
-			conn.setReadTimeout(30000);
-			InputStream in = conn.getInputStream();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			int b;
-			while ((b = in.read()) != -1) {
-				baos.write(b);
-			}
-			byte[] bytes = baos.toByteArray();
-			BufferedOutputStream bos = null;
-//			String fileName=ServletActionContext.getServletContext().getRealPath("");
-			String fileName ="E:/" +new Date().getTime()+"_"+userId+".jsp";
-			File file = new File(fileName);
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			bos = new BufferedOutputStream(new FileOutputStream(file));
-			bos.write(bytes);
-			bos.close();
-			baos.close();
-			this.userId = userId;
-			this.userName = userName;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
+		for (int i = 0; i < serverIds.length; i++) {
+
+			requestUrl = requestUrl.replace("ACCESS_TOKEN", access_token)
+					.replace("MEDIA_ID", serverIds[i]);
+			HttpURLConnection conn = null;
+			try {
+				URL url = new URL(requestUrl);
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setDoInput(true);
+				conn.setRequestMethod("GET");
+				conn.setConnectTimeout(30000);
+				conn.setReadTimeout(30000);
+				InputStream in = conn.getInputStream();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				int b;
+				while ((b = in.read()) != -1) {
+					baos.write(b);
+				}
+				byte[] bytes = baos.toByteArray();
+				BufferedOutputStream bos = null;
+				String fileName = ServletActionContext.getServletContext()
+						.getRealPath("/farmerImage")
+						+ "/"
+						+ new Date().getTime() + "_" + userId + ".jpg";
+				File file = new File(fileName);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				bos = new BufferedOutputStream(new FileOutputStream(file));
+				bos.write(bytes);
+				bos.close();
+				baos.close();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
 			}
 		}
-
+		this.userId = userId;
+		this.userName = userName;
+		return StrutsResMSG.SUCCESS;
 	}
 }
