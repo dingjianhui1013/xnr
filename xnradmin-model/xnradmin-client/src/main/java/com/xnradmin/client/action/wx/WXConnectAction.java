@@ -259,6 +259,7 @@ public class WXConnectAction {
 				farmerImage.setUserName(userName);
 				farmerImage.setUserId(userId);
 				farmerImage.setType(type);
+				farmerImage.setDate(new Date());
 				farmerImageService.saveFarmerImage(farmerImage);
 			} catch (Exception e) {
 				e.printStackTrace();

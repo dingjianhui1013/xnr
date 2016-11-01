@@ -1,5 +1,7 @@
 package com.xnradmin.client.service.wx;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +19,20 @@ public class FarmerImageService {
 
 	@Autowired
 	private CommonDAO commonDAO;
+	
 	public void saveFarmerImage(FarmerImage farmerImage) {
 		farmerImageDao.save(farmerImage);
 	}
-	public void save(FarmerImage farmerImage)
-	{
-		commonDAO.save(farmerImage);
+	
+	public List<FarmerImage> findAll(String userId){
+		String hql = "from FarmerImage where userId="+userId;
+		List list = commonDAO.getEntitiesByPropertiesWithHql(hql,0,0);
+		return list;
+	}
+	public List<FarmerImage> getImageType(String userId){
+		String hql = "selectd distinct type from FarmerImage where userId="+userId;
+		List list = commonDAO.getEntitiesByPropertiesWithHql(hql,0,0);
+		return list;
 	}
 
 }

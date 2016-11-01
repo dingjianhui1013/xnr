@@ -37,7 +37,8 @@
 			<ref bean="XnradminHibernateInterceptor"/> 
 		</property> 
 		<property name="annotatedClasses">
-			<list>														
+			<list>	
+				<value>com.xnradmin.po.wx.OutPlan</value>													
 				<value>com.xnradmin.po.CommonMenu</value>				
 				<value>com.xnradmin.po.CommonOrganization</value>	
 				<value>com.xnradmin.po.CommonOrganizationType</value>
@@ -103,6 +104,7 @@
 				<value>com.xnradmin.po.business.wareHouse.BusinessWareHouse</value>
 				<value>com.xnradmin.po.business.wareHouse.BusinessWareHouseInvRel</value>
 				<value>com.xnradmin.po.business.wareHouse.BusinessWareHouseOperate</value>
+				<value>com.xnradmin.po.wx.connect.FarmerImage</value>	
 			</list>
 		</property>
 

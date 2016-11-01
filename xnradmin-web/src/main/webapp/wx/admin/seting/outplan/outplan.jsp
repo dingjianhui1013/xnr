@@ -21,7 +21,24 @@
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/common.js"></script>
-	
+	<script type="text/javascript" >
+		
+		function validationPin(){
+ 			var dateStart = $("#dateStart").val();
+			var dateEnd = $("#dateEnd").val();
+			var output = $("#output").val();
+ 			if(dateStart==null||dateStart==""){
+				$("#Yz").html("请输入预计产出开始日期").show();
+ 			}else if(dateEnd==null||dateEnd==""){
+				$("#Yz").html("请输入预计产出结束日期").show();
+			}else if(output==null||output==""){
+				$("#Yz").html("产出数量").show();
+			}else{
+				$("#Yz").html("").hide();
+				$("#form").submit();
+			}
+		}
+	</script>
 </head>
 <body>
 	<div class="wrapper">
@@ -30,14 +47,14 @@
 			<div class="myAccount"><span class="glyphicon glyphicon-user"></span>我的账户</div>
 		</div>
 		<div class="contentBox">
-			<form role="form" action="save.action">
+			<form id="form" role="form" action="save.action" method="post">
 				  <div class="form-group">
 				    <label for="" class="col-sm-2 control-label labelFont">选择分类</label>
 				    <div class="col-sm-10">
-				    	<select class="form-control" name="outplan.goodsId">
-						  <option value="1">生菜</option>
-						  <option value="2">白菜</option>
-						  <option value="3">土豆</option>
+				    	<select class="form-control" name="outplan.goodsId" id="">
+						  <option value="生菜">生菜</option>
+						  <option value="白菜">白菜</option>
+						  <option value="土豆">土豆</option>
 						</select>
 				    </div>
 				  </div>
@@ -51,16 +68,17 @@
 				  <div class="form-group">
 				    <label for="" class="col-sm-2 control-label labelFont">产出数量</label>
 				    <div class="col-sm-7">
-				    	<input type="text" name="outplan.output" class="numInput form-control" />
+				    	<input type="text" id="output" name="outplan.output" class="numInput form-control" />
 				    </div>
 				    <div class="col-sm-3 mt1">
 				    	<select class="form-control" name="outplan.unitId">
-						  <option value="1">吨</option>
-						  <option value="2">千克</option>
-						  <option value="3">斤</option>
+						  <option value="吨">吨</option>
+						  <option value="千克">千克</option>
+						  <option value="斤">斤</option>
 						</select>
 				    </div>
 				  </div>
+				  <div id="Yz" style="display:none " class="listTipsBox"></div>
 				  <div class="btnBox">
 				  	<button type="submit" class="btn btn-default">确认提交</button>
 				  </div>
