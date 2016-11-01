@@ -106,6 +106,7 @@
 				<value>com.xnradmin.po.business.wareHouse.BusinessWareHouseInvRel</value>
 				<value>com.xnradmin.po.business.wareHouse.BusinessWareHouseOperate</value>
 				<value>com.xnradmin.po.wx.connect.FarmerImage</value>	
+				<value>com.xnradmin.po.wx.connect.Farmer</value>	
 			</list>
 		</property>
 

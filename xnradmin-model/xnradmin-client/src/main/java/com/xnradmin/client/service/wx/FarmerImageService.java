@@ -20,9 +20,5 @@ public class FarmerImageService {
 	public void saveFarmerImage(FarmerImage farmerImage) {
 		farmerImageDao.save(farmerImage);
 	}
-	public void save(FarmerImage farmerImage)
-	{
-		commonDAO.save(farmerImage);
-	}
 
 }

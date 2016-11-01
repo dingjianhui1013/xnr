@@ -3,6 +3,7 @@ package com.xnradmin.po.wx.connect;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +20,7 @@ public class FarmerImage implements Serializable{
 	private String userName;
 	private String type;
 	private String url;
-	
+	private Date date;
 	public FarmerImage() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -57,6 +58,15 @@ public class FarmerImage implements Serializable{
 	public String getUrl() {
 		return url;
 	}
+	@Column(name="date")
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
