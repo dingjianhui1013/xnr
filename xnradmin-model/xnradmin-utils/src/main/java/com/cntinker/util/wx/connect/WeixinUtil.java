@@ -28,14 +28,23 @@ public class WeixinUtil
 {
   private static WXGetTokenService wxGetTokenService = new WXGetTokenService();
   public static int createMenu()
-  {
+  {		
+	  ViewButton btn3 = new ViewButton();
+	  btn3.setName("个人中心");
+	  btn3.setType("view");
+	  btn3.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fwxconnect%2fpersonalCenter.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+	  
+	  ViewButton btn2 = new ViewButton();
+	  btn2.setName("生产计划");
+	  btn2.setType("view");
+	  btn2.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2outplan%2foutplan.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
 	  
 	  ViewButton btn1 = new ViewButton();
 	  btn1.setName("上传图片");
 	  btn1.setType("view");
 	  btn1.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fwxconnect%2foAuth.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
 	  Menu menu  = new Menu();
-	  menu.setButton(new Button[]{btn1});
+	  menu.setButton(new Button[]{btn1,btn2,btn3});
 	  String jsonMenu = JSONObject.fromObject(menu).toString();
 	  int result = 0;
 	  wxGetTokenService.accessTokenIsOvertime();
