@@ -26,7 +26,6 @@ import com.xnradmin.po.wx.connect.ViewButton;
 import com.xnradmin.po.wx.connect.WXInit;
 public class WeixinUtil
 {
-  private static WXGetTokenService wxGetTokenService = new WXGetTokenService();
   public static int createMenu()
   {		
 	  ViewButton btn3 = new ViewButton();
@@ -47,8 +46,8 @@ public class WeixinUtil
 	  menu.setButton(new Button[]{btn1,btn2,btn3});
 	  String jsonMenu = JSONObject.fromObject(menu).toString();
 	  int result = 0;
-	  wxGetTokenService.accessTokenIsOvertime();
-	  String access_tokenString = wxGetTokenService.accessTokenIsOvertime();
+	  WXGetTokenService.accessTokenIsOvertime();
+	  String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
 	  JSONObject jsonObject = httpRequest("https://qyapi.weixin.qq.com/cgi-bin/menu/create?access_token=" + access_tokenString + "&agentid="+WXInit.AGENT_ID, "POST", jsonMenu);
     if ((jsonObject != null) && 
       (jsonObject.getInt("errcode") != 0)) {

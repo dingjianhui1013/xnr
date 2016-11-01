@@ -20,6 +20,7 @@ import com.xnradmin.core.dao.CommonJDBCMasterDAO;
 import com.xnradmin.core.util.ScriptHelper;
 import com.xnradmin.core.util.SpringBase;
 import com.xnradmin.dto.ScriptDTO;
+import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.vo.client.ClientUserVO;
 
 /**
@@ -29,9 +30,12 @@ public class TestDB {
 
 	private static void testDB1() {
 		CommonDAO dao = (CommonDAO) SpringBase.getCtx().getBean("CommonDAO");
-		String hql = "from CommonStaff";
-		List l = dao.getEntitiesByPropertiesWithHql(hql, 0, 0);
-		System.out.println(l);
+//		String hql = "from CommonStaff";
+//		List l = dao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		FarmerImage p = new FarmerImage();
+		p.setUserName("123");
+//		System.out.println(l);
+		dao.save(p);
 	}
 
 	private static void testDB2() throws CompileException,
@@ -205,6 +209,6 @@ public class TestDB {
 	}
 
 	public static void main(String[] args) throws Exception {
-		testDB5();
+		testDB1();
 	}
 }

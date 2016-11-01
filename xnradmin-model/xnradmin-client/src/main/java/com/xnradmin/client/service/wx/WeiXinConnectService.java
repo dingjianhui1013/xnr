@@ -8,6 +8,9 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -18,16 +21,24 @@ import org.xml.sax.InputSource;
 import com.cntinker.util.wx.connect.MessageUtil;
 import com.cntinker.util.wx.connect.WXMessage;
 import com.cntinker.util.wx.connect.WXMsgType;
+import com.cntinker.util.wx.connect.WeixinUtil;
 import com.xnradmin.client.messag.resp.Article;
 import com.xnradmin.client.messag.resp.NewsMessage;
 import com.xnradmin.client.messag.resp.TextMessage;
 import com.xnradmin.client.messag.resp.Voice;
 import com.xnradmin.client.messag.resp.VoiceMessage;
+import com.xnradmin.core.dao.wx.FarmerImageDao;
+import com.xnradmin.po.wx.connect.FarmerImage;
+import com.xnradmin.po.wx.connect.WXurl;
 
 
 @Service("weiXinConnectService")
 @Transactional
 public class WeiXinConnectService {
+	
+	@Autowired
+	private FarmerImageDao farmerImageDao;
+	
 	public static String processRequest(String sMsg)
 	  {
 	    String respMessage = null;
@@ -147,5 +158,12 @@ public class WeiXinConnectService {
 
 	    return MessageUtil.voiceMessageToXml(voiceMessage);
 	  }
-
+	public JSONObject getUserId(String code)
+	{
+		String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
+		JSONObject userId = WeixinUtil.httpRequest(
+				WXurl.WX_USERID_URL.replace("ACCESS_TOKEN", access_tokenString)
+						.replace("CODE", code), "GET", null);
+		return userId;
+	}
 }

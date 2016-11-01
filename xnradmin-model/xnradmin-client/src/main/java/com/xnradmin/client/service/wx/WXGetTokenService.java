@@ -15,15 +15,15 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cntinker.util.wx.connect.WeixinUtil;
 import com.mysql.jdbc.StringUtils;
 import com.xnradmin.po.wx.connect.WXInit;
 
-@Service("WXGetTokenService")
 public class WXGetTokenService {
 
-	public String accessTokenIsOvertime()
+	public static String accessTokenIsOvertime()
 	{
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String fileName=request.getSession().getServletContext().getRealPath("/WEB-INF/classes/wx/AccessToken.xml");
@@ -34,7 +34,6 @@ public class WXGetTokenService {
 		try {
 			document = saxReader.read(inputFile);
 			Element root = document.getRootElement();
-			 
 	        Element atElement = (Element) root.selectSingleNode("/xml/AccessToken");
 	        Element etElement = (Element) root.selectSingleNode("/xml/AccessExpires");
 	        accessToken = atElement.getText();
@@ -62,13 +61,13 @@ public class WXGetTokenService {
         
         return accessToken;
 	}
-	public String getAccessToken()
+	public static String getAccessToken()
 	{
 		 JSONObject access_token = WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid="+WXInit.CORPID+"&corpsecret="+WXInit.CORPSECRET, "GET", null);
 		 String access_tokenString = access_token.getString("access_token");
 		 return access_tokenString;
 	}
-	public void writeAccessToken(String accessToken,long time,HttpServletRequest request)
+	public static void writeAccessToken(String accessToken,long time,HttpServletRequest request)
 	{
 		String fileName=request.getSession().getServletContext().getRealPath("/WEB-INF/classes/wx/AccessToken.xml");
 		SAXReader saxReader = new SAXReader();

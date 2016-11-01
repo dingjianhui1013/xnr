@@ -11,18 +11,26 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
 <title>上传照片</title>
 <link href="<%=path %>/themes/css/login.css" rel="stylesheet"
 	type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="<%=path %>/css/mobiscroll.css">
+<link rel="stylesheet" type="text/css"
+	href="<%=path %>/css/mobiscroll_date.css">
 <script src="<%=path %>/js/jquery-1.7.2.js" type="text/javascript"></script>
 <script src="<%=path %>/js/verifyCode.js" type="text/javascript"></script>
+<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"
+	charset="gb2312"></script>
+<script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 <link rel="stylesheet" type="text/css"
-	href="<%=path %>/css/wx/bootstrap.min.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=path %>/css/wx/style.css">
+	href="<%=path %>/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="<%=path %>/css/style.css">
 <script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"
 	type="text/javascript"></script>
+
 <script type="text/javascript">
 wx.config({
     debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -70,7 +78,7 @@ wx.ready(function(){
 	
 });
 wx.error(function(res){
-	alert("失败");
+	alert("链接失败");
 });
 function previewImage(imgUrl){
     wx.previewImage({
@@ -78,6 +86,13 @@ function previewImage(imgUrl){
         urls: [imgUrl]
     });
 };
+function removeImage(id,ids){
+	$("#"+id).remove();
+	var localIds = $("#Id").val().split(",");
+	localIds.splice(jQuery.inArray(ids,localIds),1); 
+	$("#Id").val(localIds);
+	alert($("#Id").val());
+}
 function changeImage()
 {
 	wx.chooseImage({
@@ -91,7 +106,7 @@ function changeImage()
 	        for(var i=0;i<localIds.length;i++)
 	        {
 	        	var imageId = localIds[i];
-	        	$("#previewPictures").append("<li><img src='"+localIds[i]+"' class='img-responsive' onclick=\"previewImage('"+imageId+"')\"/></li>");
+	        	$("#previewPictures").append("<li id='image"+i+"'><p class='closeIcon' onclick=\"removeImage('image"+i+"','"+localIds[i]+"')\"><span class='glyphicon glyphicon-remove'></span></p><img src='"+localIds[i]+"' class='img-responsive' onclick=\"previewImage('"+imageId+"')\"/></li>");
 	        }
 	    }
 	});
@@ -112,20 +127,27 @@ function uploadI()
 	        i++;
 	        if(i<length)
 	        	{
-	        		uploadI(localIds);
+	        		uploadI();
 	        	}else
 	        		{
-			       		window.location.href="<%= path %>/page/wx/wxconnect/downloadF.action?serverId="
-									+ serverIds
-									+ "&userId="
-									+ $("#userId").val()
-									+ "&userName="
-									+ $("#userName").val();
+	        				$("#dId").val(serverIds);
+			       			upF();
 						}
-
 					}
 				});
 	};
+function upF()
+{
+	$.ajax({
+		url:"<%= path %>/page/wx/wxconnect/downloadF.action",
+		type:"POST",
+		data:{serverId:$("#dId").val(),userId:$('#userId').val(),userName:$('#userName').val(),type:$("#type").val(),_:new Date().getTime()},
+		success:function(){
+			window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImage.jsp";
+					}
+				});
+
+	}
 </script>
 </head>
 <body>
@@ -136,14 +158,15 @@ function uploadI()
 				<span class="glyphicon glyphicon-user"></span>我的账户
 			</div>
 		</div>
-		<div class="contentBox">
+		<div class="contentBox uploadWrap">
 			<form role="form">
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label labelFont">上传相关图片</label>
 					<div class="col-sm-10">
 						<label for="exampleInputFile" class="uploadBtn"><span
 							class="glyphicon glyphicon-plus addIcon"></span></label> <input
-							type="button" id="exampleInputFile" class="uploadFileInput" onclick="changeImage()">
+							type="button" id="exampleInputFile" class="uploadFileInput"
+							onclick="changeImage()">
 					</div>
 					<div class="showPhotoes">
 						<ul id="previewPictures">
@@ -153,18 +176,17 @@ function uploadI()
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label labelFont">选择分类</label>
 					<div class="col-sm-10">
-						<select class="form-control">
-							<option>生菜</option>
-							<option>白菜</option>
-							<option>土豆</option>
+						<select class="form-control" id="type">
+							<option value="sc">生菜</option>
+							<option value="bc">白菜</option>
+							<option value="td">土豆</option>
 						</select>
 					</div>
 				</div>
 				<div class="btnBox">
-					<input type="hidden" id="Id" />
-					<input type="hidden" id="dId" />
-					<input type="hidden" id="userId" value="${userId }" />
-					<input type="hidden" id="userName" value="${userName }" />
+					<input type="hidden" id="Id" /> <input type="hidden" id="dId" />
+					<input type="hidden" id="userId" value="${userId }" /> <input
+						type="hidden" id="userName" value="${userName }" />
 					<button type="button" class="btn btn-default" onclick="uploadI()">确认提交</button>
 				</div>
 			</form>

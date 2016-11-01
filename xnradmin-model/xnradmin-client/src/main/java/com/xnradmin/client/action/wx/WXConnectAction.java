@@ -27,13 +27,16 @@ import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cntinker.util.wx.connect.OAuth;
 import com.cntinker.util.wx.connect.WXBizMsgCrypt;
 import com.cntinker.util.wx.connect.WeixinUtil;
+import com.xnradmin.client.service.wx.FarmerImageService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
 
@@ -48,6 +51,16 @@ public class WXConnectAction {
 	private String userName;
 	private String serverId;
 	private OAuth oAuth;
+	private String type;
+	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getUserId() {
 		return userId;
@@ -75,8 +88,9 @@ public class WXConnectAction {
 
 	@Autowired
 	private WeiXinConnectService connectService;
-
-	private static WXGetTokenService wXGetTokenService = new WXGetTokenService();
+	
+	@Autowired
+	private FarmerImageService farmerImageService;
 
 	@Action(value = "connect")
 	public void connect() throws Exception {
@@ -139,7 +153,7 @@ public class WXConnectAction {
 	public String oAuth() {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String code = request.getParameter("code");
-		String access_tokenString = wXGetTokenService.accessTokenIsOvertime();
+		String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
 		JSONObject userId = WeixinUtil.httpRequest(
 				WXurl.WX_USERID_URL.replace("ACCESS_TOKEN", access_tokenString)
 						.replace("CODE", code), "GET", null);
@@ -169,7 +183,7 @@ public class WXConnectAction {
 	@Action(value = "uploadF")
 	public void uploadF() {
 		HttpServletRequest request = ServletActionContext.getRequest();
-		String access_tokenString = wXGetTokenService.accessTokenIsOvertime();
+		String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
 		JSONObject jsapi_ticket = WeixinUtil.httpRequest(
 				WXurl.WX_GET_JSAPI_TICKET.replace("ACCESS_TOKEN",
 						access_tokenString), "GET", null);
@@ -191,21 +205,26 @@ public class WXConnectAction {
 		session.setAttribute("userId", userId);
 	}
 
-	@Action(value = "ceshi")
-	public void ceshi() {
-		String fileName = ServletActionContext.getServletContext().getRealPath(
-				"/farmerImage");
-		System.out.println(fileName);
+	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage1.jsp") })
+	public String ceshi() {
+//		FarmerImage farmerImage  = new FarmerImage();
+//		farmerImage.setUrl("hdkfdkshf");
+//		farmerImage.setUserName("ajlfjsdkf");
+//		farmerImage.setUserId("jasjfjsdlfj");
+//		farmerImage.setType("jsdjfjdjfjd");
+//		farmerImageService.save(farmerImage);
+		WXGetTokenService.accessTokenIsOvertime();
+		return StrutsResMSG.SUCCESS;
 	}
 
-	@Action(value = "downloadF", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage.jsp") })
-	public String downloadF() {
+	@ResponseBody
+	@Action(value = "downloadF")
+	public void downloadF() {
 		String serverIds[] = serverId.split(",");
-		String requestUrl = "https://qyapi.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
-		String access_token = wXGetTokenService.accessTokenIsOvertime();
+		String Url = "https://qyapi.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
+		String access_token = WXGetTokenService.accessTokenIsOvertime();
 		for (int i = 0; i < serverIds.length; i++) {
-
-			requestUrl = requestUrl.replace("ACCESS_TOKEN", access_token)
+			String requestUrl = Url.replace("ACCESS_TOKEN", access_token)
 					.replace("MEDIA_ID", serverIds[i]);
 			HttpURLConnection conn = null;
 			try {
@@ -235,7 +254,12 @@ public class WXConnectAction {
 				bos.write(bytes);
 				bos.close();
 				baos.close();
-
+				FarmerImage farmerImage  = new FarmerImage();
+				farmerImage.setUrl(fileName);
+				farmerImage.setUserName(userName);
+				farmerImage.setUserId(userId);
+				farmerImage.setType(type);
+				farmerImageService.saveFarmerImage(farmerImage);
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -246,6 +270,5 @@ public class WXConnectAction {
 		}
 		this.userId = userId;
 		this.userName = userName;
-		return StrutsResMSG.SUCCESS;
 	}
 }
