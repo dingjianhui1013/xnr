@@ -54,4 +54,5 @@ public class PersonalCenterAction {
 		ServletActionContext.getRequest().setAttribute("imageTypes", imageTypes);
 		return StrutsResMSG.SUCCESS;
 	}
+	
 }

@@ -23,7 +23,26 @@
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/common.js"></script>
-	
+	<script type="text/javascript" >
+		function deletePlan(id){
+			var status = true;
+			//获取状态
+// 			$.ajax({
+// 				 type: "GET",
+// 	             url: "",
+// 	             data: {id:id,type:"delete"},
+// 	             dataType: "json",
+// 	             success: function(data){
+// 	            	 status = data.status;
+// 	             }
+// 			});
+			if(status){
+				$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null);
+			}else{
+				alert("计划不能删除");
+			}
+		}
+	</script>
 </head>
 <body>
 	<div class="wrapper">
@@ -55,7 +74,7 @@
 					    	 				<ul>
 					    	 					<c:forEach items="${farmerImages}" var="farmerImage">
 					    	 					<c:if test="${farmerImage.type eq  imageType[0]}">
-					    	 					<li><img src="${farmerImage.url}"  class="img-responsive" /></li>
+					    	 					<li><img src="<%=path %>${farmerImage.url}"  class="img-responsive" /></li>
 												</c:if>
 					    	 					</c:forEach>						
 					    	 				</ul>
@@ -99,8 +118,8 @@
 												  </div>
 											  </form>
 											  <div class="btnBox">
-												<button type="submit" class="btn btn-success">编辑</button>
-												<button type="submit" class="btn btn-default">删除</button>
+												<button type="button" onclick="editPlan(${outplan.id})" class="btn btn-success">编辑</button>
+												<button type="button" onclick="deletePlan(${outplan.id})" class="btn btn-default">删除</button>
 											</div>
 										</div>
 										</c:forEach>

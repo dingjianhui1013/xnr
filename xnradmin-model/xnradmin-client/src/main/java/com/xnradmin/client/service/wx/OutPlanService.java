@@ -37,4 +37,12 @@ public class OutPlanService {
 			e.printStackTrace();
 		}
 	}
+	public void delete(String id){
+		try {
+			String hql = "delete from OutPlan where id="+id;
+			commonDao.executeUpdateOrDelete(hql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

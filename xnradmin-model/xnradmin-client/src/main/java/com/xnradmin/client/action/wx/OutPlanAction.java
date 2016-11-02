@@ -28,6 +28,7 @@ import com.xnradmin.po.wx.connect.WXurl;
 public class OutPlanAction {
 	
 	private OutPlan outplan ;
+	private String deleteId;
 	
 	public OutPlan getOutplan() {
 		return outplan;
@@ -42,6 +43,13 @@ public class OutPlanAction {
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	public String getDeleteId() {
+		return deleteId;
+	}
+	public void setDeleteId(String deleteId) {
+		this.deleteId = deleteId;
 	}
 	@Autowired
 	private OutPlanService outPlanService ;
@@ -61,6 +69,11 @@ public class OutPlanAction {
 	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
 	public String save(){
 		outPlanService.save(outplan);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value = "deletePlan",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
+	public String delete(){
+		outPlanService.delete(deleteId);
 		return StrutsResMSG.SUCCESS;
 	}
 }
