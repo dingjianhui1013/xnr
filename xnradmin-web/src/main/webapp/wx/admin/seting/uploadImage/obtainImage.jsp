@@ -91,7 +91,6 @@ function removeImage(id,ids){
 	var localIds = $("#Id").val().split(",");
 	localIds.splice(jQuery.inArray(ids,localIds),1); 
 	$("#Id").val(localIds);
-	alert($("#Id").val());
 }
 function changeImage()
 {
@@ -102,7 +101,7 @@ function changeImage()
 	    success: function (res) {
 	        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
 	        $("#Id").val(localIds);
-	        $("#previewPictures").html();
+	        $("#previewPictures").html("");
 	        for(var i=0;i<localIds.length;i++)
 	        {
 	        	var imageId = localIds[i];
