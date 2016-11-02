@@ -31,12 +31,12 @@ public class WeixinUtil
 	  ViewButton btn3 = new ViewButton();
 	  btn3.setName("个人中心");
 	  btn3.setType("view");
-	  btn3.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fwxconnect%2fpersonalCenter.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+	  btn3.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
 	  
 	  ViewButton btn2 = new ViewButton();
 	  btn2.setName("生产计划");
 	  btn2.setType("view");
-	  btn2.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2outplan%2foutplan.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+	  btn2.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2foutplan%2foutplan.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
 	  
 	  ViewButton btn1 = new ViewButton();
 	  btn1.setName("上传图片");

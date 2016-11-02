@@ -187,7 +187,7 @@ function upF()
 					<input type="hidden" id="Id" /> <input type="hidden" id="dId" />
 					<input type="hidden" id="userId" value="${userId }" /> <input
 						type="hidden" id="userName" value="${userName }" />
-					<button type="button" class="btn btn-default" onclick="uploadI()">确认提交</button>
+					<button type="button" class="btn btn-success" onclick="uploadI()">确认提交</button>
 				</div>
 			</form>
 		</div>

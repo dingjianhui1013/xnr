@@ -1,7 +1,9 @@
 package com.xnradmin.po.wx;
 
-import java.sql.Date;
+import java.util.Date;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "outplan")
-public class OutPlan extends EntityCommon implements java.io.Serializable{
+public class OutPlan  implements java.io.Serializable{
 	private Long id;
 	private String userId;
 	private String goodsId;
@@ -18,6 +20,14 @@ public class OutPlan extends EntityCommon implements java.io.Serializable{
 	private Date endTime;
 	private String unitId;
 	private String output;
+	
+	private Date createDate;
+	private Date updateDate;
+	private String createBy;
+	private String updateBy;
+	private int delFlage;
+	
+	
 	@Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
@@ -71,6 +81,40 @@ public class OutPlan extends EntityCommon implements java.io.Serializable{
 	}
 	
 	 
-	
+	@Column(name="create_date")
+	public Date getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+	@Column(name="update_date")
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+	@Column(name="create_by")
+	public String getCreateBy() {
+		return createBy;
+	}
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+	@Column(name="update_by")
+	public String getUpdateBy() {
+		return updateBy;
+	}
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
+	}
+	@Column(name="del_flage")
+	public int getDelFlage() {
+		return delFlage;
+	}
+	public void setDelFlage(int delFlage) {
+		this.delFlage = delFlage;
+	}
 	
 }
