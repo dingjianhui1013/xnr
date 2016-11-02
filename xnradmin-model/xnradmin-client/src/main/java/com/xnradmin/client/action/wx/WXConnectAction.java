@@ -213,6 +213,13 @@ public class WXConnectAction {
 //		farmerImage.setUserId("jasjfjsdlfj");
 //		farmerImage.setType("jsdjfjdjfjd");
 //		farmerImageService.save(farmerImage);
+		String imageUrl = userId+File.separator+type+File.separator;
+		String filePath = ServletActionContext.getServletContext()
+				.getRealPath("/farmerImage");
+		String imageName = new Date().getTime() + "_" + userId + ".jpg";
+		String fileName = filePath+File.separator+imageUrl+imageName;
+		System.out.println("******************s");
+		System.out.println(fileName);
 		WXGetTokenService.accessTokenIsOvertime();
 		return StrutsResMSG.SUCCESS;
 	}
@@ -242,20 +249,23 @@ public class WXConnectAction {
 				}
 				byte[] bytes = baos.toByteArray();
 				BufferedOutputStream bos = null;
-				String fileName = ServletActionContext.getServletContext()
-						.getRealPath("/farmerImage")
-						+ "/"
-						+ new Date().getTime() + "_" + userId + ".jpg";
-				File file = new File(fileName);
+				String imageUrl = userId+File.separator+type;
+				String filePath = ServletActionContext.getServletContext()
+						.getRealPath("/farmerImage");
+				String imageName = new Date().getTime() + "_" + userId + ".jpg";
+				String fileName = filePath+File.separator+imageUrl+File.separator+imageName;
+				File file = new File(filePath+File.separator+imageUrl);
 				if (!file.exists()) {
-					file.createNewFile();
+					file.mkdirs();
 				}
-				bos = new BufferedOutputStream(new FileOutputStream(file));
+				File imageFile = new File(fileName);
+				imageFile.createNewFile();
+				bos = new BufferedOutputStream(new FileOutputStream(imageFile));
 				bos.write(bytes);
 				bos.close();
 				baos.close();
 				FarmerImage farmerImage  = new FarmerImage();
-				farmerImage.setUrl(fileName);
+				farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+imageName);
 				farmerImage.setUserName(userName);
 				farmerImage.setUserId(userId);
 				farmerImage.setType(type);

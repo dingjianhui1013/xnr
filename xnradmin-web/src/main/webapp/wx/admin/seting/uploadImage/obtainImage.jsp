@@ -1,7 +1,9 @@
+<%@page import="com.xnradmin.po.wx.connect.WXInit"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
+	String corpid = WXInit.CORPID;
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
@@ -100,13 +102,22 @@ function changeImage()
 	    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 	    success: function (res) {
 	        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-	        $("#Id").val(localIds);
-	        $("#previewPictures").html("");
-	        for(var i=0;i<localIds.length;i++)
+	        var localIdv  = $("#Id").val();
+	        if(localIdv==null||localIdv=="")
 	        {
-	        	var imageId = localIds[i];
-	        	$("#previewPictures").append("<li id='image"+i+"'><p class='closeIcon' onclick=\"removeImage('image"+i+"','"+localIds[i]+"')\"><span class='glyphicon glyphicon-remove'></span></p><img src='"+localIds[i]+"' class='img-responsive' onclick=\"previewImage('"+imageId+"')\"/></li>");
+	     	   $("#Id").val(localIds);
+	        }else
+	        	{
+	        		$("#Id").val(localIdv+","+localIds);
+	        	}
+ 	        $("#previewPictures").html("");
+	        var images= $("#Id").val().split(",");
+			for(var i=0;i<images.length;i++)
+	        {
+	        	var imageId = images[i];
+	        	$("#previewPictures").append("<li id='image"+i+"'><p class='closeIcon' onclick=\"removeImage('image"+i+"','"+imageId+"')\"><span class='glyphicon glyphicon-remove'></span></p><img src='"+imageId+"' class='img-responsive' onclick=\"previewImage('"+imageId+"')\"/></li>");
 	        }
+
 	    }
 	});
 };
@@ -142,9 +153,10 @@ function upF()
 		type:"POST",
 		data:{serverId:$("#dId").val(),userId:$('#userId').val(),userName:$('#userName').val(),type:$("#type").val(),_:new Date().getTime()},
 		success:function(){
-			window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImage.jsp";
-					}
-				});
+				alert("图片保存成功");
+				window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=<%=corpid%>&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+			}
+		});
 
 	}
 </script>
@@ -183,8 +195,8 @@ function upF()
 					</div>
 				</div>
 				<div class="btnBox">
-					<input type="hidden" id="Id" /> <input type="hidden" id="dId" />
-					<input type="hidden" id="userId" value="${userId }" /> <input
+					<input type="hidden" id="Id" /> <input type="hidden" id="dId" /> <input
+						type="hidden" id="userId" value="${userId }" /> <input
 						type="hidden" id="userName" value="${userName }" />
 					<button type="button" class="btn btn-success" onclick="uploadI()">确认提交</button>
 				</div>

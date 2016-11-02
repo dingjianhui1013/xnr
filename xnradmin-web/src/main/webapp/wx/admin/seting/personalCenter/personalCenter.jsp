@@ -53,9 +53,10 @@
 					    	 			<p class="sortTit">${imageType[0]}</p>
 					    	 			<div class="uploadImgList">
 					    	 				<ul>
+					    	 				<li>
 					    	 					<c:forEach items="${farmerImages}" var="farmerImage">
 					    	 					<c:if test="${farmerImage.type eq  imageType[0]}">
-					    	 					<li><img src="${farmerImage.url}"  class="img-responsive" /></li>
+					    	 					<li><img src="<%=path %>${farmerImage.url}"  class="img-responsive" /></li>
 												</c:if>
 					    	 					</c:forEach>						
 					    	 				</ul>
@@ -76,7 +77,7 @@
 				  	 <div class="planListCon">
 				  	 	<div class="planShowBox" >
 				  	 		<div class="planList">
-				  	 			<c:forEach items="${outplans }" var="outplan">
+				  	 			<c:forEach items="${outplans}" var="outplan">
 				  	 					<div class="d-planList">
 											  <form action="">
 												  <div class="form-group">
