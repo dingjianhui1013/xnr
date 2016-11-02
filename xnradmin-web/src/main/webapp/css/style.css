@@ -1,3 +1,4 @@
+
 @charset "utf-8";
 html{font-size:62.5%}
 body{font-size:1.4rem;font-family:'Arial','Helvetica','sans-serif','\5FAE\8F6F\96C5\9ED1';background: #f7f7f7}
@@ -43,3 +44,54 @@ li,ul{margin:0;padding:0;list-style:none}
 .planListBox .form-group{padding-bottom: 0; }
 .planListCon{margin: 0px 1rem;}
 .outputDate span{ padding: 0 1rem;}
+
+@charset "utf-8";
+html{font-size:62.5%}
+body{font-size:1.4rem;font-family:'Arial','Helvetica','sans-serif','\5FAE\8F6F\96C5\9ED1';background: #f7f7f7}
+body,h1,h2,h3,p{margin:0;padding:0}
+li,ul{margin:0;padding:0;list-style:none}
+
+.header{background: #5cb85c; width: 100%; color:#fff;  text-align: center; position: relative; }
+.header .titleBox{height: 50px; line-height:50px;font-size: 2rem; }
+.uploadBtn .addIcon{ color: #666;}
+.contentBox{ padding:2rem 1rem; background: #fff; width: 95%; margin:1rem auto; min-height: 500px;}
+.contentBox label.labelFont{ display: block;   border-left: 4px solid #ddd;padding-left:0.5rem;margin-bottom: 1rem; }
+/* .contentBox h3{ font-size: 2rem;padding:1rem; border-bottom:1px solid #ddd;} */
+.uploadBtn{ border:1px solid #666; padding:2rem;  width: 7rem; height: 6rem; border-radius:5px;font-size: 2rem; text-align:center; margin:1rem 0;}
+.uploadFileInput{ position:absolute; clip:rect(0 0 0 0); }
+.btnBox .btn-default,.btnBox .btn-success{  width: 100%; /* background: #629715;color: #fff; */}
+.btnBox .btn-success{ margin-bottom: 1rem;}
+.contentBox .form-group{min-height: 60px;}
+.showPhotoes{padding:0px 15px;}
+.showPhotoes ul li{ float: left; width: 32%;margin:2px; position:relative;}
+.showPhotoes ul li img{ max-height: 100%; max-width: 100%;}
+.closeIcon{ position: absolute; width: 20px; height: 20px; background: #333;color:#fff; text-align:center; right:-3px; top:0px;border-radius: 10px;}
+.myAccount{ position: absolute;right: 0.6rem; font-size: 1.4rem;top:0.6rem;border:1px solid #fff; padding: 0.4rem;border-radius: 5px;}
+.myAccount .glyphicon-user{ font-size: 1.6rem; padding:0.2rem;margin:0.2rem 0.5rem 0 0;}
+.dateEnd{margin-top:1rem;}
+.mt1{margin-top: 1rem;}
+.contentBox .form-group{ padding-bottom: 2rem; border-bottom: 1px solid #f3f3f3;}
+.personalBox .form-group{border-bottom: none;padding-bottom: 1rem;}
+.searchBox{ width: 75%; float: left;}
+.searchBtn{width: 20%;margin-left:5%; float: left;}
+.uploadWrap .form-group{ overflow:hidden;}
+/*personalCenter*/
+.uploadImgListBox{ height: 100%; }
+.planListBox{clear: both;}
+.uploadImgListBox,.planListBox{margin-bottom: 2rem;}
+.uploadImgListBox h3.bigTit,.planListBox h3.bigTit{ padding:1rem; font-size: 1.6rem; font-weight: bold; background: #ecf8da;border-radius: 5px;margin-bottom: 2rem;}
+.uploadImgBox{border-left: 2px solid #ddd; margin: 0px 1rem;}
+.uploadImgBox >ul>li{border-bottom: 1px solid #ddd; margin: 1rem 0; padding-bottom: 1rem;position: relative; }
+.sortTit{font-weight: bold; background: #f3f3f3; padding:0.5rem 1rem;  width:100px;border-radius: 10px; margin:1rem 0; text-align: center;}
+.circleIcon{ position: absolute; left: -21px; top:2px; background:#666; width: 10px; height: 10px; border-radius: 50%;}
+.uploadImgBox ul li h3{ font-size: 1.4rem; font-weight:bold;}
+.uploadImgList{overflow: hidden;}
+.uploadImgList ul li{ width: 33%; float: left; padding:0.5rem; position: relative; }
+.planListBox .form-group{padding-bottom: 0; }
+.planListCon{margin: 0px 1rem;}
+.outputDate span{ padding: 0 1rem;}
+
+.planList{ border-bottom: 1px solid #ddd; margin-bottom: 1rem;}
+.d-planList{ background:rgba(250,250,250,0.6); padding: 1rem;margin-bottom: 1rem;}
+.planList h3{ border-bottom: 1px solid #fff;  font-size: 1.6rem; font-weight: bold; padding-bottom: 1rem; margin-bottom: 1rem; background: #f3f3f3;border-radius: 5px 5px 0 0;  height: 30px; line-height: 30px; text-align: center;}
+
