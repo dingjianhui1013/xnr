@@ -48,14 +48,14 @@
 					    	 	<c:forEach items="${imageTypes}" var="imageType">
 					    	 	<li>
 					    	 		<span class="circleIcon"></span>
-					    	 		<h3><fmt:formatDate value="${imageType.date}" pattern="yyyy-MM-dd " ></fmt:formatDate></h3>
+					    	 		<h3><fmt:formatDate value="${imageType[1]}" pattern="yyyy-MM-dd " ></fmt:formatDate> </h3>
 					    	 		<div>
-					    	 			<p class="sortTit">${imageType.type}</p>
+					    	 			<p class="sortTit">${imageType[0]}</p>
 					    	 			<div class="uploadImgList">
 					    	 				<ul>
 					    	 					<c:forEach items="${farmerImages}" var="farmerImage">
-					    	 					<c:if test="${farmerImage.type eq  imageType.type}">
-					    	 					<li><img src="${ farmerImage.url}"  class="img-responsive" /></li>
+					    	 					<c:if test="${farmerImage.type eq  imageType[0]}">
+					    	 					<li><img src="${farmerImage.url}"  class="img-responsive" /></li>
 												</c:if>
 					    	 					</c:forEach>						
 					    	 				</ul>

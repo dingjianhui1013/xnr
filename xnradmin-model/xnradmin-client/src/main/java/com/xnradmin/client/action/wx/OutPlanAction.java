@@ -35,24 +35,31 @@ public class OutPlanAction {
 	public void setOutplan(OutPlan outplan) {
 		this.outplan = outplan;
 	}
+	private String userId;
 	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	@Autowired
 	private OutPlanService outPlanService ;
 		
 	@Action(value = "outplan",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/outplan/outplan.jsp") })
 	public String outplan(){
-		return StrutsResMSG.SUCCESS;
-	}
-	
-	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/page/wx/personalCenter/list.action") })
-	public String save(){
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String code = request.getParameter("code");
 		String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
 		JSONObject userId = WeixinUtil.httpRequest(
 				WXurl.WX_USERID_URL.replace("ACCESS_TOKEN", access_tokenString)
 						.replace("CODE", code), "GET", null);
-		outplan.setUserId(userId.getString("UserId"));
+		this.userId = userId.getString("UserId");
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
+	public String save(){
 		outPlanService.save(outplan);
 		return StrutsResMSG.SUCCESS;
 	}

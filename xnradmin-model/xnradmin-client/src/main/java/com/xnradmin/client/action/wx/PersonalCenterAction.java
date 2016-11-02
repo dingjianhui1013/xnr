@@ -46,7 +46,8 @@ public class PersonalCenterAction {
 		
 		List<OutPlan> outplans = outPlanService.findAll(userId.getString("UserId"));
 		List<FarmerImage> farmerImages = farmerImageService.findAll(userId.getString("UserId"));
-		List<FarmerImage> imageTypes = farmerImageService.getImageType(userId.getString("UserId"));
+		List imageTypes = farmerImageService.getImageType(userId.getString("UserId"));
+		
 		
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
 		ServletActionContext.getRequest().setAttribute("farmerImages", farmerImages);

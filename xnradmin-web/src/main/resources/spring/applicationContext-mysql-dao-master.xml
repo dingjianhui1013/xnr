@@ -39,7 +39,8 @@
 		</property> 
 		
 		<property name="annotatedClasses">
-			<list>														
+			<list>
+				<value>com.xnradmin.po.wx.OutPlan</value>														
 				<value>com.xnradmin.po.CommonMenu</value>				
 				<value>com.xnradmin.po.CommonOrganization</value>	
 				<value>com.xnradmin.po.CommonOrganizationType</value>

@@ -19,7 +19,7 @@ public class OutPlanService {
 	
 	public List<OutPlan> findAll(String userId){
 		try {
-			String hql = " from OutPlan where delFlage=0 and userId="+userId+" order by createDate desc";
+			String hql = " from OutPlan where delFlage=0 and userId='"+userId+"' order by createDate desc";
 			List<OutPlan> list =  commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 			return list;
 		} catch (Exception e) {
