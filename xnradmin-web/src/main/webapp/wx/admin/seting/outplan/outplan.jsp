@@ -79,9 +79,9 @@
 						</select>
 				    </div>
 				  </div>
-				  <div id="Yz" style="display:none " class="listTipsBox"></div>
+				  <div id="Yz" style="display:none ;color:red" class="listTipsBox"></div>
 				  <div class="btnBox">
-				  	<button type="submit" class="btn btn-default">确认提交</button>
+				  	<button type="button" onclick="validationPin()" class="btn btn-default">确认提交</button>
 				  </div>
 </form>
 			

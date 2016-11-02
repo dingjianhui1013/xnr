@@ -27,7 +27,7 @@ li,ul{margin:0;padding:0;list-style:none}
 .personalBox .form-group{border-bottom: none;padding-bottom: 1rem;}
 .searchBox{ width: 75%; float: left;}
 .searchBtn{width: 20%;margin-left:5%; float: left;}
-
+.uploadWrap .form-group{ overflow:hidden;}
 /*personalCenter*/
 .uploadImgListBox{ height: 100%; }
 .planListBox{clear: both;}
