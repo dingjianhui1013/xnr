@@ -37,7 +37,8 @@
 // 	             }
 // 			});
 			if(status){
-				$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null);
+				location.href="<%=path %>/page/wx/outplan/deletePlan.action?deleteId="+id;
+			//	$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null); 
 			}else{
 				alert("计划不能删除");
 			}
@@ -55,7 +56,8 @@
 // 	             }
 // 			});
 			if(status){
-				$.post("<%=path %>/page/wx/outplan/editPlanForm.action",{eidtId:id},null);
+				location.href="<%=path %>/page/wx/outplan/editPlanForm.action?eidtId="+id;
+				//$.post('<%=path %>/page/wx/outplan/editPlanForm.action',{eidtId:id},null,'json/xml/html');
 			}else{
 				alert("计划不能修改");
 			}

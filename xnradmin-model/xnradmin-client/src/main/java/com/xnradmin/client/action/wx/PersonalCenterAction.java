@@ -71,5 +71,10 @@ public class PersonalCenterAction {
 		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
 		return StrutsResMSG.SUCCESS;
 	}
-	
+	@Action(value = "test",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
+	public String test(){
+		List<OutPlan> outplans = outPlanService.findAll("jiaojianan");
+		ServletActionContext.getRequest().setAttribute("outplans", outplans);
+		return StrutsResMSG.SUCCESS;
+	}
 }

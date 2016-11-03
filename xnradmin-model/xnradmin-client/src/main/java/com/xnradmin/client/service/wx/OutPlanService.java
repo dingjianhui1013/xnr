@@ -1,5 +1,6 @@
 package com.xnradmin.client.service.wx;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -51,10 +52,11 @@ public class OutPlanService {
 		return list.get(0);
 	}
 	public void saveEdit(OutPlan outPlan){
-		String hql = "update OutPlan set goodsId='"+outPlan.getGoodsId()+"'"
-				+ " startTime='"+outPlan.getStartTime()+"'"
-						+ " startTime='"+outPlan.getEndTime()+"'"
-								+ " output='"+outPlan.getOutput()+"'"
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String hql = "update OutPlan set goodsId='"+outPlan.getGoodsId()+"',"
+				+ " startTime='"+simpleDateFormat.format(outPlan.getStartTime())+"',"
+						+ " startTime='"+simpleDateFormat.format(outPlan.getEndTime())+"',"
+								+ " output='"+outPlan.getOutput()+"',"
 										+ " unitId='"+outPlan.getUnitId()+"'"
 												+ " where id="+outPlan.getId();
 		commonDao.executeUpdateOrDelete(hql);
