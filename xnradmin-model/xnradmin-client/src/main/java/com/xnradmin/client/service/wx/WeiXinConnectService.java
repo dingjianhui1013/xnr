@@ -27,8 +27,7 @@ import com.xnradmin.client.messag.resp.NewsMessage;
 import com.xnradmin.client.messag.resp.TextMessage;
 import com.xnradmin.client.messag.resp.Voice;
 import com.xnradmin.client.messag.resp.VoiceMessage;
-import com.xnradmin.core.dao.wx.FarmerImageDao;
-import com.xnradmin.po.wx.connect.FarmerImage;
+import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXurl;
 
 
@@ -37,9 +36,9 @@ import com.xnradmin.po.wx.connect.WXurl;
 public class WeiXinConnectService {
 	
 	@Autowired
-	private FarmerImageDao farmerImageDao;
+	private FarmerService farmerService;
 	
-	public static String processRequest(String sMsg)
+	public String processRequest(String sMsg)
 	  {
 	    String respMessage = null;
 	    try {
@@ -62,34 +61,26 @@ public class WeiXinConnectService {
 	        NodeList nodelist1 = root.getElementsByTagName(WXMessage.CONTENT);
 	        String Content = nodelist1.item(0).getTextContent();
 	        String message = null;
-//	        if (Content.equals("1"))
-//	        {
-//	          message =  Gola.getProPerties().getProperty("Keyword1");
-//	        } else if (Content.equals("2"))
-//	          message =  Gola.getProPerties().getProperty("Keyword2");
-//	        else if (Content.equals("3"))
-//	        {
-//	        	message =  Gola.getProPerties().getProperty("Keyword3");
-//	        }else if(Content.equals("4"))
-//	        {
-//	        	message =  Gola.getProPerties().getProperty("Keyword5");
-//	        }
-//	        else {
-//	        	message =  Gola.getProPerties().getProperty("Keyword4");
-//	        }
 	        message = "测试文字";
 	        respMessage = respText(FromUserName, ToUserName, message, AgentID, "1234567890123456");
 	      }
-//	      if (WXMsgType.REQ_MESSAGE_TYPE_EVENT.equals(MsgType)) {
-//	        NodeList eventType = root.getElementsByTagName("Event");
-//	        String event = eventType.item(0).getTextContent();
-//	        if ("click".equals(event))
-//	        {
-//	          NodeList EventKey = root.getElementsByTagName("EventKey");
-//	          String keyString = EventKey.item(0).getTextContent();
-//	          respMessage = weixinClick(keyString, FromUserName, ToUserName, AgentID, "1234567890123456");
-//	        }
-//	      }
+	      if (WXMsgType.REQ_MESSAGE_TYPE_EVENT.equals(MsgType)) {
+	        NodeList eventType = root.getElementsByTagName("Event");
+	        String event = eventType.item(0).getTextContent();
+	        if ("subscribe".equals(event))
+	        {
+	        	Farmer farmer = new Farmer();
+	        	farmer.setUserId(FromUserName);
+	        	String access_Token = WXGetTokenService.accessTokenIsOvertime();
+	        	JSONObject userInformation = WeixinUtil.httpRequest(
+						WXurl.WX_USERNAME_URL.replace("ACCESS_TOKEN",
+								access_Token).replace("USERID",
+										FromUserName), "GET", null);
+	        	farmer.setUserName(userInformation.getString("name"));
+	        	farmer.setHeadPortrait(userInformation.getString("avatar"));
+	        	farmerService.saveFarmer(farmer);
+	        }
+	      }
 	      if (WXMsgType.REQ_MESSAGE_TYPE_IMAGE.equals(MsgType)) {
 	    	  
 	    	  
@@ -114,7 +105,7 @@ public class WeiXinConnectService {
 	    }
 	    return respMessage; }
 
-	  private static String respText(String FromUserName, String ToUserName, String text, String AgentID, String MsgId) {
+	  private String respText(String FromUserName, String ToUserName, String text, String AgentID, String MsgId) {
 	    TextMessage textMessage = new TextMessage();
 	    textMessage.setToUserName(FromUserName);
 	    textMessage.setFromUserName(ToUserName);
@@ -126,7 +117,7 @@ public class WeiXinConnectService {
 	    return MessageUtil.textMessageToXml(textMessage);
 	  }
 
-	  private static String respNews(String FromUserName, String ToUserName, String AgentID, String MsgId, String titile, int articleCount, String description, String picUrl, String url) {
+	  private String respNews(String FromUserName, String ToUserName, String AgentID, String MsgId, String titile, int articleCount, String description, String picUrl, String url) {
 	    NewsMessage newsMessage = new NewsMessage();
 	    newsMessage.setCreateTime(new Date().getTime());
 	    newsMessage.setToUserName(FromUserName);
@@ -146,7 +137,7 @@ public class WeiXinConnectService {
 	    return MessageUtil.newsMessageToXml(newsMessage);
 	  }
 
-	  private static String respVoice(String FromUserName, String ToUserName, String MediaId) {
+	  private String respVoice(String FromUserName, String ToUserName, String MediaId) {
 	    VoiceMessage voiceMessage = new VoiceMessage();
 	    voiceMessage.setToUserName(FromUserName);
 	    voiceMessage.setFromUserName(ToUserName);

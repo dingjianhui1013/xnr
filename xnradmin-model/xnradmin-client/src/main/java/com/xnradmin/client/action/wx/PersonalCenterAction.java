@@ -1,6 +1,8 @@
 package com.xnradmin.client.action.wx;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,13 +47,32 @@ public class PersonalCenterAction {
 						.replace("CODE", code), "GET", null);
 		
 		List<OutPlan> outplans = outPlanService.findAll(userId.getString("UserId"));
-		List<FarmerImage> farmerImages = farmerImageService.findAll(userId.getString("UserId"));
-		List imageTypes = farmerImageService.getImageType(userId.getString("UserId"));
-		
-		
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
+		
+		
+		
+		Set<String> types = new LinkedHashSet<String>();
+		
+		List<String> imagedates = farmerImageService.getImageDates(userId.getString("UserId"));
+		
+		
+		for (String images : imagedates) {
+			List<String> typeList = farmerImageService.findByType(images);
+			for (String typel : typeList) {
+				types.add(typel);
+			}
+		}
+		System.out.println("************************");
+			for (String string : types) {
+				System.out.println(types);
+			}
+		System.out.println("************************");
+		List<FarmerImage> farmerImages = farmerImageService.findAll(userId.getString("UserId"));
+		
+		
+		
 		ServletActionContext.getRequest().setAttribute("farmerImages", farmerImages);
-		ServletActionContext.getRequest().setAttribute("imageTypes", imageTypes);
+		ServletActionContext.getRequest().setAttribute("imageTypes", imagedates);
 		return StrutsResMSG.SUCCESS;
 	}
 	

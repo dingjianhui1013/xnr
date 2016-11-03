@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -213,7 +214,7 @@ public class WXConnectAction {
 //		farmerImage.setUserId("jasjfjsdlfj");
 //		farmerImage.setType("jsdjfjdjfjd");
 //		farmerImageService.save(farmerImage);
-		WXGetTokenService.accessTokenIsOvertime();
+		farmerImageService.findByType("2016-11-02");
 		return StrutsResMSG.SUCCESS;
 	}
 
@@ -242,24 +243,29 @@ public class WXConnectAction {
 				}
 				byte[] bytes = baos.toByteArray();
 				BufferedOutputStream bos = null;
-				String fileName = ServletActionContext.getServletContext()
-						.getRealPath("/farmerImage")
-						+ "/"
-						+ new Date().getTime() + "_" + userId + ".jpg";
-				File file = new File(fileName);
+				String imageUrl = userId+File.separator+type;
+				String filePath = ServletActionContext.getServletContext()
+						.getRealPath("/farmerImage");
+				String imageName = new Date().getTime() + "_" + userId + ".jpg";
+				String fileName = filePath+File.separator+imageUrl+File.separator+imageName;
+				File file = new File(filePath+File.separator+imageUrl);
 				if (!file.exists()) {
-					file.createNewFile();
+					file.mkdirs();
 				}
-				bos = new BufferedOutputStream(new FileOutputStream(file));
+				File imageFile = new File(fileName);
+				imageFile.createNewFile();
+				bos = new BufferedOutputStream(new FileOutputStream(imageFile));
 				bos.write(bytes);
 				bos.close();
 				baos.close();
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String date = simpleDateFormat.format(new Date());
 				FarmerImage farmerImage  = new FarmerImage();
-				farmerImage.setUrl(fileName);
+				farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+File.separator+imageName);
 				farmerImage.setUserName(userName);
 				farmerImage.setUserId(userId);
 				farmerImage.setType(type);
-				farmerImage.setDate(new Date());
+				farmerImage.setDate(date);
 				farmerImageService.saveFarmerImage(farmerImage);
 			} catch (Exception e) {
 				e.printStackTrace();
