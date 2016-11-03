@@ -85,7 +85,7 @@
 					    	 	<c:forEach items="${date_type_images}" var="date_type_image">
 					    	 	<li>
 					    	 		<span class="circleIcon"></span>
-					    	 		<h3><fmt:formatDate value="${date_type_image.key}" pattern="yyyy-MM-dd " ></fmt:formatDate> </h3>
+					    	 		<h3>${date_type_image.key}</h3>
 					    	 		<div>
 					    	 			<c:forEach items="${ date_type_image.value}" var="type_image">
 					    	 			<p class="sortTit">${type_image.key}</p>
