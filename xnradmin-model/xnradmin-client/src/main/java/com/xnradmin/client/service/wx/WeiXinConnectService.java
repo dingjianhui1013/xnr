@@ -21,7 +21,6 @@ import org.xml.sax.InputSource;
 import com.cntinker.util.wx.connect.MessageUtil;
 import com.cntinker.util.wx.connect.WXMessage;
 import com.cntinker.util.wx.connect.WXMsgType;
-import com.cntinker.util.wx.connect.WeixinUtil;
 import com.xnradmin.client.messag.resp.Article;
 import com.xnradmin.client.messag.resp.NewsMessage;
 import com.xnradmin.client.messag.resp.TextMessage;

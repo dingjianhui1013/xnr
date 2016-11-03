@@ -1,4 +1,4 @@
-package com.cntinker.util.wx.connect;
+package com.xnradmin.client.service.wx;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -15,10 +15,7 @@ import javax.net.ssl.TrustManager;
 
 import net.sf.json.JSONObject;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
+import com.cntinker.util.wx.connect.MyX509TrustManager;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.po.wx.connect.Button;
 import com.xnradmin.po.wx.connect.Menu;
