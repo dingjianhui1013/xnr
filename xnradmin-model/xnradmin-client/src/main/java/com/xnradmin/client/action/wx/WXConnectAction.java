@@ -225,12 +225,12 @@ public class WXConnectAction {
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
 			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
 //			Set<String> types = new LinkedHashSet<String>();//日期对应的类型
-			List<String> typeList = farmerImageService.findByType(images);
+			List<String> typeList = farmerImageService.findByType(images,"dingjinghui");
 //			for (String typel : typeList) {
 //				types.add(typel);
-//			}
+//			} 
 			for (String type : typeList) {
-				List<String> imageList = farmerImageService.findByImages(type,images);
+				List<String> imageList = farmerImageService.findByImages(type,images,"dingjinghui");
 				type_images.put(type, imageList);
 			}
 			type_imagesList.add(type_images);

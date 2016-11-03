@@ -34,16 +34,16 @@ public class FarmerImageService {
 		List list = commonDAO.getEntitiesByPropertiesWithHql(hql,0,0);
 		return list;
 	}
-	public List<String> findByType(String date)
+	public List<String> findByType(String date,String userId)
 	{
-		String hql = "select distinct type from FarmerImage where date ='"+date+"'";
 		
+		String hql = "select distinct type from FarmerImage where date ='"+date+"'"+"and userId = '"+userId+"'";
 		List<String> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
 		return list;
 	}
-	public List<String> findByImages(String type,String images)
+	public List<String> findByImages(String type,String images,String userId)
 	{
-		String hql = "select url from FarmerImage where type ='"+type+"'and date ='"+images+"'";
+		String hql = "select url from FarmerImage where type ='"+type+"'and date ='"+images+"'" +"and userId ='"+userId+"'";
 		List<String> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
 		return list;
 	}

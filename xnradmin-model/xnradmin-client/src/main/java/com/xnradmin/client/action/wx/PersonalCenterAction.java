@@ -57,9 +57,9 @@ public class PersonalCenterAction {
 			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
 			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
-			List<String> typeList = farmerImageService.findByType(images);
+			List<String> typeList = farmerImageService.findByType(images,userId.getString("UserId"));
 			for (String type : typeList) {
-				List<String> imageList = farmerImageService.findByImages(type,images);
+				List<String> imageList = farmerImageService.findByImages(type,images,userId.getString("UserId"));
 				type_images.put(type, imageList);
 			}
 			type_imagesList.add(type_images);
