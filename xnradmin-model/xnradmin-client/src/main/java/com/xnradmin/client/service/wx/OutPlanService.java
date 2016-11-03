@@ -45,4 +45,18 @@ public class OutPlanService {
 			e.printStackTrace();
 		}
 	}
+	public OutPlan findById(String id){
+		String hql = "from OutPlan where id="+id;
+		List<OutPlan> list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return list.get(0);
+	}
+	public void saveEdit(OutPlan outPlan){
+		String hql = "update OutPlan set goodsId='"+outPlan.getGoodsId()+"'"
+				+ " startTime='"+outPlan.getStartTime()+"'"
+						+ " startTime='"+outPlan.getEndTime()+"'"
+								+ " output='"+outPlan.getOutput()+"'"
+										+ " unitId='"+outPlan.getUnitId()+"'"
+												+ " where id="+outPlan.getId();
+		commonDao.executeUpdateOrDelete(hql);
+	}
 }

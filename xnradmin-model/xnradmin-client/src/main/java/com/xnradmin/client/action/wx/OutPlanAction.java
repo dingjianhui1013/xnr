@@ -29,7 +29,14 @@ public class OutPlanAction {
 	
 	private OutPlan outplan ;
 	private String deleteId;
+	private String eidtId;
 	
+	public String getEidtId() {
+		return eidtId;
+	}
+	public void setEidtId(String eidtId) {
+		this.eidtId = eidtId;
+	}
 	public OutPlan getOutplan() {
 		return outplan;
 	}
@@ -74,6 +81,17 @@ public class OutPlanAction {
 	@Action(value = "deletePlan",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
 	public String delete(){
 		outPlanService.delete(deleteId);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value = "editPlanForm",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="/wx/admin/seting/outplan/planEdit.jsp" ) })
+	public String eidtForm(){
+		OutPlan outPlan = outPlanService.findById(eidtId);
+		ServletActionContext.getRequest().setAttribute("outPlan",  outPlan);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value = "saveEdit",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect" ) })
+	public String saveEdit(){
+		outPlanService.saveEdit(outplan);
 		return StrutsResMSG.SUCCESS;
 	}
 }

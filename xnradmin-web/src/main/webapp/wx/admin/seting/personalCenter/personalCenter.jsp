@@ -42,6 +42,24 @@
 				alert("计划不能删除");
 			}
 		}
+		function editPlan(id){
+			var status = true;
+			//获取状态
+// 			$.ajax({
+// 				 type: "GET",
+// 	             url: "",
+// 	             data: {id:id,type:"delete"},
+// 	             dataType: "json",
+// 	             success: function(data){
+// 	            	 status = data.status;
+// 	             }
+// 			});
+			if(status){
+				$.post("<%=path %>/page/wx/outplan/editPlanForm.action",{eidtId:id},null);
+			}else{
+				alert("计划不能修改");
+			}
+		}
 	</script>
 </head>
 <body>
@@ -64,21 +82,21 @@
 					  <div class="form-group">
 					    <div class="col-sm-10 uploadImgBox">
 					    	 <ul>
-					    	 	<c:forEach items="${imageTypes}" var="imageType">
+					    	 	<c:forEach items="${date_type_images}" var="date_type_image">
 					    	 	<li>
 					    	 		<span class="circleIcon"></span>
-					    	 		<h3><fmt:formatDate value="${imageType[1]}" pattern="yyyy-MM-dd " ></fmt:formatDate> </h3>
+					    	 		<h3><fmt:formatDate value="${date_type_image.key}" pattern="yyyy-MM-dd " ></fmt:formatDate> </h3>
 					    	 		<div>
-					    	 			<p class="sortTit">${imageType[0]}</p>
+					    	 			<c:forEach items="${ date_type_image.value}" var="type_image">
+					    	 			<p class="sortTit">${type_image.key}</p>
 					    	 			<div class="uploadImgList">
 					    	 				<ul>
-					    	 					<c:forEach items="${farmerImages}" var="farmerImage">
-					    	 					<c:if test="${farmerImage.type eq  imageType[0]}">
-					    	 					<li><img src="<%=path %>${farmerImage.url}"  class="img-responsive" /></li>
-												</c:if>
+					    	 					<c:forEach items="${type_image.value}" var="farmerImage">
+					    	 					<li><img src="<%=path %>${farmerImage}"  class="img-responsive" /></li>
 					    	 					</c:forEach>						
 					    	 				</ul>
 					    	 			</div>
+					    	 			</c:forEach>
 					    	 		</div>
 					    	 	</li>
 					    	 	</c:forEach>
