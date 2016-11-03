@@ -36,10 +36,15 @@ public class FarmerImageService {
 	}
 	public List<String> findByType(String date)
 	{
-		String hql = "select type from FarmerImage where date ='"+date+"'";
+		String hql = "select distinct type from FarmerImage where date ='"+date+"'";
 		
 		List<String> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
 		return list;
 	}
-
+	public List<String> findByImages(String type,String images)
+	{
+		String hql = "select url from FarmerImage where type ='"+type+"'and date ='"+images+"'";
+		List<String> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
+		return list;
+	}
 }
