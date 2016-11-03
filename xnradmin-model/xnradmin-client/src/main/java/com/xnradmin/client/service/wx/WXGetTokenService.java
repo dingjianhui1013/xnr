@@ -14,10 +14,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.cntinker.util.wx.connect.WeixinUtil;
 import com.mysql.jdbc.StringUtils;
 import com.xnradmin.po.wx.connect.WXInit;
 

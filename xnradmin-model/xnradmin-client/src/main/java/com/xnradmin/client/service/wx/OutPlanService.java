@@ -55,7 +55,7 @@ public class OutPlanService {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String hql = "update OutPlan set goodsId='"+outPlan.getGoodsId()+"',"
 				+ " startTime='"+simpleDateFormat.format(outPlan.getStartTime())+"',"
-						+ " startTime='"+simpleDateFormat.format(outPlan.getEndTime())+"',"
+						+ " endTime='"+simpleDateFormat.format(outPlan.getEndTime())+"',"
 								+ " output='"+outPlan.getOutput()+"',"
 										+ " unitId='"+outPlan.getUnitId()+"'"
 												+ " where id="+outPlan.getId();

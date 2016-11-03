@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cntinker.util.wx.connect.OAuth;
 import com.cntinker.util.wx.connect.WXBizMsgCrypt;
-import com.cntinker.util.wx.connect.WeixinUtil;
 import com.xnradmin.client.service.wx.FarmerImageService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
+import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
