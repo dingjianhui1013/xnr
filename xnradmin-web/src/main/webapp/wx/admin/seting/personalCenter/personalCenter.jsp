@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
      <%
@@ -82,24 +83,26 @@
 					  <div class="form-group">
 					    <div class="col-sm-10 uploadImgBox">
 					    	 <ul>
-					    	 	<c:forEach items="${date_type_images}" var="date_type_image">
-					    	 	<li>
-					    	 		<span class="circleIcon"></span>
-					    	 		<h3>${date_type_image.key}</h3>
-					    	 		<div>
-					    	 			<c:forEach items="${ date_type_image.value}" var="type_image">
-					    	 			<p class="sortTit">${type_image.key}</p>
-					    	 			<div class="uploadImgList">
-					    	 				<ul>
-					    	 					<c:forEach items="${type_image.value}" var="farmerImage">
-					    	 					<li><img src="<%=path %>${farmerImage}"  class="img-responsive" /></li>
-					    	 					</c:forEach>						
-					    	 				</ul>
-					    	 			</div>
-					    	 			</c:forEach>
-					    	 		</div>
-					    	 	</li>
-					    	 	</c:forEach>
+					    	 	<c:forEach items="${date_type_images}" var="dtis">
+									<li><span class="circleIcon"></span> <c:forEach
+											items="${dtis}" var="dti">
+											<h3>${dti.key}</h3>
+											<div>
+												<c:forEach items="${dti.value}" var="dtiv">
+													<c:forEach items="${dtiv}" var="ditvs">
+														<p class="sortTit">${ditvs.key}</p>
+														<c:forEach items="${ditvs.value }" var="images">
+															<div class="uploadImgList">
+																<ul>
+																	<li><img src="<%=path %>${images}"  class="img-responsive" /></li>
+																</ul>
+															</div>
+														</c:forEach>
+													</c:forEach>
+												</c:forEach>
+											</div>
+										</c:forEach></li>
+								</c:forEach>
 					    	 </ul>
 					    </div>
 					  </div>

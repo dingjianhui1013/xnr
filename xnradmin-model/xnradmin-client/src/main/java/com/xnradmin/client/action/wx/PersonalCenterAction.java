@@ -68,10 +68,7 @@ public class PersonalCenterAction {
 		}
 		
 		
-//		List<FarmerImage> farmerImages = farmerImageService.findAll(userId.getString("UserId"));
-		
-//		ServletActionContext.getRequest().setAttribute("farmerImages", farmerImages);
-		ServletActionContext.getRequest().setAttribute("date_type_images",  date_type_images);
+		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
 		return StrutsResMSG.SUCCESS;
 	}
 	

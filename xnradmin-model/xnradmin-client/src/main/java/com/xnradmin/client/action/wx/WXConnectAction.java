@@ -210,7 +210,7 @@ public class WXConnectAction {
 		session.setAttribute("userId", userId);
 	}
 
-	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage1.jsp") })
+	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
 	public String ceshi() {
 		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
 		List<String> imagedates = farmerImageService.getImageDates("dingjinghui");
@@ -231,6 +231,7 @@ public class WXConnectAction {
 			date_type_image.put(images, type_imagesList);
 			date_type_images.add(date_type_image);
 		}
+		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
 		return StrutsResMSG.SUCCESS;
 	}
 
