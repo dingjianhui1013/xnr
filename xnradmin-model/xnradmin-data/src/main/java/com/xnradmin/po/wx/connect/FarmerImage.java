@@ -20,7 +20,7 @@ public class FarmerImage implements Serializable{
 	private String userName;
 	private String type;
 	private String url;
-	private Date date;
+	private String date;
 	public FarmerImage() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -59,11 +59,11 @@ public class FarmerImage implements Serializable{
 		return url;
 	}
 	@Column(name="date")
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

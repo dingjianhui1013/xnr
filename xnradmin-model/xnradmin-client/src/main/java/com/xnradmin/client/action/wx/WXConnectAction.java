@@ -9,7 +9,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -213,14 +218,25 @@ public class WXConnectAction {
 //		farmerImage.setUserId("jasjfjsdlfj");
 //		farmerImage.setType("jsdjfjdjfjd");
 //		farmerImageService.save(farmerImage);
-		String imageUrl = userId+File.separator+type+File.separator;
-		String filePath = ServletActionContext.getServletContext()
-				.getRealPath("/farmerImage");
-		String imageName = new Date().getTime() + "_" + userId + ".jpg";
-		String fileName = filePath+File.separator+imageUrl+imageName;
-		System.out.println("******************s");
-		System.out.println(fileName);
-		WXGetTokenService.accessTokenIsOvertime();
+		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
+		List<String> imagedates = farmerImageService.getImageDates("dingjinghui");
+		for (String images : imagedates) {
+			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
+			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
+			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
+//			Set<String> types = new LinkedHashSet<String>();//日期对应的类型
+			List<String> typeList = farmerImageService.findByType(images);
+//			for (String typel : typeList) {
+//				types.add(typel);
+//			}
+			for (String type : typeList) {
+				List<String> imageList = farmerImageService.findByImages(type,images);
+				type_images.put(type, imageList);
+			}
+			type_imagesList.add(type_images);
+			date_type_image.put(images, type_imagesList);
+			date_type_images.add(date_type_image);
+		}
 		return StrutsResMSG.SUCCESS;
 	}
 
@@ -265,11 +281,11 @@ public class WXConnectAction {
 				bos.close();
 				baos.close();
 				FarmerImage farmerImage  = new FarmerImage();
-				farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+imageName);
+				farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+File.separator+imageName);
 				farmerImage.setUserName(userName);
 				farmerImage.setUserId(userId);
 				farmerImage.setType(type);
-				farmerImage.setDate(new Date());
+				farmerImage.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 				farmerImageService.saveFarmerImage(farmerImage);
 			} catch (Exception e) {
 				e.printStackTrace();

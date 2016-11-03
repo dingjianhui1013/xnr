@@ -1,6 +1,11 @@
 package com.xnradmin.client.action.wx;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,13 +50,29 @@ public class PersonalCenterAction {
 						.replace("CODE", code), "GET", null);
 		
 		List<OutPlan> outplans = outPlanService.findAll(userId.getString("UserId"));
-		List<FarmerImage> farmerImages = farmerImageService.findAll(userId.getString("UserId"));
-		List imageTypes = farmerImageService.getImageType(userId.getString("UserId"));
-		
-		
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
+		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
+		List<String> imagedates = farmerImageService.getImageDates(userId.getString("UserId"));
+		for (String images : imagedates) {
+			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
+			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
+			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
+			List<String> typeList = farmerImageService.findByType(images);
+			for (String type : typeList) {
+				List<String> imageList = farmerImageService.findByImages(type,images);
+				type_images.put(type, imageList);
+			}
+			type_imagesList.add(type_images);
+			date_type_image.put(images, type_imagesList);
+			date_type_images.add(date_type_image);
+		}
+		
+		
+		List<FarmerImage> farmerImages = farmerImageService.findAll(userId.getString("UserId"));
+		
 		ServletActionContext.getRequest().setAttribute("farmerImages", farmerImages);
-		ServletActionContext.getRequest().setAttribute("imageTypes", imageTypes);
+		ServletActionContext.getRequest().setAttribute("imageTypes", imagedates);
 		return StrutsResMSG.SUCCESS;
 	}
+	
 }
