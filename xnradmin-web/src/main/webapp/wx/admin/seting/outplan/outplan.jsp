@@ -18,7 +18,8 @@
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll_date.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/style.css">
 	<script type="text/javascript" src="<%=path %>/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"></script>
+<%-- 	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"></script> --%>
+	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js" charset="utf-8"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/common.js"></script>
 	<script type="text/javascript" >

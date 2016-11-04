@@ -16,9 +16,12 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.apache.struts2.json.annotations.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xnradmin.client.service.wx.FarmerImageService;
 import com.xnradmin.client.service.wx.OutPlanService;
@@ -27,6 +30,7 @@ import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.FarmerImage;
+import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
 
 @Controller
@@ -40,6 +44,28 @@ public class PersonalCenterAction {
 	@Autowired
 	private FarmerImageService farmerImageService ;
 	
+	private String imageUrl;
+	private String status;
+	private String imageid;
+	
+	public String getImageid() {
+		return imageid;
+	}
+	public void setImageid(String imageid) {
+		this.imageid = imageid;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 	@Action(value = "list",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
 	public String personalCenter(){
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -75,6 +101,21 @@ public class PersonalCenterAction {
 	public String test(){
 		List<OutPlan> outplans = outPlanService.findAll("jiaojianan");
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="deleteImage", results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
+	public String deleteImage()
+	{
+		try {
+			farmerImageService.delectImages(imageUrl);
+			status="0";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			status="1";
+			imageid=null;
+			
+		}
 		return StrutsResMSG.SUCCESS;
 	}
 }
