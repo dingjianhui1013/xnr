@@ -135,7 +135,7 @@
 												  <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">产出重量</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span>${outplan.output }${outplan.unitId }</p>
+												    	 <p class="form-control-static outputDate"><span>${outplan.output }${outplan.unitId }</span></p>
 												    </div>
 												  </div>
 											  </form>
