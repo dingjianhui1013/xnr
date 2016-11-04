@@ -37,10 +37,38 @@
 // 	             }
 // 			});
 			if(status){
-				$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null);
+				location.href="<%=path %>/page/wx/outplan/deletePlan.action?deleteId="+id;
+			//	$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null); 
 			}else{
 				alert("计划不能删除");
 			}
+		}
+		function deleteImgae(imageUrl,imageid){
+			$.ajax({
+				type:'POST',
+				url:"<%=path %>/page/wx/personalCenter/deleteImage.action",
+				data:{imageUrl:imageUrl,imageid:imageid,_:new Date().getTime()},
+				dataType:'json',
+				success:function(data)
+				{
+					if(data.status=="0")
+						{
+							
+							alert("删除成功");
+							$("#"+data.imageid).remove();
+						}
+				}
+			});
+		}
+		function changeShow(){
+			$(".closeIcon").css('display','block'); ;
+			$("#bj").html("完成");
+			$("#bj").attr("onclick","changeHidden()");
+		}
+		function changeHidden(){
+			$(".closeIcon").css('display','none'); ;
+			$("#bj").html("编辑");
+			$("#bj").attr("onclick","changeShow()");
 		}
 		function editPlan(id){
 			var status = true;
@@ -55,7 +83,8 @@
 // 	             }
 // 			});
 			if(status){
-				$.post("<%=path %>/page/wx/outplan/editPlanForm.action",{eidtId:id},null);
+				location.href="<%=path %>/page/wx/outplan/editPlanForm.action?eidtId="+id;
+				//$.post('<%=path %>/page/wx/outplan/editPlanForm.action',{eidtId:id},null,'json/xml/html');
 			}else{
 				alert("计划不能修改");
 			}
@@ -90,10 +119,15 @@
 												<c:forEach items="${dti.value}" var="dtiv">
 													<c:forEach items="${dtiv}" var="ditvs">
 														<p class="sortTit">${ditvs.key}</p>
+														<c:set var="i" value="1"/>
 														<c:forEach items="${ditvs.value }" var="images">
 															<div class="uploadImgList">
 																<ul>
-																	<li><img src="<%=path %>${images}"  class="img-responsive" /></li>
+																	<li id="image${i}">
+																		<p class="closeIcon" onclick="deleteImgae('${images}','image${i}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
+																		<img src="<%=path %>${images}"  class="img-responsive"/>
+																		<c:set var="i" value="${i+1}"/>
+																	</li>
 																</ul>
 															</div>
 														</c:forEach>
@@ -106,7 +140,7 @@
 					    </div>
 					  </div>
 					  <div class="btnBox">
-							  	<button type="submit" class="btn btn-success">编辑</button>
+							  	<button type="button" class="btn btn-success" onclick="changeShow()" id="bj">编辑</button>
 							  </div>
 					  </form>
 				  </div>
@@ -133,7 +167,7 @@
 												  <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">产出重量</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span>${outplan.output }${outplan.unitId }</p>
+												    	 <p class="form-control-static outputDate"><span>${outplan.output}${outplan.unitId}</span></p>
 												    </div>
 												  </div>
 											  </form>

@@ -83,7 +83,7 @@ public class OutPlanAction {
 		outPlanService.delete(deleteId);
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value = "editPlanForm",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="/wx/admin/seting/outplan/planEdit.jsp" ) })
+	@Action(value = "editPlanForm",results = { @Result(name = StrutsResMSG.SUCCESS,location ="/wx/admin/seting/outplan/planEdit.jsp" ) })//  
 	public String eidtForm(){
 		OutPlan outPlan = outPlanService.findById(eidtId);
 		ServletActionContext.getRequest().setAttribute("outPlan",  outPlan);
@@ -94,4 +94,6 @@ public class OutPlanAction {
 		outPlanService.saveEdit(outplan);
 		return StrutsResMSG.SUCCESS;
 	}
+	
+	
 }
