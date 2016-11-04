@@ -38,6 +38,20 @@
 				$("#form").submit();
 			}
 		}
+		function outputYz(){
+			var output = $("#output").val();
+			if(isNaN(Number(output))&& output!=""){ 
+				$("#Yz").html("产出数量必须为数字").show();
+				$("#output").val("");
+			}
+		}
+		
+		function endTimeYz(){
+			if($("#dateStart").val()!=""&&$("#dateEnd").val()<("#dateStart").val()){
+				$("#Yz").html("结束时间不能小于开始时间").show();
+				$("#dateEnd").val("");
+			}
+		}
 	</script>
 </head>
 <body>
@@ -63,13 +77,13 @@
 				    <label for="" class="col-sm-2 control-label labelFont">预计产出日期</label>
 				    <div class="col-sm-10">
 				    	 <input type="text"  id="dateStart" name="outplan.startTime" class="input form-control" placeholder="请选择开始日期" />
-				    	<input type="text"  id="dateEnd"  name="outplan.endTime" class="input form-control dateEnd" placeholder="请选择结束日期" />
+				    	<input type="text"  id="dateEnd" onchange="endTimeYz()"  name="outplan.endTime" class="input form-control dateEnd" placeholder="请选择结束日期" />
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <label for="" class="col-sm-2 control-label labelFont">产出数量</label>
 				    <div class="col-sm-7">
-				    	<input type="text" id="output" name="outplan.output" class="numInput form-control" />
+				    	<input type="text" onblur="outputYz()" id="output" name="outplan.output" class="numInput form-control" />
 				    </div>
 				    <div class="col-sm-3 mt1">
 				    	<select class="form-control" name="outplan.unitId">
