@@ -20,6 +20,7 @@ public class Farmer implements Serializable{
 	private String userName;
 	private String userId;
 	private String headPortrait;
+	private String types;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false) 
@@ -50,6 +51,13 @@ public class Farmer implements Serializable{
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
+	@Column(name="types")
+	public String getTypes() {
+		return types;
+	}
+	public void setTypes(String types) {
+		this.types = types;
+	}
+	
 	
 }
