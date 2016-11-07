@@ -23,7 +23,7 @@ li,ul{margin:0;padding:0;list-style:none}
 .myAccount .glyphicon-user{ font-size: 1.6rem; padding:0.2rem;margin:0.2rem 0.5rem 0 0;}
 .dateEnd{margin-top:1rem;}
 .mt1{margin-top: 1rem;}
-.uploadWrap .form-group{ overflow:hidden;}
+/* .uploadWrap .form-group{ overflow:hidden;} */
 .contentBox .form-group{ padding-bottom: 2rem; border-bottom: 1px solid #f3f3f3;}
 .personalBox .form-group{border-bottom: none;padding-bottom: 1rem;}
 .searchBox{ width: 75%; float: left;}
@@ -44,6 +44,7 @@ li,ul{margin:0;padding:0;list-style:none}
 .planListBox .form-group{padding-bottom: 0; }
 .planListCon{margin: 0px 1rem;}
 .outputDate span{ padding: 0 1rem;}
+.demo-gallery a{ position: relative;}
 
 .planList{ border-bottom: 1px solid #ddd; margin-bottom: 1rem;}
 .d-planList{ background:rgba(250,250,250,0.6); padding: 1rem;margin-bottom: 1rem;}

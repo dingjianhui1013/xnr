@@ -19,10 +19,19 @@
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll_date.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/style.css">
+	
+	<link rel="stylesheet" type="text/css" href="<%=path %>/css/site.css">
+    <link rel="stylesheet" type="text/css" href="<%=path %>/css/photoswipe.css">
+	<link rel="stylesheet" type="text/css" href="<%=path %>/css/default-skin.css">
+	
 	<script type="text/javascript" src="<%=path %>/js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/common.js"></script>
+	
+	<script src="<%=path %>/js/photoswipe.min.js"></script>
+    <script src="<%=path %>/js/photoswipe-ui-default.min.js"></script>
+    
 	<script type="text/javascript" >
 		function deletePlan(id){
 			var status = true;
@@ -120,21 +129,20 @@
 													<c:forEach items="${dtiv}" var="ditvs">
 														<p class="sortTit">${ditvs.key}</p>
 														<c:set var="i" value="1"/>
-														<c:forEach items="${ditvs.value }" var="images">
-															<div class="uploadImgList">
-																<ul>
-																	<li id="image${i}">
-																		<p class="closeIcon" onclick="deleteImgae('${images}','image${i}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
-																		<img src="<%=path %>${images}"  class="img-responsive"/>
-																		<c:set var="i" value="${i+1}"/>
-																	</li>
-																</ul>
-															</div>
-														</c:forEach>
+														<div class="uploadImgList  demo-gallery">
+															<c:forEach items="${ditvs.value }" var="images">
+																<a href="<%=path %>${images}" data-size="1600x1068" data-med="<%=path %>${images}" data-med-size="1024x683" id="image${i}">
+								    	 						<p class="closeIcon" onclick="deleteImgae('${images}','image${i}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
+				          											<img src="<%=path %>${images}" alt=""/>
+				          											<c:set var="i" value="${i+1}"/>
+				        										</a>
+															</c:forEach>
+														</div>
 													</c:forEach>
 												</c:forEach>
 											</div>
-										</c:forEach></li>
+										</c:forEach>
+									</li>
 								</c:forEach>
 					    	 </ul>
 					    </div>
@@ -181,9 +189,44 @@
 						  </div>
 					  </div>
 				  </div>
-
-			
 		</div>
 	</div>
+	<div id="gallery" class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="pswp__bg"></div>
+        <div class="pswp__scroll-wrap">
+          <div class="pswp__container">
+			<div class="pswp__item"></div>
+			<div class="pswp__item"></div>
+			<div class="pswp__item"></div>
+          </div>
+          <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+
+				<div class="pswp__counter"></div>
+				<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+				<div class="pswp__preloader">
+					<div class="pswp__preloader__icn">
+					  <div class="pswp__preloader__cut">
+					    <div class="pswp__preloader__donut"></div>
+					  </div>
+					</div>
+				</div>
+            </div>
+			<!-- <div class="pswp__loading-indicator"><div class="pswp__loading-indicator__line"></div></div> -->
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+	            <div class="pswp__share-tooltip">
+	            </div>
+	        </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+            <div class="pswp__caption">
+              <div class="pswp__caption__center">
+              </div>
+            </div>
+          </div>
+        </div>
+	</div>
+    <script src="<%=path %>/js/viewPhoto.js"></script>
 </body>
 </html>
