@@ -14,18 +14,21 @@ import javax.persistence.Table;
 @Table(name = "outplan")
 public class OutPlan  implements java.io.Serializable{
 	private Long id;
-	private String userId;
-	private String goodsId;
-	private Date startTime;
-	private Date endTime;
-	private String unitId;
-	private String output;
+	private String businesCategoryId;
+	private String userId; //用户id
+	private String goodsId;//商品id
+	private Date startTime;//开始
+	private Date endTime;//结束时间
+	private String unitId;//单位id
+	private String output;//计划产量
 	
-	private Date createDate;
-	private Date updateDate;
-	private String createBy;
-	private String updateBy;
-	private int delFlage;
+	private Date createDate;//创建时间
+	private Date updateDate;//更新时间
+	private String createBy;//创建人
+	private String updateBy;//更新人
+	private int delFlage;//删除状态
+	private int examine;//审核状态
+	private String remarks;//备注
 	
 	
 	@Id
@@ -115,6 +118,27 @@ public class OutPlan  implements java.io.Serializable{
 	}
 	public void setDelFlage(int delFlage) {
 		this.delFlage = delFlage;
+	}
+	@Column(name="examine")
+	public int getExamine() {
+		return examine;
+	}
+	@Column(name="remarks")
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setExamine(int examine) {
+		this.examine = examine;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	@Column(name="busines_category_id")
+	public String getBusinesCategoryId() {
+		return businesCategoryId;
+	}
+	public void setBusinesCategoryId(String businesCategoryId) {
+		this.businesCategoryId = businesCategoryId;
 	}
 	
 }

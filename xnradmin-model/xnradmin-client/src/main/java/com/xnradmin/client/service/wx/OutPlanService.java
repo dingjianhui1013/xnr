@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.util.SpringBase;
+import com.xnradmin.po.business.BusinessCategory;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.WXAccessToken;
 
@@ -60,5 +62,17 @@ public class OutPlanService {
 										+ " unitId='"+outPlan.getUnitId()+"'"
 												+ " where id="+outPlan.getId();
 		commonDao.executeUpdateOrDelete(hql);
+	}
+
+	public List<BusinessCategory> getBusinessCategoryS() {
+		String hql = "from BusinessCategory";
+		List<BusinessCategory> businessCategorys =  commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return businessCategorys;
+	}
+
+	public List<BusinessGoods> getGoodsList(String businesCategoryId) {
+		String hql = "from BusinessGoods where goodsCategoryId = '" +businesCategoryId+"'";
+		List<BusinessGoods> goodList =  commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return goodList;
 	}
 }

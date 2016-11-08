@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll_date.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/style.css">
-	
+	<link rel="stylesheet" type="text/css" href="<%=path %>/css/chosen/chosen.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/site.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/photoswipe.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/default-skin.css">
@@ -31,7 +31,7 @@
 	
 	<script src="<%=path %>/js/photoswipe.min.js"></script>
     <script src="<%=path %>/js/photoswipe-ui-default.min.js"></script>
-    
+    <script type="text/javascript" src="<%=path %>/js/chosen/chosen.jquery.js"></script>
 	<script type="text/javascript" >
 		function deletePlan(id){
 			var status = true;
