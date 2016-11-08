@@ -1,6 +1,8 @@
 package com.xnradmin.client.action.wx;
 
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
@@ -18,6 +20,8 @@ import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.po.business.BusinessCategory;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.WXurl;
 
@@ -30,7 +34,9 @@ public class OutPlanAction {
 	private OutPlan outplan ;
 	private String deleteId;
 	private String eidtId;
-	
+	private List<BusinessGoods> goodslist;
+	private List<BusinessCategory> businesCategorys;
+	private String businesCategoryId;
 	public String getEidtId() {
 		return eidtId;
 	}
@@ -51,12 +57,30 @@ public class OutPlanAction {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+	public List<BusinessCategory> getBusinesCategorys() {
+		return businesCategorys;
+	}
+	public void setBusinesCategorys(List<BusinessCategory> businesCategorys) {
+		this.businesCategorys = businesCategorys;
+	}
 	public String getDeleteId() {
 		return deleteId;
 	}
 	public void setDeleteId(String deleteId) {
 		this.deleteId = deleteId;
+	}
+	public String getBusinesCategoryId() {
+		return businesCategoryId;
+	}
+	public void setBusinesCategoryId(String businesCategoryId) {
+		this.businesCategoryId = businesCategoryId;
+	}
+	
+	public List<BusinessGoods> getGoodslist() {
+		return goodslist;
+	}
+	public void setGoodslist(List<BusinessGoods> goodslist) {
+		this.goodslist = goodslist;
 	}
 	@Autowired
 	private OutPlanService outPlanService ;
@@ -70,6 +94,13 @@ public class OutPlanAction {
 				WXurl.WX_USERID_URL.replace("ACCESS_TOKEN", access_tokenString)
 						.replace("CODE", code), "GET", null);
 		this.userId = userId.getString("UserId");
+		businesCategorys = outPlanService.getBusinessCategoryS();
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="getGoods",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
+	public String getGoods()
+	{
+		goodslist = outPlanService.getGoodsList(businesCategoryId);
 		return StrutsResMSG.SUCCESS;
 	}
 	
