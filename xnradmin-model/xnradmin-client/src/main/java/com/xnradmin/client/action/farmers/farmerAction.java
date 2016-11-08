@@ -18,7 +18,7 @@ import com.xnradmin.po.wx.connect.Farmer;
 
 @Controller
 @Scope("prototype")
-@Namespace("/page/wx/test")
+@Namespace("/page/wx/farmer")
 @ParentPackage("json-default")
 public class farmerAction extends ParentAction{
 	
@@ -74,9 +74,9 @@ public class farmerAction extends ParentAction{
 		return false;
 	}
 	
-	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/famer/info.jsp") })
+	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/info.jsp") })
 	public String info() {
-		setPageInfo();
+//		setPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
 	
