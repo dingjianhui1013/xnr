@@ -47,4 +47,12 @@ public class FarmerImageService {
 		List<String> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
 		return list;
 	}
+	public void delectImages(String imageUrl) {
+		try {
+			String hql = "delete from FarmerImage where url='"+imageUrl+"'";
+			commonDAO.executeUpdateOrDelete(hql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

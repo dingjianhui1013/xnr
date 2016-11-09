@@ -83,6 +83,11 @@ public class farmerAction extends ParentAction{
 	private void setPageInfo() {
 		this.voList = this.farmerService.getList(query, super.getPageNum(),
 				super.getNumPerPage());
-//		super.totalCount = this.farmerService.getCount(query);
+		super.totalCount = this.farmerService.getCount(query);
+	}
+	@Action(value = "anthinfo",results  = {})
+	public void anthinfo()
+	{
+		
 	}
 }

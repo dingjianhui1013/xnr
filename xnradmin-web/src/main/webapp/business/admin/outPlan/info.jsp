@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -6,17 +7,17 @@
 	        + path + "/";
 	
 	
-	String action = basePath+"page/wx/wxmenu/info.action";
-	String add = basePath+"page/wx/wxmenu/addInfo.action";
-	String modify = basePath+"page/wx/wxmenu/modifyInfo.action";
-	String del = basePath+"page/wx/wxmenu/del.action";
-	String wxuserlookup = basePath+"page/wx/wxuser/lookup.action";
+	String action = basePath+"page/wx/outplan/info.action";
+	String add = basePath+"page/wx/outplan/addInfo.action";
+	String modify = basePath+"page/wx/outplan/modifyInfo.action";
+	String del = basePath+"page/wx/outplan/del.action";
+	String outPlanlookup = basePath+"page/wx/outplan/lookup.action";
 	
 	request.setAttribute("action",action);
 	request.setAttribute("add",add);
 	request.setAttribute("modify",modify);
 	request.setAttribute("del",del);
-	request.setAttribute("wxuserlookup",wxuserlookup);
+	request.setAttribute("outPlanlookup",outPlanlookup);
 %>
 
 
@@ -24,8 +25,8 @@
 
 <form id="pagerForm" method="post" action="${action}">			
 
-		<input type="hidden" name="query.menu.menuName" value="${query.menu.menuName}" />
-		<input type="hidden" name="query.menu.typeid" value="${query.menu.typeid}" />	
+		<%-- <input type="hidden" name="query.menu.menuName" value="${query.menu.menuName}" />
+		<input type="hidden" name="query.menu.typeid" value="${query.menu.typeid}" />	 --%>
 		
 		<input type="hidden" name="pageNum" value="${pageNum}" />
 		<input type="hidden" name="numPerPage" value="${numPerPage}" />
@@ -39,37 +40,28 @@
 		<table class="searchContent">
 			<tr>
 				<td>
-					菜单名称（可模糊查询）
-					<input type="text" name="query.menu.menuName" />
-				</td>			
-				<td>
-					对应用户
-				</td>
-				<td>					
-					<dd>								
-					<input id="wxuservo.wxuserid" name="wxuservo.wxuserid" value="${wxuservo.wxuserid}" type="hidden"/>
-					<input name="wxuservo.staffName" value="${wxuservo.staffName}" readonly="true" type="text" postField="keyword"/>					
-					</dd>	
+					ID（可模糊查询）
+					<input type="text" name="query.outPlan.id" />
 				</td>	
 				<td>
-					<a class="btnLook" href="${wxuserlookup}" lookupGroup="wxuservo">查找带回</a>
+					农户
+					<input type="text" name="query.farmer.userName" />
+				</td>	
+				<td>
+					商品
+					<input type="text" name="query.businessGood.goodsName" />
+				</td>	
+				<td>
+					开始时间
+					<input type="text" name="query.outPlan.startTime" />
+				</td>	
+				<td>
+					结束时间
+					<input type="text" name="query.outPlan.endTime" />
+				</td>	
+				<td>
+					<a class="btnLook" href="${outPlanlookup}" lookupGroup="wxuservo">查找带回</a>
 				</td>		
-				<td>
-					<select class="combox" name="query.menu.typeid">
-						<c:if test="${statusList!=null}">
-							<c:forEach items="${statusList}" var="loop">
-								<c:choose>
-									<c:when test="${query.menu.typeid==loop.id}">
-										<option value=${loop.id} selected="selected">${loop.statusName}</option>
-									</c:when>
-									<c:otherwise>
-										<option value=${loop.id}>${loop.statusName}</option>	
-									</c:otherwise>
-								</c:choose>					
-							</c:forEach>
-						</c:if>		
-					</select>
-				</td>	
 			</tr>
 		</table>
 		<div class="subBar">
@@ -84,44 +76,34 @@
 
 
 <div class="pageContent">
-	<div class="panelBar">
-		<ul class="toolBar">		
-			<li><a class="add" href="${add}" target="dialog" rel="menu_add"><span>添加菜单</span></a></li>				
-			<li class="line">line</li>			
-			<li><a class="delete" href="${del}?menuid={sid_menuid}&del=1" target="ajaxTodo" title="删除某个菜单将连带删除其下的所有子菜单"><span>删除</span></a></li>
-		</ul>
-	</div>
 	<table class="table" width="100%" layoutH="138">
 		<thead>
 			<tr>							
 				<th width="25"">ID</th>
-				<th width="45">菜单名称</th>
-				<th width="45">系统用户名称</th>
-				<th width="45">菜单级别</th>
-				<th width="45">菜单类型</th>
-				<th width="35">上级菜单名称</th>
-				<th width="35">菜单排序</th>
-				<th width="35">菜单key</th>
-				<th width="35">菜单url</th>
-				<th width="70">操作</th>
+				<th width="45">农户</th>
+				<th width="45">商品</th>
+				<th width="45">开始时间</th>
+				<th width="45">结束时间</th>
+				<th width="35">计划产量</th>
+				<th width="35">单位</th>
+				<th width="35">审核状态</th>
+				<th width="70">审核</th>
 			</tr>
 		</thead>
 		<tbody>		
 			<c:if test="${voList!=null}">
 				<c:forEach items="${voList}" var="loop">
-					<tr target="sid_menuid" rel="${loop.menu.id}">								
-						<td>${loop.menu.id}</td>
-						<td>${loop.menu.menuName}</td>						
-						<td>${loop.wxuservo.staff.staffName}</td>
-						<td>${loop.menu.menuLevel}</td>	
-						<td>${loop.menuType.statusName}</td>
-						<td>${loop.parentMenu.menuName}</td>	
-						<td>${loop.menu.sortOrder}</td>
-						<td>${loop.menu.wxkey}</td>			
-						<td>${loop.menu.url}</td>									
+					<tr target="sid_menuid" rel="${loop.outPlan.id}">	
+						<td>${loop.outPlan.id}</td>							
+						<td>${loop.farmer.userName}</td>
+						<td>${loop.businessGood.goodsName}</td>						
+						<td><fmt:formatDate value="${loop.outPlan.startTime}" pattern="yyyy-MM-dd " ></fmt:formatDate></td>
+						<td><fmt:formatDate value="${loop.outPlan.endTime}" pattern="yyyy-MM-dd " ></fmt:formatDate></td>	
+						<td>${loop.outPlan.output}</td>	
+						<td>${loop.businessWeight.weightName}</td>
+						<td>${loop.outPlan.examine}</td>
 						<td>					
-							<a title="编辑" target="dialog" href="${modify}?query.menu.id=${loop.menu.id}" rel="menu_modify" class="btnEdit">编辑</a>
-							<a title="删除" target="ajaxTodo" href="${del}?query.menu.id=${loop.menu.id}&del=1" class="btnDel">删除</a>
+							<a  href="" class="btnSelect">通过</a>
 						</td>	
 					</tr>				
 				</c:forEach>

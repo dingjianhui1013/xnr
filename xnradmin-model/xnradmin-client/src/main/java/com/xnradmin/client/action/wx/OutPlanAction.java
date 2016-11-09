@@ -21,9 +21,11 @@ import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.po.business.BusinessCategory;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.OutPlan;
-import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
 @Scope("prototype")
@@ -34,10 +36,26 @@ public class OutPlanAction extends ParentAction{
 	private OutPlan outplan ;
 	private String deleteId;
 	private String eidtId;
+	private List<BusinessGoods> goodslist;
+	private List<BusinessCategory> businesCategorys;
+	private String businesCategoryId;
 	
-	private OutPlan query;//后台查询条件
-	private List<OutPlan> voList;//后台列表
+	private OutPlanVO query;//后台查询条件
+	private List<OutPlanVO> voList;//后台列表
 	
+	public OutPlanVO getQuery() {
+		return query;
+	}
+	public void setQuery(OutPlanVO query) {
+		this.query = query;
+	}
+	
+	public List<OutPlanVO> getVoList() {
+		return voList;
+	}
+	public void setVoList(List<OutPlanVO> voList) {
+		this.voList = voList;
+	}
 	public String getEidtId() {
 		return eidtId;
 	}
@@ -58,12 +76,30 @@ public class OutPlanAction extends ParentAction{
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+	public List<BusinessCategory> getBusinesCategorys() {
+		return businesCategorys;
+	}
+	public void setBusinesCategorys(List<BusinessCategory> businesCategorys) {
+		this.businesCategorys = businesCategorys;
+	}
 	public String getDeleteId() {
 		return deleteId;
 	}
 	public void setDeleteId(String deleteId) {
 		this.deleteId = deleteId;
+	}
+	public String getBusinesCategoryId() {
+		return businesCategoryId;
+	}
+	public void setBusinesCategoryId(String businesCategoryId) {
+		this.businesCategoryId = businesCategoryId;
+	}
+	
+	public List<BusinessGoods> getGoodslist() {
+		return goodslist;
+	}
+	public void setGoodslist(List<BusinessGoods> goodslist) {
+		this.goodslist = goodslist;
 	}
 	@Autowired
 	private OutPlanService outPlanService ;
@@ -77,6 +113,13 @@ public class OutPlanAction extends ParentAction{
 				WXurl.WX_USERID_URL.replace("ACCESS_TOKEN", access_tokenString)
 						.replace("CODE", code), "GET", null);
 		this.userId = userId.getString("UserId");
+		businesCategorys = outPlanService.getBusinessCategoryS();
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="getGoods",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
+	public String getGoods()
+	{
+		goodslist = outPlanService.getGoodsList(businesCategoryId);
 		return StrutsResMSG.SUCCESS;
 	}
 	
@@ -115,9 +158,12 @@ public class OutPlanAction extends ParentAction{
 		this.voList = this.outPlanService.getList(query, super.getPageNum(),super.getNumPerPage());
 		super.totalCount = this.outPlanService.getCount(query);
 	}
+	
 	@Override
 	public boolean isPublic() {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	
 }

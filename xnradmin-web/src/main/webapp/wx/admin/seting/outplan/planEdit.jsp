@@ -34,42 +34,10 @@
  			}else if(dateEnd==null||dateEnd==""){
 				$("#Yz").html("请输入预计产出结束日期").show();
 			}else if(output==null||output==""){
-				$("#Yz").html("产出数量不能为空").show();
+				$("#Yz").html("产出数量").show();
 			}else{
 				$("#Yz").html("").hide();
-				$("#form").attr("action","saveEdit.action");
 				$("#form").submit();
-			}
-		}
-		
-		function outputYz(v){
-			var reg = new RegExp("^[0-9]*$");
-			var output = $("#output").val();
-			if(!reg.test(output)){ 
-				$("#Yz").html("产出数量必须为数字").show();
-				$("#output").val(v);
-			}else{
-				$("#Yz").html("").show();
-			}
-		}
-		function endTimeYz(){
-			var start = new Date($("#dateStart").val().replace(/\-/g, "\/"));  
-			var end = new Date($("#dateEnd").val().replace(/\-/g, "\/"));  
-			if($("#dateStart").val()!=""&& end<start){
-				$("#Yz").html("结束时间不能小于开始时间").show();
-				$("#dateEnd").val("");
-			}else{
-				$("#Yz").html("").show();
-			}
-		}
-		function startTimeYz(){
-			var start = new Date($("#dateStart").val().replace(/\-/g, "\/"));  
-			var end = new Date($("#dateEnd").val().replace(/\-/g, "\/"));  
-			if($("#dateStart").val()!=""&& end<start){
-				$("#Yz").html("开始时间不能大于结束时间").show();
-				$("#dateStart").val("");
-			}else{
-				$("#Yz").html("").show();
 			}
 		}
 	</script>
@@ -86,7 +54,7 @@
 				  	 <h3 class="bigTit">编辑我的产出计划</h3>
 				  	 <div class="planListCon">
 						  <div class="editPlanBox">
-							  <form id="form" action="" method="post">
+							  <form id="form" action="saveEdit.action" method="post">
 							  		<input type="hidden" name="outplan.id" value="${outPlan.id}"/>
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">类别</label>
@@ -102,14 +70,14 @@
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">产出日期</label>
 								    <div class="col-sm-10">
-								    	  <input type="text" onchange="startTimeYz()" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
-				    					  <input type="text" onchange="endTimeYz()" name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
+								    	  <input type="text" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
+				    					  <input type="text"  name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
 								    </div>
 								  </div>
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">产出重量</label>
 								    <div class="col-sm-10">
-										<input type="text" onblur="outputYz('${ outPlan.output}')" id="output" name="outplan.output" value="${ outPlan.output}" class="numInput form-control" />
+										<input type="text" id="output" name="outplan.output" value="${ outPlan.output}" class="numInput form-control" />
 										<div class=" mt1">
 											<select name="outplan.unitId"  class="form-control">
 											  <option <c:if test="${outPlan.unitId eq '吨' }">selected="selected" </c:if>>吨</option>
@@ -121,8 +89,8 @@
 								  </div>
 								  <div id="Yz" style="display:none ;color:red" class="listTipsBox"></div>
 								  <div class="btnBox">
-								  	<button type="button" onclick="validationPin()"  class="btn btn-success">保存</button>
-								  	<button type="button" onclick="javascript:history.back(-1);"  class="btn btn-default">返回</button>								 
+								  	<button type="submit" onclick="validationPin()"  class="btn btn-success">保存</button>
+								  	<button type="submit" onclick="javascript:history.back(-1);"  class="btn btn-default">返回</button>								 
 								  </div>
 							  </form>
 						  </div>
