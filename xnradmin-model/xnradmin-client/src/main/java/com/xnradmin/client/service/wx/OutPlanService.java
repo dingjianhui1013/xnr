@@ -112,11 +112,33 @@ public class OutPlanService {
 	
 	private String getHql(OutPlanVO query) {
 		StringBuffer hql = new StringBuffer();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		hql.append("from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d,BusinessCategory e  where a.delFlage=0 and a.userId=b.userId"
 				+ " and a.goodsId=c.id and a.unitId=d.id and a.businesCategoryId=e.id");
 		if (query == null){
 			return hql.append(" order by a.id desc").toString();
 		}
+		if(query.getOutPlan().getId()!=null){
+			hql.append(" and a.id like '%").append(query.getOutPlan().getId()).append("%'");
+		}
+		if(query.getFarmer().getUserName()!=null&&!query.getFarmer().getUserName().equals("")){
+			hql.append(" and b.userName like '%").append(query.getFarmer().getUserName()).append("%'");
+		}
+		if(query.getBusinessGood().getGoodsName()!=null&&!query.getBusinessGood().getGoodsName().equals("")){
+			hql.append(" and c.goodsName like '%").append(query.getBusinessGood().getGoodsName()).append("%'");
+		}
+		if(query.getOutPlan().getStartTime()!=null){
+			String format = simpleDateFormat.format(query.getOutPlan().getStartTime());
+			hql.append(" and a.startTime >= '").append(format).append("'");
+		}
+		if(query.getOutPlan().getEndTime()!=null){
+			String format = simpleDateFormat.format(query.getOutPlan().getEndTime());
+			hql.append(" and a.endTime <= '").append(format).append("'");
+		}
+		if(query.getOutPlan().getExamine()!=null){
+			hql.append(" and a.examine = '").append(query.getOutPlan().getExamine()).append("'");
+		}
+		hql.append(" order by a.id desc");
 		return hql.toString();
 	}
 	
@@ -124,53 +146,6 @@ public class OutPlanService {
 		String hql = "select count(*) " + getHql(query);
 		return commonDao.getNumberOfEntitiesWithHql(hql);
 	}
-//	private String getHql(OutPlan query) {
-//		StringBuffer hql = new StringBuffer();
-//		hql.append("from OutPlan");
-//
-//		if (query == null)
-//			return hql.append(" order by id desc").toString();
-//
-//		int isAnd = 0;
-//
-//		boolean iswhere = false;
-//		iswhere = query != null
-//				&& (query.getMenu() != null && (query.getMenu().getWxuserid() != null
-//						|| !StringHelper.isNull(query.getMenu().getMenuName())
-//						|| query.getMenu().getMenuLevel() != null || query
-//						.getMenu().getTypeid() != null));
-//		if (iswhere) {
-//			hql.append(" where ");
-//		}
-//		if (query.getMenu() != null && query.getMenu().getWxuserid() != null) {
-//			if (isAnd > 0)
-//				hql.append(" and ");
-//			hql.append(" wxuserid=").append(query.getMenu().getWxuserid());
-//			isAnd++;
-//		}
-//		if (query.getMenu() != null
-//				&& !StringHelper.isNull(query.getMenu().getMenuName())) {
-//			if (isAnd > 0)
-//				hql.append(" and ");
-//			hql.append(" menuName like '%")
-//					.append(query.getMenu().getMenuName()).append("%'");
-//			isAnd++;
-//		}
-//		if (query.getMenu() != null && query.getMenu().getMenuLevel() != null) {
-//			if (isAnd > 0)
-//				hql.append(" and ");
-//			hql.append(" menuLevel =").append(query.getMenu().getMenuLevel());
-//			isAnd++;
-//		}
-//		if (query.getMenu() != null && query.getMenu().getTypeid() != null) {
-//			if (isAnd > 0)
-//				hql.append(" and ");
-//			hql.append(" typeid =").append(query.getMenu().getTypeid());
-//			isAnd++;
-//		}
-//		hql.append(" order by id desc");
-//		return hql.toString();
-//	}
 
 	public List<BusinessCategory> getBusinessCategoryS() {
 		String hql = "from BusinessCategory";
@@ -182,5 +157,18 @@ public class OutPlanService {
 		String hql = "from BusinessGoods where goodsCategoryId = '" +businesCategoryId+"'";
 		List<BusinessGoods> goodList =  commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		return goodList;
+	}
+	public boolean examine(String id){
+		boolean isok = false;
+		if(id!=null&&!"".equals(id)){
+			String hql = "update OutPlan set examine=1 where id="+id;
+			try {
+				commonDao.executeUpdateOrDelete(hql);
+				isok = true;
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		return isok;
 	}
 }

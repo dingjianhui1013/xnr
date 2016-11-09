@@ -15,6 +15,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
@@ -36,13 +37,20 @@ public class OutPlanAction extends ParentAction{
 	private OutPlan outplan ;
 	private String deleteId;
 	private String eidtId;
+	private String examineId;
 	private List<BusinessGoods> goodslist;
 	private List<BusinessCategory> businesCategorys;
 	private String businesCategoryId;
-	
+	private boolean examineStatus;//审核结果 json
 	private OutPlanVO query;//后台查询条件
 	private List<OutPlanVO> voList;//后台列表
 	
+	public boolean getExamineStatus() {
+		return examineStatus;
+	}
+	public void setExamineStatus(boolean examineStatus) {
+		this.examineStatus = examineStatus;
+	}
 	public OutPlanVO getQuery() {
 		return query;
 	}
@@ -50,6 +58,13 @@ public class OutPlanAction extends ParentAction{
 		this.query = query;
 	}
 	
+	
+	public String getExamineId() {
+		return examineId;
+	}
+	public void setExamineId(String examineId) {
+		this.examineId = examineId;
+	}
 	public List<OutPlanVO> getVoList() {
 		return voList;
 	}
@@ -157,6 +172,15 @@ public class OutPlanAction extends ParentAction{
 	private void setPageInfo() {
 		this.voList = this.outPlanService.getList(query, super.getPageNum(),super.getNumPerPage());
 		super.totalCount = this.outPlanService.getCount(query);
+	}
+	/**
+	 * 生产计划审核
+	 * @return
+	 */
+	@Action(value = "examine",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
+	public String examine() {
+		this.examineStatus  = outPlanService.examine(examineId);
+		 return  StrutsResMSG.SUCCESS;
 	}
 	
 	@Override
