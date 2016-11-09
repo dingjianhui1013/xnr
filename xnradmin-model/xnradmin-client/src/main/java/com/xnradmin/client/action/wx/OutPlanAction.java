@@ -187,7 +187,7 @@ public class OutPlanAction extends ParentAction{
 	@Override
 	public boolean isPublic() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	

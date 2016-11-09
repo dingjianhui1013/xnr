@@ -47,7 +47,7 @@
 // 			});
 			if(status){
 				location.href="<%=path %>/page/wx/outplan/deletePlan.action?deleteId="+id;
-			//	$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null); 
+<%-- 			//	$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null);  --%>
 			}else{
 				alert("计划不能删除");
 			}
@@ -157,38 +157,38 @@
 				  	 <div class="planListCon">
 				  	 	<div class="planShowBox" >
 				  	 		<div class="planList">
-				  	 			<c:forEach items="${outplans }" var="outplan">
+				  	 			<c:forEach items="${outplans}" var="outplanVo">
 				  	 					<div class="d-planList">
 											  <form action="">
 												  <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">类别</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span>${outplan.goodsId}</span></p>
+												    	 <p class="form-control-static outputDate"><span>${outplanVo.businessGood.goodsName}</span></p>
 												    </div>
 												  </div>
 												  <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">产出日期</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span><fmt:formatDate value="${outplan.startTime}" pattern="yyyy-MM-dd " ></fmt:formatDate></span>至<span><fmt:formatDate value="${outplan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate></span></p>
+												    	 <p class="form-control-static outputDate"><span><fmt:formatDate value="${outplanVo.outPlan.startTime}" pattern="yyyy-MM-dd " ></fmt:formatDate></span>至<span><fmt:formatDate value="${outplanVo.outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate></span></p>
 												    </div>
 												  </div>
 												  <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">产出重量</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span>${outplan.output}${outplan.unitId}</span></p>
+												    	 <p class="form-control-static outputDate"><span>${outplanVo.outPlan.output}${outplanVo.businessWeight.weightName}</span></p>
 												    </div>
 												  </div>
 												   <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">审核状态</label>
 												    <div class="col-sm-10">
 												    	 <p class="form-control-static outputDate"><span>
-														    	 <c:if test="${outplan.examine==0}">
+														    	 <c:if test="${outplanVo.outPlan.examine==0}">
 														    		审核中
 														    	 </c:if>
-														    	 <c:if test="${outplan.examine==1}">
+														    	 <c:if test="${outplanVo.outPlan.examine==1}">
 														    		审核通过
 														    	 </c:if>
-														    	 <c:if test="${outplan.examine==2}">
+														    	 <c:if test="${outplanVo.outPlan.examine==2}">
 														    		审核拒绝
 														    	 </c:if>
 												    	</span></p>
@@ -196,8 +196,8 @@
 												  </div>
 											  </form>
 											  <div class="btnBox">
-												<button type="button" onclick="editPlan(${outplan.id})" class="btn btn-success">编辑</button>
-												<button type="button" onclick="deletePlan(${outplan.id})" class="btn btn-default">删除</button>
+												<button type="button" onclick="editPlan(${outplanVo.outPlan.id})" class="btn btn-success">编辑</button>
+												<button type="button" onclick="deletePlan(${outplanVo.outPlan.id})" class="btn btn-default">删除</button>
 											</div>
 										</div>
 										</c:forEach>

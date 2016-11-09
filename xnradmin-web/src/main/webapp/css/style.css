@@ -15,15 +15,14 @@ li,ul{margin:0;padding:0;list-style:none}
 .btnBox .btn-default,.btnBox .btn-success{  width: 100%; border:1px solid #fff;/* background: #629715;color: #fff; */}
 .btnBox .btn-success{ margin-bottom: 1rem;}
 .contentBox .form-group{min-height: 60px;}
-.showPhotoes{padding:0px 15px;}
+.showPhotoes{padding:0px 15px; overflow:hidden;}
 .showPhotoes ul li{ float: left; width: 32%;margin:2px; position:relative;}
 .showPhotoes ul li img{ max-height: 100%; max-width: 100%;}
-.closeIcon{ position: absolute; width: 20px; height: 20px;line-height: 20px; vertical-align: middle; background: #333;color:#fff; text-align:center; right:-3px; top:0px;border-radius: 10px;}
+.closeIcon{ position: absolute; width: 20px; height: 20px;line-height: 22px; vertical-align: middle; background: #333;color:#fff; text-align:center; right:-3px; top:0px;border-radius: 10px;}
 .myAccount{ position: absolute;right: 0.6rem; font-size: 1.4rem;top:0.6rem; line-height:24px;border:1px solid #fff; padding: 0.4rem;border-radius: 5px;}
 .myAccount .glyphicon-user{ font-size: 1.6rem; padding:0.2rem;margin:0.2rem 0.5rem 0 0;}
 .dateEnd{margin-top:1rem;}
 .mt1{margin-top: 1rem;}
-/* .uploadWrap .form-group{ overflow:hidden;} */
 .contentBox .form-group{ padding-bottom: 2rem; border-bottom: 1px solid #f3f3f3;}
 .personalBox .form-group{border-bottom: none;padding-bottom: 1rem;}
 .searchBox{ width: 75%; float: left;}

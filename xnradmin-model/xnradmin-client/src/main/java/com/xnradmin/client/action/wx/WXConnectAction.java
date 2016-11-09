@@ -44,6 +44,8 @@ import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
@@ -63,6 +65,7 @@ public class WXConnectAction {
 	private String type;
 	private String outPlanId;
 	private OutPlanVO outplanVO;
+	private List<BusinessCategory> businesCategorys;
 	public String getType() {
 		return type;
 	}
@@ -112,13 +115,13 @@ public class WXConnectAction {
 
 	@Autowired
 	private WeiXinConnectService connectService;
-	
+	@Autowired
+	private OutPlanService outPlanService;
 	@Autowired
 	private FarmerImageService farmerImageService;
 	
 	@Autowired
-	private OutPlanService outplanService;
-
+	private BusinessGoodsService businessGoodsService;
 	@Action(value = "connect")
 	public void connect() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -224,12 +227,17 @@ public class WXConnectAction {
 				+ timep
 				+ "&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImage.jsp";
 		String signature = DigestUtils.shaHex(s1);
+		businesCategorys = outPlanService.getBusinessCategoryS();
+		System.out.println("********************");
+		System.out.println("businesCategorys:"+businesCategorys.size());
+		System.out.println("********************");
 		HttpSession session = request.getSession();
 		session.setAttribute("timep", timep);
 		session.setAttribute("noncestr", noncestr);
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
+		session.setAttribute("businesCategorys", businesCategorys);
 	}
 
 	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
@@ -240,14 +248,11 @@ public class WXConnectAction {
 			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
 			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
-//			Set<String> types = new LinkedHashSet<String>();//日期对应的类型
 			List<String> typeList = farmerImageService.findByType(images,"dingjinghui");
-//			for (String typel : typeList) {
-//				types.add(typel);
-//			} 
 			for (String type : typeList) {
+			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
 				List<String> imageList = farmerImageService.findByImages(type,images,"dingjinghui");
-				type_images.put(type, imageList);
+				type_images.put(typeName, imageList);
 			}
 			type_imagesList.add(type_images);
 			date_type_image.put(images, type_imagesList);
@@ -282,7 +287,8 @@ public class WXConnectAction {
 				}
 				byte[] bytes = baos.toByteArray();
 				BufferedOutputStream bos = null;
-				String imageUrl = userId+File.separator+type;
+				String typeName = businessGoodsService.findByid(type).getGoodsName();
+				String imageUrl = userId+File.separator+typeName;
 				String filePath = ServletActionContext.getServletContext()
 						.getRealPath("/farmerImage");
 				String imageName = new Date().getTime() + "_" + userId + ".jpg";
@@ -319,7 +325,7 @@ public class WXConnectAction {
 	@Action(value="examineRelease")
 	public void examineRelease()
 	{
-		outplanVO = outplanService.getById(outPlanId);
+		outplanVO = outPlanService.getById(outPlanId);
 		String message = "";
 		if(outplanVO.getOutPlan().getExamine()==1)
 		{

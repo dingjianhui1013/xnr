@@ -8,6 +8,7 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -159,6 +160,28 @@ function upF()
 		});
 
 	}
+function getGoods()
+{
+	var id= $('#businesCategoryId option:selected').val();
+	$.ajax({
+		type:'POST',
+		url:'<%=path %>/page/wx/outplan/getGoods.action',
+	data : {
+		businesCategoryId : id
+	},
+	dataType : 'JSON',
+	success : function(data) {
+		$("#type").html("<option value=''>请选择详细</option>");
+		for (var i = 0; i < data.goodslist.length; i++) {
+			$("#type")
+					.append(
+							"<option value="+data.goodslist[i].id+" class="+data.goodslist[i].goodsWeightId+">"
+									+ data.goodslist[i].goodsName
+									+ "</option>");
+		}
+	}
+});
+}
 </script>
 </head>
 <body>
@@ -169,7 +192,7 @@ function upF()
 				<span class="glyphicon glyphicon-user"></span>我的账户
 			</div>
 		</div>
-		<div class="contentBox uploadWrap">
+		<div class="contentBox">
 			<form role="form">
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label labelFont">上传相关图片</label>
@@ -187,10 +210,18 @@ function upF()
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label labelFont">选择分类</label>
 					<div class="col-sm-10">
-						<select class="form-control" id="type">
-							<option value="sc">生菜</option>
-							<option value="bc">白菜</option>
-							<option value="td">土豆</option>
+						<select class="form-control" id="businesCategoryId"
+							onchange="getGoods()" >
+							<option value="">请选择商品</option>
+							<c:forEach items="${businesCategorys}" var="businesCategorys">
+								<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option>
+							</c:forEach>
+						</select>
+					</div>
+					<br> <label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
+					<div class="col-sm-11">
+						<select class="form-control" id="type" >
+							<option value="">请选择详细</option>
 						</select>
 					</div>
 				</div>
