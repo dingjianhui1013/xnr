@@ -20,16 +20,18 @@ import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
 @Scope("prototype")
 @Namespace("/page/wx/outplan")
 @ParentPackage("json-default")
-public class OutPlanAction {
+public class OutPlanAction extends ParentAction{
 	
 	private OutPlan outplan ;
 	private String deleteId;
@@ -37,6 +39,23 @@ public class OutPlanAction {
 	private List<BusinessGoods> goodslist;
 	private List<BusinessCategory> businesCategorys;
 	private String businesCategoryId;
+	
+	private OutPlanVO query;//后台查询条件
+	private List<OutPlanVO> voList;//后台列表
+	
+	public OutPlanVO getQuery() {
+		return query;
+	}
+	public void setQuery(OutPlanVO query) {
+		this.query = query;
+	}
+	
+	public List<OutPlanVO> getVoList() {
+		return voList;
+	}
+	public void setVoList(List<OutPlanVO> voList) {
+		this.voList = voList;
+	}
 	public String getEidtId() {
 		return eidtId;
 	}
@@ -124,6 +143,26 @@ public class OutPlanAction {
 	public String saveEdit(){
 		outPlanService.saveEdit(outplan);
 		return StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 后台信息
+	 * @return
+	 */
+	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/outPlan/info.jsp") })
+	public String info() {
+		setPageInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	private void setPageInfo() {
+		this.voList = this.outPlanService.getList(query, super.getPageNum(),super.getNumPerPage());
+		super.totalCount = this.outPlanService.getCount(query);
+	}
+	
+	@Override
+	public boolean isPublic() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

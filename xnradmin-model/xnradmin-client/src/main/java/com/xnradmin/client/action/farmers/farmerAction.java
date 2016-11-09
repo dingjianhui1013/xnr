@@ -76,7 +76,7 @@ public class farmerAction extends ParentAction{
 	
 	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/info.jsp") })
 	public String info() {
-		setPageInfo();
+//		setPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
 	
