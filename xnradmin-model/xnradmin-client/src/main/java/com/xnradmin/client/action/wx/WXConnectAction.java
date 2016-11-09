@@ -35,15 +35,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cntinker.util.wx.connect.OAuth;
+import com.cntinker.util.wx.connect.Text;
+import com.cntinker.util.wx.connect.TextMessage;
 import com.cntinker.util.wx.connect.WXBizMsgCrypt;
 import com.xnradmin.client.service.wx.FarmerImageService;
+import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.po.business.BusinessCategory;
+import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
 @Scope("prototype")
@@ -55,10 +62,10 @@ public class WXConnectAction {
 	private String userId;
 	private String userName;
 	private String serverId;
-	private OAuth oAuth;
 	private String type;
-	
-
+	private String outPlanId;
+	private OutPlanVO outplanVO;
+	private List<BusinessCategory> businesCategorys;
 	public String getType() {
 		return type;
 	}
@@ -90,13 +97,31 @@ public class WXConnectAction {
 	public void setServerId(String serverId) {
 		this.serverId = serverId;
 	}
+	public String getOutPlanId() {
+		return outPlanId;
+	}
+
+	public void setOutPlanId(String outPlanId) {
+		this.outPlanId = outPlanId;
+	}
+
+	public OutPlanVO getOutplanVO() {
+		return outplanVO;
+	}
+
+	public void setOutplanVO(OutPlanVO outplanVO) {
+		this.outplanVO = outplanVO;
+	}
 
 	@Autowired
 	private WeiXinConnectService connectService;
-	
+	@Autowired
+	private OutPlanService outPlanService;
 	@Autowired
 	private FarmerImageService farmerImageService;
-
+	
+	@Autowired
+	private BusinessGoodsService businessGoodsService;
 	@Action(value = "connect")
 	public void connect() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -155,7 +180,7 @@ public class WXConnectAction {
 	}
 
 	@Action(value = "oAuth", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage.jsp") })
-	public String oAuth() {
+	public String oAuth(){
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String code = request.getParameter("code");
 		String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
@@ -202,12 +227,17 @@ public class WXConnectAction {
 				+ timep
 				+ "&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImage.jsp";
 		String signature = DigestUtils.shaHex(s1);
+		businesCategorys = outPlanService.getBusinessCategoryS();
+		System.out.println("********************");
+		System.out.println("businesCategorys:"+businesCategorys.size());
+		System.out.println("********************");
 		HttpSession session = request.getSession();
 		session.setAttribute("timep", timep);
 		session.setAttribute("noncestr", noncestr);
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
+		session.setAttribute("businesCategorys", businesCategorys);
 	}
 
 	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
@@ -218,14 +248,11 @@ public class WXConnectAction {
 			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
 			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
-//			Set<String> types = new LinkedHashSet<String>();//日期对应的类型
 			List<String> typeList = farmerImageService.findByType(images,"dingjinghui");
-//			for (String typel : typeList) {
-//				types.add(typel);
-//			} 
 			for (String type : typeList) {
+			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
 				List<String> imageList = farmerImageService.findByImages(type,images,"dingjinghui");
-				type_images.put(type, imageList);
+				type_images.put(typeName, imageList);
 			}
 			type_imagesList.add(type_images);
 			date_type_image.put(images, type_imagesList);
@@ -260,7 +287,8 @@ public class WXConnectAction {
 				}
 				byte[] bytes = baos.toByteArray();
 				BufferedOutputStream bos = null;
-				String imageUrl = userId+File.separator+type;
+				String typeName = businessGoodsService.findByid(type).getGoodsName();
+				String imageUrl = userId+File.separator+typeName;
 				String filePath = ServletActionContext.getServletContext()
 						.getRealPath("/farmerImage");
 				String imageName = new Date().getTime() + "_" + userId + ".jpg";
@@ -293,5 +321,31 @@ public class WXConnectAction {
 		}
 		this.userId = userId;
 		this.userName = userName;
+	}
+	@Action(value="examineRelease")
+	public void examineRelease()
+	{
+		outplanVO = outPlanService.getById(outPlanId);
+		String message = "";
+		if(outplanVO.getOutPlan().getExamine()==1)
+		{
+			message="您提交的生产计划已经通过审核";
+		}
+		if(outplanVO.getOutPlan().getExamine()==2)
+		{
+			message="您提交的生产计划被拒绝，拒绝原因为："+outplanVO.getOutPlan().getRemarks();
+		}
+		message = "ceshisha";
+		String access_token = WXGetTokenService.accessTokenIsOvertime();
+	    Text text = new Text();
+	    text.setContent(message);
+	    TextMessage textMessage = new TextMessage();
+	    textMessage.setTouser("dingjinghui");
+	    textMessage.setMsgtype("text");
+	    textMessage.setAgentid(WXInit.AGENT_ID);
+	    textMessage.setText(text);
+	    textMessage.setSafe(0);
+	    String outputStr = JSONObject.fromObject(textMessage).toString();
+	    WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + access_token, "POST", outputStr);
 	}
 }

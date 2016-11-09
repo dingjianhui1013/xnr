@@ -34,7 +34,10 @@
  			var dateStart = $("#dateStart").val();
 			var dateEnd = $("#dateEnd").val();
 			var output = $("#output").val();
- 			if(dateStart==null||dateStart==""){
+			var types = $("#goodsId").val();
+			if(types==null||types==""){
+				$("#Yz").html("请选择详细商品").show();
+			}else if(dateStart==null||dateStart==""){
 				$("#Yz").html("请输入预计产出开始日期").show();
  			}else if(dateEnd==null||dateEnd==""){
 				$("#Yz").html("请输入预计产出结束日期").show();
@@ -88,16 +91,35 @@
 			},
 			dataType : 'JSON',
 			success : function(data) {
-				$("#goodsId").html("");
+				$("#goodsId").html("<option value=''>请选择详细</option>");
 				for (var i = 0; i < data.goodslist.length; i++) {
 					$("#goodsId")
 							.append(
-									"<option value="+data.goodslist[i].id+">"
+									"<option value="+data.goodslist[i].id+" class="+data.goodslist[i].goodsWeightId+">"
 											+ data.goodslist[i].goodsName
 											+ "</option>");
 				}
 			}
 		});
+	}
+		function getWeight()
+		{
+			var id =$("#goodsId option:selected").attr("class");
+			$.ajax({
+				type:'POST',
+				url:'<%=path %>/page/wx/outplan/getWeight.action',
+					data : {
+						weightId : id
+					},
+					dataType : 'JSON',
+					success : function(data) {
+						$("#weigthId").html("");
+						$("#weigthId").append(
+								"<option value="+data.businessWeight.id+">"
+										+ data.businessWeight.weightName
+										+ "</option>");
+					}
+				});
 	}
 </script>
 </head>
@@ -117,6 +139,7 @@
 					<div class="col-sm-10">
 						<select class="form-control" id="businesCategoryId"
 							onchange="getGoods()" name="outplan.businesCategoryId">
+							<option value="">请选择商品</option>
 							<c:forEach items="${businesCategorys}" var="businesCategorys">
 								<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option>
 							</c:forEach>
@@ -124,8 +147,9 @@
 					</div>
 					<br> <label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
 					<div class="col-sm-11">
-						<select class="form-control" name="outplan.goodsId" id="goodsId">
-							<option value=""></option>
+						<select class="form-control" name="outplan.goodsId" id="goodsId"
+							onchange="getWeight()">
+							<option value="">请选择详细</option>
 						</select>
 					</div>
 				</div>
@@ -146,10 +170,8 @@
 							name="outplan.output" class="numInput form-control" />
 					</div>
 					<div class="col-sm-3 mt1">
-						<select class="form-control" name="outplan.unitId" id="">
-							<option value="吨">吨</option>
-							<option value="千克">千克</option>
-							<option value="斤">斤</option>
+						<select class="form-control" name="outplan.unitId" id="weigthId">
+							<option value="">请选择单位</option>
 						</select>
 					</div>
 				</div>

@@ -24,6 +24,7 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.WXurl;
 import com.xnradmin.vo.business.OutPlanVO;
@@ -44,6 +45,8 @@ public class OutPlanAction extends ParentAction{
 	private boolean examineStatus;//审核结果 json
 	private OutPlanVO query;//后台查询条件
 	private List<OutPlanVO> voList;//后台列表
+	private String weightId;
+	private BusinessWeight businessWeight;
 	
 	public boolean getExamineStatus() {
 		return examineStatus;
@@ -116,6 +119,19 @@ public class OutPlanAction extends ParentAction{
 	public void setGoodslist(List<BusinessGoods> goodslist) {
 		this.goodslist = goodslist;
 	}
+	public String getWeightId() {
+		return weightId;
+	}
+	public void setWeightId(String weightId) {
+		this.weightId = weightId;
+	}
+	public BusinessWeight getBusinessWeight() {
+		return businessWeight;
+	}
+	public void setBusinessWeight(BusinessWeight businessWeight) {
+		this.businessWeight = businessWeight;
+	}
+	
 	@Autowired
 	private OutPlanService outPlanService ;
 		
@@ -138,8 +154,17 @@ public class OutPlanAction extends ParentAction{
 		return StrutsResMSG.SUCCESS;
 	}
 	
+	@Action(value="getWeight",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
+	public String gerWeight()
+	{
+		businessWeight = outPlanService.getWeight(weightId);
+		return StrutsResMSG.SUCCESS;
+	}
+	
 	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
 	public String save(){
+		outplan.setCreateBy(outplan.getUserId());
+		outplan.setExamine(0);//待审核
 		outPlanService.save(outplan);
 		return StrutsResMSG.SUCCESS;
 	}
@@ -186,7 +211,7 @@ public class OutPlanAction extends ParentAction{
 	@Override
 	public boolean isPublic() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	

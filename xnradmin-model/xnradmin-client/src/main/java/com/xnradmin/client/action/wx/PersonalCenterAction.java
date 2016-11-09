@@ -28,10 +28,13 @@ import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
 @Scope("prototype")
@@ -43,7 +46,8 @@ public class PersonalCenterAction {
 	private OutPlanService outPlanService ;
 	@Autowired
 	private FarmerImageService farmerImageService ;
-	
+	@Autowired
+	private BusinessGoodsService businessGoodsService;
 	private String imageUrl;
 	private String status;
 	private String imageid;
@@ -75,7 +79,7 @@ public class PersonalCenterAction {
 				WXurl.WX_USERID_URL.replace("ACCESS_TOKEN", access_tokenString)
 						.replace("CODE", code), "GET", null);
 		
-		List<OutPlan> outplans = outPlanService.findAll(userId.getString("UserId"));
+		List<OutPlanVO> outplans = outPlanService.getListByUserId(userId.getString("UserId"),0,0);
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
 		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
 		List<String> imagedates = farmerImageService.getImageDates(userId.getString("UserId"));
@@ -85,8 +89,9 @@ public class PersonalCenterAction {
 			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
 			List<String> typeList = farmerImageService.findByType(images,userId.getString("UserId"));
 			for (String type : typeList) {
+			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
 				List<String> imageList = farmerImageService.findByImages(type,images,userId.getString("UserId"));
-				type_images.put(type, imageList);
+				type_images.put(typeName, imageList);
 			}
 			type_imagesList.add(type_images);
 			date_type_image.put(images, type_imagesList);
@@ -99,8 +104,11 @@ public class PersonalCenterAction {
 	}
 	@Action(value = "test",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
 	public String test(){
-		List<OutPlan> outplans = outPlanService.findAll("jiaojianan");
-		ServletActionContext.getRequest().setAttribute("outplans", outplans);
+		OutPlan outplan = new OutPlan(); 
+//		List<OutPlan> outplans = outPlanService.findAll("dingjinghui");
+		List<OutPlanVO> outplans = outPlanService.getListByUserId("dingjinghui",0,0);
+		outPlanService.save(outplan);
+//		ServletActionContext.getRequest().setAttribute("outplans", outplans);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value="deleteImage", results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})

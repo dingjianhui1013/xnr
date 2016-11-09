@@ -29,7 +29,7 @@ public class OutPlan  implements java.io.Serializable{
 	private int delFlage;//删除状态
 	private Integer examine;//审核状态
 	private String remarks;//备注
-	
+	private String examinePerson;
 	
 	@Id
     @GeneratedValue(strategy = IDENTITY)
@@ -82,8 +82,6 @@ public class OutPlan  implements java.io.Serializable{
 	public void setOutput(String output) {
 		this.output = output;
 	}
-	
-	 
 	@Column(name="create_date")
 	public Date getCreateDate() {
 		return createDate;
@@ -140,5 +138,13 @@ public class OutPlan  implements java.io.Serializable{
 	public void setBusinesCategoryId(String businesCategoryId) {
 		this.businesCategoryId = businesCategoryId;
 	}
+	@Column(name="examine_person")
+	public String getExaminePerson() {
+		return examinePerson;
+	}
+	public void setExaminePerson(String examinePerson) {
+		this.examinePerson = examinePerson;
+	}
+	
 	
 }

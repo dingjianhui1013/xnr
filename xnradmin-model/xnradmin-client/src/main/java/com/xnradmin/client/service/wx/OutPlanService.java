@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,29 @@ public class OutPlanService {
 		}
 		return resList;
 	}
+public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
+		
+		String hql = getHqlByUserId(userId);
+		List list= commonDao.getEntitiesByPropertiesWithHql(hql, pageNo,pageSize);
+		List<OutPlanVO> resList = new LinkedList<OutPlanVO>();
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			OutPlan outPlan = (OutPlan) obj[0];
+			Farmer farmer = (Farmer) obj[1];
+			BusinessGoods businessGood = (BusinessGoods) obj[2];
+			BusinessWeight businessWeight = (BusinessWeight) obj[3];
+			BusinessCategory businessCategory = (BusinessCategory) obj[4];
+			
+			OutPlanVO outPlanVO = new OutPlanVO();
+			outPlanVO.setOutPlan(outPlan);
+			outPlanVO.setFarmer(farmer);
+			outPlanVO.setBusinessGood(businessGood);
+			outPlanVO.setBusinessWeight(businessWeight);
+			outPlanVO.setBusinessCategory(businessCategory);
+			resList.add(outPlanVO);
+		}
+		return resList;
+	}
 	public OutPlanVO getById(String id){
 		
 		String hql = "from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d,BusinessCategory e  where a.delFlage=0 and a.userId=b.userId"
@@ -141,6 +165,16 @@ public class OutPlanService {
 		hql.append(" order by a.id desc");
 		return hql.toString();
 	}
+	private String getHqlByUserId(String userId) {
+		StringBuffer hql = new StringBuffer();
+		hql.append("from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d,BusinessCategory e  where a.delFlage=0 and a.userId=b.userId"
+				+ " and a.goodsId=c.id and a.unitId=d.id and a.businesCategoryId=e.id");
+		if(StringUtils.isNotEmpty(userId))
+		{
+			hql.append(" and a.userId='"+userId+"'");
+		}
+		return hql.toString();
+	}
 	
 	public int getCount(OutPlanVO query) {
 		String hql = "select count(*) " + getHql(query);
@@ -170,5 +204,10 @@ public class OutPlanService {
 			}
 		}
 		return isok;
+	}
+	public BusinessWeight getWeight(String weightId) {
+		String hql = "from BusinessWeight where id="+weightId;
+		List<BusinessWeight> businessWeight =commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return businessWeight.get(0);
 	}
 }
