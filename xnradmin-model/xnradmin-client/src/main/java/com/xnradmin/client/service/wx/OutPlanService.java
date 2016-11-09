@@ -183,4 +183,9 @@ public class OutPlanService {
 		List<BusinessGoods> goodList =  commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		return goodList;
 	}
+	public BusinessWeight getWeight(String weightId) {
+		String hql = "from BusinessWeight where id="+weightId;
+		List<BusinessWeight> businessWeight =commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return businessWeight.get(0);
+	}
 }

@@ -35,15 +35,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cntinker.util.wx.connect.OAuth;
+import com.cntinker.util.wx.connect.Text;
+import com.cntinker.util.wx.connect.TextMessage;
 import com.cntinker.util.wx.connect.WXBizMsgCrypt;
 import com.xnradmin.client.service.wx.FarmerImageService;
+import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
 @Scope("prototype")
@@ -55,10 +60,9 @@ public class WXConnectAction {
 	private String userId;
 	private String userName;
 	private String serverId;
-	private OAuth oAuth;
 	private String type;
-	
-
+	private String outPlanId;
+	private OutPlanVO outplanVO;
 	public String getType() {
 		return type;
 	}
@@ -90,12 +94,30 @@ public class WXConnectAction {
 	public void setServerId(String serverId) {
 		this.serverId = serverId;
 	}
+	public String getOutPlanId() {
+		return outPlanId;
+	}
+
+	public void setOutPlanId(String outPlanId) {
+		this.outPlanId = outPlanId;
+	}
+
+	public OutPlanVO getOutplanVO() {
+		return outplanVO;
+	}
+
+	public void setOutplanVO(OutPlanVO outplanVO) {
+		this.outplanVO = outplanVO;
+	}
 
 	@Autowired
 	private WeiXinConnectService connectService;
 	
 	@Autowired
 	private FarmerImageService farmerImageService;
+	
+	@Autowired
+	private OutPlanService outplanService;
 
 	@Action(value = "connect")
 	public void connect() throws Exception {
@@ -155,7 +177,7 @@ public class WXConnectAction {
 	}
 
 	@Action(value = "oAuth", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage.jsp") })
-	public String oAuth() {
+	public String oAuth(){
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String code = request.getParameter("code");
 		String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
@@ -293,5 +315,31 @@ public class WXConnectAction {
 		}
 		this.userId = userId;
 		this.userName = userName;
+	}
+	@Action(value="examineRelease")
+	public void examineRelease()
+	{
+		outplanVO = outplanService.getById(outPlanId);
+		String message = "";
+		if(outplanVO.getOutPlan().getExamine()==1)
+		{
+			message="您提交的生产计划已经通过审核";
+		}
+		if(outplanVO.getOutPlan().getExamine()==2)
+		{
+			message="您提交的生产计划被拒绝，拒绝原因为："+outplanVO.getOutPlan().getRemarks();
+		}
+		message = "ceshisha";
+		String access_token = WXGetTokenService.accessTokenIsOvertime();
+	    Text text = new Text();
+	    text.setContent(message);
+	    TextMessage textMessage = new TextMessage();
+	    textMessage.setTouser("dingjinghui");
+	    textMessage.setMsgtype("text");
+	    textMessage.setAgentid(WXInit.AGENT_ID);
+	    textMessage.setText(text);
+	    textMessage.setSafe(0);
+	    String outputStr = JSONObject.fromObject(textMessage).toString();
+	    WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + access_token, "POST", outputStr);
 	}
 }
