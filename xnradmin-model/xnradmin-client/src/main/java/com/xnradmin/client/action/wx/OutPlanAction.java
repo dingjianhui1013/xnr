@@ -1,6 +1,7 @@
 package com.xnradmin.client.action.wx;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -20,8 +22,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeixinUtil;
+import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.po.CommonPermissionMenuRelation;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
@@ -38,7 +42,9 @@ public class OutPlanAction extends ParentAction{
 	private OutPlan outplan ;
 	private String deleteId;
 	private String eidtId;
-	private String examineId;
+	private String examineId;//审核通过
+	private String examineNoId;//审核不通过
+	private String remarks;//拒绝理由
 	private List<BusinessGoods> goodslist;
 	private List<BusinessCategory> businesCategorys;
 	private String businesCategoryId;
@@ -48,6 +54,18 @@ public class OutPlanAction extends ParentAction{
 	private String weightId;
 	private BusinessWeight businessWeight;
 	
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	public String getExamineNoId() {
+		return examineNoId;
+	}
+	public void setExamineNoId(String examineNoId) {
+		this.examineNoId = examineNoId;
+	}
 	public boolean getExamineStatus() {
 		return examineStatus;
 	}
@@ -199,7 +217,7 @@ public class OutPlanAction extends ParentAction{
 		super.totalCount = this.outPlanService.getCount(query);
 	}
 	/**
-	 * 生产计划审核
+	 * 生产计划审核通过
 	 * @return
 	 */
 	@Action(value = "examine",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
@@ -207,7 +225,27 @@ public class OutPlanAction extends ParentAction{
 		this.examineStatus  = outPlanService.examine(examineId);
 		 return  StrutsResMSG.SUCCESS;
 	}
-	
+	/**
+	 * 带信息去拒绝页面
+	 * @return
+	 */
+	@Action(value = "examineNo", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/outPlan/NoPage.jsp") })
+	public String examineNo(){
+		 return  StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 更新对象接口
+	 * 
+	 * @return String
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	@Action(value = "saveExamineNo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String saveExamineNo() throws JSONException, IOException {
+		outPlanService.examineNo(this.examineNoId,this.remarks);
+		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "menuInfo",null);
+		return null;
+	}
 	@Override
 	public boolean isPublic() {
 		// TODO Auto-generated method stub

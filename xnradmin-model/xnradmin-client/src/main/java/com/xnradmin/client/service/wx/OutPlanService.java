@@ -205,6 +205,19 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		return isok;
 	}
+	public boolean examineNo(String id,String remarks){
+		boolean isok = false;
+		if(id!=null&&!"".equals(id)){
+			String hql = "update OutPlan set examine=2 ,remarks='"+remarks+"' where id="+id;
+			try {
+				commonDao.executeUpdateOrDelete(hql);
+				isok = true;
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		return isok;
+	}
 	public BusinessWeight getWeight(String weightId) {
 		String hql = "from BusinessWeight where id="+weightId;
 		List<BusinessWeight> businessWeight =commonDao.getEntitiesByPropertiesWithHql(hql,0,0);

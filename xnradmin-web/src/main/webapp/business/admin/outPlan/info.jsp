@@ -87,8 +87,9 @@
 					审核状态
 					<select name="query.outPlan.examine">
 						<option>请选择</option>
+						<option value="0" <c:if test="${ query.outPlan.examine==0}">selected="selected"</c:if>>未审核</option>
 						<option value="1" <c:if test="${ query.outPlan.examine==1}">selected="selected"</c:if>>通过</option>
-						<option value="0" <c:if test="${ query.outPlan.examine==0}">selected="selected"</c:if>>未通过</option>
+						<option value="2" <c:if test="${ query.outPlan.examine==2}">selected="selected"</c:if>>拒绝</option>
 					</select>
 				</td>	
 			</tr>
@@ -132,11 +133,13 @@
 						<td>${loop.businessWeight.weightName}</td>
 						<input id="ex${loop.outPlan.id}" type="hidden" value="${loop.outPlan.examine}">
 						<td id="examine${loop.outPlan.id}">
+						<c:if test="${ loop.outPlan.examine==0}">未审核</c:if>
 						<c:if test="${ loop.outPlan.examine==1}">通过</c:if>
-						<c:if test="${ loop.outPlan.examine==0}">未通过</c:if>
+						<c:if test="${ loop.outPlan.examine==2}">拒绝</c:if>
 						</td>
 						<td>	
 							 <a  href="javascript:void(0)" class="btnSelect" onclick="examine(${loop.outPlan.id})">通过</a>
+							 <a title="拒绝" target="dialog" href="page/wx/outplan/examineNo.action?examineNoId=${loop.outPlan.id}" class="btnDel">拒绝</a>
 						</td>	
 					</tr>				
 				</c:forEach>
