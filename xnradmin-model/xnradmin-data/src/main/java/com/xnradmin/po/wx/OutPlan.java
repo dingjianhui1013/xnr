@@ -27,7 +27,7 @@ public class OutPlan  implements java.io.Serializable{
 	private String createBy;//创建人
 	private String updateBy;//更新人
 	private int delFlage;//删除状态
-	private int examine;//审核状态
+	private Integer examine;//审核状态
 	private String remarks;//备注
 	private String examinePerson;
 	
@@ -118,7 +118,7 @@ public class OutPlan  implements java.io.Serializable{
 		this.delFlage = delFlage;
 	}
 	@Column(name="examine")
-	public int getExamine() {
+	public Integer getExamine() {
 		return examine;
 	}
 	@Column(name="remarks")

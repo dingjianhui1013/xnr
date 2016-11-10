@@ -22,7 +22,34 @@
 
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<script type="text/javascript">
+	function examine(id){
+		var s = $("#ex"+id).val();
+		if(s==1){
+			alert("已经审核过，无需重复审核");
+			return;
+		}
+		if(confirm("确定通过审核")){
+			 $.ajax({
+	             type: "post",
+	             url: "page/wx/outplan/examine.action",
+	             data: {examineId:id},
+	             dataType: "json",
+	             success: function(data){
+	            	 if(data.examineStatus==true){
+	            		 $("#examine"+id).html("<div>通过</div>");
+	            		 $("#ex"+id).val(1);
+	            	 }else{
+	            		 alert("系统异常，审核失败");
+	            	 }
+	             }
+	         });
+		}
+	}
+	function noexamine(){
+		alert("已经审核过，无需重复审核");
+	}
+</script>
 <form id="pagerForm" method="post" action="${action}">			
 
 		<%-- <input type="hidden" name="query.menu.menuName" value="${query.menu.menuName}" />
@@ -35,33 +62,39 @@
 </form>
 
 <div class="pageHeader">
-	<form onsubmit="return navTabSearch(this);" action="" method="post">
+	<form onsubmit="return navTabSearch(this);" action="${action}" method="post">
 	<div class="searchBar">	
 		<table class="searchContent">
 			<tr>
 				<td>
 					ID（可模糊查询）
-					<input type="text" name="query.outPlan.id" />
+					<input type="text" name="query.outPlan.id" value="${ query.outPlan.id}"/>
 				</td>	
 				<td>
 					农户
-					<input type="text" name="query.farmer.userName" />
+					<input type="text" name="query.farmer.userName" value="${ query.farmer.userName}"/>
 				</td>	
 				<td>
 					商品
-					<input type="text" name="query.businessGood.goodsName" />
+					<input type="text" name="query.businessGood.goodsName" value="${ query.businessGood.goodsName}"/>
 				</td>	
 				<td>
 					开始时间
-					<input type="text" name="query.outPlan.startTime" />
+					<input type="text" name="query.outPlan.startTime" yearstart="-80" yearend="1" class="date" dateFmt="yyyy-MM-dd" value="<fmt:formatDate value="${ query.outPlan.startTime}" pattern="yyyy-MM-dd"/>"/>
 				</td>	
 				<td>
 					结束时间
-					<input type="text" name="query.outPlan.endTime" />
-				</td>	
+					<input type="text" name="query.outPlan.endTime" yearstart="-80" yearend="1" class="date" dateFmt="yyyy-MM-dd"  value="<fmt:formatDate value="${ query.outPlan.endTime}" pattern="yyyy-MM-dd"/>"/>
+				</td>
 				<td>
-					<a class="btnLook" href="${outPlanlookup}" lookupGroup="wxuservo">查找带回</a>
-				</td>		
+					审核状态
+					<select name="query.outPlan.examine">
+						<option>请选择</option>
+						<option value="0" <c:if test="${ query.outPlan.examine==0}">selected="selected"</c:if>>未审核</option>
+						<option value="1" <c:if test="${ query.outPlan.examine==1}">selected="selected"</c:if>>通过</option>
+						<option value="2" <c:if test="${ query.outPlan.examine==2}">selected="selected"</c:if>>拒绝</option>
+					</select>
+				</td>	
 			</tr>
 		</table>
 		<div class="subBar">
@@ -87,7 +120,7 @@
 				<th width="35">计划产量</th>
 				<th width="35">单位</th>
 				<th width="35">审核状态</th>
-				<th width="70">审核</th>
+				<th width="30">审核</th>
 			</tr>
 		</thead>
 		<tbody>		
@@ -101,9 +134,18 @@
 						<td><fmt:formatDate value="${loop.outPlan.endTime}" pattern="yyyy-MM-dd " ></fmt:formatDate></td>	
 						<td>${loop.outPlan.output}</td>	
 						<td>${loop.businessWeight.weightName}</td>
-						<td>${loop.outPlan.examine}</td>
-						<td>					
-							<a  href="" class="btnSelect">通过</a>
+						<input id="ex${loop.outPlan.id}" type="hidden" value="${loop.outPlan.examine}">
+						<td id="examine${loop.outPlan.id}">
+						<c:if test="${ loop.outPlan.examine==0}">未审核</c:if>
+						<c:if test="${ loop.outPlan.examine==1}">通过</c:if>
+						<c:if test="${ loop.outPlan.examine==2}">拒绝</c:if>
+						</td>
+						<td>	
+							 <a title="通过" href="javascript:void(0)" class="btnSelect" onclick="examine(${loop.outPlan.id})">通过</a>
+							 <c:if test="${loop.outPlan.examine==0}"><a title="拒绝" href="page/wx/outplan/examineNo.action?examineNoId=${loop.outPlan.id}" class="btnDel"  target="dialog" >拒绝</a></c:if>
+							 <c:if test="${loop.outPlan.examine!=0}">
+							 	<a title="拒绝" href="javascript:void(0)" class="btnDel"  onclick="noexamine()">拒绝</a>
+							 </c:if>
 						</td>	
 					</tr>				
 				</c:forEach>
