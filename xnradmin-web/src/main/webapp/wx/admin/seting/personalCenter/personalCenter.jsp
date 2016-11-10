@@ -19,7 +19,6 @@
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll_date.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/style.css">
-	<link rel="stylesheet" type="text/css" href="<%=path %>/css/chosen/chosen.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/site.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/photoswipe.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/default-skin.css">
@@ -31,8 +30,10 @@
 	
 	<script src="<%=path %>/js/photoswipe.min.js"></script>
     <script src="<%=path %>/js/photoswipe-ui-default.min.js"></script>
-    <script type="text/javascript" src="<%=path %>/js/chosen/chosen.jquery.js"></script>
+    <script type="text/javascript">
+    </script>
 	<script type="text/javascript" >
+	
 		function deletePlan(id){
 			var status = true;
 			//获取状态
@@ -111,7 +112,7 @@
 				<form role="form">
 					  <div class="form-group">
 					    <div class="searchBox">
-					    	<input type="text"  class="form-control"  placeholder="请输入关键词进行搜索"/>
+					    	<input type="text"  class="form-control"  placeholder="请输入关键词进行搜索" id="tags"/>
 					    </div>
 					    	<input type="button" value="搜索" class="btn btn-primary searchBtn">
 					    
@@ -181,18 +182,22 @@
 												   <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">审核状态</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span>
 														    	 <c:if test="${outplanVo.outPlan.examine==0}">
-														    		审核中
+														    		<p class="form-control-static outputDate"><span>审核中</span></p>
 														    	 </c:if>
 														    	 <c:if test="${outplanVo.outPlan.examine==1}">
-														    		审核通过
+														    		<p class="form-control-static outputDate"><span>审核通过</span></p>
 														    	 </c:if>
 														    	 <c:if test="${outplanVo.outPlan.examine==2}">
-														    		审核拒绝
-														    	 </c:if>
-												    	</span></p>
+															    	<p class="form-control-static outputDate"><span>审核拒绝</span></p>
+																 </c:if>
 												    </div>
+												    <c:if test="${outplanVo.outPlan.examine==2}">
+													    <label for="" class="col-sm-2 control-label labelFont">拒绝原因</label>
+													    <div class="col-sm-10">
+												    		<p class="form-control-static outputDate"><span>${outplanVo.outPlan.remarks}</span></p>
+														</div>
+													</c:if>
 												  </div>
 											  </form>
 											  <div class="btnBox">
