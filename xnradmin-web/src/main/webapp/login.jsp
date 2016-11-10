@@ -17,7 +17,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>小农人儿管理平台</title>
+<title>康源公社管理平台</title>
 <link href="themes/css/login.css" rel="stylesheet" type="text/css" />
 <script src="js/jquery-1.7.2.js" type="text/javascript"></script>
 <script src="js/verifyCode.js" type="text/javascript"></script>
