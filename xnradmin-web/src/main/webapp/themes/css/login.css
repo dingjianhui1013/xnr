@@ -26,12 +26,15 @@ body { margin:0; text-align:center; background:#FFF url(../default/images/login_
 .navList a:hover { text-decoration:underline;}
 
 #login_content { display:block; position:relative;}
+.login_headerContent h3{ font-size:20px; padding-bottom:10px; margin-bottom:10px; text-align:center;padding:50px 0px 10px;}
+#login_content .errorTips{color:red; display:block; text-align:center}
 .login_title { display:block; padding:25px 0 0 38px;}
-.loginForm { display:block; width:240px; padding:40px 20px 0 20px; position:absolute; right:40px;}
+.loginForm { display:block; width:280px; padding:20px 20px 0 20px; position:absolute; right:40px;box-sizing: border-box;}
 .loginForm p { margin:10px 0;}
-.loginForm label { float:left; width:70px; padding:0 0 0 10px; line-height:25px; color:#4c4c4c; font-size:14px;}
-.loginForm input { padding:3px 2px; border-style:solid; border-width:1px; border-color:#80a5c4;}
-.loginForm .login_input {}
+.loginForm label { float:left; width:70px; padding:0px; line-height:25px; color:#4c4c4c; font-size:14px; font-weight:bold;margin-bottom:5px;}
+.loginForm input { padding:8px 2px; border-style:solid; border-width:1px; border-color:#80a5c4;border-radius:5px;box-sizing: border-box;}
+.loginForm .login_input {width:100%;}
+.loginForm .yzmLabel{padding-top:5px;}
 .loginForm .code { float:left; margin-right:5px;}
 .login_bar { padding-left:70px;}
 .login_bar .sub { display:block; width:75px; height:30px; border:none; background:url(../default/images/login_sub.png) no-repeat; cursor:pointer;}
@@ -48,3 +51,5 @@ body { margin:0; text-align:center; background:#FFF url(../default/images/login_
 .login_inner p { margin:10px 0; line-height:150%; font-size:14px; color:#666;}
 
 #login_footer { clear:both; display:block; margin-bottom:20px; padding:10px; border-top:solid 1px #e2e5e8; color:#666; text-align:center;}
+
+
