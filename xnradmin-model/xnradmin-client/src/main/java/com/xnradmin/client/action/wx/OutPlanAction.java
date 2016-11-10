@@ -152,6 +152,8 @@ public class OutPlanAction extends ParentAction{
 	
 	@Autowired
 	private OutPlanService outPlanService ;
+	@Autowired
+	private WXConnectAction wxconnectaction;
 		
 	@Action(value = "outplan",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/outplan/outplan.jsp") })
 	public String outplan(){
@@ -223,6 +225,7 @@ public class OutPlanAction extends ParentAction{
 	@Action(value = "examine",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
 	public String examine() {
 		this.examineStatus  = outPlanService.examine(examineId);
+		outPlanService.examineRelease(examineId);
 		 return  StrutsResMSG.SUCCESS;
 	}
 	/**
@@ -243,7 +246,8 @@ public class OutPlanAction extends ParentAction{
 	@Action(value = "saveExamineNo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
 	public String saveExamineNo() throws JSONException, IOException {
 		outPlanService.examineNo(this.examineNoId,this.remarks);
-		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "menuInfo",null);
+		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "outPlanManagement",null);
+		outPlanService.examineRelease(examineNoId);
 		return null;
 	}
 	@Override

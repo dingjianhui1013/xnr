@@ -26,7 +26,7 @@
 	function examine(id){
 		var s = $("#ex"+id).val();
 		if(s==1){
-			alert("请不要重复审核");
+			alert("已经审核过，无需重复审核");
 			return;
 		}
 		if(confirm("确定通过审核")){
@@ -45,6 +45,9 @@
 	             }
 	         });
 		}
+	}
+	function noexamine(){
+		alert("已经审核过，无需重复审核");
 	}
 </script>
 <form id="pagerForm" method="post" action="${action}">			
@@ -138,8 +141,11 @@
 						<c:if test="${ loop.outPlan.examine==2}">拒绝</c:if>
 						</td>
 						<td>	
-							 <a  href="javascript:void(0)" class="btnSelect" onclick="examine(${loop.outPlan.id})">通过</a>
-							 <a title="拒绝" target="dialog" href="page/wx/outplan/examineNo.action?examineNoId=${loop.outPlan.id}" class="btnDel">拒绝</a>
+							 <a title="通过" href="javascript:void(0)" class="btnSelect" onclick="examine(${loop.outPlan.id})">通过</a>
+							 <c:if test="${loop.outPlan.examine==0}"><a title="拒绝" href="page/wx/outplan/examineNo.action?examineNoId=${loop.outPlan.id}" class="btnDel"  target="dialog" >拒绝</a></c:if>
+							 <c:if test="${loop.outPlan.examine!=0}">
+							 	<a title="拒绝" href="javascript:void(0)" class="btnDel"  onclick="noexamine()">拒绝</a>
+							 </c:if>
 						</td>	
 					</tr>				
 				</c:forEach>

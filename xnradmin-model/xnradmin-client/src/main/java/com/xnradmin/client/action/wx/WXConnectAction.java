@@ -322,30 +322,5 @@ public class WXConnectAction {
 		this.userId = userId;
 		this.userName = userName;
 	}
-	@Action(value="examineRelease")
-	public void examineRelease()
-	{
-		outplanVO = outPlanService.getById(outPlanId);
-		String message = "";
-		if(outplanVO.getOutPlan().getExamine()==1)
-		{
-			message="您提交的生产计划已经通过审核";
-		}
-		if(outplanVO.getOutPlan().getExamine()==2)
-		{
-			message="您提交的生产计划被拒绝，拒绝原因为："+outplanVO.getOutPlan().getRemarks();
-		}
-		message = "ceshisha";
-		String access_token = WXGetTokenService.accessTokenIsOvertime();
-	    Text text = new Text();
-	    text.setContent(message);
-	    TextMessage textMessage = new TextMessage();
-	    textMessage.setTouser("dingjinghui");
-	    textMessage.setMsgtype("text");
-	    textMessage.setAgentid(WXInit.AGENT_ID);
-	    textMessage.setText(text);
-	    textMessage.setSafe(0);
-	    String outputStr = JSONObject.fromObject(textMessage).toString();
-	    WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + access_token, "POST", outputStr);
-	}
+	
 }

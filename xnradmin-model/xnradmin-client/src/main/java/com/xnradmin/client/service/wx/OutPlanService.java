@@ -5,16 +5,21 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cntinker.util.wx.connect.Text;
+import com.cntinker.util.wx.connect.TextMessage;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.vo.business.OutPlanVO;
 
 @Service("OutPlanService")
@@ -63,6 +68,7 @@ public class OutPlanService {
 						+ " endTime='"+simpleDateFormat.format(outPlan.getEndTime())+"',"
 								+ " output='"+outPlan.getOutput()+"',"
 										+ " unitId='"+outPlan.getUnitId()+"'"
+											+" examine=0"
 												+ " where id="+outPlan.getId();
 		commonDao.executeUpdateOrDelete(hql);
 	}
@@ -195,7 +201,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	public boolean examine(String id){
 		boolean isok = false;
 		if(id!=null&&!"".equals(id)){
-			String hql = "update OutPlan set examine=1 where id="+id;
+			String hql = "update OutPlan set examine=1,remarks=null where id="+id;
 			try {
 				commonDao.executeUpdateOrDelete(hql);
 				isok = true;
@@ -222,5 +228,35 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		String hql = "from BusinessWeight where id="+weightId;
 		List<BusinessWeight> businessWeight =commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		return businessWeight.get(0);
+	}
+	
+	public void examineRelease(String outPlanId)
+	{
+		OutPlanVO outPlanVO = this.getById(outPlanId);
+		String message = "";
+		if(outPlanVO.getOutPlan().getExamine()==1)
+		{
+			message="您提交的生产计划\n"
+					+ "商品类型："+outPlanVO.getBusinessGood().getGoodsName()+"\n"
+					+ "预计产出时间："+new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getStartTime())+"至"
+							+ new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getEndTime())+"\n"
+					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
+					+ "\n已经通过审核";
+		}
+		if(outPlanVO.getOutPlan().getExamine()==2)
+		{
+			message="您提交的生产计划被拒绝，拒绝原因为："+outPlanVO.getOutPlan().getRemarks();
+		}
+		String access_token = WXGetTokenService.accessTokenIsOvertime();
+	    Text text = new Text();
+	    text.setContent(message);
+	    TextMessage textMessage = new TextMessage();
+	    textMessage.setTouser(outPlanVO.getOutPlan().getUserId());
+	    textMessage.setMsgtype("text");
+	    textMessage.setAgentid(WXInit.AGENT_ID);
+	    textMessage.setText(text);
+	    textMessage.setSafe(0);
+	    String outputStr = JSONObject.fromObject(textMessage).toString();
+	    WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + access_token, "POST", outputStr);
 	}
 }
