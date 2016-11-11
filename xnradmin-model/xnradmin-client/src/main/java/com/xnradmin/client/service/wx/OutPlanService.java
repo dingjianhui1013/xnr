@@ -179,6 +179,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		{
 			hql.append(" and a.userId='"+userId+"'");
 		}
+		hql.append(" order by a.createDate desc");
 		return hql.toString();
 	}
 	
