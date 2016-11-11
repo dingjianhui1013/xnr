@@ -196,6 +196,7 @@ public class OutPlanAction extends ParentAction{
 	@Action(value = "editPlanForm",results = { @Result(name = StrutsResMSG.SUCCESS,location ="/wx/admin/seting/outplan/planEdit.jsp" ) })//  
 	public String eidtForm(){
 		OutPlan outPlan = outPlanService.findById(eidtId);
+		businesCategorys = outPlanService.getBusinessCategoryS();
 		ServletActionContext.getRequest().setAttribute("outPlan",  outPlan);
 		return StrutsResMSG.SUCCESS;
 	}
