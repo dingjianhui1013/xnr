@@ -17,7 +17,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>小农人儿管理平台</title>
+<title>康源公社管理平台</title>
 <link href="themes/css/login.css" rel="stylesheet" type="text/css" />
 <script src="js/jquery-1.7.2.js" type="text/javascript"></script>
 <script src="js/verifyCode.js" type="text/javascript"></script>
@@ -26,18 +26,21 @@
 <body>
 	<div id="login">
 		<div id="login_header">
-			<h1 class="login_logo">
+			<!--<h1 class="login_logo">
 				<a href="#"><img src="themes/default/images/login_logo.gif" /></a>
 			</h1>
+			 -->
 			<div class="login_headerContent">
+				<h3>用户登录</h3>
 				<!-- 				
 				<h2 class="login_title"><img src="themes/default/images/login_title.png" /></h2>
 				 -->
 			</div>
 		</div>
+		
 		<div id="login_content">
 			<div class="loginForm">
-			<span style="color:red">${errorMsg}</span>
+			<span class="errorTips">${errorMsg}</span>
 				<form action="${action}" method="post">
 					<p>
 						<label>用户名：</label>
@@ -48,9 +51,12 @@
 						<input type="password" name="j_password" size="20" class="login_input" />
 					</p>
 					<p>
-						<label>验证码：</label>						
-						<input id="validateCode" class="code" size="5" name="validateCode" type="text"/>  
-						<span><img id="imgObj" onclick="changeImg()" src="page/vcode/vcode.action" alt="" width="80" height="25" /></span>
+						<label class="yzmLabel">验证码：</label>					
+	
+						<input id="validateCode" class="code" size="5" name="validateCode" 
+type="text"/>  
+						<span><img id="imgObj" onclick="changeImg()" src="page/vcode/vcode.action" 
+alt="" width="80" height="25" /></span>
 						<br/><span><a href="#" onclick="changeImg()">换一张</a></span>
 					</p>
 					<div class="login_bar">
@@ -58,7 +64,8 @@
 					</div>
 					<!-- 
 					<p>
-						<a href="http://182.254.243.248:3000" target="_balnk">点我登陆小农人redmine</a>
+						<a href="http://182.254.243.248:3000" target="_balnk">点我登陆小农人
+redmine</a>
 					</p>
 					 -->
 				</form>
@@ -79,4 +86,6 @@
 		</div>
 	</div>
 </body>
+
+
 </html>

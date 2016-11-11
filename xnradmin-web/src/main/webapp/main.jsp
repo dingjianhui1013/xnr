@@ -39,7 +39,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=7" />
-		<title>小农人儿管理平台</title>
+		<title>康源公社管理平台</title>
 
 		<link href="themes/default/style.css" rel="stylesheet" type="text/css"
 			media="screen" />
