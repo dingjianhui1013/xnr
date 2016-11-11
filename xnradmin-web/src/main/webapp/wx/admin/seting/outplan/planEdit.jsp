@@ -96,13 +96,13 @@
 				  	 <div class="planListCon">
 						  <div class="editPlanBox">
 							  <form id="form" action="saveEdit.action" method="post">
-							  		<input type="hidden" name="outplan.id" value="${outPlan.id}"/>
+							  		<input type="hidden" name="outplan.id" value="${outPlanVO.outPlan.id}"/>
 								<div class="form-group">
 									<label for="" class="col-sm-2 control-label labelFont">选择分类</label>
 									<div class="col-sm-10">
 										<select class="form-control" id="businesCategoryId"
 											onchange="getGoods()" name="outplan.businesCategoryId">
-											<option value="">请选择商品</option>
+											<option value="${outPlanVO.outplan.businesCategoryId}">${outPlanVO.businessCategory.categoryName }</option>
 											<c:forEach items="${businesCategorys}" var="businesCategorys">
 												<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option>
 											</c:forEach>
@@ -112,24 +112,24 @@
 									<div class="col-sm-11">
 										<select class="form-control" name="outplan.goodsId" id="goodsId"
 											onchange="getWeight()">
-											<option value="">请选择详细</option>
+											<option value="${outPlanVO.outplan.goodsId}">${outPlanVO.businessGood.goodsName</option>
 										</select>
 									</div>
 								</div>
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">预计产出日期</label>
 								    <div class="col-sm-10">
-								    	  <input type="text" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
-				    					  <input type="text"  name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
+								    	  <input type="text" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlanVO.outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
+				    					  <input type="text"  name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlanVO.outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
 								    </div>
 								  </div>
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">产出数量</label>
 								    <div class="col-sm-10">
-										<input type="text" id="output" name="outplan.output" value="${ outPlan.output}" class="numInput form-control" />
+										<input type="text" id="output" name="outplan.output" value="${outPlanVO.outPlan.output}" class="numInput form-control" />
 										<div class="col-sm-3 mt1">
 											<select class="form-control" name="outplan.unitId" id="weigthId">
-												<option value="">请选择单位</option>
+												<option value="${outPlanVO.outplan.unitId }">${outPlanVO.businessWeight.weightName }</option>
 											</select>
 										</div>
 								    </div>
