@@ -23,9 +23,7 @@ import com.xnradmin.po.wx.connect.Farmer;
 public class farmerAction extends ParentAction{
 	
 	private Farmer query;
-	private List<Farmer> voList;
 	private List<Farmer> farmerList;
-	private Farmer farmer;
 	@Autowired
 	private FarmerService farmerService;
 	
@@ -39,14 +37,6 @@ public class farmerAction extends ParentAction{
 	}
 
 
-	public List<Farmer> getVoList() {
-		return voList;
-	}
-
-
-	public void setVoList(List<Farmer> voList) {
-		this.voList = voList;
-	}
 
 
 	public List<Farmer> getFarmerList() {
@@ -59,14 +49,6 @@ public class farmerAction extends ParentAction{
 	}
 
 
-	public Farmer getFarmer() {
-		return farmer;
-	}
-
-
-	public void setFarmer(Farmer farmer) {
-		this.farmer = farmer;
-	}
 
 
 	@Override
@@ -81,7 +63,7 @@ public class farmerAction extends ParentAction{
 	}
 	
 	private void setPageInfo() {
-		this.voList = this.farmerService.getList(query, super.getPageNum(),
+		this.farmerList = this.farmerService.getList(query, super.getPageNum(),
 				super.getNumPerPage());
 		super.totalCount = this.farmerService.getCount(query);
 	}

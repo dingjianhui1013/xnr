@@ -10,6 +10,7 @@ import com.cntinker.util.StringHelper;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.wx.FarmerDao;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.vo.business.OutPlanVO;
 import com.xnradmin.vo.client.wx.WXMenuVO;
 
 @Service("farmerService")
@@ -36,27 +37,32 @@ public class FarmerService {
 	private String getHql(Farmer query) {
 		StringBuffer hql = new StringBuffer();
 		hql.append("from Farmer");
-//		if (query == null){
-//			return hql.append(" order by id desc").toString();
-//		}
-//		if (query.getUserName() != null&& !StringHelper.isNull(query.getUserName())) {
-//			hql.append(" and ");
-//			hql.append(" userName like '%").append(query.getUserName()).append("%'");
-//		}
-//		if (query.getUserId() != null&& !StringHelper.isNull(query.getUserId())) {
-//			hql.append(" and ");
-//			hql.append(" userId like '%").append(query.getUserId()).append("%'");
-//		}
-//		if (query.getTypes() != null&& !StringHelper.isNull(query.getTypes())) {
-//			hql.append(" and ");
-//			hql.append(" types like '%").append(query.getTypes()).append("%'");
-//		}
-		
+		if (query == null){
+			return hql.append(" order by id desc").toString();
+		}
+		int isAnd = 0;
+		if (!StringHelper.isNull(query.getUserName())
+				|| !StringHelper.isNull(query.getUserId())) {
+			hql.append(" where ");
+		}
+		if (!StringHelper.isNull(query.getUserName())) {
+			if (isAnd > 0)
+				hql.append(" and ");
+			hql.append(" userName like '%").append(query.getUserName())
+					.append("%'");
+		}
+		if (!StringHelper.isNull(query.getUserId())) {
+			if (isAnd > 0)
+				hql.append(" and ");
+			hql.append(" userId like '%").append(query.getUserId())
+					.append("%'");
+		}
+		hql.append(" order by id desc").toString();
 		return hql.toString();
 	}
 
 	public int getCount(Farmer query) {
-		// TODO Auto-generated method stub
-		return 0;
+		String hql = "select count(*) " + getHql(query);
+		return commonDao.getNumberOfEntitiesWithHql(hql);
 	}
 }

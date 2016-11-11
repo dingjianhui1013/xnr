@@ -52,8 +52,6 @@
 </script>
 <form id="pagerForm" method="post" action="${action}">			
 
-		<%-- <input type="hidden" name="query.menu.menuName" value="${query.menu.menuName}" />
-		<input type="hidden" name="query.menu.typeid" value="${query.menu.typeid}" />	 --%>
 		
 		<input type="hidden" name="pageNum" value="${pageNum}" />
 		<input type="hidden" name="numPerPage" value="${numPerPage}" />
