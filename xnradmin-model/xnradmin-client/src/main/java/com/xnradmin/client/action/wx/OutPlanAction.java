@@ -195,9 +195,9 @@ public class OutPlanAction extends ParentAction{
 	}
 	@Action(value = "editPlanForm",results = { @Result(name = StrutsResMSG.SUCCESS,location ="/wx/admin/seting/outplan/planEdit.jsp" ) })//  
 	public String eidtForm(){
-		OutPlan outPlan = outPlanService.findById(eidtId);
+		OutPlanVO outPlanVO = outPlanService.getById(eidtId);
 		businesCategorys = outPlanService.getBusinessCategoryS();
-		ServletActionContext.getRequest().setAttribute("outPlan",  outPlan);
+		ServletActionContext.getRequest().setAttribute("outPlanVO",  outPlanVO);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value = "saveEdit",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect" ) })
