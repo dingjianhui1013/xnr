@@ -67,7 +67,7 @@ public class OutPlanService {
 				+ " startTime='"+simpleDateFormat.format(outPlan.getStartTime())+"',"
 						+ " endTime='"+simpleDateFormat.format(outPlan.getEndTime())+"',"
 								+ " output='"+outPlan.getOutput()+"',"
-										+ " unitId='"+outPlan.getUnitId()+"'"
+										+ " unitId='"+outPlan.getUnitId()+"',"
 											+" examine=0"
 												+ " where id="+outPlan.getId();
 		commonDao.executeUpdateOrDelete(hql);

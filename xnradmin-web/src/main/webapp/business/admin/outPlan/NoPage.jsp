@@ -17,11 +17,11 @@
 	}
 
 </script>
-<form id="form" method="post" action="page/wx/outplan/saveExamineNo.action"
+<form id="form" method="post" action="page/wx/outplan/saveExamineNo.action?examineNoId=${examineNoId}"
 	class="pageForm required-validate"
 	onsubmit="return validateCallback(this, dialogAjaxDone)">
 	<input type="hidden" id="examineNoId"  value="${examineNoId}">
-	拒绝理由：<input name="remarks" name="remarks" onchange="quxiao()">
+	拒绝理由：<input id="remarks" name="remarks" onchange="quxiao()">
 	<div  id="yz" style="display: none;color:red"></div>
 	<div class="buttonContent">
 		<button type="button" onclick="yz()">提交</button>
