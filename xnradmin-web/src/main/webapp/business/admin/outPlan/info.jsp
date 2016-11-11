@@ -8,16 +8,8 @@
 	
 	
 	String action = basePath+"page/wx/outplan/info.action";
-	String add = basePath+"page/wx/outplan/addInfo.action";
-	String modify = basePath+"page/wx/outplan/modifyInfo.action";
-	String del = basePath+"page/wx/outplan/del.action";
-	String outPlanlookup = basePath+"page/wx/outplan/lookup.action";
 	
 	request.setAttribute("action",action);
-	request.setAttribute("add",add);
-	request.setAttribute("modify",modify);
-	request.setAttribute("del",del);
-	request.setAttribute("outPlanlookup",outPlanlookup);
 %>
 
 

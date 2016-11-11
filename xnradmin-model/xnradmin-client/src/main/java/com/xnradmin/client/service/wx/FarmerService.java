@@ -30,7 +30,7 @@ public class FarmerService {
 	public List<Farmer> getList(Farmer query,int pageNo,int pageSize){
 		
 		String hql = getHql(query);
-		List<Farmer> farmers= commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
+ 		List<Farmer> farmers= commonDao.getEntitiesByPropertiesWithHql(hql, pageNo,pageSize);
 		return farmers;
 	}
 	

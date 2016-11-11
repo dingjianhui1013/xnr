@@ -7,16 +7,8 @@
 	
 	
 	String action = basePath+"page/wx/farmer/info.action";
-	String add = basePath+"page/wx/farmer/addInfo.action";
-	String modify = basePath+"page/wx/farmer/modifyInfo.action";
-	String del = basePath+"page/wx/farmer/del.action";
-	String wxuserlookup = basePath+"page/wx/farmer/lookup.action";
 	
 	request.setAttribute("action",action);
-	request.setAttribute("add",add);
-	request.setAttribute("modify",modify);
-	request.setAttribute("del",del);
-	request.setAttribute("wxuserlookup",wxuserlookup);
 %>
 
 
