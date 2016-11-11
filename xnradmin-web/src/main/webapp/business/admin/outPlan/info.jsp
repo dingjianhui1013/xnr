@@ -25,7 +25,7 @@
 <script type="text/javascript">
 	function examine(id){
 		var s = $("#ex"+id).val();
-		if(s==1){
+		if(s!=0){
 			alert("已经审核过，无需重复审核");
 			return;
 		}

@@ -102,7 +102,7 @@
 									<div class="col-sm-10">
 										<select class="form-control" id="businesCategoryId"
 											onchange="getGoods()" name="outplan.businesCategoryId">
-											<option value="${outPlanVO.outplan.businesCategoryId}">${outPlanVO.businessCategory.categoryName }</option>
+											<option value="${outPlanVO.outPlan.businesCategoryId}">${outPlanVO.businessCategory.categoryName }</option>
 											<c:forEach items="${businesCategorys}" var="businesCategorys">
 												<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option>
 											</c:forEach>
@@ -110,9 +110,8 @@
 									</div>
 									<br> <label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
 									<div class="col-sm-11">
-										<select class="form-control" name="outplan.goodsId" id="goodsId"
-											onchange="getWeight()">
-											<option value="${outPlanVO.outplan.goodsId}">${outPlanVO.businessGood.goodsName</option>
+										<select class="form-control" name="outplan.goodsId" id="goodsId" onchange="getWeight()">
+											<option value="${outPlanVO.outPlan.goodsId}">${outPlanVO.businessGood.goodsName}</option>
 										</select>
 									</div>
 								</div>
@@ -127,9 +126,9 @@
 								    <label for="" class="col-sm-2 control-label labelFont">产出数量</label>
 								    <div class="col-sm-10">
 										<input type="text" id="output" name="outplan.output" value="${outPlanVO.outPlan.output}" class="numInput form-control" />
-										<div class="col-sm-3 mt1">
+										<div class=" mt1">
 											<select class="form-control" name="outplan.unitId" id="weigthId">
-												<option value="${outPlanVO.outplan.unitId }">${outPlanVO.businessWeight.weightName }</option>
+												<option value="${outPlanVO.outPlan.unitId }">${outPlanVO.businessWeight.weightName }</option>
 											</select>
 										</div>
 								    </div>
