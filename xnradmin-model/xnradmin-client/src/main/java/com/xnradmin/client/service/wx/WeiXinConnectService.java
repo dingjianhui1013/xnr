@@ -51,6 +51,7 @@ public class WeiXinConnectService {
 	      NodeList nodelist3 = root.getElementsByTagName(WXMessage.FROM_USER_NAMR);
 	      NodeList nodelist4 = root.getElementsByTagName(WXMessage.MSG_TYPE);
 	      NodeList nodelist5 = root.getElementsByTagName(WXMessage.AGENT_ID);
+	      NodeList nodelist6 = root.getElementsByTagName(WXMessage.PICURL);
 	      String ToUserName = nodelist2.item(0).getTextContent();
 	      String FromUserName = nodelist3.item(0).getTextContent();
 	      String MsgType = nodelist4.item(0).getTextContent();
@@ -85,13 +86,13 @@ public class WeiXinConnectService {
 	    	  
 	    	  
 	        String picUrl = root.getElementsByTagName(WXMessage.AGENT_ID).item(0).getTextContent();
-	    	
+	    	String message = "请选择您上传图片的分类<a href=\"#\"?picUrl="+picUrl+">茄子</a>/n<a href=\"#\"?picUrl="+picUrl+">白菜</a>/n";
 //	        String title = "测试Titile";
 //	        int articleCount = 1;
 //	        String description = "我就是想测试一下这个是不是好使";
 //	        String url = "http://www.baidu.com";
 //	        String picUrl = "http://weixin.robustsoft.cn/weixin/images/ceshi.jpg";
-//	        respMessage = respNews(FromUserName, ToUserName, AgentID, "1234567890123456", title, articleCount, description, picUrl, url);
+	    	respMessage = respText(FromUserName, ToUserName, message, AgentID, "1234567890123456");
 	      }
 	      if (WXMsgType.REQ_MESSAGE_TYPE_VOICE.equals(MsgType))
 	      {

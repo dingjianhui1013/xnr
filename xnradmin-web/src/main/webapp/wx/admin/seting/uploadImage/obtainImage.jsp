@@ -182,6 +182,17 @@ function getGoods()
 	}
 });
 }
+function yanzheng(){
+	if($("#Id").val()=="")
+		{
+			alert("请先选择照片");
+		}else if($("#type").val()=="")
+			{
+				alert("请选择详细类型");
+			}else{
+				uploadI();
+			}
+}
 </script>
 </head>
 <body>
@@ -229,7 +240,7 @@ function getGoods()
 					<input type="hidden" id="Id" /> <input type="hidden" id="dId" /> <input
 						type="hidden" id="userId" value="${userId }" /> <input
 						type="hidden" id="userName" value="${userName }" />
-					<button type="button" class="btn btn-success" onclick="uploadI()">确认提交</button>
+					<button type="button" class="btn btn-success" onclick="yanzheng()">确认提交</button>
 				</div>
 			</form>
 		</div>
