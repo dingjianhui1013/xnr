@@ -1,12 +1,12 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <h2 class="contentTitle">商品授权</h2>
-<form method="post" action="page/menu/auth.action"
+<form method="post" action="page/wx/farmer/saveAnthinfo.action"
 	class="pageForm required-validate"
 	onsubmit="return validateCallback(this, dialogAjaxDone)">
 <div class="pageContent">
 	<div class="pageFormContent" layoutH="98">
-
+	<input type="hidden" name="farmerId" value="${farmerId}">
 		<div class="divider"></div>
 		<c:if test="${allBusinessGoods!=null}">
 			<c:forEach items="${allBusinessGoods}" var="loop">
@@ -22,7 +22,6 @@
 
 			</c:forEach>
 		</c:if>
-		<input type="hidden" name="farmerId" value="${farmerId}"/>
 	</div>
 	<div class="formBar">
 		<label style="float: left"><input type="checkbox"
