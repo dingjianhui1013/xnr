@@ -67,7 +67,7 @@
 						<td>${loop.userId}</td>
 						<td>${loop.userName}</td>
 						<td><image src="${loop.headPortrait}64" /></td>
-						<td><a title="商品" target="dialog" href="front/fenlei.action?farmerId=${loop.id}" class="btnAuth">商品</a></td>					
+						<td><a title="商品" target="dialog" href="page/wx/farmer/anthinfo.action?farmerId=${loop.id}" class="btnAuth">商品</a></td>					
 					</tr>				
 				</c:forEach>
 			</c:if>			
