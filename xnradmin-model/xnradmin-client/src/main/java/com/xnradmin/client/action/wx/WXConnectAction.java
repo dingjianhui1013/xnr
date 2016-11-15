@@ -39,6 +39,7 @@ import com.cntinker.util.wx.connect.Text;
 import com.cntinker.util.wx.connect.TextMessage;
 import com.cntinker.util.wx.connect.WXBizMsgCrypt;
 import com.xnradmin.client.service.wx.FarmerImageService;
+import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
@@ -46,6 +47,7 @@ import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.business.BusinessCategory;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
@@ -119,9 +121,10 @@ public class WXConnectAction {
 	private OutPlanService outPlanService;
 	@Autowired
 	private FarmerImageService farmerImageService;
-	
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	@Autowired
+	private FarmerService farmerService;
 	@Action(value = "connect")
 	public void connect() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -228,38 +231,39 @@ public class WXConnectAction {
 				+ timep
 				+ "&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImage.jsp";
 		String signature = DigestUtils.shaHex(s1);
-		businesCategorys = outPlanService.getBusinessCategoryS();
-		System.out.println("********************");
-		System.out.println("businesCategorys:"+businesCategorys.size());
-		System.out.println("********************");
+//		businesCategorys = outPlanService.getBusinessCategoryS();
+		String types = farmerService.getFenleiByUserId(userId);
+    	List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
 		HttpSession session = request.getSession();
 		session.setAttribute("timep", timep);
 		session.setAttribute("noncestr", noncestr);
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
-		session.setAttribute("businesCategorys", businesCategorys);
+		session.setAttribute("typeNames", typeNames);
 	}
 
 	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
 	public String ceshi() {
-		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
-		List<String> imagedates = farmerImageService.getImageDates("dingjinghui");
-		for (String images : imagedates) {
-			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
-			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
-			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
-			List<String> typeList = farmerImageService.findByType(images,"dingjinghui");
-			for (String type : typeList) {
-			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
-				List<String> imageList = farmerImageService.findByImages(type,images,"dingjinghui");
-				type_images.put(typeName, imageList);
-			}
-			type_imagesList.add(type_images);
-			date_type_image.put(images, type_imagesList);
-			date_type_images.add(date_type_image);
-		}
-		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
+//		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
+//		List<String> imagedates = farmerImageService.getImageDates("dingjinghui");
+//		for (String images : imagedates) {
+//			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
+//			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
+//			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
+//			List<String> typeList = farmerImageService.findByType(images,"dingjinghui");
+//			for (String type : typeList) {
+//			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
+//				List<String> imageList = farmerImageService.findByImages(type,images,"dingjinghui");
+//				type_images.put(typeName, imageList);
+//			}
+//			type_imagesList.add(type_images);
+//			date_type_image.put(images, type_imagesList);
+//			date_type_images.add(date_type_image);
+//		}
+//		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
+		List<OutPlanVO> outplans = outPlanService.getListByUserId("dingjinghui",0,0);
+		System.out.println(outplans);
 		return StrutsResMSG.SUCCESS;
 	}
 

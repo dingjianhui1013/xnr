@@ -160,28 +160,28 @@ function upF()
 		});
 
 	}
-function getGoods()
-{
-	var id= $('#businesCategoryId option:selected').val();
-	$.ajax({
-		type:'POST',
-		url:'<%=path %>/page/wx/outplan/getGoods.action',
-	data : {
-		businesCategoryId : id
-	},
-	dataType : 'JSON',
-	success : function(data) {
-		$("#type").html("<option value=''>请选择详细</option>");
-		for (var i = 0; i < data.goodslist.length; i++) {
-			$("#type")
-					.append(
-							"<option value="+data.goodslist[i].id+" class="+data.goodslist[i].goodsWeightId+">"
-									+ data.goodslist[i].goodsName
-									+ "</option>");
-		}
-	}
-});
-}
+// function getGoods()
+// {
+// 	var id= $('#businesCategoryId option:selected').val();
+// 	$.ajax({
+// 		type:'POST',
+<%-- 		url:'<%=path %>/page/wx/outplan/getGoods.action', --%>
+// 	data : {
+// 		businesCategoryId : id
+// 	},
+// 	dataType : 'JSON',
+// 	success : function(data) {
+// 		$("#type").html("<option value=''>请选择详细</option>");
+// 		for (var i = 0; i < data.goodslist.length; i++) {
+// 			$("#type")
+// 					.append(
+// 							"<option value="+data.goodslist[i].id+" class="+data.goodslist[i].goodsWeightId+">"
+// 									+ data.goodslist[i].goodsName
+// 									+ "</option>");
+// 		}
+// 	}
+// });
+// }
 function yanzheng(){
 	if($("#Id").val()=="")
 		{
@@ -219,20 +219,23 @@ function yanzheng(){
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-sm-2 control-label labelFont">选择分类</label>
-					<div class="col-sm-10">
-						<select class="form-control" id="businesCategoryId"
-							onchange="getGoods()" >
-							<option value="">请选择商品</option>
-							<c:forEach items="${businesCategorys}" var="businesCategorys">
-								<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option>
-							</c:forEach>
-						</select>
-					</div>
-					<br> <label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
+<!-- 					<label for="" class="col-sm-2 control-label labelFont">选择分类</label> -->
+<!-- 					<div class="col-sm-10"> -->
+<!-- 						<select class="form-control" id="businesCategoryId" -->
+<!-- 							onchange="getGoods()" > -->
+<!-- 							<option value="">请选择商品</option> -->
+<%-- 							<c:forEach items="${businesCategorys}" var="businesCategorys"> --%>
+<%-- 								<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option> --%>
+<%-- 							</c:forEach> --%>
+<!-- 						</select> -->
+<!-- 					</div> -->
+					<label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
 					<div class="col-sm-11">
 						<select class="form-control" id="type" >
 							<option value="">请选择详细</option>
+							<c:forEach items="${typeNames}" var="typeNames">
+								<option value="${typeNames.id}">${typeNames.goodsName}</option>
+							</c:forEach>
 						</select>
 					</div>
 				</div>

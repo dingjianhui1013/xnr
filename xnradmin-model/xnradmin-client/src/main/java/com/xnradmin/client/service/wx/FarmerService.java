@@ -72,4 +72,10 @@ public class FarmerService {
 		String[] split = s.split(",");
 		return split;
 	}
+	public String getFenleiByUserId(String userId){
+		String hql = "select types from Farmer where userId='"+userId+"'";
+		List types = (List)commonDao.getEntityByPropertiesWithHql(hql);
+		String s = types==null?"":(String)types.get(0);
+		return s;
+	}
 }

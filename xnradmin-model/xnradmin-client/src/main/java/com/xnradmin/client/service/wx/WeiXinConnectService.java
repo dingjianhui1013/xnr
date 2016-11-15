@@ -26,6 +26,8 @@ import com.xnradmin.client.messag.resp.NewsMessage;
 import com.xnradmin.client.messag.resp.TextMessage;
 import com.xnradmin.client.messag.resp.Voice;
 import com.xnradmin.client.messag.resp.VoiceMessage;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXurl;
 
@@ -36,7 +38,10 @@ public class WeiXinConnectService {
 	
 	@Autowired
 	private FarmerService farmerService;
-	
+	@Autowired
+	private WXFarmerImageService wXFarmerImageService;
+	@Autowired
+	private BusinessGoodsService businessGoodsService;
 	public String processRequest(String sMsg)
 	  {
 	    String respMessage = null;
@@ -61,7 +66,22 @@ public class WeiXinConnectService {
 	        NodeList nodelist1 = root.getElementsByTagName(WXMessage.CONTENT);
 	        String Content = nodelist1.item(0).getTextContent();
 	        String message = null;
-	        message = "测试文字";
+	        if(Content.indexOf("t")!=-1)
+	        {
+	        	String type=Content.substring(1, Content.length());
+	        	String index = wXFarmerImageService.read(FromUserName, type);
+	        	if(index.equals("0"))
+	        	{
+	        		message = "照片分类成功";
+	        	}else
+	        	{
+	        		message = "照片分类失败,请按照提示回复";
+	        	}
+	        	
+	        }else
+	        {
+		        message = "测试文字"+("自行车" + emoji(0x1F6B2) + " 男性" + emoji(0x1F6B9) + " 钱袋" + emoji(0x1F4B0));
+	        }
 	        respMessage = respText(FromUserName, ToUserName, message, AgentID, "1234567890123456");
 	      }
 	      if (WXMsgType.REQ_MESSAGE_TYPE_EVENT.equals(MsgType)) {
@@ -82,16 +102,15 @@ public class WeiXinConnectService {
 	        }
 	      }
 	      if (WXMsgType.REQ_MESSAGE_TYPE_IMAGE.equals(MsgType)) {
-	    	  
-	    	  
-	    	  
-	        String picUrl = root.getElementsByTagName(WXMessage.AGENT_ID).item(0).getTextContent();
-	    	String message = "请选择您上传图片的分类<a href=\"#\"?picUrl="+picUrl+">茄子</a>/n<a href=\"#\"?picUrl="+picUrl+">白菜</a>/n";
-//	        String title = "测试Titile";
-//	        int articleCount = 1;
-//	        String description = "我就是想测试一下这个是不是好使";
-//	        String url = "http://www.baidu.com";
-//	        String picUrl = "http://weixin.robustsoft.cn/weixin/images/ceshi.jpg";
+	        String picUrl = root.getElementsByTagName(WXMessage.PICURL).item(0).getTextContent();
+	    	wXFarmerImageService.create(FromUserName, picUrl);
+	    	String types = farmerService.getFenleiByUserId(FromUserName);
+	    	List<BusinessGoods> list = businessGoodsService.getTypeNameById(types);
+	    	StringBuffer me = new StringBuffer();
+	    	for (BusinessGoods businessGoods : list) {
+				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"\n");
+			}
+	    	String message = "请按顺序回复上传图片分类："+me.toString();
 	    	respMessage = respText(FromUserName, ToUserName, message, AgentID, "1234567890123456");
 	      }
 	      if (WXMsgType.REQ_MESSAGE_TYPE_VOICE.equals(MsgType))
@@ -157,4 +176,7 @@ public class WeiXinConnectService {
 						.replace("CODE", code), "GET", null);
 		return userId;
 	}
+	public static String emoji(int hexEmoji) {  
+        return String.valueOf(Character.toChars(hexEmoji));  
+    }
 }

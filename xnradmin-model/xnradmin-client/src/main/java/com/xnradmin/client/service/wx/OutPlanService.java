@@ -107,36 +107,32 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 			Farmer farmer = (Farmer) obj[1];
 			BusinessGoods businessGood = (BusinessGoods) obj[2];
 			BusinessWeight businessWeight = (BusinessWeight) obj[3];
-			BusinessCategory businessCategory = (BusinessCategory) obj[4];
 			
 			OutPlanVO outPlanVO = new OutPlanVO();
 			outPlanVO.setOutPlan(outPlan);
 			outPlanVO.setFarmer(farmer);
 			outPlanVO.setBusinessGood(businessGood);
 			outPlanVO.setBusinessWeight(businessWeight);
-			outPlanVO.setBusinessCategory(businessCategory);
 			resList.add(outPlanVO);
 		}
 		return resList;
 	}
 	public OutPlanVO getById(String id){
 		
-		String hql = "from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d,BusinessCategory e  where a.delFlage=0 and a.userId=b.userId"
-				+ " and a.goodsId=c.id and a.unitId=d.id and a.businesCategoryId=e.id and a.id="+id;
+		String hql = "from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d where a.delFlage=0 and a.userId=b.userId"
+				+ " and a.goodsId=c.id and a.unitId=d.id and a.id="+id;
 		List list= commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
 		Object[] obj = (Object[]) list.get(0);
 		OutPlan outPlan = (OutPlan) obj[0];
 		Farmer farmer = (Farmer) obj[1];
 		BusinessGoods businessGood = (BusinessGoods) obj[2];
 		BusinessWeight businessWeight = (BusinessWeight) obj[3];
-		BusinessCategory businessCategory = (BusinessCategory) obj[4];
 		
 		OutPlanVO outPlanVO = new OutPlanVO();
 		outPlanVO.setOutPlan(outPlan);
 		outPlanVO.setFarmer(farmer);
 		outPlanVO.setBusinessGood(businessGood);
 		outPlanVO.setBusinessWeight(businessWeight);
-		outPlanVO.setBusinessCategory(businessCategory);
 		return outPlanVO;
 	}
 	
@@ -173,8 +169,8 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	}
 	private String getHqlByUserId(String userId) {
 		StringBuffer hql = new StringBuffer();
-		hql.append("from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d,BusinessCategory e  where a.delFlage=0 and a.userId=b.userId"
-				+ " and a.goodsId=c.id and a.unitId=d.id and a.businesCategoryId=e.id");
+		hql.append("from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d where a.delFlage=0 and a.userId=b.userId"
+				+ " and a.goodsId=c.id and a.unitId=d.id ");
 		if(StringUtils.isNotEmpty(userId))
 		{
 			hql.append(" and a.userId='"+userId+"'");
