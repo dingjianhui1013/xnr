@@ -195,10 +195,10 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		List<BusinessGoods> goodList =  commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		return goodList;
 	}
-	public boolean examine(String id){
+	public boolean examine(String id,String personId){
 		boolean isok = false;
 		if(id!=null&&!"".equals(id)){
-			String hql = "update OutPlan set examine=1,remarks=null where id="+id;
+			String hql = "update OutPlan set examine=1,remarks=null,examinePerson='"+personId+"' where id="+id;
 			try {
 				commonDao.executeUpdateOrDelete(hql);
 				isok = true;
@@ -208,10 +208,10 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		return isok;
 	}
-	public boolean examineNo(String id,String remarks){
+	public boolean examineNo(String id,String remarks,String personId){
 		boolean isok = false;
 		if(id!=null&&!"".equals(id)){
-			String hql = "update OutPlan set examine=2 ,remarks='"+remarks+"' where id="+id;
+			String hql = "update OutPlan set examine=2 ,remarks='"+remarks+"',examinePerson='"+personId+"' where id="+id;
 			try {
 				commonDao.executeUpdateOrDelete(hql);
 				isok = true;

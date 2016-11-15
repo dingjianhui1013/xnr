@@ -112,11 +112,16 @@ public class farmerAction extends ParentAction{
 		this.allBusinessGoods = businessGoodsService.listAll();
 		return StrutsResMSG.SUCCESS;
 	}
-//	@Action(value = "saveAnthinfo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
-//	public String saveExamineNo() throws JSONException, IOException {
-//		outPlanService.examineNo(this.examineNoId,this.remarks);
-//		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "outPlanManagement",null);
-//		outPlanService.examineRelease(examineNoId);
-//		return null;
-//	}
+	/**
+	 * 更新农户商品类型
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	@Action(value = "saveAnthinfo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String saveExamineNo() throws JSONException, IOException {
+		farmerService.saveTypes(this.farmerId,this.types);
+		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "FarmerManagement",null);
+		return null;
+	}
 }

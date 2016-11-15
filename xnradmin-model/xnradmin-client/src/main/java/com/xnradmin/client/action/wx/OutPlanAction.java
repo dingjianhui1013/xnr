@@ -28,6 +28,7 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.CommonPermissionMenuRelation;
+import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
@@ -232,7 +233,8 @@ public class OutPlanAction extends ParentAction{
 	 */
 	@Action(value = "examine",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
 	public String examine() {
-		this.examineStatus  = outPlanService.examine(examineId);
+		Integer personId = super.getCurrentStaff().getId();
+		this.examineStatus  = outPlanService.examine(examineId,personId.toString());
 		outPlanService.examineRelease(examineId);
 		 return  StrutsResMSG.SUCCESS;
 	}
@@ -245,7 +247,7 @@ public class OutPlanAction extends ParentAction{
 		 return  StrutsResMSG.SUCCESS;
 	}
 	/**
-	 * 更新对象接口
+	 * 审核拒绝
 	 * 
 	 * @return String
 	 * @throws JSONException
@@ -253,7 +255,8 @@ public class OutPlanAction extends ParentAction{
 	 */
 	@Action(value = "saveExamineNo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
 	public String saveExamineNo() throws JSONException, IOException {
-		outPlanService.examineNo(this.examineNoId,this.remarks);
+		Integer personId = super.getCurrentStaff().getId();
+		outPlanService.examineNo(this.examineNoId,this.remarks,personId.toString());
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "outPlanManagement",null);
 		outPlanService.examineRelease(examineNoId);
 		return null;
