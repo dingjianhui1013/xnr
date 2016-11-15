@@ -65,4 +65,11 @@ public class FarmerService {
 		String hql = "select count(*) " + getHql(query);
 		return commonDao.getNumberOfEntitiesWithHql(hql);
 	}
+	public String[] getFenleiById(String farmerId){
+		String hql = "select types from Farmer where id="+farmerId;
+		List types = (List)commonDao.getEntityByPropertiesWithHql(hql);
+		String s = types==null?"":(String)types.get(0);
+		String[] split = s.split(",");
+		return split;
+	}
 }

@@ -1,19 +1,23 @@
 package com.xnradmin.client.action.farmers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.xnradmin.client.service.wx.FarmerService;
+import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
-import com.xnradmin.po.wx.WXMenu;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.Farmer;
 
 @Controller
@@ -24,9 +28,39 @@ public class farmerAction extends ParentAction{
 	
 	private Farmer query;
 	private List<Farmer> farmerList;
-	@Autowired
-	private FarmerService farmerService;
+	String farmerId;
+	String types;
+	String[] fenleiById;
+	List<BusinessGoods> allBusinessGoods;
+	@Autowired FarmerService farmerService;
+	@Autowired BusinessGoodsService  businessGoodsService;
 	
+	
+	public List<BusinessGoods> getAllBusinessGoods() {
+		return allBusinessGoods;
+	}
+	public void setAllBusinessGoods(List<BusinessGoods> allBusinessGoods) {
+		this.allBusinessGoods = allBusinessGoods;
+	}
+	public String[] getFenleiById() {
+		return fenleiById;
+	}
+	public void setFenleiById(String[] fenleiById) {
+		this.fenleiById = fenleiById;
+	}
+	public String getFarmerId() {
+		return farmerId;
+	}
+	public void setFarmerId(String farmerId) {
+		this.farmerId = farmerId;
+	}
+	
+	public String getTypes() {
+		return types;
+	}
+	public void setTypes(String types) {
+		this.types = types;
+	}
 	public Farmer getQuery() {
 		return query;
 	}
@@ -67,9 +101,22 @@ public class farmerAction extends ParentAction{
 				super.getNumPerPage());
 		super.totalCount = this.farmerService.getCount(query);
 	}
-	@Action(value = "anthinfo",results  = {})
-	public void anthinfo()
-	{
-		
+	/**
+	 * 带信息到分类页面
+	 * 
+	 * @return String
+	 */
+	@Action(value = "anthinfo", results = {@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/anthinfo.jsp") })
+	public String anthinfo() {
+		this.fenleiById = farmerService.getFenleiById(farmerId);
+		this.allBusinessGoods = businessGoodsService.listAll();
+		return StrutsResMSG.SUCCESS;
 	}
+//	@Action(value = "saveAnthinfo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+//	public String saveExamineNo() throws JSONException, IOException {
+//		outPlanService.examineNo(this.examineNoId,this.remarks);
+//		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "outPlanManagement",null);
+//		outPlanService.examineRelease(examineNoId);
+//		return null;
+//	}
 }

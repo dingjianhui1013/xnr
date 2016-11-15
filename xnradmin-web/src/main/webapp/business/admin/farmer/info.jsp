@@ -56,6 +56,7 @@
 				<th width="45">用户ID</th>
 				<th width="245">用户名称</th>
 				<th width="45">用户头像</th>
+				<th width="45">操作</th>
 			</tr>
 		</thead>
 		<tbody>		
@@ -65,7 +66,8 @@
 						<td>${loop.id}</td>
 						<td>${loop.userId}</td>
 						<td>${loop.userName}</td>
-						<td><image src="${loop.headPortrait}64" /></td>					
+						<td><image src="${loop.headPortrait}64" /></td>
+						<td><a title="商品" target="dialog" href="front/fenlei.action?farmerId=${loop.id}" class="btnAuth">商品</a></td>					
 					</tr>				
 				</c:forEach>
 			</c:if>			

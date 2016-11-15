@@ -148,6 +148,7 @@ public class WXConnectAction {
 				e.printStackTrace();
 			}
 		}
+		
 		if (method != null && method.equals("POST") && sVerifyEchoStr == null) {
 			WXBizMsgCrypt wxcpt = null;
 			try {
