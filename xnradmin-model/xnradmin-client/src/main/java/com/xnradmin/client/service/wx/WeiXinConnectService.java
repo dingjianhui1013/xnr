@@ -73,14 +73,19 @@ public class WeiXinConnectService {
 	        	if(index.equals("0"))
 	        	{
 	        		message = "照片分类成功";
-	        	}else
+	        	}else if(index.equals("1"))
 	        	{
 	        		message = "照片分类失败,请按照提示回复";
+	        	}else if(index.equals("2"))
+	        	{
+	        		message = "您上传的照片已经全部分类，无需重复提交！";
 	        	}
 	        	
 	        }else
 	        {
-		        message = "测试文字"+("自行车" + emoji(0x1F6B2) + " 男性" + emoji(0x1F6B9) + " 钱袋" + emoji(0x1F4B0));
+		        message = "温馨提示：\n上传图片可直接回复图片或选择菜单上传"
+		        		+ "\n上传生产计划请选择菜单进行上传"
+		        		+ "\n查看个人信息请选择菜单进行查看";
 	        }
 	        respMessage = respText(FromUserName, ToUserName, message, AgentID, "1234567890123456");
 	      }

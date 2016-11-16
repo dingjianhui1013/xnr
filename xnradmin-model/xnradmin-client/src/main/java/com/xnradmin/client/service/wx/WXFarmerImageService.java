@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,11 +27,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.po.wx.connect.FarmerImage;
 
 @Service
 public class WXFarmerImageService { 
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	@Autowired
+	private FarmerService farmerService;
+	@Autowired
+	private FarmerImageService farmerImageService;
 	public void create(String userId,String picUrl) throws Exception, DocumentException
 	{
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -71,12 +77,14 @@ public class WXFarmerImageService {
 			if(type!=null)
 			{
 				a:for (Element element : picurls) {
+					index ="2";
 					String picurl = element.attribute("name").getValue();
 					List<Element> types = element.selectNodes("type");
 					b:for (Element element2 : types) {
 						String typevalue = element2.attribute("name").getValue();
 						if(typevalue==null||"".equals(typevalue))
 						{
+							index = "0";
 							element2.addAttribute("name", type);
 							uploadImage(picurl, userId, type);
 							break a;
@@ -132,6 +140,14 @@ public class WXFarmerImageService {
 			bos.write(bytes);
 			bos.close();
 			baos.close();
+			String userName = farmerService.getUserNameById(userId).getUserName();
+			FarmerImage farmerImage =  new FarmerImage();
+			farmerImage.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+			farmerImage.setType(type);
+			farmerImage.setUserId(userId);
+			farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+File.separator+imageName);
+			farmerImage.setUserName(userName);
+			farmerImageService.saveFarmerImage(farmerImage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
