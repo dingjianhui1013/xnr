@@ -11,7 +11,7 @@ public class OutPlanVO {
 	private Farmer farmer;
 	private BusinessGoods businessGood;
 	private BusinessWeight businessWeight;
-	private BusinessCategory businessCategory;
+//	private BusinessCategory businessCategory;
 	
 	public OutPlan getOutPlan() {
 		return outPlan;
@@ -37,11 +37,11 @@ public class OutPlanVO {
 	public void setBusinessWeight(BusinessWeight businessWeight) {
 		this.businessWeight = businessWeight;
 	}
-	public BusinessCategory getBusinessCategory() {
-		return businessCategory;
-	}
-	public void setBusinessCategory(BusinessCategory businessCategory) {
-		this.businessCategory = businessCategory;
-	}
+//	public BusinessCategory getBusinessCategory() {
+//		return businessCategory;
+//	}
+//	public void setBusinessCategory(BusinessCategory businessCategory) {
+//		this.businessCategory = businessCategory;
+//	}
 	
 } 

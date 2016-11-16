@@ -84,14 +84,14 @@ public class OutPlanService {
 			Farmer farmer = (Farmer) obj[1];
 			BusinessGoods businessGood = (BusinessGoods) obj[2];
 			BusinessWeight businessWeight = (BusinessWeight) obj[3];
-			BusinessCategory businessCategory = (BusinessCategory) obj[4];
+//			BusinessCategory businessCategory = (BusinessCategory) obj[4];
 			
 			OutPlanVO outPlanVO = new OutPlanVO();
 			outPlanVO.setOutPlan(outPlan);
 			outPlanVO.setFarmer(farmer);
 			outPlanVO.setBusinessGood(businessGood);
 			outPlanVO.setBusinessWeight(businessWeight);
-			outPlanVO.setBusinessCategory(businessCategory);
+//			outPlanVO.setBusinessCategory(businessCategory);
 			resList.add(outPlanVO);
 		}
 		return resList;
@@ -139,8 +139,8 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	private String getHql(OutPlanVO query) {
 		StringBuffer hql = new StringBuffer();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		hql.append("from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d,BusinessCategory e  where a.delFlage=0 and a.userId=b.userId"
-				+ " and a.goodsId=c.id and a.unitId=d.id and a.businesCategoryId=e.id");
+		hql.append("from OutPlan a,Farmer b,BusinessGoods c,BusinessWeight d where a.delFlage=0 and a.userId=b.userId"
+				+ " and a.goodsId=c.id and a.unitId=d.id");
 		if (query == null){
 			return hql.append(" order by a.id desc").toString();
 		}
@@ -242,7 +242,12 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		if(outPlanVO.getOutPlan().getExamine()==2)
 		{
-			message="您提交的生产计划被拒绝，拒绝原因为："+outPlanVO.getOutPlan().getRemarks();
+			message="您提交的生产计划\n"
+					+ "商品类型："+outPlanVO.getBusinessGood().getGoodsName()+"\n"
+					+ "预计产出时间："+new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getStartTime())+"至"
+							+ new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getEndTime())+"\n"
+					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
+					+ "\n被拒绝。拒绝原因为："+outPlanVO.getOutPlan().getRemarks();
 		}
 		String access_token = WXGetTokenService.accessTokenIsOvertime();
 	    Text text = new Text();
