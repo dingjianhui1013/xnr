@@ -3,7 +3,9 @@ package com.xnradmin.client.service.wx;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +20,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.cntinker.util.wx.connect.MessageUtil;
 import com.cntinker.util.wx.connect.WXMessage;
 import com.cntinker.util.wx.connect.WXMsgType;
 import com.xnradmin.client.messag.resp.Article;
@@ -69,18 +70,29 @@ public class WeiXinConnectService {
 	        if(Content.indexOf("t")!=-1)
 	        {
 	        	String type=Content.substring(1, Content.length());
-	        	String index = wXFarmerImageService.read(FromUserName, type);
-	        	if(index.equals("0"))
-	        	{
-	        		message = "照片分类成功";
-	        	}else if(index.equals("1"))
-	        	{
-	        		message = "照片分类失败,请按照提示回复";
-	        	}else if(index.equals("2"))
-	        	{
-	        		message = "您上传的照片已经全部分类，无需重复提交！";
+	        	Map<String, Integer> index_count = wXFarmerImageService.read(FromUserName, type);
+	        	Iterator iter =index_count.entrySet().iterator(); 
+	        	while (iter.hasNext()) { 
+		        	Map.Entry entry = (Map.Entry) iter.next(); 
+		        	String key = (String)entry.getKey(); 
+		        	int val = (int)entry.getValue(); 
+		        	if(key.equals("0"))
+		        	{
+		        		if(val!=0)
+		        		{
+		        			message = "照片分类成功,剩余"+val+"张图片未分类";
+		        		}else{
+		        			message = "照片分类成功";
+		        		}
+		        	}else if(key.equals("1"))
+		        	{
+		        		message = "照片分类失败,请按照提示回复";
+		        	}else if(key.equals("2"))
+		        	{
+		        		message = "您上传的照片已经全部分类，无需重复提交！";
+		        	}
+		        	
 	        	}
-	        	
 	        }else
 	        {
 		        message = "温馨提示：\n上传图片可直接回复图片或选择菜单上传"

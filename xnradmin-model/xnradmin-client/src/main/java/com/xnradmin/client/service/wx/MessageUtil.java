@@ -1,7 +1,6 @@
-package com.cntinker.util.wx.connect;
+package com.xnradmin.client.service.wx;
 
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.xmlbeans.impl.common.XmlStreamUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;

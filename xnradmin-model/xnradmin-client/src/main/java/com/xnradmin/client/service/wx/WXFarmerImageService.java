@@ -13,7 +13,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -62,9 +64,11 @@ public class WXFarmerImageService {
 	    writer.write(doc);
 	    writer.close();
 	}
-	public String read(String userId,String type)
+	public Map read(String userId,String type)
 	{
 		String index="0";
+		Map<String, Integer> index_count = new HashMap<String, Integer>();
+		int count = 0;
 		try {
 			HttpServletRequest request = ServletActionContext.getRequest();
 			String fileName=request.getSession().getServletContext().getRealPath("/WEB-INF/classes/wx/FarmerImages.xml");
@@ -74,6 +78,17 @@ public class WXFarmerImageService {
 			List<Element> list = root.selectNodes("user[@name='"+userId+"']");
 			List<Element> picurls = list.get(0).selectNodes("picurl");
 			String typeName = businessGoodsService.findByid(type).getGoodsName();
+			for (Element element : picurls) {
+				String picurl = element.attribute("name").getValue();
+				List<Element> types = element.selectNodes("type");
+				for (Element element2 : types) {
+					String typevalue = element2.attribute("name").getValue();
+					if(typevalue==null||"".equals(typevalue))
+					{
+						count++;
+					}
+				}
+			}
 			if(type!=null)
 			{
 				a:for (Element element : picurls) {
@@ -87,6 +102,7 @@ public class WXFarmerImageService {
 							index = "0";
 							element2.addAttribute("name", type);
 							uploadImage(picurl, userId, type);
+							count--;
 							break a;
 						}
 					}
@@ -103,7 +119,8 @@ public class WXFarmerImageService {
 			e.printStackTrace();
 			index = "1";
 		} 
-	    return index;
+		index_count.put(index, count);
+	    return index_count;
 	}
 	public void uploadImage(String picurl,String userId,String type)
 	{

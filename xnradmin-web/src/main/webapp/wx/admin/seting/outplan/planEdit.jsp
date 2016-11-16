@@ -171,7 +171,7 @@
 								  </div>
 								  <div id="Yz" style="display:none ;color:red" class="listTipsBox"></div>
 								  <div class="btnBox">
-								  	<button type="submit" onclick="validationPin()"  class="btn btn-success">保存</button>
+								  	<button type="button" onclick="validationPin()"  class="btn btn-success">保存</button>
 								  	<button type="submit" onclick="javascript:history.back(-1);"  class="btn btn-default">返回</button>								 
 								  </div>
 							  </form>
