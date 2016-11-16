@@ -62,6 +62,39 @@
 // 			}
 // 		});
 // 	}
+		function outputYz(){
+			var reg = new RegExp("^[0-9]*$"); 
+			var output = $("#output").val();
+			//alert(reg.test(output));
+			if(!reg.test(output)){ 
+				$("#Yz").html("产出数量必须为数字").show();
+				$("#output").val("");
+			}else{
+				$("#Yz").html("").show();
+			}
+		}
+		function getGoods()
+		{
+			var id= $('#businesCategoryId option:selected').val();
+			$.ajax({
+				type:'POST',
+				url:'<%=path %>/page/wx/outplan/getGoods.action',
+			data : {
+				businesCategoryId : id
+			},
+			dataType : 'JSON',
+			success : function(data) {
+				$("#goodsId").html("<option value=''>请选择详细</option>");
+				for (var i = 0; i < data.goodslist.length; i++) {
+					$("#goodsId")
+							.append(
+									"<option value="+data.goodslist[i].id+" class="+data.goodslist[i].goodsWeightId+">"
+											+ data.goodslist[i].goodsName
+											+ "</option>");
+				}
+			}
+		});
+	}
 		function getWeight()
 		{
 			var id =$("#goodsId option:selected").attr("class");
@@ -128,7 +161,7 @@
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">产出数量</label>
 								    <div class="col-sm-10">
-										<input type="text" id="output" name="outplan.output" value="${outPlanVO.outPlan.output}" class="numInput form-control" />
+										<input type="text" id="output" onblur="outputYz()" name="outplan.output" value="${outPlanVO.outPlan.output}" class="numInput form-control" />
 										<div class=" mt1">
 											<select class="form-control" name="outplan.unitId" id="weigthId">
 												<option value="${outPlanVO.outPlan.unitId }">${outPlanVO.businessWeight.weightName }</option>
