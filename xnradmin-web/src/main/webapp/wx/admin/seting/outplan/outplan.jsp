@@ -31,6 +31,7 @@
 <script type="text/javascript">
 		
 		function validationPin(){
+			var goodsId = $("#goodsId").val();
  			var dateStart = $("#dateStart").val();
 			var dateEnd = $("#dateEnd").val();
 			var output = $("#output").val();
@@ -43,6 +44,8 @@
 				$("#Yz").html("请输入预计产出结束日期").show();
 			}else if(output==null||output==""){
 				$("#Yz").html("产出数量不能为空").show();
+			}else if(goodsId==null||goodsId==""){
+				$("#Yz").html("请输入详细类型").show();
 			}else{
 				$("#Yz").html("").hide();
 				$("#form").submit();

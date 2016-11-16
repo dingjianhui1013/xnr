@@ -26,6 +26,7 @@
 	<script type="text/javascript" >
 		
 		function validationPin(){
+			var goodsId = $("#goodsId").val();
  			var dateStart = $("#dateStart").val();
 			var dateEnd = $("#dateEnd").val();
 			var output = $("#output").val();
@@ -35,6 +36,8 @@
 				$("#Yz").html("请输入预计产出结束日期").show();
 			}else if(output==null||output==""){
 				$("#Yz").html("产出数量").show();
+			}else if(goodsId==null||goodsId==""){
+				$("#Yz").html("请输入详细类型").show();
 			}else{
 				$("#Yz").html("").hide();
 				$("#form").submit();
@@ -62,6 +65,26 @@
 // 			}
 // 		});
 // 	}
+		function endTimeYz(){
+			var start = new Date($("#dateStart").val().replace(/\-/g, "\/"));  
+			var end = new Date($("#dateEnd").val().replace(/\-/g, "\/"));  
+			if($("#dateStart").val()!=""&& end<start){
+				$("#Yz").html("结束时间不能小于开始时间").show();
+				$("#dateEnd").val("");
+			}else{
+				$("#Yz").html("").show();
+			}
+		}
+		function startTimeYz(){
+			var start = new Date($("#dateStart").val().replace(/\-/g, "\/"));  
+			var end = new Date($("#dateEnd").val().replace(/\-/g, "\/"));  
+			if($("#dateStart").val()!=""&& end<start){
+				$("#Yz").html("开始时间不能大于结束时间").show();
+				$("#dateStart").val("");
+			}else{
+				$("#Yz").html("").show();
+			}
+		}
 		function outputYz(){
 			var reg = new RegExp("^[0-9]*$"); 
 			var output = $("#output").val();
@@ -154,8 +177,8 @@
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">预计产出日期</label>
 								    <div class="col-sm-10">
-								    	  <input type="text" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlanVO.outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
-				    					  <input type="text"  name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlanVO.outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
+								    	  <input onchange="startTimeYz()" type="text" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlanVO.outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
+				    					  <input onchange="endTimeYz()" type="text"  name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlanVO.outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
 								    </div>
 								  </div>
 								  <div class="form-group">
@@ -172,7 +195,7 @@
 								  <div id="Yz" style="display:none ;color:red" class="listTipsBox"></div>
 								  <div class="btnBox">
 								  	<button type="button" onclick="validationPin()"  class="btn btn-success">保存</button>
-								  	<button type="submit" onclick="javascript:history.back(-1);"  class="btn btn-default">返回</button>								 
+								  	<button type="button" onclick="javascript:history.back(-1);"  class="btn btn-default">返回</button>								 
 								  </div>
 							  </form>
 						  </div>
