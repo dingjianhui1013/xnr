@@ -19,12 +19,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.CommonPermissionMenuRelation;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
@@ -155,7 +157,10 @@ public class OutPlanAction extends ParentAction{
 	private OutPlanService outPlanService ;
 	@Autowired
 	private WXConnectAction wxconnectaction;
-		
+	@Autowired
+	private FarmerService farmerService;
+	@Autowired
+	private BusinessGoodsService businessGoodsService;
 	@Action(value = "outplan",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/outplan/outplan.jsp") })
 	public String outplan(){
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -165,7 +170,8 @@ public class OutPlanAction extends ParentAction{
 				WXurl.WX_USERID_URL.replace("ACCESS_TOKEN", access_tokenString)
 						.replace("CODE", code), "GET", null);
 		this.userId = userId.getString("UserId");
-		businesCategorys = outPlanService.getBusinessCategoryS();
+		String types = farmerService.getFenleiByUserId(userId.getString("UserId"));
+        goodslist = businessGoodsService.getTypeNameById(types);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value="getGoods",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
@@ -197,7 +203,8 @@ public class OutPlanAction extends ParentAction{
 	@Action(value = "editPlanForm",results = { @Result(name = StrutsResMSG.SUCCESS,location ="/wx/admin/seting/outplan/planEdit.jsp" ) })//  
 	public String eidtForm(){
 		OutPlanVO outPlanVO = outPlanService.getById(eidtId);
-		businesCategorys = outPlanService.getBusinessCategoryS();
+		String types = farmerService.getFenleiByUserId(outPlanVO.getOutPlan().getUserId());
+        goodslist = businessGoodsService.getTypeNameById(types);
 		ServletActionContext.getRequest().setAttribute("outPlanVO",  outPlanVO);
 		return StrutsResMSG.SUCCESS;
 	}

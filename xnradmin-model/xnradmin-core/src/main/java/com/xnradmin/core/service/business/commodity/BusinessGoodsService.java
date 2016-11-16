@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -527,6 +528,13 @@ public class BusinessGoodsService {
 		log.debug("update : "+po);
 		commonDao.modify(po);
 		return 0;
+	}
+
+	public List<BusinessGoods> getTypeNameById(String types) {
+		String hql = "from BusinessGoods where id in("+types+")";
+		List<BusinessGoods> lst = commonDao.getEntitiesByPropertiesWithHql(hql,
+				0, 0);
+		return lst;
 	}
 	
 }

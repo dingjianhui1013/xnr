@@ -4,10 +4,16 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/smsplatform-client/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/smsplatform-core/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/smsplatform-data/main/java"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/smsplatform-stat/src/main/java"/>        
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-web/src/main/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/smsplatform-stat/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/smsplatform-client/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/smsplatform-templates/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/xnradmin-core/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/xnradmin-templates/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/xnradmin-client/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-web/src/main/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/xnradmin-utils/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/xnradmin-stat/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/xnradmin-model/xnradmin-data/src/main/java"/>
         <property name="java-output-path" value="/xnradmin/build/classes"/>
         <property name="context-root" value="/"/>
     </wb-module>

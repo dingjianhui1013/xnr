@@ -40,6 +40,28 @@
 				$("#form").submit();
 			}
 		}
+// 		function getGoods()
+// 		{
+// 			var id= $('#businesCategoryId option:selected').val();
+// 			$.ajax({
+// 				type:'POST',
+<%-- 				url:'<%=path %>/page/wx/outplan/getGoods.action', --%>
+// 			data : {
+// 				businesCategoryId : id
+// 			},
+// 			dataType : 'JSON',
+// 			success : function(data) {
+// 				$("#goodsId").html("<option value=''>请选择详细</option>");
+// 				for (var i = 0; i < data.goodslist.length; i++) {
+// 					$("#goodsId")
+// 							.append(
+// 									"<option value="+data.goodslist[i].id+" class="+data.goodslist[i].goodsWeightId+">"
+// 											+ data.goodslist[i].goodsName
+// 											+ "</option>");
+// 				}
+// 			}
+// 		});
+// 	}
 		function outputYz(){
 			var reg = new RegExp("^[0-9]*$"); 
 			var output = $("#output").val();
@@ -109,20 +131,23 @@
 							  <form id="form" action="saveEdit.action" method="post">
 							  		<input type="hidden" name="outplan.id" value="${outPlanVO.outPlan.id}"/>
 								<div class="form-group">
-									<label for="" class="col-sm-2 control-label labelFont">选择分类</label>
-									<div class="col-sm-10">
-										<select class="form-control" id="businesCategoryId"
-											onchange="getGoods()" name="outplan.businesCategoryId">
-											<option value="${outPlanVO.outPlan.businesCategoryId}">${outPlanVO.businessCategory.categoryName }</option>
-											<c:forEach items="${businesCategorys}" var="businesCategorys">
-												<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option>
-											</c:forEach>
-										</select>
-									</div>
-									<br> <label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
+<!-- 									<label for="" class="col-sm-2 control-label labelFont">选择分类</label> -->
+<!-- 									<div class="col-sm-10"> -->
+<!-- 										<select class="form-control" id="businesCategoryId" -->
+<!-- 											onchange="getGoods()" name="outplan.businesCategoryId"> -->
+<%-- 											<option value="${outPlanVO.outPlan.businesCategoryId}">${outPlanVO.businessCategory.categoryName }</option> --%>
+<%-- 											<c:forEach items="${businesCategorys}" var="businesCategorys"> --%>
+<%-- 												<option value="${businesCategorys.id}">${businesCategorys.categoryName}</option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
+<!-- 									</div> -->
+									<label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
 									<div class="col-sm-11">
 										<select class="form-control" name="outplan.goodsId" id="goodsId" onchange="getWeight()">
-											<option value="${outPlanVO.outPlan.goodsId}">${outPlanVO.businessGood.goodsName}</option>
+											<option value="">请选择详细</option>
+											<c:forEach items="${goodslist}" var="goodslist">
+												<option value="${goodslist.id}" class="${goodslist.goodsWeightId}" <c:if test="${outPlanVO.outPlan.goodsId==goodslist.id}">selected="selected"</c:if>>${goodslist.goodsName}</option>
+											</c:forEach>
 										</select>
 									</div>
 								</div>
@@ -146,7 +171,7 @@
 								  </div>
 								  <div id="Yz" style="display:none ;color:red" class="listTipsBox"></div>
 								  <div class="btnBox">
-								  	<button type="submit" onclick="validationPin()"  class="btn btn-success">保存</button>
+								  	<button type="button" onclick="validationPin()"  class="btn btn-success">保存</button>
 								  	<button type="submit" onclick="javascript:history.back(-1);"  class="btn btn-default">返回</button>								 
 								  </div>
 							  </form>

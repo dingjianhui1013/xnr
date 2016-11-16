@@ -8,6 +8,7 @@
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -53,7 +54,11 @@
 				alert("计划不能删除");
 			}
 		}
-		function deleteImgae(imageUrl,imageid){
+		function deleteImgae(imageUrl,imageid,count,typeCount){
+			// 点击图片所在日期所含类型数量
+			var date_typeCount  = $(".datecount"+count).val();
+			//点击图片所在日期所在类型下的照片数量
+			var type_imageCount = $(".typecount"+count+typeCount).val();
 			$.ajax({
 				type:'POST',
 				url:"<%=path %>/page/wx/personalCenter/deleteImage.action",
@@ -65,8 +70,28 @@
 						{
 							
 							alert("删除成功");
-							$("#"+data.imageid).remove();
-						}
+							if(type_imageCount!=1){
+								$("#image"+imageid).remove();
+								$(".typecount"+count+typeCount).val(type_imageCount-1);
+								
+							}
+							if(type_imageCount==1)
+								{
+									if(date_typeCount!=1)
+										{
+											$("#typeCount"+typeCount).remove();
+											$("#image"+data.imageid).remove();
+											$(".datecount"+count).val(date_typeCount-1);
+										}
+									if(date_typeCount==1)
+										{
+											$("#datecount"+count).remove();
+										}
+								}
+						}else
+							{
+								alert("删除失败");
+							}
 				}
 			});
 		}
@@ -115,35 +140,52 @@
 					    	<input type="text"  class="form-control"  placeholder="请输入关键词进行搜索" id="tags"/>
 					    </div>
 					    	<input type="button" value="搜索" class="btn btn-primary searchBtn">
-					    
 					  </div>
 					  <h3 class="bigTit">我上传的图片</h3>
 					  <div class="form-group">
 					    <div class="col-sm-10 uploadImgBox">
 					    	 <ul>
+					    	 <c:set var="i" value="1"/>
+					    	 <c:set var="ii" value="1"/>
+					    	 <c:set var="count" value="1" />
 					    	 	<c:forEach items="${date_type_images}" var="dtis">
-									<li><span class="circleIcon"></span> <c:forEach
-											items="${dtis}" var="dti">
+									<li id="datecount${count}"><span class="circleIcon"></span>
+									<c:forEach items="${dtis}" var="dti">
 											<h3>${dti.key}</h3>
 											<div>
 												<c:forEach items="${dti.value}" var="dtiv">
+<!-- 												当前日期下的类型数量 -->
+												<input type="hidden" value="${fn:length(dtiv)}" class="datecount${count}"/>
+												<c:set var="typeCount" value="1"/>
 													<c:forEach items="${dtiv}" var="ditvs">
-														<p class="sortTit">${ditvs.key}</p>
-														<c:set var="i" value="1"/>
+														<p class="sortTit" id="typeCount${typeCount}">${ditvs.key}</p>
+														<c:forEach items="${ditvs.value}" var="images">
+															<img src="<%=path %>${images}" style="display: none" class="images${ii}"/>
+															 <c:set var="ii" value="${ii+1}"/>
+														</c:forEach> 
 														<div class="uploadImgList  demo-gallery">
 															<c:forEach items="${ditvs.value }" var="images">
-																<a href="<%=path %>${images}" data-size="1600x1068" data-med="<%=path %>${images}" data-med-size="1024x683" id="image${i}">
-								    	 						<p class="closeIcon" onclick="deleteImgae('${images}','image${i}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
-				          											<img src="<%=path %>${images}" alt=""/>
-				          											<c:set var="i" value="${i+1}"/>
-				        										</a>
+																	<a href="<%=path %>${images}" data-size="1600x1068" data-med="<%=path %>${images}" data-med-size="1024x683" id="image${i}">
+									    	 						<p class="closeIcon" onclick="deleteImgae('${images}','${i}','${count}','${typeCount}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
+					          											<img src="<%=path %>${images}" />
+					          											<script type="text/javascript">
+// 					          												alert($(".images"+${i}).width()+"x"+$(".images"+${i}).height());
+					          												$("#image"+${i}).attr("data-med-size",$(".images"+${i}).width()+"x"+$(".images"+${i}).height());
+// 					          												alert($("#image"+${i}).attr("data-med-size"));
+					          											</script>
+					          											<c:set var="i" value="${i+1}"/>
+<!-- 					          											类型下的图片数量 -->
+					          											<input type="hidden" value="${fn:length(ditvs.value)}" class="typecount${count}${typeCount}"/>
+					        										</a>
 															</c:forEach>
 														</div>
+														<c:set var="typeCount" value="${typeCount+1}"/>
 													</c:forEach>
 												</c:forEach>
 											</div>
 										</c:forEach>
 									</li>
+								<c:set var="count" value="${count+1}" />
 								</c:forEach>
 					    	 </ul>
 					    </div>

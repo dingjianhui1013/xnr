@@ -1,8 +1,10 @@
 package com.xnradmin.client.service.wx;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -85,6 +87,5 @@ public class WXGetTokenService {
 			e.printStackTrace();
 		}
 	}
-	
 	
 }

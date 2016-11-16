@@ -72,6 +72,12 @@ public class FarmerService {
 		String[] split = s.split(",");
 		return split;
 	}
+	public String getFenleiByUserId(String userId){
+		String hql = "select types from Farmer where userId='"+userId+"'";
+		List types = (List)commonDao.getEntityByPropertiesWithHql(hql);
+		String s = types==null?"":(String)types.get(0);
+		return s;
+}
 	
 	/**
 	 * 更新农户对应的商品
@@ -87,5 +93,11 @@ public class FarmerService {
 			hql ="update Farmer set types='"+types+"' where id="+id;
 		}
 		commonDao.executeUpdateOrDelete(hql);
+	}
+	public Farmer getUserNameById(String userId)
+	{
+		String hql = "from Farmer where userId='"+userId+"'";
+		List<Farmer> user = (List)commonDao.getEntityByPropertiesWithHql(hql);
+		return user.get(0);
 	}
 }

@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Table(name = "outplan")
 public class OutPlan  implements java.io.Serializable{
 	private Long id;
-	private String businesCategoryId;
+//	private String businesCategoryId;
 	private String userId; //用户id
 	private String goodsId;//商品id
 	private Date startTime;//开始
@@ -131,13 +131,13 @@ public class OutPlan  implements java.io.Serializable{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	@Column(name="busines_category_id")
-	public String getBusinesCategoryId() {
-		return businesCategoryId;
-	}
-	public void setBusinesCategoryId(String businesCategoryId) {
-		this.businesCategoryId = businesCategoryId;
-	}
+//	@Column(name="busines_category_id")
+//	public String getBusinesCategoryId() {
+//		return businesCategoryId;
+//	}
+//	public void setBusinesCategoryId(String businesCategoryId) {
+//		this.businesCategoryId = businesCategoryId;
+//	}
 	@Column(name="examine_person")
 	public String getExaminePerson() {
 		return examinePerson;
