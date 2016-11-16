@@ -94,4 +94,10 @@ public class FarmerService {
 		}
 		commonDao.executeUpdateOrDelete(hql);
 	}
+	public Farmer getUserNameById(String userId)
+	{
+		String hql = "from Farmer where userId='"+userId+"'";
+		List<Farmer> user = (List)commonDao.getEntityByPropertiesWithHql(hql);
+		return user.get(0);
+	}
 }

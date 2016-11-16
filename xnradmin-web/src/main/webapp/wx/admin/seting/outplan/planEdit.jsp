@@ -113,7 +113,7 @@
 										<select class="form-control" name="outplan.goodsId" id="goodsId" onchange="getWeight()">
 											<option value="">请选择详细</option>
 											<c:forEach items="${goodslist}" var="goodslist">
-												<option value="${goodslist.id}" class="${goodslist.goodsWeightId}">${goodslist.goodsName}</option>
+												<option value="${goodslist.id}" class="${goodslist.goodsWeightId}" <c:if test="${outPlanVO.outPlan.goodsId==goodslist.id}">selected="selected"</c:if>>${goodslist.goodsName}</option>
 											</c:forEach>
 										</select>
 									</div>
