@@ -165,7 +165,7 @@ public class BusinessCategoryService {
 	 */
 	public List<BusinessGoodsVO> listVO(BusinessGoodsVO vo, int curPage,
 			int pageSize, String orderField, String direction) {
-		String hql = "from BusinessCategory where 1=1 and categoryLevel = 1";
+		String hql = "from BusinessCategory where 1=1"; //and categoryLevel = 1";
 		if (vo != null && vo.getBusinessCategory() != null) {
 			if (!StringHelper
 					.isNull(vo.getBusinessCategory().getCategoryName())) {
