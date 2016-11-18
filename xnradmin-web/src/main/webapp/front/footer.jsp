@@ -4,17 +4,17 @@
 	 <div class="container">
 		 <div class="shpng-grids">
 			 <div class="col-md-4 shpng-grid">
-			 	<img src="images/safeIcon.png" />
+			 	<img src="${basePath }images/front/safeIcon.png" />
 				 <h3>食品安全有保障</h3>
 				 <p>Food safety is guaranteed</p>
 			 </div>
 			 <div class="col-md-4 shpng-grid">
-			 	<img src="images/safeIcon.png" />
+			 	<img src="${basePath }images/front/safeIcon.png" />
 				 <h3>有机农场鲜蔬配送</h3>
 				 <p>Organic farm fresh vegetables direct delivery</p>
 			 </div>
 			 <div class="col-md-4 shpng-grid">
-			 	<img src="images/safeIcon.png" />
+			 	<img src="${basePath }images/front/safeIcon.png" />
 				 <h3>极速送达</h3>
 				 <p>Speed delivery</p>
 			 </div>
