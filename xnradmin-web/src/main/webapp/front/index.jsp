@@ -41,66 +41,28 @@
 	<div class="container">
 		<ul class="memenu skyblue pull-left">
 			<li class="active"><a href="index.html">首页</a></li>
-			<li class="grid"><a href="#">蔬菜水果</a>
+			<c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
+				<c:forEach items="${firstBusinessCategory }" var="first">
+				<li class="grid"><a href="#"> ${ first.key.categoryName}</a>
 				<div class="mepanel">
 					<div class="row">
-						<div class="col1 me-one">
-							<h4>蔬菜类</h4>
-							<ul>
-								<li><a href="product.html">有机蔬菜</a></li>
-								<li><a href="product.html">地方特产蔬菜</a></li>
-								<li><a href="product.html">自产蔬菜</a></li>
-							</ul>
-						</div>
-						<div class="col1 me-one">
-							<h4>水果类</h4>
-							<ul>
-								<li><a href="product.html">有机水果</a></li>
-								<li><a href="product.html">进口水果</a></li>
-								<li><a href="product.html">国产水果</a></li>
-							</ul>	
-						</div>
+						<c:forEach items="${first.value }" var="secondBusinessCategory">
+						<c:forEach items="${secondBusinessCategory }" var="second">
+							<div class="col1 me-one">
+								<h4> ${ second.key.categoryName} </h4>
+								<ul>
+									<c:forEach items="${second.value }" var="threeBusinessCategory">
+									<li><a href="product.html">${threeBusinessCategory.categoryName }</a></li>
+									</c:forEach>
+								</ul>
+							</div>
+						</c:forEach>
+						</c:forEach>
 					</div>
-				</div>
+				</div> 
+				</c:forEach>
 			</li>
-			<li class="grid"><a href="#">肉类禽蛋</a>
-				<div class="mepanel">
-					<div class="row">
-						<div class="col1 me-one">
-							<h4>牛羊肉</h4>
-							<ul>
-								<li><a href="product.html">有机牛羊肉</a></li>
-								<li><a href="product.html">进口牛羊肉</a></li>
-								<li><a href="product.html">精品牛羊肉</a></li>
-							</ul>
-						</div>
-						<div class="col1 me-one">
-							<h4>猪肉</h4>
-							<ul>
-								<li><a href="product.html">有机猪肉</a></li>
-								<li><a href="product.html">进口猪肉</a></li>
-								<li><a href="product.html">国产猪肉</a></li>
-								<li><a href="product.html">农场自养猪肉</a></li>
-							</ul>	
-						</div>
-						<div class="col1 me-one">
-							<h4>禽类</h4>
-							<ul>
-								<li><a href="product.html">有机禽类</a></li>
-								<li><a href="product.html">散养禽类</a></li>
-							</ul>	
-						</div>
-						<div class="col1 me-one">
-							<h4>蛋类</h4>
-							<ul>
-								<li><a href="product.html">有机蛋</a></li>
-								<li><a href="product.html">散养蛋</a></li>
-							</ul>	
-						</div>
-					</div>
-				</div>
-			</li>
-			<li class="grid"><a href="#">粮油副食</a></li>
+			</c:forEach>
 			<li class="grid"><a href="#contact">关于我们</a></li>
 		</ul>
 	 </div>
@@ -214,20 +176,27 @@
 		  </div>
 	 </div>
 </div>
-<div class="featured">
+
+	 <c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
+	 <c:forEach items="${firstBusinessCategory }" var="first">
+	 <div class="featured">
 	 <div class="container">
-	 <div class="sortNavBox v-box">
-		 <h3>蔬菜水果</h3>
+	 	<div class="sortNavBox v-box">
+		<h3>${first.key.categoryName }</h3>
 		 <ul class="sortNavUl sortTab1">
-		 	<li class="cur">特惠专区</li>
-		 	<li>有机蔬菜</li>
-		 	<li>有机水果</li>
-		 </ul>
-	 </div>
-	 <div class="adBanner">
-	 	<a href="#"><img src="${basePath }images/front/products/leftImg.jpg" /></a>
-	 </div>
-	 <div class="sortListBox sortListBox1">
+			<c:forEach items="${first.value }" var="secondBusinessCategory">
+				<c:forEach items="${secondBusinessCategory }" var="second">
+					<c:forEach items="${second.value }" var="threeBusinessCategory">
+						<li>${threeBusinessCategory.categoryName }</li>
+					</c:forEach>
+				</c:forEach>
+			</c:forEach>
+		</ul>
+		</div>
+		<div class="adBanner">
+	 	<a href="#"><img src="${basePath }${first.key.categoryLogo }" /></a>
+	 	</div>
+	 	<div class="sortListBox sortListBox1">
 	 	<div class="sortListCon" style="display:block;">
 			 <div class="feature-grids">
 				 <div class="col-md-3 feature-grid jewel">
@@ -330,540 +299,16 @@
 				 </div>
 			 </div>
 		</div>
-		<div class="sortListCon">
-			 <div class="feature-grids">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机山药2 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机西兰花 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥22.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机栗味南瓜 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-			 </div>
-			 <div class="feature-grids secondLine-grid">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机南瓜</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						<div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div> 
-					 </a>
-				 </div>
-			 </div>
+		 </div>
 		</div>
-		<div class="sortListCon">
-			 <div class="feature-grids">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机山药3333 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机西兰花 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥22.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机栗味南瓜 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-			 </div>
-			 <div class="feature-grids secondLine-grid">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机南瓜</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						<div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div> 
-					 </a>
-				 </div>
-			 </div>
+		<div class="adBox">
+			<img src="${basePath }${first.key.categoryHeadLogo}" class="img-responsive" />
 		</div>
-	 </div>
-	 </div>
-</div>
+	 </c:forEach>
+	 </c:forEach>
+	
 <!---->
-<div class="adBox">
-	<img src="${basePath }images/front/ad/adImg1.jpg" class="img-responsive" />
-</div>
-<div class="featured">
-	 <div class="container">
-	 <div class="sortNavBox egg-box">
-		 <h3>肉类禽蛋</h3>
-		 <ul class="sortNavUl sortTab2">
-		 	<li class="cur">特惠专区</li>
-		 	<li>禽类</li>
-		 	<li>肉类</li>
-		 </ul>
-	 </div>
-	 <div class="adBanner">
-	 	<a href="#"><img src="${basePath }images/front/products/leftImg1.jpg" /></a>
-	 </div>
-	 <div class="sortListBox sortListBox2">
-	 	<div class="sortListCon" style="display:block;">
-			 <div class="feature-grids">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机山药 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机西兰花 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥22.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机栗味南瓜 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-			 </div>
-			 <div class="feature-grids secondLine-grid">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机南瓜</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						<div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div> 
-					 </a>
-				 </div>
-			 </div>
-		</div>
-		<div class="sortListCon">
-			 <div class="feature-grids">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>禽类</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机西兰花 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥22.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机栗味南瓜 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-			 </div>
-			 <div class="feature-grids secondLine-grid">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机南瓜</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						<div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div> 
-					 </a>
-				 </div>
-			 </div>
-		</div>
-		<div class="sortListCon">
-			 <div class="feature-grids">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>肉类 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机西兰花 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥22.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机栗味南瓜 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-			 </div>
-			 <div class="feature-grids secondLine-grid">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机南瓜</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						<div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div> 
-					 </a>
-				 </div>
-			 </div>
-		</div>
-	 </div>
-	 </div>
-</div>
+
 <!---->
 <%@include file="footer.jsp"%>		 
 </body>
