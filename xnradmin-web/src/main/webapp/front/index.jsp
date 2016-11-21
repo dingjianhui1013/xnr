@@ -16,7 +16,7 @@
 <div class="logoWrap">	
 	<div class="container">	
 		<div class="logo">
-			<a href="index.html">
+			<a href="index.jsp">
 			<h1><img src="${basePath }images/front/login_logo.png" /></h1>
 			</a>
 		</div>
@@ -30,7 +30,8 @@
 			 <a href="checkout.html">
 				<h3> <div class="total">
 					<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
-					<span class="simpleCart_total"></span> (<span id="simpleCart_quantity" class="simpleCart_quantity"></span>)</div>
+					<span class="simpleCart_total"></span> (<span id="simpleCart_quantity" class="simpleCart_quantity"></span>)
+					</div>
 				</h3>
 			</a>
 		 	<div class="clearfix"> </div>

@@ -19,7 +19,7 @@
 <script type="application/x-javascript"> 
 	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
 </script>
-<script src="js/simpleCart.min.js"> </script>
+<script src="${basePath }js/front/simpleCart.min.js"> </script>
 <script type="text/javascript" src="${basePath }js/front/memenu.js"></script>
 
 <div class="top_bg">
@@ -39,9 +39,9 @@
 				</ul> -->
 				<!--登录后显示-->
 				<ul>
-					<li><a href="login.html">登录</a></li>
-					<li><a href="register.html">注册</a></li>
-					<li><a href="personalCenter.html">我的订单</a></li>
+					<li><a href="login.jsp">登录</a></li>
+					<li><a href="register.jsp">注册</a></li>
+					<li><a href="personalCenter.jsp">我的订单</a></li>
 				</ul>
 
 			</div>
