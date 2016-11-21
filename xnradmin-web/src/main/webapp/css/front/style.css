@@ -654,7 +654,7 @@ left: 20%; bottom:0;
   color: #777;
   padding: 3px 0;
   display: block;
-  font-size:1em;
+  font-size:1rem;
 }
 .ftr-grid ul li a:hover{
 	text-decoration:none;

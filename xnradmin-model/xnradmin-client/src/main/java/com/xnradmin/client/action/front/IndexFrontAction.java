@@ -27,6 +27,7 @@ public class IndexFrontAction  {
 	
 	@Action(value = "index", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/index.jsp") })
 	public String info() {
+		
 		return StrutsResMSG.SUCCESS;
 	}
 	
