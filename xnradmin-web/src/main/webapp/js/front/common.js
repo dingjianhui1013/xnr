@@ -4,12 +4,17 @@ $(function(){
 		 _index=$(this).index();
 		 $(this).addClass('cur').siblings().removeClass('cur');
          $('.sortListBox1 div.sortListCon').eq(_index).show().siblings().hide();
-	})
+	});
 	$('.sortTab2 li').hover(function(){
 		 _index=$(this).index();
 		 $(this).addClass('cur').siblings().removeClass('cur');
          $('.sortListBox2 div.sortListCon').eq(_index).show().siblings().hide();
-	})
+	});
+	$('.sortTab3 li').hover(function(){
+		 _index=$(this).index();
+		 $(this).addClass('cur').siblings().removeClass('cur');
+        $('.sortListBox3 div.sortListCon').eq(_index).show().siblings().hide();
+	});
 	$('.instroTab li').click(function(){
 		 _index=$(this).index();
 		 $(this).addClass('cur').siblings().removeClass('cur');
@@ -70,14 +75,4 @@ $(function(){
 
 		})
 
-		/*反选*/
-		$('#checkAll-f').click(function(){
-				$(".cartListBox :checkbox").each(function(){
-				if($(this).is(':checked')){
-					$(this).prop("checked", false); 
-				}else{
-					$(this).prop("checked", true); 
-				}
-			});
-		})
 })

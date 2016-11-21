@@ -2,14 +2,19 @@ package com.xnradmin.client.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cntinker.util.StringHelper;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessCategory;
+import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessWeight;
+import com.xnradmin.vo.business.BusinessGoodsVO;
 
 @Service("IndexFrontService")
 public class IndexFrontService {
@@ -68,11 +73,40 @@ public class IndexFrontService {
 		return list;
 	}
 	/**
+	 * 三级分类
+	 */
+	private List<BusinessCategory> getThreeCategory(){
+		String hql = "from BusinessCategory where categoryLevel=3";
+		List<BusinessCategory> list  = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return list;
+	}
+	/**
 	 * 查找子分类
 	 */
 	private List<BusinessCategory> getParentCategory(Integer parentId){
 		String hql = "from BusinessCategory where categoryParentId="+parentId;
 		List<BusinessCategory> list  = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		return list;
+	}
+	/**
+	 * 
+	 * @param type
+	 * @param curPage
+	 * @param pageSize
+	 * @return
+	 */
+	public List<BusinessGoodsVO> listBusinessGoodsVO( int curPage,int pageSize) {
+		String hql = "from BusinessGoods a,BusinessCategory b,BusinessWeight c where a.goodsCategoryId=b.id and a.goodsWeightId=c.id";
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,pageSize);
+		List<BusinessGoodsVO> resList = new LinkedList<BusinessGoodsVO>();
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = (Object[]) l.get(i);
+			BusinessGoodsVO businessGoodsVO = new BusinessGoodsVO();
+			businessGoodsVO.setBusinessGoods((BusinessGoods)obj[0]);
+			businessGoodsVO.setBusinessCategory((BusinessCategory)obj[1]);
+			businessGoodsVO.setBusinessWeight((BusinessWeight)obj[2]);
+			resList.add(businessGoodsVO);
+		}
+		return resList;
 	}
 }

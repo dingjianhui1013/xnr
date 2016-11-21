@@ -110,42 +110,17 @@
 		  </div>
 		 <div class="arrival-grids">			 
 			 <ul id="flexiselDemo1">
+			 <c:forEach items="${indexGoods }" var="good" varStatus="status">
 				 <li>
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
+					 <a href="product.html"><img src="${basePath }${good.businessGoods.goodsLogo}" alt=""/>	
 					  <div class="arrival-info">
-						 <h4>有机山药 </h4>
+						 <h4>${ good.businessGoods.goodsName} </h4>
 						 <p>约500-750g</p>
-						 <span class="disc">￥12.80/份</span>
+						 <span class="disc">￥${good.businessGoods.goodsWeight }/${good.businessWeight.weightName }</span>
 					 </div>
 					 </a>
 				 </li>
-				 <li>
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>
-						 <div class="arrival-info">
-						 <h4>有机山药 </h4>
-						 <p>约500-750g</p>
-						 <span class="disc">￥12.80/份</span>
-					 </div>
-					 </a>
-				 </li>
-				 <li>
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-						 <h4>有机山药 </h4>
-						 <p>约500-750g</p>
-						 <span class="disc">￥12.80/份</span>
-					 </div>
-					 </a>
-				 </li>
-				 <li>
-				    <a href="product.html"> <img src="${basePath }images/front/products/sg-img1.jpg" alt=""/>	
-						 <div class="arrival-info">
-						 <h4>有机山药 </h4>
-						 <p>约500-750g</p>
-						 <span class="disc">￥12.80/份</span>
-					 </div>
-					 </a>
-				 </li>
+				</c:forEach>
 				</ul>
 				<script type="text/javascript">
 				 $(window).load(function() {			
@@ -177,18 +152,22 @@
 		  </div>
 	 </div>
 </div>
-
+	 <c:set var="k" value="1"/>
 	 <c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
 	 <c:forEach items="${firstBusinessCategory }" var="first">
+	 <c:set var="i" value="0"/>
+	 <c:set var="j" value="0"/>
+	 
 	 <div class="featured">
 	 <div class="container">
 	 	<div class="sortNavBox v-box">
 		<h3>${first.key.categoryName }</h3>
-		 <ul class="sortNavUl sortTab1">
+		 <ul class="sortNavUl sortTab${k }">
 			<c:forEach items="${first.value }" var="secondBusinessCategory">
 				<c:forEach items="${secondBusinessCategory }" var="second">
 					<c:forEach items="${second.value }" var="threeBusinessCategory">
-						<li>${threeBusinessCategory.categoryName }</li>
+						<li <c:if test="${ i==0}">class="cur"</c:if>>${threeBusinessCategory.categoryName }</li>
+						<c:set var="i" value="${i+1 }" />
 					</c:forEach>
 				</c:forEach>
 			</c:forEach>
@@ -197,114 +176,51 @@
 		<div class="adBanner">
 	 	<a href="#"><img src="${basePath }${first.key.categoryLogo }" /></a>
 	 	</div>
-	 	<div class="sortListBox sortListBox1">
-	 	<div class="sortListCon" style="display:block;">
-			 <div class="feature-grids">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机山药 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机西兰花 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥22.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机栗味南瓜 </h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						  <div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					 </a>
-				 </div>
+	 	<div class="sortListBox sortListBox${k }">
+	 	<c:forEach items="${first.value }" var="secondBusinessCategory">
+				<c:forEach items="${secondBusinessCategory }" var="second">
+					<c:forEach items="${second.value }" var="threeBusinessCategory" varStatus="status">
+					
+					 	<div class="sortListCon" <c:if test="${ j==0}">style="display:block;"</c:if>>
+					 		<c:forEach items="${indexGoods }" var="good" varStatus="status">
+					 			<c:if test="${status.index==0 }">
+					 				<div class="feature-grids">
+					 			</c:if>
+					 			
+					 			<c:if test="${good.businessCategory.id==threeBusinessCategory.id}">
+					 			<div class="col-md-3 feature-grid jewel">
+								 <a href="product.html"><img src="${basePath }${good.businessGoods.goodsLogo }" alt=""/>	
+							 	<div class="arrival-info">
+								 <h4>${ good.businessGoods.goodsName} </h4>
+								 <p>约500-750g</p>
+								 <span class="disc">￥${good.businessGoods.goodsWeight }/${good.businessWeight.weightName }</span>
+								 </div>
+								 <div class="shrt">
+									<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
+							 	</div>
+								 </a>
+								 </div>
+								 </c:if> 
+								 <c:if test="${status.index==3 }">
+					 				</div>
+					 				<div class="feature-grids secondLine-grid">
+					 			</c:if>
+					 			<c:if test="${status.index==7 }">
+					 				</div>
+					 			</c:if>
+					 		</c:forEach>
 			 </div>
-			 <div class="feature-grids secondLine-grid">
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img3.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机南瓜</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid jewel">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img2.jpg" alt=""/>	
-						 <div class="arrival-info">
-							 <h4>有机西兰花</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div>
-					</a>
-				 </div>
-				 <div class="col-md-3 feature-grid">
-					 <a href="product.html"><img src="${basePath }images/front/products/sc-img1.jpg" alt=""/>	
-						<div class="arrival-info">
-							 <h4>有机山药</h4>
-							 <p>约500-750g</p>
-							 <span class="disc">￥12.80/份</span>
-						 </div>
-						 <div class="shrt">
-							<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-						 </div> 
-					 </a>
-				 </div>
 			 </div>
-		</div>
-		 </div>
+						<c:set var="j" value="${j+1 }" />
+					</c:forEach>
+				</c:forEach>
+			</c:forEach>
+	 	</div>
 		</div>
 		<div class="adBox">
 			<img src="${basePath }${first.key.categoryHeadLogo}" class="img-responsive" />
 		</div>
+		 <c:set var="k" value="${k+1 }" />
 	 </c:forEach>
 	 </c:forEach>
 	
