@@ -13,6 +13,9 @@ import org.springframework.stereotype.Controller;
 
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.vo.front.ProductDetailVo;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 
@@ -22,6 +25,17 @@ import com.xnradmin.vo.business.BusinessGoodsVO;
 @ParentPackage("json-default")
 public class IndexFrontAction  {
 	
+	private ProductDetailVo productDetailVo;
+	@Autowired
+	private BusinessCategoryService businessCategoryService;
+	@Autowired
+	private BusinessGoodsService businessGoodsService;
+	public ProductDetailVo getProductDetailVo() {
+		return productDetailVo;
+	}
+	public void setProductDetailVo(ProductDetailVo productDetailVo) {
+		this.productDetailVo = productDetailVo;
+	}
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;
 	private List<BusinessGoodsVO> indexGoods;
 	@Autowired IndexFrontService indexFrontService;
@@ -30,6 +44,18 @@ public class IndexFrontAction  {
 	public String info() {
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		this.indexGoods = indexFrontService.listBusinessGoodsVO(0,8);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="productDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/productDetail.jsp")})
+	public String productDetail()
+	{
+		//此处需要传来三个参数，一级分类id，二级分类id，菜品分类id。
+		String firstName = businessCategoryService.findByid(productDetailVo.getFirstClassification()).getCategoryName();
+		String secoundName = businessCategoryService.findByid(productDetailVo.getSecoundClassification()).getCategoryName();
+		String foodName = businessGoodsService.findByid(productDetailVo.getFirstClassification()).getGoodsName();
+		productDetailVo.setFirstName(firstName);
+		productDetailVo.setSecoundName(secoundName);
+		productDetailVo.setFoodName(foodName);
 		return StrutsResMSG.SUCCESS;
 	}
 	

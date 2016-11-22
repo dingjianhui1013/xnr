@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.xnradmin.client.service.wx.FarmerImageService;
 import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
@@ -19,6 +20,7 @@ import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.po.wx.connect.FarmerImage;
 
 @Controller
 @Scope("prototype")
@@ -32,10 +34,12 @@ public class farmerAction extends ParentAction{
 	String types;
 	String[] fenleiById;
 	List<BusinessGoods> allBusinessGoods;
+	private String goodsId;
+	private List<FarmerImage> farmerImages;
 	@Autowired FarmerService farmerService;
 	@Autowired BusinessGoodsService  businessGoodsService;
-	
-	
+	@Autowired
+	private FarmerImageService farmerImageService;
 	public List<BusinessGoods> getAllBusinessGoods() {
 		return allBusinessGoods;
 	}
@@ -54,7 +58,6 @@ public class farmerAction extends ParentAction{
 	public void setFarmerId(String farmerId) {
 		this.farmerId = farmerId;
 	}
-	
 	public String getTypes() {
 		return types;
 	}
@@ -64,27 +67,27 @@ public class farmerAction extends ParentAction{
 	public Farmer getQuery() {
 		return query;
 	}
-
-
 	public void setQuery(Farmer query) {
 		this.query = query;
 	}
-
-
-
-
 	public List<Farmer> getFarmerList() {
 		return farmerList;
 	}
-
-
 	public void setFarmerList(List<Farmer> farmerList) {
 		this.farmerList = farmerList;
 	}
-
-
-
-
+	public String getGoodsId() {
+		return goodsId;
+	}
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
+	public List<FarmerImage> getFarmerImages() {
+		return farmerImages;
+	}
+	public void setFarmerImages(List<FarmerImage> farmerImages) {
+		this.farmerImages = farmerImages;
+	}
 	@Override
 	public boolean isPublic() {
 		return false;
@@ -123,5 +126,15 @@ public class farmerAction extends ParentAction{
 		farmerService.saveTypes(this.farmerId,this.types);
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "FarmerManagement",null);
 		return null;
+	}
+	/**
+	 * 用户扫描二维码展示农户菜品图片
+	 * @return String
+	 */
+	@Action(value="showFarmerImage",results = {@Result(name=StrutsResMSG.SUCCESS,location="/business/admin/farmer/showFarmerIamge.jsp")})
+	public String showFarmerImage()
+	{
+		farmerImages = farmerImageService.findFarmerImage(farmerId, goodsId);
+		return StrutsResMSG.SUCCESS;
 	}
 }

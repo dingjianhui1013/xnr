@@ -55,4 +55,11 @@ public class FarmerImageService {
 			e.printStackTrace();
 		}
 	}
+	public List<FarmerImage> findFarmerImage(String farmerId,String goodsId)
+	{
+		String hql = "from FarmerImage where type = '"+goodsId+"' and userId = '"+farmerId+"'";
+		List<FarmerImage> list = (List)commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
+		return list;
+	}
+	
 }
