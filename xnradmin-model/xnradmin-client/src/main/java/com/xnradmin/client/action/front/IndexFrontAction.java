@@ -1,23 +1,16 @@
 package com.xnradmin.client.action.front;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
-import org.json.JSONException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.xnradmin.client.service.wx.FarmerService;
-import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
-import com.xnradmin.po.business.BusinessCategory;
-import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.vo.front.ProductDetailVo;
 
 @Controller
 @Scope("prototype")
@@ -25,9 +18,30 @@ import com.xnradmin.po.business.BusinessGoods;
 @ParentPackage("json-default")
 public class IndexFrontAction  {
 	
+	private ProductDetailVo productDetailVo;
+	private BusinessCategoryService businessCategoryService;
+	private BusinessGoodsService businessGoodsService;
+	public ProductDetailVo getProductDetailVo() {
+		return productDetailVo;
+	}
+	public void setProductDetailVo(ProductDetailVo productDetailVo) {
+		this.productDetailVo = productDetailVo;
+	}
 	@Action(value = "index", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/index.jsp") })
 	public String info() {
 		
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="productDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/productDetail.jsp")})
+	public String productDetail()
+	{
+		//此处需要传来三个参数，一级分类id，二级分类id，菜品分类id。
+		String firstName = businessCategoryService.findByid(productDetailVo.getFirstClassification()).getCategoryName();
+		String secoundName = businessCategoryService.findByid(productDetailVo.getSecoundClassification()).getCategoryName();
+		String foodName = businessGoodsService.findByid(productDetailVo.getFirstClassification()).getGoodsName();
+		productDetailVo.setFirstName(firstName);
+		productDetailVo.setSecoundName(secoundName);
+		productDetailVo.setFoodName(foodName);
 		return StrutsResMSG.SUCCESS;
 	}
 	

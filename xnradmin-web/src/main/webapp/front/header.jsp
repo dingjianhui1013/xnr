@@ -9,7 +9,8 @@
 	request.setAttribute("basePath",basePath);
 %>
 <link href="${basePath }css/front/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<link href="${basePath }css/front/style.css" rel="stylesheet" type="text/css" media="all" />	
+<link href="${basePath }css/front/style.css" rel="stylesheet" type="text/css" media="all" />
+<link rel="stylesheet" href="${basePath }css/front/flexslider.css" type="text/css" media="screen" />	
 <!-- start menu -->
 <link href="${basePath }css/front/memenu.css" rel="stylesheet" type="text/css" media="all" />
 <script src="${basePath }js/front/jquery-1.11.3.min.js"></script>
