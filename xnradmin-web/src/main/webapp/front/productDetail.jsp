@@ -8,6 +8,26 @@
 <title>商品详情</title>
 <%@include file="header.jsp"%>
 <!-- /start menu -->
+<script type="text/javascript">
+function plusNum()
+{
+		var index = $(".item_quantity").val();
+		index++;
+		$(".item_quantity").val(index);
+	}
+function minusNum()
+{
+		var index = $(".item_quantity").val();
+		index--;
+		if(index>=1)
+			{
+				$(".item_quantity").val(index);
+			}else
+				{
+				$(".item_quantity").val(1);
+				}
+	}
+</script>
 </head>
 <body>
 	<div class="logoWrap">
@@ -109,10 +129,10 @@
 	<div class="single-sec">
 		<div class="container">
 			<ol class="breadcrumb">
-				<li><a href="index.html">首页</a></li>
-				<li class="">蔬菜水果</li>
-				<li class="">有机蔬菜</li>
-				<li class="">铁棍山药</li>
+				<li><a href="/front/index.action">首页</a></li>
+				<li class="">${productDetailVo.firstName }</li>
+				<li class="">${productDetailVo.secoundName }</li>
+				<li class="">${productDetailVo.foodName }</li>
 			</ol>
 			<!-- start content -->
 			<div class="col-md-9 det">
@@ -120,38 +140,38 @@
 					<div class="single_left">
 						<div class="flexslider">
 							<ul class="slides">
-								<li data-thumb="${basePath }images/front/products/sc-img1.jpg">
+								<li data-thumb="${basePath }${businessGoodsVO.businessGoods.goodsBigLogo}">
 									<div class="thumb-image">
-										<img src="${basePath }images/front/products/sc-img1.jpg" data-imagezoom="true"
+										<img src="${basePath }${businessGoodsVO.businessGoods.goodsLogo}" data-imagezoom="true"
 											class="img-responsive">
 									</div>
 								</li>
-								<li data-thumb="${basePath }images/front/products/sc-img2.jpg">
-									<div class="thumb-image">
-										<img src="${basePath }images/front/products/sc-img2.jpg" data-imagezoom="true"
-											class="img-responsive">
-									</div>
-								</li>
-								<li data-thumb="${basePath }images/front/products/sc-img3.jpg">
-									<div class="thumb-image">
-										<img src="${basePath }images/front/products/sc-img3.jpg" data-imagezoom="true"
-											class="img-responsive">
-									</div>
-								</li>
+<%-- 								<li data-thumb="${basePath }images/front/products/sc-img2.jpg"> --%>
+<!-- 									<div class="thumb-image"> -->
+<%-- 										<img src="${basePath }images/front/products/sc-img1.jpg" data-imagezoom="true" --%>
+<!-- 											class="img-responsive"> -->
+<!-- 									</div> -->
+<!-- 								</li> -->
+<%-- 								<li data-thumb="${basePath }images/front/products/sc-img3.jpg"> --%>
+<!-- 									<div class="thumb-image"> -->
+<%-- 										<img src="${basePath }images/front/products/sc-img3.jpg" data-imagezoom="true" --%>
+<!-- 											class="img-responsive"> -->
+<!-- 									</div> -->
+<!-- 								</li> -->
 							</ul>
 						</div>
 					</div>
 					<div class="single-right">
-						<h3>有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</h3>
-						<div class="orangeTit">怀参珍品，稀缺垆土</div>
+						<h3>${businessGoodsVO.businessGoods.goodsName}</h3>
+<!-- 						<div class="orangeTit"></div> -->
 						<div class="cost">
 							<div class="prdt-cost">
 								<p class="priceBox">
-									优惠价：<span class="active">40元/盒</span>
+									优惠价：<span class="active">${businessGoodsVO.businessGoods.goodsOriginalPrice}/${businessGoodsVO.businessWeight.weightName}</span>
 								</p>
 								<div class="comment-count">
-									<p class="comment">累计评价</p>
-									<a class="" href="#comment">3.4万+</a>
+									<p class="comment">已售数量</p>
+									<a class="" href="#comment">${businessGoodsVO.businessGoods.goodsSoldCount}</a>
 								</div>
 							</div>
 							<div class="p-detailCon">
@@ -170,8 +190,8 @@
 								<div class="addCart-box">
 									<div class="addNum">
 										<span><input type="text" class="item_quantity"
-											value="1"></span> <span> <a href="#" class="plusNum">+</a>
-											<a href="#" class="minus-Num">-</a>
+											value="1"></span> <span> <a href="javascript:plusNum()" class="plusNum">+</a>
+											<a href="javascript:minusNum()" class="minus-Num">-</a>
 										</span>
 									</div>
 									<span class="addCart"> <a href="#">加入购物车</a>
@@ -186,7 +206,7 @@
 					<div class="instroTabBox">
 						<ul class="instroTab">
 							<li class="cur">商品详情</li>
-							<li>购买评论</li>
+<!-- 							<li>购买评论</li> -->
 						</ul>
 					</div>
 					<div class="productDetailCon">
@@ -220,67 +240,67 @@
 									src="${basePath }images/front/products/9.jpg" />
 							</div>
 						</div>
-						<div class="p-commentBox detailBox">
-							<div class="comentBoxTab">
-								<ul>
-									<li class="cur">全部评论(1126)</li>
-									<li>好评(26)</li>
-									<li>中评(116)</li>
-									<li>差评(126)</li>
-								</ul>
-							</div>
-							<div class="commentBox">
-								<div class="AllComment commentCon">
-									<ul>
-										<li>
-											<div class="commentLeft pull-left">
-												<div class="p-comment">商品不错，香脆可口，价格优惠。</div>
-												<div class="comment-operate">
-													<a class="nice J-nice" href="" title="">点赞（0）</a>
-												</div>
-											</div>
-											<div class="commentRight pull-right">
-												<div class="user-item">
-													<img src="${basePath }images/front/userImg.jpg" /> <span>小***元</span>
-													<p>金牌会员</p>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="commentLeft pull-left">
-												<div class="p-comment">商品不错，香脆可口，价格优惠。</div>
-												<div class="comment-operate">
-													<a class="nice J-nice" href="" title="">点赞（0）</a>
-												</div>
-											</div>
-											<div class="commentRight pull-right">
-												<div class="user-item">
-													<img src="${basePath }images/front/userImg.jpg" /> <span>小***元</span>
-													<p>金牌会员</p>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="commentLeft pull-left">
-												<div class="p-comment">商品不错，香脆可口，价格优惠。</div>
-												<div class="comment-operate">
-													<a class="nice J-nice" href="" title="">点赞（0）</a>
-												</div>
-											</div>
-											<div class="commentRight pull-right">
-												<div class="user-item">
-													<img src="${basePath }images/front/userImg.jpg" /> <span>小***元</span>
-													<p>金牌会员</p>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</div>
-								<div class="positiveComment commentCon"></div>
-								<div class="moderateComment commentCon"></div>
-								<div class="negativeComment commentCon"></div>
-							</div>
-						</div>
+<!-- 						<div class="p-commentBox detailBox"> -->
+<!-- 							<div class="comentBoxTab"> -->
+<!-- 								<ul> -->
+<!-- 									<li class="cur">全部评论(1126)</li> -->
+<!-- 									<li>好评(26)</li> -->
+<!-- 									<li>中评(116)</li> -->
+<!-- 									<li>差评(126)</li> -->
+<!-- 								</ul> -->
+<!-- 							</div> -->
+<!-- 							<div class="commentBox"> -->
+<!-- 								<div class="AllComment commentCon"> -->
+<!-- 									<ul> -->
+<!-- 										<li> -->
+<!-- 											<div class="commentLeft pull-left"> -->
+<!-- 												<div class="p-comment">商品不错，香脆可口，价格优惠。</div> -->
+<!-- 												<div class="comment-operate"> -->
+<!-- 													<a class="nice J-nice" href="" title="">点赞（0）</a> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 											<div class="commentRight pull-right"> -->
+<!-- 												<div class="user-item"> -->
+<%-- 													<img src="${basePath }images/front/userImg.jpg" /> <span>小***元</span> --%>
+<!-- 													<p>金牌会员</p> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 										</li> -->
+<!-- 										<li> -->
+<!-- 											<div class="commentLeft pull-left"> -->
+<!-- 												<div class="p-comment">商品不错，香脆可口，价格优惠。</div> -->
+<!-- 												<div class="comment-operate"> -->
+<!-- 													<a class="nice J-nice" href="" title="">点赞（0）</a> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 											<div class="commentRight pull-right"> -->
+<!-- 												<div class="user-item"> -->
+<%-- 													<img src="${basePath }images/front/userImg.jpg" /> <span>小***元</span> --%>
+<!-- 													<p>金牌会员</p> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 										</li> -->
+<!-- 										<li> -->
+<!-- 											<div class="commentLeft pull-left"> -->
+<!-- 												<div class="p-comment">商品不错，香脆可口，价格优惠。</div> -->
+<!-- 												<div class="comment-operate"> -->
+<!-- 													<a class="nice J-nice" href="" title="">点赞（0）</a> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 											<div class="commentRight pull-right"> -->
+<!-- 												<div class="user-item"> -->
+<%-- 													<img src="${basePath }images/front/userImg.jpg" /> <span>小***元</span> --%>
+<!-- 													<p>金牌会员</p> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 										</li> -->
+<!-- 									</ul> -->
+<!-- 								</div> -->
+<!-- 								<div class="positiveComment commentCon"></div> -->
+<!-- 								<div class="moderateComment commentCon"></div> -->
+<!-- 								<div class="negativeComment commentCon"></div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
 					</div>
 				</div>
 			</div>
@@ -289,36 +309,20 @@
 				<div class="product_right">
 					<h4 class="m_2">相关分类</h4>
 					<div class="tab1">
+					<c:forEach items="${related_classification}" var="rc">
 						<ul class="place">
-							<li class="sort">有机蔬菜</li>
+							<li class="sort">${rc.key}</li>
 							<li class="by"><img src="${basePath }images/front/do.png" alt=""></li>
 							<div class="clearfix"></div>
 						</ul>
 						<div class="single-bottom">
+						<c:forEach items="${rc.value}" var="rcv">
+							
 							<a href="#"><span class="glyphicon glyphicon-chevron-right"
-								aria-hidden="true"></span><span>菜花</span> <a href="#"><span
-									class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>圆生菜</span>
-									<a href="#"><span class="glyphicon glyphicon-chevron-right"
-										aria-hidden="true"></span><span>苦菊</span> <a href="#"><span
-											class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>油菜</span>
-											<a href="#"><span
-												class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>蒜苔</span>
+								aria-hidden="true"></span><span>${rcv.goodsName }</span>
+						</c:forEach>
 						</div>
-					</div>
-					<div class="tab2">
-						<ul class="place">
-							<li class="sort">有机水果</li>
-							<li class="by"><img src="${basePath }images/front/do.png" alt=""></li>
-							<div class="clearfix"></div>
-						</ul>
-						<div class="single-bottom">
-							<a href="#"><span class="glyphicon glyphicon-chevron-right"
-								aria-hidden="true"></span><span>苹果</span></a> <a href="#"><span
-								class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>梨</span></a>
-							<a href="#"><span class="glyphicon glyphicon-chevron-right"
-								aria-hidden="true"></span><span>桔子</span></a> <a href="#"><span
-								class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>柚子</span></a>
-						</div>
+					</c:forEach>
 					</div>
 				</section>
 			</div>

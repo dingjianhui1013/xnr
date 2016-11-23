@@ -403,6 +403,20 @@ public class BusinessGoodsService {
 		}
 		return resList;
 	}
+	public BusinessGoodsVO getBusinessGoodsAndWeight(String goodsId)
+	{
+		String hql  = "from BusinessGoods a,BusinessWeight b where a.goodsWeightId = b.id and a.id = "+goodsId;
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
+		BusinessGoodsVO businessGoodsVO = new BusinessGoodsVO();
+		Object[] o = (Object[])l.get(0);
+		BusinessGoods businessGoods = (BusinessGoods)o[0];
+		BusinessWeight businessWeight = (BusinessWeight)o[1];
+		businessGoodsVO.setBusinessGoods(businessGoods);
+		businessGoodsVO.setBusinessWeight(businessWeight);
+		return businessGoodsVO;
+		
+		
+	}
 
 	/**
 	 * @return List<PrimaryConfiguration>
@@ -536,5 +550,10 @@ public class BusinessGoodsService {
 				0, 0);
 		return lst;
 	}
-	
+	public List<BusinessGoods> getListBycategoryId(String categoryId) {
+		String hql = "from BusinessGoods where goodsCategoryId ='"+categoryId+"'";
+		List<BusinessGoods> lst = commonDao.getEntitiesByPropertiesWithHql(hql,
+				0, 0);
+		return lst;
+	}
 }

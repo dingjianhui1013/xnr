@@ -44,4 +44,24 @@ public class FarmerQrCodeService {
 		}
 		return resList;
 	}
+	public FarmerQrCode getFarmerqrCodeById(String qrCodeId)
+	{
+		String hql = "from FarmerQrCode where id ="+qrCodeId;
+		List<FarmerQrCode> farmerQrCode = commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
+		return farmerQrCode.get(0);
+	}
+	public void saveUrl(FarmerQrCode farmerQrCode) {
+		String hql ="";
+		if(farmerQrCode.getSkipUrl()==null){
+			hql ="update FarmerQrCode set skipUrl=null where id="+farmerQrCode.getId();
+		}else{
+			farmerQrCode.setSkipUrl(farmerQrCode.getSkipUrl().replace(" ", "")); 
+			hql ="update FarmerQrCode set skipUrl='"+farmerQrCode.getSkipUrl()+"' where id="+farmerQrCode.getId();
+		}
+		commonDao.executeUpdateOrDelete(hql);
+	}
+	public void deleteFarmerQrCode(FarmerQrCode farmerQrCode) {
+		// TODO Auto-generated method stub
+		commonDao.delete(farmerQrCode);
+	}
 }

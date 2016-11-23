@@ -16,7 +16,7 @@ public class FarmerQrCode {
 	private String farmerId;
 	private String goodsId;
 	private String qrCodeUrl;
-	
+	private String skipUrl;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false) 
@@ -46,5 +46,12 @@ public class FarmerQrCode {
 	}
 	public void setQrCodeUrl(String qrCodeUrl) {
 		this.qrCodeUrl = qrCodeUrl;
+	}
+	@Column(name="skip_url")
+	public String getSkipUrl() {
+		return skipUrl;
+	}
+	public void setSkipUrl(String skipUrl) {
+		this.skipUrl = skipUrl;
 	}
 }
