@@ -17,7 +17,6 @@ public class FarmerQrCode {
 	private String goodsId;
 	private String qrCodeUrl;
 	private String skipUrl;
-	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false) 

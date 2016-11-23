@@ -1,5 +1,6 @@
 package com.xnradmin.client.action.front;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,10 @@ import com.xnradmin.vo.business.BusinessGoodsVO;
 @Namespace("/front")
 @ParentPackage("json-default")
 public class IndexFrontAction  {
-	
+	private String productCategoryId;//产品列表，分类id（三级）
+	private String first;//产品列表，一级菜单名称
+	private String three;//产品列表，三级菜单名称
+	private List<BusinessGoodsVO> productList;//产品列表
 	private ProductDetailVo productDetailVo;
 	private String goodsId;
 	private BusinessGoodsVO businessGoodsVO;
@@ -95,6 +99,21 @@ public class IndexFrontAction  {
 		return StrutsResMSG.SUCCESS;
 	}
 	
+	@Action(value="product",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/product.jsp")})
+	public String product()
+	{
+		this.productList = indexFrontService.listBusinessGoodsByCategoryId(productCategoryId);
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+		this.indexGoods = indexFrontService.listBusinessGoodsVO(0,8);
+		try {
+			this.first = new String(this.first.getBytes("iso-8859-1"),"UTF-8"); 
+			this.three = new String(this.three.getBytes("iso-8859-1"),"UTF-8"); 
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return StrutsResMSG.SUCCESS;
+	}
 	//getter And setter
 	public List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> getAllBusinessCategorys() {
 		return allBusinessCategorys;
@@ -112,6 +131,31 @@ public class IndexFrontAction  {
 	public void setIndexGoods(List<BusinessGoodsVO> indexGoods) {
 		this.indexGoods = indexGoods;
 	}
+	public String getProductCategoryId() {
+		return productCategoryId;
+	}
+	public void setProductCategoryId(String productCategoryId) {
+		this.productCategoryId = productCategoryId;
+	}
+	public String getFirst() {
+		return first;
+	}
+	public void setFirst(String first) {
+		this.first = first;
+	}
+	public String getThree() {
+		return three;
+	}
+	public void setThree(String three) {
+		this.three = three;
+	}
+	public List<BusinessGoodsVO> getProductList() {
+		return productList;
+	}
+	public void setProductList(List<BusinessGoodsVO> productList) {
+		this.productList = productList;
+	}
+	
 
 	
 	

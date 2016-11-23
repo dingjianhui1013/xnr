@@ -5,7 +5,7 @@ public class ProductDetailVo {
 	private String FirstClassification;
 	private String secoundClassification;
 	private String foodClassification;
-	private String firstName;
+	private String FirstName;
 	private String secoundName;
 	private String foodName;
 	public String getFirstClassification() {
@@ -26,23 +26,23 @@ public class ProductDetailVo {
 	public void setFoodClassification(String foodClassification) {
 		this.foodClassification = foodClassification;
 	}
+	public String getFirstName() {
+		return FirstName;
+	}
 	public String getSecoundName() {
 		return secoundName;
 	}
 	public String getFoodName() {
 		return foodName;
 	}
+	public void setFirstName(String firstName) {
+		FirstName = firstName;
+	}
 	public void setSecoundName(String secoundName) {
 		this.secoundName = secoundName;
 	}
 	public void setFoodName(String foodName) {
 		this.foodName = foodName;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
 	}
 	
 }

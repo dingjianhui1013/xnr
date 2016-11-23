@@ -21,6 +21,7 @@
 		<input type="hidden" name="orderField" value="${orderField}" />
 		<input type="hidden" name="orderDirection" value="${orderDirection}" />
 </form>
+
 <div class="pageHeader">
 	<form onsubmit="return navTabSearch(this);" action="${action}" method="post">
 	<div class="searchBar">	
@@ -48,6 +49,8 @@
 	</div>
 	</form>
 </div>
+
+
 <div class="pageContent">
 	<table class="table" width="100%" layoutH="138">
 		<thead>
@@ -66,11 +69,8 @@
 						<td>${loop.farmerQrCode.id}</td>
 						<td>${loop.farmer.userName}</td>
 						<td>${loop.businessGoods.goodsName}</td>
-						<td><image src="<%=basePath%>${loop.farmerQrCode.qrCodeUrl}" /></td>
-						<td>
-							<a title="编辑" target="dialog" href="page/farmerQrCode/anthinfo.action?qrCodeId=${loop.farmerQrCode.id}" class="btnEdit">编辑</a>
-							<a title="删除" target="ajaxTodo" href="page/farmerQrCode/deleteFarmerQrCode.action?farmerQrCode.id=${loop.farmerQrCode.id}" class="btnDel">删除</a>
-						</td>	
+						<td><image src="${loop.farmerQrCode.qrCodeUrl}" /></td>
+						<td><a title="商品" target="dialog" href="page/wx/farmer/anthinfo.action?farmerId=${loop.farmerQrCode.id}" class="btnAuth">商品</a></td>	
 					</tr>				
 				</c:forEach>
 			</c:if>			

@@ -135,7 +135,7 @@
 					 			
 					 			<c:if test="${good.businessCategory.id==threeBusinessCategory.id}">
 					 			<div class="col-md-3 feature-grid jewel">
-								 <a href="/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo }" alt=""/>	
+								 <a href="product.html"><img src="${basePath }${good.businessGoods.goodsLogo }" alt=""/>	
 							 	<div class="arrival-info">
 								 <h4>${ good.businessGoods.goodsName} </h4>
 								 <p>约500-750g</p>
