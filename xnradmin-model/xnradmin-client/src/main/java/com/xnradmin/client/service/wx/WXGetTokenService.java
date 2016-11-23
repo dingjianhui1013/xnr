@@ -19,6 +19,8 @@ import org.dom4j.io.XMLWriter;
 
 import com.mysql.jdbc.StringUtils;
 import com.xnradmin.po.wx.connect.WXInit;
+import com.xnradmin.po.wx.connect.WXfInit;
+import com.xnradmin.po.wx.connect.WXurl;
 
 public class WXGetTokenService {
 
@@ -62,7 +64,8 @@ public class WXGetTokenService {
 	}
 	public static String getAccessToken()
 	{
-		 JSONObject access_token = WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid="+WXInit.CORPID+"&corpsecret="+WXInit.CORPSECRET, "GET", null);
+//		 JSONObject access_token = WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid="+WXInit.CORPID+"&corpsecret="+WXInit.CORPSECRET, "GET", null);
+		JSONObject access_token = WeixinUtil.httpRequest(WXurl.WXF_ACCESS_TOKEN_URL.replaceFirst("APPID", WXfInit.APPID).replaceAll("APPSECRET", WXfInit.APPSECRET),"GET",null);
 		 String access_tokenString = access_token.getString("access_token");
 		 return access_tokenString;
 	}

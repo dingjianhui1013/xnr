@@ -7,11 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import net.sf.json.JSONObject;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,101 @@ public class WeiXinConnectService {
 	private WXFarmerImageService wXFarmerImageService;
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	public String processRequest() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+        String respMessage = null;
+        try {
+            Map<String, String> requestMap = MessageUtil.parseXml(request); // xml请求解析
+            String FromUserName = requestMap.get("FromUserName"); // 发送方帐号（open_id）
+            String ToUserName = requestMap.get("ToUserName"); // 公众帐号
+            String MsgType = requestMap.get("MsgType"); // 消息类型
+            System.out.println("**************");
+            	System.out.println(FromUserName+":"+ToUserName+":"+MsgType);
+            System.out.println("**************");
+            if (WXMsgType.REQ_MESSAGE_TYPE_TEXT.equals(MsgType))
+  	      {
+  	        String Content = requestMap.get("Content"); // 接收用户发送的文本消息内容
+		  	  System.out.println("**************");
+		      	System.out.println(Content+"：：：Content");
+		      System.out.println("**************");
+  	        String message = null;
+  	        if(Content.indexOf("t")!=-1)
+  	        {
+  	        	String type=Content.substring(1, Content.length());
+  	        	Map<String, Integer> index_count = wXFarmerImageService.read(FromUserName, type);
+  	        	Iterator iter =index_count.entrySet().iterator(); 
+  	        	while (iter.hasNext()) { 
+  		        	Map.Entry entry = (Map.Entry) iter.next(); 
+  		        	String key = (String)entry.getKey(); 
+  		        	int val = (int)entry.getValue(); 
+  		        	if(key.equals("0"))
+  		        	{
+  		        		if(val!=0)
+  		        		{
+  		        			message = "照片分类成功,剩余"+val+"张图片未分类";
+  		        		}else{
+  		        			message = "照片分类成功";
+  		        		}
+  		        	}else if(key.equals("1"))
+  		        	{
+  		        		message = "照片分类失败,请按照提示回复";
+  		        	}else if(key.equals("2"))
+  		        	{
+  		        		message = "您上传的照片已经全部分类，无需重复提交！";
+  		        	}
+  		        	
+  	        	}
+  	        }else
+  	        {
+  		        message = "温馨提示：\n上传图片可直接回复图片或选择菜单上传"
+  		        		+ "\n上传生产计划请选择菜单进行上传"
+  		        		+ "\n查看个人信息请选择菜单进行查看";
+  	        }
+  	        respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
+  	      }
+  	      if (WXMsgType.REQ_MESSAGE_TYPE_EVENT.equals(MsgType)) {
+  	    	String event = requestMap.get("Event");
+  	        if ("subscribe".equals(event))
+  	        {
+  	        	Farmer farmer = new Farmer();
+  	        	farmer.setUserId(FromUserName);
+  	        	String access_Token = WXGetTokenService.accessTokenIsOvertime();
+  	        	JSONObject userInformation = WeixinUtil.httpRequest(
+  						WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
+  								access_Token).replace("OPENID",
+  										FromUserName), "GET", null);
+  	        	System.out.println("***************************");
+  	        	System.out.println("userInformation：：："+userInformation);
+  	        	System.out.println("***************************");
+  	        	farmer.setUserName(userInformation.getString("nickname"));
+  	        	farmer.setHeadPortrait(userInformation.getString("headimgurl"));
+  	        	farmerService.saveFarmer(farmer);
+  	        	respMessage = respfText(FromUserName, ToUserName, "关注成功", "1234567890123456");
+  	        }
+  	      }
+  	      if (WXMsgType.REQ_MESSAGE_TYPE_IMAGE.equals(MsgType)) {
+  	        String picUrl = requestMap.get(WXMessage.PICURL);
+  	    	wXFarmerImageService.create(FromUserName, picUrl);
+  	    	String types = farmerService.getFenleiByUserId(FromUserName);
+  	    	List<BusinessGoods> list = businessGoodsService.getTypeNameById(types);
+  	    	StringBuffer me = new StringBuffer();
+  	    	for (BusinessGoods businessGoods : list) {
+  				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"\n");
+  			}
+  	    	String message = "请按顺序回复上传图片分类："+me.toString();
+  	    	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
+  	      }
+  	    }
+  	    catch (Exception e) {
+  	      e.printStackTrace();
+  	    }
+        return respMessage;
+    }
+	/***
+	 * 企业号解析用户发消息XML
+	 * @param sMsg
+	 * @return
+	 */
 	public String processRequest(String sMsg)
 	  {
 	    String respMessage = null;
@@ -150,6 +247,16 @@ public class WeiXinConnectService {
 	    textMessage.setMsgId(MsgId);
 	    textMessage.setContent(text);
 	    textMessage.setAgentId(AgentID);
+	    return MessageUtil.textMessageToXml(textMessage);
+	  }
+	private String respfText(String FromUserName, String ToUserName, String text, String MsgId) {
+	    TextMessage textMessage = new TextMessage();
+	    textMessage.setToUserName(FromUserName);
+	    textMessage.setFromUserName(ToUserName);
+	    textMessage.setCreateTime(new Date().getTime());
+	    textMessage.setMsgType("text");
+	    textMessage.setMsgId(MsgId);
+	    textMessage.setContent(text);
 	    return MessageUtil.textMessageToXml(textMessage);
 	  }
 

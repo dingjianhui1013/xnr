@@ -20,7 +20,7 @@
 		 		<div class="userInfoBox">
                   <span class="personalImg"><img src="${basePath }images/front/head.jpg" ></span>
                   <div class="perInfoBox">
-                   <p><strong>账号：</strong></p>
+                   <p><strong>账号：</strong>${user.userName}</p>
                   </div>
                 </div>
                 <ul class="pSlideNavUl">

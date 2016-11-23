@@ -5,16 +5,15 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +33,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cntinker.util.wx.connect.OAuth;
-import com.cntinker.util.wx.connect.Text;
-import com.cntinker.util.wx.connect.TextMessage;
+import com.cntinker.util.wx.connect.SignUtil;
 import com.cntinker.util.wx.connect.WXBizMsgCrypt;
 import com.xnradmin.client.service.wx.FarmerImageService;
 import com.xnradmin.client.service.wx.FarmerService;
@@ -48,9 +45,9 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
-import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXInit;
+import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
 import com.xnradmin.vo.business.OutPlanVO;
 
@@ -181,6 +178,49 @@ public class WXConnectAction {
 			}
 			response.getWriter().print(sEncryptMsg);
 		}
+	}
+	/***
+	 * 服务号链接方式
+	 * @throws IOException
+	 */
+	@Action(value="wxConnect")
+	public void wxconnect() throws IOException
+	{
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		String method = request.getMethod();
+		if(method != null && method.equals("GET"))
+		{
+			String signature = request.getParameter("signature");  
+	        // 时间戳  
+	        String timestamp = request.getParameter("timestamp");
+	        // 随机数  
+	        String nonce = request.getParameter("nonce");  
+	        // 随机字符串  
+	        String echostr = request.getParameter("echostr");  
+	        PrintWriter out = response.getWriter();  
+	        
+	        // 通过检验signature对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败  
+	        if (SignUtil.checkSignature(WXfInit.TOKEN,signature, timestamp, nonce)) {  
+	            out.print(echostr);  
+	        }  
+	        out.close();  
+	        out = null;  
+		}
+		if(method != null && method.equals("POST"))
+		{
+			request.setCharacterEncoding("UTF-8");  
+	        response.setCharacterEncoding("UTF-8");  
+	  
+	        // 调用核心业务类接收消息、处理消息  
+	        String respMessage = connectService.processRequest();  
+	          
+	        // 响应消息  
+	        PrintWriter out = response.getWriter();  
+	        out.print(respMessage);  
+	        out.close();  
+		}
+		
 	}
 
 	@Action(value = "oAuth", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage.jsp") })
