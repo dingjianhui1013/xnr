@@ -32,13 +32,31 @@ public class frontUserManagerAction extends ParentAction{
     private FrontUser updatefrontUser;//修改用户信息
     private String typeId;//审核通过
 	private String typeNoId;//审核不通过
+	private String resetId;//重置密码
 	private boolean typeStatus;//审核结果 json
-	
+	private boolean resetStatus;//重置结果
     @Autowired
     private FrontUserService frontUserService;
     
     
     
+
+	public boolean isResetStatus() {
+		return resetStatus;
+	}
+
+	public void setResetStatus(boolean resetStatus) {
+		this.resetStatus = resetStatus;
+	}
+
+	public String getResetId() {
+		return resetId;
+	}
+
+	public void setResetId(String resetId) {
+		this.resetId = resetId;
+	}
+
 	public boolean isTypeStatus() {
 		return typeStatus;
 	}
@@ -178,7 +196,7 @@ public class frontUserManagerAction extends ParentAction{
 	 */
 	@Action(value = "type",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
 	public String type() {
-		this.typeStatus  = frontUserService.type(typeId);
+		this.typeStatus = frontUserService.type(typeId);
 		 return  StrutsResMSG.SUCCESS;
 	}
 	/**
@@ -187,10 +205,18 @@ public class frontUserManagerAction extends ParentAction{
 	 */
 	@Action(value = "typeNo",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
 	public String typeNo() {
-		this.typeStatus  = frontUserService.typeNo(typeNoId);
+		this.typeStatus = frontUserService.typeNo(typeNoId);
 		 return  StrutsResMSG.SUCCESS;
 	}
-	
+	/**
+	 * 重置密码
+	 * @return
+	 */
+	@Action(value = "reset",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
+	public String reset() {
+		this.resetStatus= frontUserService.reset(resetId);
+		 return  StrutsResMSG.SUCCESS;
+	}
 	@Override
 	public boolean isPublic() {
 		// TODO Auto-generated method stub

@@ -17,7 +17,7 @@
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript">
-	function type(id){
+	function typeOk(id){
 		var s = $("#ty"+id).val();
 		if(s!=0){
 			alert("已经审核过，无需重复审核");
@@ -30,12 +30,12 @@
 	             data: {typeId:id},
 	             dataType: "json",
 	             success: function(data){
-	            	 if(data.typeStatus==true){
-	            		 $("#type"+id).html("<div>通过</div>");
-	            		 $("#ty"+id).val(1);
-	            	 }else{
-	            		 alert("系统异常，审核失败");
-	            	 }
+ 	            	 if(data.typeStatus==true){
+ 	            		 $("#type"+id).html("<div>通过</div>");
+ 	            		 $("#ty"+id).val(1);
+ 	            	 }else{
+ 	            		 alert("系统异常，审核失败");
+ 	            	 }
 	             }
 	         });
 		}
@@ -46,18 +46,35 @@
 			alert("已经审核过，无需重复审核");
 			return;
 		}
-		if(confirm("确拒绝通过")){
+		if(confirm("确定拒绝通过")){
 			 $.ajax({
 	             type: "post",
 	             url: "frontUserManager/typeNo.action",
 	             data: {typeNoId:id},
 	             dataType: "json",
 	             success: function(data){
-	            	 if(data.typeStatus==true){
-	            		 $("#type"+id).html("<div>拒绝</div>");
-	            		 $("#ty"+id).val(1);
-	            	 }else{
-	            		 alert("系统异常，审核失败");
+ 	            	 if(data.typeStatus==true){
+ 	            		 $("#type"+id).html("<div>拒绝</div>");
+ 	            		 $("#ty"+id).val(1);
+ 	            	 }else{
+ 	            		 alert("系统异常，审核失败");
+ 	            	 }
+	             }
+	         });
+		}
+	}
+	function reset(id){
+		if(confirm("确定重置密码")){
+			 $.ajax({
+	             type: "post",
+	             url: "frontUserManager/reset.action",
+	             data: {resetId:id},
+	             dataType: "json",
+	             success: function(data){
+ 	            	 if(data.resetStatus==true){
+ 	            		alert("重置成功"); 
+ 	            	 }else{
+	            		 alert("系统异常，重置失败");
 	            	 }
 	             }
 	         });
@@ -127,6 +144,7 @@
 				<th width="100">审核状态</th>
 				<th width="70">操作</th>
 				<th width="70">审核</th>
+				<th width="70">重置密码</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -147,9 +165,12 @@
 							<a title="删除" target="ajaxTodo" href="${del}?updatefrontUser.id=${loop.id}&del=1" class="btnDel">删除</a>
 						</td>
 						<td>	
-							 <a title="通过" href="javascript:void(0)" class="btnSelect" onclick="type(${loop.id})">通过</a>
+							 <a title="通过" href="javascript:void(0)" class="btnSelect" onclick="typeOk(${loop.id})">通过</a>
 							 <a title="拒绝" href="javascript:void(0)" class="btnDel" onclick="typeNo(${loop.id})">拒绝</a>
 						</td>	
+						<td>	
+							 <a title="重置密码" href="javascript:void(0)" class="btnSelect" onclick="reset(${loop.id})">重置密码</a>
+						</td>
 					</tr>				
 				</c:forEach>
 			</c:if>			

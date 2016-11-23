@@ -6,7 +6,28 @@
 <title>注册页</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<%@include file="header.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+	        + request.getServerName() + ":" + request.getServerPort()
+	        + path + "/";
+	
+	request.setAttribute("basePath",basePath);
+%>
+<link href="${basePath }css/front/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<link href="${basePath }css/front/style.css" rel="stylesheet" type="text/css" media="all" />
+<link rel="stylesheet" href="${basePath }css/front/flexslider.css" type="text/css" media="screen" />	
+<!-- start menu -->
+<link href="${basePath }css/front/memenu.css" rel="stylesheet" type="text/css" media="all" />
+<script src="${basePath }js/front/jquery-1.11.3.min.js"></script>
+<script src="${basePath }js/front/bootstrap.min.js"></script>
+<script type="text/javascript" src="${basePath }js/front/common.js"></script>
+<script type="application/x-javascript"> 
+	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
+</script>
+<script src="${basePath }js/front/simpleCart.min.js"> </script>
+<script type="text/javascript" src="${basePath }js/front/memenu.js"></script>
 <script>
 	//验证密码
 	function checkPassword() {
@@ -14,7 +35,7 @@
 		if (password.length<6||password.length>20) {
 			$("#check_passwordError").show();
 			$("#check_password").show();
-			$("#check_password").html("请输入6-20位的密码");
+			$("#check_password").html(" <span style=\"color: red;font-size: 10px\">请输入6-20位的密码</span>");
 			return false;
 		} else {
 			$("#check_passwordError").hide();
@@ -31,18 +52,18 @@
 		if (password.length == 0) {
 			$("#check_passwordError").show();
 			$("#check_password").show();
-			$("#check_password").html("请输入6-20位的密码");
+			$("#check_password").html(" <span style=\"color: red;font-size: 10px\">请输入6-20位的密码</span>");
 			return false;
 		} else {
 			if (confirmPassword.length == 0) {
 				$("#check_confirmPasswordError").show();
 				$("#check_confirmPassword").show();
-				$("#check_confirmPassword").html("请输入确认密码");
+				$("#check_confirmPassword").html(" <span style=\"color: red;font-size: 10px\">请输入确认密码</span>");
 				return false;
 			} else if (password != confirmPassword) {
 				$("#check_confirmPasswordError").show();
 				$("#check_confirmPassword").show();
-				$("#check_confirmPassword").html("确认密码和密码不一致");
+				$("#check_confirmPassword").html(" <span style=\"color: red;font-size: 10px\">确认密码和密码不一致</span>");
 				$("#confirmPassword").val("");
 				return false;
 			} else {
@@ -69,12 +90,12 @@
 			} else {
 				$("#check_emailError").show();
 				$("#check_email").show();
-				$("#check_email").html("请输入正确的邮箱地址");
+				$("#check_email").html(" <span style=\"color: red;font-size: 10px\">请输入正确的邮箱地址</span>");
 			}
 		} else {
 			$("#check_emailError").show();
 			$("#check_email").show();
-			$("#check_email").html("请输入邮箱");
+			$("#check_email").html("<span style=\"color: red;font-size: 10px\">请输入邮箱</span>");
 		}
 	}
 
@@ -103,19 +124,19 @@
 						} else {
 							$("#check_phoneError").show();
 							$("#check_phone").show();
-							$("#check_phone").html("手机号码已被注册");
+							$("#check_phone").html(" <span style=\"color: red;font-size: 10px\">手机号码已被注册</span>");
 						}
 					}
 				});
 			} else {
 				$("#check_phoneError").show();
 				$("#check_phone").show();
-				$("#check_phone").html("请输入正确的手机号码");
+				$("#check_phone").html(" <span style=\"color: red;font-size: 10px\">请输入正确的手机号码</span>");
 			}
 		} else {
 			$("#check_phoneError").show();
 			$("#check_phone").show();
-			$("#check_phone").html("请输入手机号码");
+			$("#check_phone").html(" <span style=\"color: red;font-size: 10px\">请输入手机号码</span>");
 		}
 	}
 	
@@ -141,7 +162,7 @@
 					} else {
 						$("#check_codeError").show();
 						$("#check_code").show();
-						$("#check_code").html("请输入正确的验证码");
+						$("#check_code").html(" <span style=\"color: red;font-size: 10px\">请输入正确的验证码</span>");
 						$("#valideCode").val("");
 					}
 				}
@@ -170,84 +191,72 @@
 </head>
 <body>
 	<!--header-->
-	<div class="logoWrap">
-		<div class="container">
-			<div class="logo">
-				<a href="index.jsp">
-					<h1>
-						<img src="${basePath }images/front/login_logo.png" />
-					</h1>
-				</a>
+	<div class="top_bg">
+	<div class="container">
+		<div class="header_top-sec">
+			<div class="top_right">
+				<ul>
+					<li><a href="#">欢迎光临康源公社！</a></li>|
+					<li><a href="#contact">联系我们</a></li>
+				</ul>
 			</div>
-			<div class="pull-left welcomeBox">康源公社欢迎您注册</div>
+			<div class="top_left">
+				<!--登录后显示-->
+				<!-- <ul>
+					<li class="top_link">用户名:<a href="mailto:info@example.com">myTest</a></li>|
+					<li class="top_link"><a href="login.html">订单中心</a></li>					
+				</ul> -->
+				<!--登录后显示-->
+				<ul>
+					<li><a href="login.jsp">登录</a></li>
+					<li><a href="register.jsp">注册</a></li>
+				</ul>
+
+			</div>
+				<div class="clearfix"> </div>
 		</div>
 	</div>
-	<div class="guiderBox">
-		<div class="container">
-			<ul class="memenu skyblue pull-left">
-				<li class="active"><a href="index.jsp">首页</a></li>
-				<li class="grid"><a href="#">蔬菜水果</a>
-					<div class="mepanel">
-						<div class="row">
-							<div class="col1 me-one">
-								<h4>蔬菜类</h4>
-								<ul>
-									<li><a href="product.html">有机蔬菜</a></li>
-									<li><a href="product.html">地方特产蔬菜</a></li>
-									<li><a href="product.html">自产蔬菜</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>水果类</h4>
-								<ul>
-									<li><a href="product.html">有机水果</a></li>
-									<li><a href="product.html">进口水果</a></li>
-									<li><a href="product.html">国产水果</a></li>
-								</ul>
-							</div>
-						</div>
-					</div></li>
-				<li class="grid"><a href="#">肉类禽蛋</a>
-					<div class="mepanel">
-						<div class="row">
-							<div class="col1 me-one">
-								<h4>牛羊肉</h4>
-								<ul>
-									<li><a href="product.html">有机牛羊肉</a></li>
-									<li><a href="product.html">进口牛羊肉</a></li>
-									<li><a href="product.html">精品牛羊肉</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>猪肉</h4>
-								<ul>
-									<li><a href="product.html">有机猪肉</a></li>
-									<li><a href="product.html">进口猪肉</a></li>
-									<li><a href="product.html">国产猪肉</a></li>
-									<li><a href="product.html">农场自养猪肉</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>禽类</h4>
-								<ul>
-									<li><a href="product.html">有机禽类</a></li>
-									<li><a href="product.html">散养禽类</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>蛋类</h4>
-								<ul>
-									<li><a href="product.html">有机蛋</a></li>
-									<li><a href="product.html">散养蛋</a></li>
-								</ul>
-							</div>
-						</div>
-					</div></li>
-				<li class="grid"><a href="#">粮油副食</a></li>
-				<li class="grid"><a href="#contact">关于我们</a></li>
-			</ul>
+</div>
+<div class="logoWrap">	
+	<div class="container">	
+		<div class="logo">
+			<a href="index.action">
+			<h1><img src="${basePath }images/front/login_logo.png" /></h1>
+			</a>
 		</div>
+		<div class="pull-left welcomeBox">康源公社欢迎您注册</div>
 	</div>
+</div>
+<div class="guiderBox">
+	<div class="container">
+		<ul class="memenu skyblue pull-left">
+			<li class="active"><a href="index.action">首页</a></li>
+			<c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
+				<c:forEach items="${firstBusinessCategory }" var="first">
+				<li class="grid"><a href="#"> ${ first.key.categoryName}</a>
+				<div class="mepanel">
+					<div class="row">
+						<c:forEach items="${first.value }" var="secondBusinessCategory">
+						<c:forEach items="${secondBusinessCategory }" var="second">
+							<div class="col1 me-one">
+								<h4> ${ second.key.categoryName} </h4>
+								<ul>
+									<c:forEach items="${second.value }" var="threeBusinessCategory">
+									<li><a href="product.html">${threeBusinessCategory.categoryName }</a></li>
+									</c:forEach>
+								</ul>
+							</div>
+						</c:forEach>
+						</c:forEach>
+					</div>
+				</div> 
+				</c:forEach>
+			</li>
+			</c:forEach>
+			<li class="grid"><a href="#contact">关于我们</a></li>
+		</ul>
+	 </div>
+</div>
 	<!---->
 	<div class="container">
 		<div class="registration">
@@ -301,7 +310,7 @@
 							</p>
 						</div>
 					</div>
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label for="register-email" class="col-sm-2 control-label">验证码:</label>
 						<div class="col-sm-10 ">
 							<input type="text" id="valideCode" onblur="checkCode()"
@@ -313,7 +322,7 @@
 								<span id="check_code" style="display: none"></span>
 							</p>
 						</div>
-					</div>
+					</div> -->
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10 loginBtn">
 							<input type="button" class="btn btn-success" onclick="register()"

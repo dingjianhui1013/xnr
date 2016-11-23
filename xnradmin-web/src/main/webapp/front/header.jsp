@@ -40,9 +40,15 @@
 				</ul> -->
 				<!--登录后显示-->
 				<ul>
-					<li><a href="login.jsp">登录</a></li>
-					<li><a href="register.jsp">注册</a></li>
-					<li><a href="personalCenter.jsp">我的订单</a></li>
+					<c:if test="${empty user}">
+						<li><a href="login.jsp">登录</a></li>|
+					</c:if>
+					<c:if test="${!empty user}">
+						<li class="top_link">用户名:<a href="mailto:info@example.com">${user.userName}</a></li>|
+						<li><a href="exit.action">退出</a></li>|
+					</c:if>
+					<li><a href="register.jsp">注册</a></li>|
+					<li><a href="personalCenter.jsp">订单中心</a></li>
 				</ul>
 
 			</div>
@@ -53,7 +59,7 @@
 <div class="logoWrap">	
 	<div class="container">	
 		<div class="logo">
-			<a href="index.jsp">
+			<a href="index.action">
 			<h1><img src="${basePath }images/front/login_logo.png" /></h1>
 			</a>
 		</div>
@@ -78,7 +84,7 @@
 <div class="guiderBox">
 	<div class="container">
 		<ul class="memenu skyblue pull-left">
-			<li class="active"><a href="index.html">首页</a></li>
+			<li class="active"><a href="index.action">首页</a></li>
 			<c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
 				<c:forEach items="${firstBusinessCategory }" var="first">
 				<li class="grid"><a href="#"> ${ first.key.categoryName}</a>
@@ -90,7 +96,7 @@
 								<h4> ${ second.key.categoryName} </h4>
 								<ul>
 									<c:forEach items="${second.value }" var="threeBusinessCategory">
-									<li><a href="product.html">${threeBusinessCategory.categoryName }</a></li>
+									<li><a href="product.action?productCategoryId=${threeBusinessCategory.id}&&first=${ first.key.categoryName}&&three=${ threeBusinessCategory.categoryName}">${threeBusinessCategory.categoryName }</a></li>
 									</c:forEach>
 								</ul>
 							</div>

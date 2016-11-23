@@ -153,4 +153,17 @@ public class FrontUserService {
 		}
 		return isok;
 	}
+	public boolean reset(String id){
+		boolean isok = false;
+		if(id!=null&&!"".equals(id)){
+			String hql = "update FrontUser set password='111111' where id="+id;
+			try {
+				commonDao.executeUpdateOrDelete(hql);
+				isok = true;
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		return isok;
+	}
 }
