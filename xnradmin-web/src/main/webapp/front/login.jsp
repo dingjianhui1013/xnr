@@ -27,18 +27,19 @@
 			<img src="${basePath }images/front/loginBigImg.png" />
 		</div>
 		<div class="loginBox col-sm-6">
-	         <form class="form-horizontal">
+	         <form class="form-horizontal" method="post" action="login.action">
 	              <h4 class="loginBoxTit">账户登录</h4>
 	              <div class="form-group">
 	                <label for="inputEmail3" class="col-sm-2 control-label">手机号：</label>
 	                <div class="col-sm-10">
-	                  <input type="email" class="form-control" id="inputEmail3" placeholder="请输入手机号/邮箱">
+	                  <input type="" name="userName" class="form-control" id="inputEmail3" placeholder="请输入手机号/邮箱">
 	                </div>
 	              </div>
 	              <div class="form-group">
 	                <label for="inputPassword3" class="col-sm-2 control-label">密码：</label>
 	                <div class="col-sm-10">
-	                  <input type="password" class="form-control" id="inputPassword3" placeholder="请输入密码">
+	                  <input type="password" name="password" class="form-control" id="inputPassword3" placeholder="请输入密码">
+	                  <span style="color: red;font-size: 10px">${message }</span>
 	                </div>
 	              </div>
 	              <div class="form-group">
@@ -53,7 +54,7 @@
 	              </div>
 	              <div class="form-group btnBox">
 	                <div class="col-sm-offset-2 col-sm-10 loginBtn">
-	                  <input type="button" class="btn btn-primary" value="登 录">
+	                  <input type="submit" class="btn btn-primary" value="登 录">
 	                  <a href="register.jsp" class="regLinkBox">没有账号，马上注册</a>
 	                </div>
 	              </div>

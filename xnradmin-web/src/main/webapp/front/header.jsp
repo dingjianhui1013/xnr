@@ -50,3 +50,58 @@
 		</div>
 	</div>
 </div>
+<div class="logoWrap">	
+	<div class="container">	
+		<div class="logo">
+			<a href="index.jsp">
+			<h1><img src="${basePath }images/front/login_logo.png" /></h1>
+			</a>
+		</div>
+		<div class="pull-left searchBox">
+			<form action="" class="form-inline">
+			<input type="text"  placeholder="请输入搜索内容" class="searchInput"/>
+			<input type="button" value="搜索" class="searchBtn">
+			</form>
+		</div>
+		 <div class="pull-right cart box_1">
+			 <a href="checkout.html">
+				<h3> <div class="total">
+					<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+					<span class="simpleCart_total"></span> (<span id="simpleCart_quantity" class="simpleCart_quantity"></span>)
+					</div>
+				</h3>
+			</a>
+		 	<div class="clearfix"> </div>
+		 </div>
+	</div>
+</div>
+<div class="guiderBox">
+	<div class="container">
+		<ul class="memenu skyblue pull-left">
+			<li class="active"><a href="index.html">首页</a></li>
+			<c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
+				<c:forEach items="${firstBusinessCategory }" var="first">
+				<li class="grid"><a href="#"> ${ first.key.categoryName}</a>
+				<div class="mepanel">
+					<div class="row">
+						<c:forEach items="${first.value }" var="secondBusinessCategory">
+						<c:forEach items="${secondBusinessCategory }" var="second">
+							<div class="col1 me-one">
+								<h4> ${ second.key.categoryName} </h4>
+								<ul>
+									<c:forEach items="${second.value }" var="threeBusinessCategory">
+									<li><a href="product.html">${threeBusinessCategory.categoryName }</a></li>
+									</c:forEach>
+								</ul>
+							</div>
+						</c:forEach>
+						</c:forEach>
+					</div>
+				</div> 
+				</c:forEach>
+			</li>
+			</c:forEach>
+			<li class="grid"><a href="#contact">关于我们</a></li>
+		</ul>
+	 </div>
+</div>

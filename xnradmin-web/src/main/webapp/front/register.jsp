@@ -94,7 +94,7 @@
 					},
 					dataType : 'JSON',
 					success : function(data) {
-						alert(data.status);
+						//alert(data.status);
 						if (data.status == 1) {
 							$("#check_phoneError").hide();
 							$("#check_phone").hide();
@@ -157,7 +157,7 @@
 	//注册
 	function register() {
 		if (phoneFlag && checkPassword() && checkConfirmPassword()
-				&& emailFlag &&checkcode) {
+				&& emailFlag ) {//&&checkcode
 			$("#submitForm").submit();
 		}else{
 			checkEmail();
@@ -252,12 +252,12 @@
 	<div class="container">
 		<div class="registration">
 			<div class="container loginBox">
-				<form class="form-horizontal" action="${basePath}/front/register" method="post" id="submitForm">
+				<form class="form-horizontal" action="${basePath}front/register.action" method="post" id="submitForm">
 					<h4 class="loginBoxTit">康源公社注册</h4>
 					<div class="form-group">
 						<label for="userNameInput" class="col-sm-2 control-label"><em>*</em>手机号:</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="phone" name="phone"
+							<input type="text" class="form-control" id="phone" name="frontUser.phone"
 								onblur="checkPhone()" placeholder="请输入手机号码">
 							<p class="errorTips" id="check_phoneError" style="display: none">
 								<span class="glyphicon glyphicon-remove-sign errorIcon"></span>
@@ -270,7 +270,7 @@
 						<label for="passwordInput" class="col-sm-2 control-label">密码:</label>
 						<div class="col-sm-10">
 							<input type="password" class="form-control" id="password"
-								name="password" onblur="checkPassword()" placeholder="请输入密码">
+								name="frontUser.password" onblur="checkPassword()" placeholder="请输入密码">
 							<p class="errorTips" id="check_passwordError"
 								style="display: none">
 								<span class="glyphicon glyphicon-remove-sign errorIcon"></span>
@@ -293,7 +293,7 @@
 					<div class="form-group">
 						<label for="emailInput" class="col-sm-2 control-label"><em>*</em>邮箱:</label>
 						<div class="col-sm-10">
-							<input type="email" class="form-control" id="email" name="email"
+							<input type="email" class="form-control" id="email" name="frontUser.email"
 								onblur="checkEmail()" placeholder="请输入邮箱">
 							<p class="errorTips" id="check_emailError" style="display: none">
 								<span class="glyphicon glyphicon-remove-sign errorIcon"></span>

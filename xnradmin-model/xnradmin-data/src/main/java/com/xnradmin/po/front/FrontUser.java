@@ -2,11 +2,14 @@ package com.xnradmin.po.front;
 
 
 
-import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -24,10 +27,10 @@ public class FrontUser implements java.io.Serializable {
 	private String password;
 	private String phone;
 	private String email;
-	private Timestamp createDate;
-	private Timestamp updateDate;
+	private Date createDate;
+	private Date updateDate;
 	private String delFlag;
-
+	private String type;//0未审核，1通过审核，2未通过审核
 	// Constructors
 
 	/** default constructor */
@@ -36,7 +39,7 @@ public class FrontUser implements java.io.Serializable {
 
 	/** full constructor */
 	public FrontUser(String userName, String password, String phone,
-			String email, Timestamp createDate, Timestamp updateDate,
+			String email, Date createDate, Date updateDate,
 			String delFlag) {
 		this.userName = userName;
 		this.password = password;
@@ -96,20 +99,20 @@ public class FrontUser implements java.io.Serializable {
 	}
 
 	@Column(name = "create_date", length = 19)
-	public Timestamp getCreateDate() {
+	public Date getCreateDate() {
 		return this.createDate;
 	}
 
-	public void setCreateDate(Timestamp createDate) {
+	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
 
 	@Column(name = "update_date", length = 19)
-	public Timestamp getUpdateDate() {
+	public Date getUpdateDate() {
 		return this.updateDate;
 	}
 
-	public void setUpdateDate(Timestamp updateDate) {
+	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
 
@@ -120,6 +123,14 @@ public class FrontUser implements java.io.Serializable {
 
 	public void setDelFlag(String delFlag) {
 		this.delFlag = delFlag;
+	}
+	@Column(name = "type")
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }
