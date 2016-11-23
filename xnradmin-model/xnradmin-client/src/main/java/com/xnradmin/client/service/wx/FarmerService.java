@@ -20,6 +20,7 @@ import com.google.zxing.common.BitMatrix;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.wx.FarmerDao;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.po.wx.connect.FarmerQrCode;
 import com.xnradmin.vo.business.OutPlanVO;
 import com.xnradmin.vo.client.wx.WXMenuVO;
 
@@ -123,10 +124,9 @@ public class FarmerService {
 	 * @param goodsId  菜品id
 	 * @param imageUrl 图片保存路径
 	 */
-	public static void generateCode(String farmerId,String goodsId,String imageUrl) {
+	public void generateCode(String farmerId,String goodsId,String imageUrl,String skipUrl) {
 		try {
 
-			String content = "http://weixin.robustsoft.cn/xnr/page/wx/farmer/showFarmerImage.action?farmerId="+farmerId+"&goodsId="+goodsId;
 			String path = ServletActionContext.getServletContext().getRealPath("/farmerQrCodeImage")+File.separator+farmerId+File.separator+goodsId;
 			String imageName = imageUrl;
 			File dir = new File(path);
@@ -137,7 +137,29 @@ public class FarmerService {
 
 			Map hints = new HashMap();
 			hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-			BitMatrix bitMatrix = multiFormatWriter.encode(content,
+			BitMatrix bitMatrix = multiFormatWriter.encode(skipUrl,
+					BarcodeFormat.QR_CODE, 100, 100, hints);
+			File file1 = new File(dir, imageName);
+
+			MatrixToImageWriter.writeToFile(bitMatrix, "png", file1);
+			System.out.println("二维码生成成功!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void UpdateCode(FarmerQrCode farmerQrCode) {
+		try {
+			String path = ServletActionContext.getServletContext().getRealPath("/farmerQrCodeImage")+File.separator+farmerQrCode.getFarmerId()+File.separator+farmerQrCode.getGoodsId();
+			String imageName = farmerQrCode.getQrCodeUrl();
+			File dir = new File(path);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+			MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+
+			Map hints = new HashMap();
+			hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+			BitMatrix bitMatrix = multiFormatWriter.encode(farmerQrCode.getSkipUrl(),
 					BarcodeFormat.QR_CODE, 100, 100, hints);
 			File file1 = new File(dir, imageName);
 

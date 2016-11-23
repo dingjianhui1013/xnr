@@ -1,5 +1,6 @@
 package com.xnradmin.client.action.front;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.vo.front.ProductDetailVo;
 import com.xnradmin.po.business.BusinessCategory;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 
 @Controller
@@ -26,16 +28,39 @@ import com.xnradmin.vo.business.BusinessGoodsVO;
 public class IndexFrontAction  {
 	
 	private ProductDetailVo productDetailVo;
-	@Autowired
-	private BusinessCategoryService businessCategoryService;
-	@Autowired
-	private BusinessGoodsService businessGoodsService;
+	private String goodsId;
+	private BusinessGoodsVO businessGoodsVO;
+	private Map<String, List<BusinessGoods>> related_classification;
 	public ProductDetailVo getProductDetailVo() {
 		return productDetailVo;
 	}
 	public void setProductDetailVo(ProductDetailVo productDetailVo) {
 		this.productDetailVo = productDetailVo;
 	}
+	public String getGoodsId() {
+		return goodsId;
+	}
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
+	public BusinessGoodsVO getBusinessGoodsVO() {
+		return businessGoodsVO;
+	}
+	public void setBusinessGoodsVO(BusinessGoodsVO businessGoodsVO) {
+		this.businessGoodsVO = businessGoodsVO;
+	}
+	public Map<String, List<BusinessGoods>> getRelated_classification() {
+		return related_classification;
+	}
+	public void setRelated_classification(
+			Map<String, List<BusinessGoods>> related_classification) {
+		this.related_classification = related_classification;
+	}
+
+	@Autowired
+	private BusinessCategoryService businessCategoryService;
+	@Autowired
+	private BusinessGoodsService businessGoodsService;
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;
 	private List<BusinessGoodsVO> indexGoods;
 	@Autowired IndexFrontService indexFrontService;
@@ -49,13 +74,24 @@ public class IndexFrontAction  {
 	@Action(value="productDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/productDetail.jsp")})
 	public String productDetail()
 	{
-		//此处需要传来三个参数，一级分类id，二级分类id，菜品分类id。
-		String firstName = businessCategoryService.findByid(productDetailVo.getFirstClassification()).getCategoryName();
-		String secoundName = businessCategoryService.findByid(productDetailVo.getSecoundClassification()).getCategoryName();
-		String foodName = businessGoodsService.findByid(productDetailVo.getFirstClassification()).getGoodsName();
-		productDetailVo.setFirstName(firstName);
-		productDetailVo.setSecoundName(secoundName);
-		productDetailVo.setFoodName(foodName);
+		ProductDetailVo productDetailVo = new ProductDetailVo();
+//		businessGoods = businessGoodsService.findByid(goodsId);
+		businessGoodsVO = businessGoodsService.getBusinessGoodsAndWeight(goodsId);
+		BusinessCategory businessCategory = businessCategoryService.findByid(businessGoodsVO.getBusinessGoods().getGoodsCategoryId());
+		BusinessCategory businessCategoryF = businessCategoryService.findByid(businessCategory.getCategoryParentId().toString());
+		productDetailVo.setFirstName(businessCategoryService.findByid(businessCategoryF.getCategoryParentId().toString()).getCategoryName());
+		productDetailVo.setSecoundName(businessCategory.getCategoryName());
+		productDetailVo.setFoodName(businessGoodsVO.getBusinessGoods().getGoodsName());
+		this.productDetailVo = productDetailVo;
+		Map<String, List<BusinessGoods>> related_classification = new HashMap<String, List<BusinessGoods>>();
+		List<BusinessGoods> goods = businessGoodsService.getListBycategoryId(businessCategory.getId().toString());
+		related_classification.put(businessCategory.getCategoryName(), goods);
+		this.related_classification = related_classification;
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="personalCenter",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/personalCenter.jsp")})
+	public String personalCenter()
+	{
 		return StrutsResMSG.SUCCESS;
 	}
 	

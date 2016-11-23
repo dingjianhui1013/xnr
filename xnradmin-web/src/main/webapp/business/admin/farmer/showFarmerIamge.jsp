@@ -53,7 +53,7 @@
 									<li>
 										<h3>${farmerImages.date}</h3>
 										<div>
-											<img alt="" src="${farmerImages.url}" />
+											<img alt="" src="<%=path%>${farmerImages.url}" />
 										</div>
 									</li>
 								</c:forEach>

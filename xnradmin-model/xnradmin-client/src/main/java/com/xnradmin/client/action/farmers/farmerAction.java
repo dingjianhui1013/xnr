@@ -90,7 +90,7 @@ public class farmerAction extends ParentAction{
 	}
 	@Override
 	public boolean isPublic() {
-		return false;
+		return true;
 	}
 	
 	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/info.jsp") })

@@ -10,8 +10,6 @@
 	
 	request.setAttribute("action",action);
 %>
-
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript">
 	function generate(id){
@@ -21,11 +19,11 @@
 			data:{farmerId:id},
 			dataType:'JSON',
 			success:function(data){
-				if(data.status=="0")
+				if(data.index==0)
 					{
-						alert("二维码生成成功，请到二维码管理处查看");
+						alert("成功生成"+data.fenleiL+"张，请到二维码管理处查看");
 					}else{
-						alert("创建失败");
+						alert("共"+data.fenleiL+"张，失败"+data.index+"张，原因：重复创建或系统异常");
 					}
 			}
 			
