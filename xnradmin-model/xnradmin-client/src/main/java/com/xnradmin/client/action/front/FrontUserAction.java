@@ -49,8 +49,24 @@ public class FrontUserAction {
     private String password;//登陆
     private String message;//登陆信息
     private FrontUser user;//修改用户信息
-    private String yuanshimima;
+    private String yuanshimima;//验证原始密码
     
+	public FrontUser getUser() {
+		return user;
+	}
+
+	public void setUser(FrontUser user) {
+		this.user = user;
+	}
+
+	public String getYuanshimima() {
+		return yuanshimima;
+	}
+
+	public void setYuanshimima(String yuanshimima) {
+		this.yuanshimima = yuanshimima;
+	}
+
 	public String getMessage() {
 		return message;
 	}

@@ -23,7 +23,7 @@ $(function(){
 	
 	
 			
-		/*分类JS*/	
+		/*鍒嗙被JS*/	
 			$(".tab1 .single-bottom").hide();
 			$(".tab2 .single-bottom").hide();
 			$(".tab3 .single-bottom").hide();
@@ -42,7 +42,7 @@ $(function(){
 				$(".tab4 .single-bottom").hide();
 				$(".tab5 .single-bottom").hide();
 			})
-			/*切换手机首页轮播图*/
+			/*鍒囨崲鎵嬫満棣栭〉杞挱鍥�*/
        var screenW=$(window).width();
         if(screenW<767){
           var Len=$('#carouselInner').find('.item').length;
@@ -51,7 +51,7 @@ $(function(){
           $('.item').eq(2).find('img').attr('src','images/banner3_s.jpg');
         }
 
-        /*删除*/
+        /*鍒犻櫎*/
 		var len=$('.in-check .cart-header').length;
 		for(i=0;i<=len;i++){
 			$('.delBtn'+i).on('click', function(){
@@ -59,7 +59,7 @@ $(function(){
 			par.fadeOut('slow', function(){par.remove();});
 			});	
 		};
-		/*全选*/
+		/*鍏ㄩ��*/
 		$('#checkALLBtn').click(function(){
 			var labBox=$(this).find("#checkAll");
 			if(labBox.is(':checked')){ 
@@ -74,6 +74,36 @@ $(function(){
 			_index=$(this).index();
 			$(this).addClass('active').siblings().removeClass('active');
 			$('.p-contentBox .p-orderList').eq(_index).show().siblings().hide();
+		})
+
+		$('.eidtAddressBtn').click(function(){
+			$('#editAddres').show();
+			$(this).hide();
+			$('#defalutAddBox .addr-address').hide();
+		})
+		var urlFlag= GetQueryString('flag')
+		if(urlFlag!=''&& urlFlag!=null){
+			var _index=$('#'+urlFlag).index();
+			$('#'+urlFlag).addClass('active').siblings().removeClass('active');
+			$('.p-contentBox .p-orderList').eq(_index).show().siblings().hide();
+		}
+		/*鎴彇鍑芥暟*/
+		function GetQueryString(name)    
+		{           
+		    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); 
+		    var r = window.location.search.substr(1).match(reg);  
+		    if (r!=null){                
+		        return unescape(r[2]);           
+		    }            
+		    else{    
+		        return null;       
+		    }      
+		}
+		$('#editUserName').click(function(){
+			$('#d-userName').hide();
+			$(this).hide();
+			$('.editUserInput').show();
+
 		})
 
 

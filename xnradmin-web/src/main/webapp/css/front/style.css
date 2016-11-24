@@ -2,7 +2,7 @@ body{
 	background:#fff;
 	font-family:"微软雅黑";
 	font-size: 62.5%;
-	font-size: 1.2rem;
+	font-size: 1.4rem;
 }
 body a{
 	transition: 0.5s all;
@@ -91,7 +91,6 @@ h1.b1,h2.b2,h3.b3 {
 }
 .regtipsBox{ text-align: center; padding:5rem 2rem;border:1px solid #ddd; font-size: 1.6rem;}
 .tipsBtnBox{margin-top: 2rem;}
-.redColor{ color: red;}
 .regtipsBox p{margin-bottom: 1rem;}
 .top_left{
 	float: right;
@@ -1687,6 +1686,7 @@ h3.ghj {
 }
 .breadcrumb {
 	margin:1rem 0;
+	padding:0.8rem 0;
 	background: none;border-radius: 0; font-weight: bold;
 }
 .table {
@@ -1763,7 +1763,9 @@ ul.unit li.productCol{ width: 40%;}
 .add-addItem{width:60%;}
 .add-addItem .form-group{ overflow: hidden;}
 .add-addItem em{color:red; padding:0.5rem;}
-
+.chooseNum{ }
+.checkOrderInfo ul.unit li,.checkOrderInfo ul.cart-header li{ width: 20%;}
+.checkOrderInfo ul.unit li.productCol{width:40%;}
 
 
 ul.cart-header{
@@ -2026,7 +2028,7 @@ a.cpns:hover{
 .cmnts-left {
 	padding:0;
 }
-
+.redColor{color:#e4393c;}
 .commentLeft{width: 84%;}
 .commentRight{width: 15%;}
 /*personalCenter*/
@@ -2063,8 +2065,9 @@ a.cpns:hover{
 .p-orderList{ display: none;}
 
 
-
-
+.orderTips{border:1px solid #ddd; padding: 1rem;overflow: hidden;}
+.orderTips p{ font-weight: bold;margin-bottom: 0.5rem;}
+.orderNumer{ padding:0 1rem;}
 
 
 .addressList .form-group{margin-bottom:0.5rem}
@@ -2077,9 +2080,18 @@ a.cpns:hover{
 .selAddressBox{ overflow: hidden;}
 .detailAddress{margin-top:0.5rem;}
 .p-orderList h3{ font-size: 1.2rem; /* border-bottom: 1px solid #ddd; */ padding-bottom: 1rem; margin-bottom: 2rem;}
-.accountBox{border:1px solid #ddd; padding:3rem 6rem; min-height: 520px;}
+.accountBox{/* border:1px solid #ddd;  */padding:2rem 6rem; }
 .accountEditBox{text-align: left; padding-left:16%;}
 .accountEditBox .btn-primary{ width:10%;}
+.editList h3.titBox{ font-weight: bold; font-size: 1.6rem;border-bottom: 1px solid #ddd;}
+.saveUserName{ padding: 0.6rem 1rem; color:#629715; font-weight: bold;}
+.editUserName:hover,.editUserName:visited,.saveUserName:hover,.saveUserName:visited{color:#629715;}
+.editUserName{ padding: 0rem 1rem; color:#629715; font-weight: bold;}
+.editUserInput{ display: none;}
+.d-userName{padding:7px 0; display: inline-block;}
+.r-userNameBox{ float: left; width: 70%;}
+.editUserInput input{ width: 40%;}
+/* .r-editName{ width: 70%;border:1px solid red;} */
 /*contact us*/
 .contact_info{ width: 90%; margin:0px auto;}
 .contact_info h3{ font-size: 1.6rem; font-weight: bold; margin-bottom: 1rem;}
@@ -2087,7 +2099,7 @@ a.cpns:hover{
 
 /*order-check*/
 .order-checkBox h3{ font-size: 1.6rem; font-weight: bold; margin-bottom: 1rem;padding-bottom:1rem;border-bottom: 1px solid #ddd; }
-.addr-name{ font-size: 1.4rem; padding-left: 0.5rem;}
+.addr-name{ font-size: 1.4rem; padding-left: 0.5rem;margin-bottom: 1rem;}
 .addr-name a{color:#629715;}
 .addr-address{padding:0.5rem;}
 .addr-address span{ padding: 0 0.5rem;}
@@ -2098,6 +2110,17 @@ a.cpns:hover{
 .paymentMode a{ padding: 0.6rem 2rem; border:1px solid #fff; color: #333;}
 .paymentMode a.active{ border:1px solid #629715; }
 .add-addItem .editBox{ text-align: left;}
+.payMoneyBox{ text-align: right; padding-top: 1rem;}
+
+
+.codeImgWrap{ width: 80%; margin:1rem auto; }
+.payMoneyNum{ font-weight: bold; color: red; font-size: 28px;}
+.payCodeBox{margin-top: 2rem; border:1px solid #ddd; padding: 1rem 2rem;overflow: hidden; text-align: center;}
+.payCodeBox h3{ margin-bottom: 5rem; font-size: 2rem;border-bottom: 1px solid #ddd; padding-bottom: 1rem; font-weight: bold;}
+.payImgBox{ margin:0 10%; }
+.payImgBox p{ text-align: center; font-weight: bold;margin-top: 0.5rem;}
+.payImgBox img{ width: 270px; height: 270px;border:1px solid #ddd;}
+.phoneImgBox{}
 
 /*--responsive--*/
 
@@ -2464,7 +2487,6 @@ h4.last-price ,span.final{
 .in-check-mobile{ display: block}
 ul.cart-header span.cart-pDetail{text-align: left;}
 ul.cart-header li.productCol{ width: 95%; text-align: left;}
-.redColor{ color: #e4393c}
 ul.cart-header li span, ul.cart-header1 li span, ul.cart-header2 li span, ul.cart-header3 li span{ text-align: left;}
 ul.cart-header li.operateBtn{ text-align: right; width: 100%;}
 .priceLine .m-price{ width: 65%; float: left;margin-top: 2rem; padding: 1rem 0}
