@@ -7,6 +7,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <%@include file="header.jsp"%>
+<script type="text/javascript">
+	$(function(){
+		$('#editMsg').click(function(){
+			$('#myModal').modal({
+		   backdrop: "static"
+		})
+		})
+		$('#addAddressBtn').click(function(){
+			$('#newAddressBox').modal({
+		   backdrop: "static"
+		})
+		})
+		
+		
+	})
+</script>
 </head>
 <body> 
 <div class="single-sec">
@@ -20,7 +36,7 @@
 		 		<div class="userInfoBox">
                   <span class="personalImg"><img src="${basePath }images/front/head.jpg" ></span>
                   <div class="perInfoBox">
-                   <p><strong>账号：</strong></p>
+                   <p><strong>账号：</strong>${user.userName }</p>
                   </div>
                 </div>
                 <ul class="pSlideNavUl">

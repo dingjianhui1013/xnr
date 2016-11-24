@@ -18,7 +18,7 @@
 			 <div class="col-md-12 product-model-sec">
 			 	<c:forEach items="${productList}" var="product">
 					 <div class="product-grid love-grid">	
-				 		<a href="productDetail.html">				
+				 		<a href="/front/productDetail.action?goodsId=${product.businessGoods.id}">				
 							<div class="product-img b-link-stripe b-animate-go  thickbox">
 								<img src="${basePath }${product.businessGoods.goodsLogo}" class="img-responsive" alt=""/>
 								<div class="b-wrapper">
@@ -30,9 +30,9 @@
 						</a>						
 						<div class="product-info simpleCart_shelfItem">
 							<div class="product-info-cust prt_name">
-								<h4><a href="detail.action">${product.businessGoods.goodsName} </a></h4>
-								<p><a href="detail.html">农场出品，清脆爽口</a></p>
-								<p class="item_price">￥${product.businessGoods.goodsWeight }/${product.businessWeight.weightName }</p>
+								<h4><a href="/front/productDetail.action?goodsId=${product.businessGoods.id}">${product.businessGoods.goodsName} </a></h4>
+								<p><a href="/front/productDetail.action?goodsId=${product.businessGoods.id}">农场出品，清脆爽口</a></p>
+								<p class="item_price">￥${product.businessGoods.goodsOriginalPrice }/${product.businessWeight.weightName }</p>
 								<div class="addCartBox">	
 									<div class="addNum">						
 										<span><input type="text" class="item_quantity" value="1" /></span>

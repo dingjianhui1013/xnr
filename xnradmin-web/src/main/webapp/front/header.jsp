@@ -64,9 +64,9 @@
 			</a>
 		</div>
 		<div class="pull-left searchBox">
-			<form action="" class="form-inline">
-			<input type="text"  placeholder="请输入搜索内容" class="searchInput"/>
-			<input type="button" value="搜索" class="searchBtn">
+			<form action="search.action" class="form-inline" method="post">
+			<input type="text"  name="search" placeholder="请输入搜索内容" class="searchInput"/>
+			<input type="submit" value="搜索" class="searchBtn">
 			</form>
 		</div>
 		 <div class="pull-right cart box_1">

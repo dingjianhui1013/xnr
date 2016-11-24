@@ -30,100 +30,6 @@ function minusNum()
 </script>
 </head>
 <body>
-	<div class="logoWrap">
-		<div class="container">
-			<div class="logo">
-				<a href="index.html">
-					<h1>
-						<img src="${basePath }images/front/login_logo.png" />
-					</h1>
-				</a>
-			</div>
-			<div class="pull-left searchBox">
-				<form action="" class="form-inline">
-					<input type="text" placeholder="请输入搜索内容" class="searchInput" /> <input
-						type="button" value="搜索" class="searchBtn">
-				</form>
-			</div>
-			<div class="pull-right cart box_1">
-				<a href="checkout.html">
-					<h3>
-						<div class="total">
-							<span class="glyphicon glyphicon-shopping-cart"
-								aria-hidden="true"></span> <span class="simpleCart_total"></span>
-							(<span id="simpleCart_quantity" class="simpleCart_quantity"></span>)
-						</div>
-					</h3>
-				</a>
-				<div class="clearfix"></div>
-			</div>
-		</div>
-	</div>
-	<div class="guiderBox">
-		<div class="container">
-			<ul class="memenu skyblue pull-left">
-				<li class="active"><a href="index.html">首页</a></li>
-				<li class="grid"><a href="#">蔬菜水果</a>
-					<div class="mepanel">
-						<div class="row">
-							<div class="col1 me-one">
-								<h4>蔬菜类</h4>
-								<ul>
-									<li><a href="product.html">有机蔬菜</a></li>
-									<li><a href="product.html">地方特产蔬菜</a></li>
-									<li><a href="product.html">自产蔬菜</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>水果类</h4>
-								<ul>
-									<li><a href="product.html">有机水果</a></li>
-									<li><a href="product.html">进口水果</a></li>
-									<li><a href="product.html">国产水果</a></li>
-								</ul>
-							</div>
-						</div>
-					</div></li>
-				<li class="grid"><a href="#">肉类禽蛋</a>
-					<div class="mepanel">
-						<div class="row">
-							<div class="col1 me-one">
-								<h4>牛羊肉</h4>
-								<ul>
-									<li><a href="product.html">有机牛羊肉</a></li>
-									<li><a href="product.html">进口牛羊肉</a></li>
-									<li><a href="product.html">精品牛羊肉</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>猪肉</h4>
-								<ul>
-									<li><a href="product.html">有机猪肉</a></li>
-									<li><a href="product.html">进口猪肉</a></li>
-									<li><a href="product.html">国产猪肉</a></li>
-									<li><a href="product.html">农场自养猪肉</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>禽类</h4>
-								<ul>
-									<li><a href="product.html">有机禽类</a></li>
-									<li><a href="product.html">散养禽类</a></li>
-								</ul>
-							</div>
-							<div class="col1 me-one">
-								<h4>蛋类</h4>
-								<ul>
-									<li><a href="product.html">有机蛋</a></li>
-									<li><a href="product.html">散养蛋</a></li>
-								</ul>
-							</div>
-						</div>
-					</div></li>
-				<li class="grid"><a href="#">粮油副食</a></li>
-				<li class="grid"><a href="#contact">关于我们</a></li>
-			</ul>
-		</div>
 	</div>
 	<!--head//-->
 	<div class="single-sec">
@@ -171,7 +77,12 @@ function minusNum()
 								</p>
 								<div class="comment-count">
 									<p class="comment">已售数量</p>
-									<a class="" href="#comment">${businessGoodsVO.businessGoods.goodsSoldCount}</a>
+									<a class="" href="#comment"><c:if test="${!empty businessGoodsVO.businessGoods.goodsSoldCount}">
+									${businessGoodsVO.businessGoods.goodsSoldCount}
+									</c:if>
+									<c:if test="${empty businessGoodsVO.businessGoods.goodsSoldCount}">
+									200
+									</c:if></a>
 								</div>
 							</div>
 							<div class="p-detailCon">
@@ -213,23 +124,34 @@ function minusNum()
 						<div class="p-detailcon detailBox" style="display: block">
 							<div class="detailInfo_item">
 								<p>
-									品牌：<span>怀山堂</span>
+									名称：<span>${businessGoodsVO.businessGoods.goodsName}</span>
 								</p>
 								<p>
-									规格：<span>1.5kg/箱</span>
+									价格：<span>${businessGoodsVO.businessGoods.goodsOriginalPrice}/${businessGoodsVO.businessWeight.weightName}</span>
 								</p>
 								<p>
-									产地<span>焦作</span>
+									规格<span> 约${businessGoodsVO.businessGoods.goodsWeight }g</span>
 								</p>
 								<p>
-									当前存储温度<span> 0-4度</span>
+									已售数量<span>
+									<c:if test="${!empty businessGoodsVO.businessGoods.goodsSoldCount}">
+									${businessGoodsVO.businessGoods.goodsSoldCount}
+									</c:if>
+									<c:if test="${empty businessGoodsVO.businessGoods.goodsSoldCount}">
+									200
+									</c:if>
+									</span>
+								</p>
+								<p>
+									发货地<span> 北京</span>
 								</p>
 								<p>
 									建议储藏方法：<span>常温通风处，长期存储需冷藏</span>
 								</p>
 							</div>
 							<div class="detailImg">
-								<img src="${basePath }images/front/products/1.jpg" /> <img
+								${businessGoodsVO.businessGoods.goodsDescription}
+								<%-- <img src="${basePath }images/front/products/1.jpg" /> <img
 									src="${basePath }images/front/products/2.jpg" /> <img
 									src="${basePath }images/front/products/3.jpg" /> <img
 									src="${basePath }images/front/products/4.jpg" /> <img
@@ -237,7 +159,7 @@ function minusNum()
 									src="${basePath }images/front/products/6.jpg" /> <img
 									src="${basePath }images/front/products/7.jpg" /> <img
 									src="${basePath }images/front/products/8.jpg" /> <img
-									src="${basePath }images/front/products/9.jpg" />
+									src="${basePath }images/front/products/9.jpg" /> --%>
 							</div>
 						</div>
 <!-- 						<div class="p-commentBox detailBox"> -->

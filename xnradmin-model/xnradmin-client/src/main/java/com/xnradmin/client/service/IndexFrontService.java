@@ -95,9 +95,9 @@ public class IndexFrontService {
 	 * @param pageSize
 	 * @return
 	 */
-	public List<BusinessGoodsVO> listBusinessGoodsVO( int curPage,int pageSize) {
+	public List<BusinessGoodsVO> listBusinessGoodsVO( ) {
 		String hql = "from BusinessGoods a,BusinessCategory b,BusinessWeight c where a.goodsCategoryId=b.id and a.goodsWeightId=c.id";
-		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,pageSize);
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
 		List<BusinessGoodsVO> resList = new LinkedList<BusinessGoodsVO>();
 		for (int i = 0; i < l.size(); i++) {
 			Object[] obj = (Object[]) l.get(i);
@@ -122,5 +122,14 @@ public class IndexFrontService {
 			resList.add(businessGoodsVO);
 		}
 		return resList;
+	}
+	public BusinessGoods findGoodsByName(String goodsName){
+		String hql = "from BusinessGoods where goodsName like '%"+goodsName+"%'";
+		List<BusinessGoods> l= commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		if(l.isEmpty()){
+			return null;
+		}else{
+			return l.get(0);
+		}
 	}
 }

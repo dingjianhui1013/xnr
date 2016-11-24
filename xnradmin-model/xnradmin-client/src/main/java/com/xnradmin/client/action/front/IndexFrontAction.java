@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
@@ -20,6 +24,7 @@ import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.vo.front.ProductDetailVo;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 
 @Controller
@@ -31,6 +36,7 @@ public class IndexFrontAction  {
 	private String first;//产品列表，一级菜单名称
 	private String three;//产品列表，三级菜单名称
 	private List<BusinessGoodsVO> productList;//产品列表
+	private String search;//搜索条件
 	private ProductDetailVo productDetailVo;
 	private String goodsId;
 	private BusinessGoodsVO businessGoodsVO;
@@ -72,7 +78,7 @@ public class IndexFrontAction  {
 	@Action(value = "index", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/index.jsp") })
 	public String info() {
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
-		this.indexGoods = indexFrontService.listBusinessGoodsVO(0,8);
+		this.indexGoods = indexFrontService.listBusinessGoodsVO();
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value="productDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/productDetail.jsp")})
@@ -91,20 +97,35 @@ public class IndexFrontAction  {
 		List<BusinessGoods> goods = businessGoodsService.getListBycategoryId(businessCategory.getId().toString());
 		related_classification.put(businessCategory.getCategoryName(), goods);
 		this.related_classification = related_classification;
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+//		this.indexGoods = indexFrontService.listBusinessGoodsVO();
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value="personalCenter",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/personalCenter.jsp")})
+	/**
+	 * 个人中心
+	 * @return
+	 */
+	@Action(value="personalCenter",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/personalCenter.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/login.jsp")})
 	public String personalCenter()
-	{
+	{	
+		HttpSession session = ServletActionContext.getRequest().getSession();
+		FrontUser user = (FrontUser)session.getAttribute("user");
+		if(null==user){
+			return StrutsResMSG.FAILED;
+		}
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		return StrutsResMSG.SUCCESS;
 	}
-	
+	/**
+	 * 产品列表
+	 * @return
+	 */
 	@Action(value="product",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/product.jsp")})
 	public String product()
 	{
 		this.productList = indexFrontService.listBusinessGoodsByCategoryId(productCategoryId);
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
-		this.indexGoods = indexFrontService.listBusinessGoodsVO(0,8);
+//		this.indexGoods = indexFrontService.listBusinessGoodsVO();
 		try {
 			this.first = new String(this.first.getBytes("iso-8859-1"),"UTF-8"); 
 			this.three = new String(this.three.getBytes("iso-8859-1"),"UTF-8"); 
@@ -112,6 +133,19 @@ public class IndexFrontAction  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 搜索
+	 * @return
+	 */
+	@Action(value="search",results = {@Result(name = StrutsResMSG.FAILED, type="redirect" ,location = "/front/index.action"),@Result(name = StrutsResMSG.SUCCESS, type="redirect" ,location = "/front/productDetail.action?goodsId=${goodsId}")})
+	public String search()
+	{	BusinessGoods findGoodsByName = indexFrontService.findGoodsByName(this.search);
+		if(null == findGoodsByName){
+			return StrutsResMSG.FAILED;
+		}
+		this.goodsId = findGoodsByName.getId().toString();
 		return StrutsResMSG.SUCCESS;
 	}
 	//getter And setter
@@ -154,6 +188,12 @@ public class IndexFrontAction  {
 	}
 	public void setProductList(List<BusinessGoodsVO> productList) {
 		this.productList = productList;
+	}
+	public String getSearch() {
+		return search;
+	}
+	public void setSearch(String search) {
+		this.search = search;
 	}
 	
 

@@ -127,7 +127,7 @@ public class FrontUserAction {
 	 * 注册 注册成功跳到登录页面,失败则停留在原页面
 	 * @return
 	 */
-	@Action(value = "register",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/login.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
+	@Action(value = "register",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/regSuccess.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
     public String register() {
 		boolean save = frontUserService.save(frontUser);
 		if(save){
