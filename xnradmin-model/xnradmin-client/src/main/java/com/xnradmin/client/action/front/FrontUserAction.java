@@ -199,7 +199,7 @@ public class FrontUserAction {
 		FrontUser u = (FrontUser)(ServletActionContext.getRequest().getSession().getAttribute("user"));
 		final boolean flag = u.getPassword().equals(this.yuanshimima);
         //true 存在  false 不存在
-        if (flag) {
+        if (!flag) {
             this.status ="-1";
         } else {
             this.status = "1";

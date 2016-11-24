@@ -323,7 +323,8 @@
                 </div>
                  <div class="p-orderList editList">
                  		<h3>密码修改</h3>
-                		<form class="form-horizontal" id="submitForm" action="">
+                		<form class="form-horizontal" id="submitForm" action="savePassword.action">
+                				<input type="hidden" name="user.id" value="${user.id }">
                                   <div class="form-group">
                                     <label for="inputEmail3" class="col-sm-2 control-label">原始密码：</label>
                                     <div class="col-sm-10">
@@ -355,7 +356,7 @@
                                   </div>
                                   <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-10">
-                                      <button type="submit" class="btn btn-default">保存修改</button>
+                                      <button type="button" onclick="save()" class="btn btn-default">保存修改</button>
                                     </div>
                                   </div>
                         </form>

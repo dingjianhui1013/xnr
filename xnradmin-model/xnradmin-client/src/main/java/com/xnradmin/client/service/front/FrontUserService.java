@@ -135,7 +135,7 @@ public class FrontUserService {
 	public boolean modifyPassword(FrontUser frontUser){
 		try {
 			StringBuffer hql = new StringBuffer("update FrontUser set ");
-			if(frontUser.getUserName()!=null&&!"".equals(frontUser.getUserName())){
+			if(frontUser.getPassword()!=null&&!"".equals(frontUser.getPassword())){
 				hql.append("password='").append(frontUser.getPassword()).append("' ");
 			}
 			hql.append("where id=").append(frontUser.getId());
