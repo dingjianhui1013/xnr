@@ -23,7 +23,7 @@
 		 <div class="product-price1">
 			 <div class="check-out">			
 				 <div class=" cart-items">
-					 <h3>全部商品 (2)</h3>
+					 <h3>全部商品 </h3>
 					 <!--pc端购物车-->
 					 <div class="in-check">
 						  <ul class="unit">
@@ -40,7 +40,7 @@
 						  <c:forEach items="${cartVoList}" var="cartVo" varStatus="status">
 						  
 								<ul class="cart-header"id="test">
-								<li class="checkCol"><input type="checkbox" /></li>
+								<li class="checkCol"><input type="checkbox" /></ >
 								<li class="productCol">
 									<a href="productDetail.html" >
 										<img src="images/products/sc-img3.jpg" class="pull-left img-responsive" alt=""></a>
@@ -131,7 +131,7 @@
 			 	<ul class="cart-con">
 			 		<li class="checkCol"><input type="checkbox" />全选</li>
 			 		<li class="totalCol">
-			 			<a href="/front/" class="pull-right cartSubmitBtn">去结算</a>
+			 			<a href="/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
 			 			<div class="pull-right totalMoney">
 				 			<p>总价:<span class="t-money">￥120.00</span></p>
 				 			<p>已节省:-￥120.00</p>
