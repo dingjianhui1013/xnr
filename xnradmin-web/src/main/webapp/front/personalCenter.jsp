@@ -6,7 +6,7 @@
 <title>个人中心</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<%@include file="header.jsp" %>
+<%@include file="header.jsp"%>
 <script type="text/javascript">
 	$(function(){
 		$('#editMsg').click(function(){
@@ -19,91 +19,12 @@
 		   backdrop: "static"
 		})
 		})
-	
+		
+		
 	})
-	// 验证原始密码
-	var phoneFlag = false;
-	function yzPassword() {
-		var yuanshimima = $("#yuanshimima").val();
-		$.ajax({
-			type : 'POST',
-			url : '${basePath}front/validateYuanshimima.action?_' + new Date(),
-			data : {
-				"yuanshimima" : yuanshimima
-			},
-			dataType : 'JSON',
-			success : function(data) {
-				//alert(data.status);
-				if (data.status == 1) {
-					$("#check_yz").hide();
-					//$("#check_yz").html("");
-					phoneFlag = true;
-				} else {
-					$("#check_yz").show();
-					//$("#check_yz").html(" <span style=\"color: red;font-size: 10px\">密码错误</span>");
-				}
-			}
-		});
-	}
-	//验证密码
-	function checkPassword() {
-		var password = $("#password").val();
-		if (password.length<6||password.length>20) {
-			$("#check_passwordError").show();
-			$("#check_password").show();
-			$("#check_password").html(" <span style=\"color: red;font-size: 10px\">请输入6-20位的密码</span>");
-			return false;
-		} else {
-			$("#check_passwordError").hide();
-			$("#check_password").hide();
-			$("#check_password").html("");
-			return true;
-		}
-	}
-
-	//验证确认密码
-	function checkConfirmPassword() {
-		var password = $("#password").val();
-		var confirmPassword = $("#confirmPassword").val();
-		if (password.length == 0) {
-			$("#check_passwordError").show();
-			$("#check_password").show();
-			$("#check_password").html(" <span style=\"color: red;font-size: 10px\">请输入6-20位的密码</span>");
-			return false;
-		} else {
-			if (confirmPassword.length == 0) {
-				$("#check_confirmPasswordError").show();
-				$("#check_confirmPassword").show();
-				$("#check_confirmPassword").html(" <span style=\"color: red;font-size: 10px\">请输入确认密码</span>");
-				return false;
-			} else if (password != confirmPassword) {
-				$("#check_confirmPasswordError").show();
-				$("#check_confirmPassword").show();
-				$("#check_confirmPassword").html(" <span style=\"color: red;font-size: 10px\">确认密码和密码不一致</span>");
-				$("#confirmPassword").val("");
-				return false;
-			} else {
-				$("#check_confirmPasswordError").hide();
-				$("#check_confirmPassword").hide();
-				$("#check_confirmPassword").html("");
-				return true;
-			}
-		}
-	}
-	
-	function save() {
-		if (phoneFlag && checkPassword() && checkConfirmPassword()) {//&&checkcode
-			$("#submitForm").submit();
-		}else{
-			yzPassword();
-		}
-	}
 </script>
 </head>
 <body> 
-<!--header-->	
-
-<!--head//-->
 <div class="single-sec">
 	 <div class="container">
 		 <ol class="breadcrumb">
@@ -119,48 +40,12 @@
                   </div>
                 </div>
                 <ul class="pSlideNavUl">
-                	<li class="active"><a href="#">账号信息</a></li> 
-                    <li id="myorder"><a href="#">我的订单</a></li> 
-                    <li><a href="#">地址管理</a></li> 
-                    <li><a href="#">密码修改</a></li> 
+                    <li class="active"><a href="#">我的订单</a></li> 
+                    <li><a href="/page/front/userInformation.action?userId=3">账号信息</a></li> 
                 </ul>
 		 	</div>
 			<div class="p-contentBox pull-left">
-                <div class="p-orderList editList" style="display:block">
-                 	<h3>账号信息</h3>
-                	<div class="accountBox">
-							<form action="saveForm.action" class="form-horizontal" role="form">
-								<input type="hidden" name="user.id" value="${user.id }">
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">账号：</label>
-							    <div class="r-userNameBox">
-								    <p class="r-editName">
-								    	<span class="d-userName" id="d-userName">
-											<span class="pull-left">${user.userName }</span>
-								    		<a href="#" class="form-control-static pull-left editUserName" id="editUserName">[修改]</a>
-								    	</span>
-								    	<span class="editUserInput">
-								    		<input name="user.userName" type="text" value="${user.userName }" class="pull-left form-control"/>
-								    		<input type="submit"  class="form-control-static pull-left saveUserName" value="[保存]"/>
-								    	</span>
-								    	
-								    </p>
-								 </div>
-							    <p></p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">手机号：</label>
-							    <p class="form-control-static">${user.phone }</p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">电子邮箱：</label>
-							    <p class="form-control-static">${user.email }</p>
-							  </div>
-							</form>
-                	</div>
-                </div>
-				<div class="p-orderList editList" id="p-orderList">
-					<h3>我的订单</h3>
+				<div class="p-orderList" id="p-orderList">
                     <div class="orderListBox">
                     	<div class="orderTitCol">
                     		<ul>
@@ -182,7 +67,7 @@
                     	<div class="orderTitCol">
                     		<ul>
                     			<li class="ordercol-d">
-                    				<a href="#"><img src="images/products/sc-img1.jpg"></a>
+                    				<a href="#"><img src="${basePath }images/front/products/sc-img1.jpg"></a>
 	  	                          	 <div class="orderCon">
 	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
 	  		                          </div>
@@ -209,7 +94,7 @@
                     	<div class="orderTitCol">
                     		<ul>
                     			<li class="ordercol-d">
-                    				<a href="#"><img src="images/products/sc-img1.jpg"></a>
+                    				<a href="#"><img src="${basePath }images/front/products/sc-img1.jpg"></a>
 	  	                          	 <div class="orderCon">
 	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
 	  		                          </div>
@@ -236,7 +121,7 @@
                     	<div class="orderTitCol">
                     		<ul>
                     			<li class="ordercol-d">
-                    				<a href="#"><img src="images/products/sc-img1.jpg"></a>
+                    				<a href="#"><img src="${basePath }images/front/products/sc-img1.jpg"></a>
 	  	                          	 <div class="orderCon">
 	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
 	  		                          </div>
@@ -253,6 +138,7 @@
                     		</ul>
                     	</div>
                     </div>
+                </div>
                 <!--分页-->
                 <nav class="text-center">
 				      <ul class="pagination">
@@ -365,89 +251,314 @@
 		 </div>
 	  </div>	 
 </div>
-<%@include file="footer.jsp" %>
-<!--修改收货信息-->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">修改地址信息</h4>
-      </div>
-      <div class="modal-body">
-		      <form role="form">
-				  <div class="form-group">
-				    <label for="">收货人：</label>
-				    <input type="text" class="form-control" id="" placeholder="张三">
-				  </div>
-				  <div class="form-group">
-				    <label for="">地址：</label>
-				    <input type="text" class="form-control" id="" placeholder="山东省日照某某小区">
-				  </div>
-				  <div class="form-group">
-				    <label for="">电话号码：</label>
-				    <input type="text" class="form-control" id="" placeholder="136030454">
-				  </div>
-				</form>
-      </div>
-      <div class="modal-footer">
-         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">保存</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!--新增收货信息-->
-<div class="modal fade" id="newAddressBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">新增收货地址</h4>
-      </div>
-      <div class="modal-body">
-		      <form role="form">
-				  <div class="form-group">
-				    <label for="">收货人：</label>
-				    <input type="text" class="form-control" id="" placeholder="请输入收货人信息">
-				  </div>
-				  <div class="form-group">
-				    <label for="">地址：</label>
-				    <div class="selAddressBox">
-					    <select class="form-control provinceSel" class="">
-					    	<option>北京市</option>
-					    	<option>河北省</option>
-					    	<option>山东省</option>
-					    </select>
-					    <select class="form-control citySel" >
-					    	<option>北京市</option>
-					    	<option>三河市</option>
-					    	<option>济南市</option>
-					    </select>
-					    <select class="form-control countrySel">
-					    	<option>燕郊</option>
-					    	<option>河北省</option>
-					    	<option>济南县区</option>
-					    </select>
-				    </div>
-				    <input type="text" class="form-control detailAddress" placeholder="请输入详情地址" />
-				  </div>
-				  <div class="form-group">
-				    <label for="">电话号码：</label>
-				    <input type="text" class="form-control" id="" placeholder="请输入电话号码">
-				  </div>
-				  <div class="form-group">
-				    <label for="">电子邮箱：</label>
-				    <input type="email" class="form-control" id="" placeholder="请输入电子邮箱：">
-				  </div>
-				</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">保存</button>
-      </div>
-    </div>
-  </div>
-</div>
+<%@include file="footer.jsp"%>	
+<!-- FlexSlider -->		
+<script type="text/javascript" src="${basePath }js/front/imagezoom.js"></script>
+<script defer src="${basePath }js/front/jquery.flexslider.js"></script>
+<script type="text/javascript" src="${basePath }js/front/jquery.flexisel.js"></script>
+<script>
+// Can also be used with $(document).ready()
+$(window).load(function() {
+$('.flexslider').flexslider({
+animation: "slide",
+controlNav: "thumbnails"
+});
+});
+</script>
+ <script type="text/javascript">
+    (function() {
+
+		var initPhotoSwipeFromDOM = function(gallerySelector) {
+
+			var parseThumbnailElements = function(el) {
+			    var thumbElements = el.childNodes,
+			        numNodes = thumbElements.length,
+			        items = [],
+			        el,
+			        childElements,
+			        thumbnailEl,
+			        size,
+			        item;
+
+			    for(var i = 0; i < numNodes; i++) {
+			        el = thumbElements[i];
+
+			        // include only element nodes 
+			        if(el.nodeType !== 1) {
+			          continue;
+			        }
+
+			        childElements = el.children;
+
+			        size = el.getAttribute('data-size').split('x');
+
+			        // create slide object
+			        item = {
+						src: el.getAttribute('href'),
+						w: parseInt(size[0], 10),
+						h: parseInt(size[1], 10),
+						author: el.getAttribute('data-author')
+			        };
+
+			        item.el = el; // save link to element for getThumbBoundsFn
+
+			        if(childElements.length > 0) {
+			          item.msrc = childElements[0].getAttribute('src'); // thumbnail url
+			          if(childElements.length > 1) {
+			              item.title = childElements[1].innerHTML; // caption (contents of figure)
+			          }
+			        }
+
+
+					var mediumSrc = el.getAttribute('data-med');
+		          	if(mediumSrc) {
+		            	size = el.getAttribute('data-med-size').split('x');
+		            	// "medium-sized" image
+		            	item.m = {
+		              		src: mediumSrc,
+		              		w: parseInt(size[0], 10),
+		              		h: parseInt(size[1], 10)
+		            	};
+		          	}
+		          	// original image
+		          	item.o = {
+		          		src: item.src,
+		          		w: item.w,
+		          		h: item.h
+		          	};
+
+			        items.push(item);
+			    }
+
+			    return items;
+			};
+
+			// find nearest parent element
+			var closest = function closest(el, fn) {
+			    return el && ( fn(el) ? el : closest(el.parentNode, fn) );
+			};
+
+			var onThumbnailsClick = function(e) {
+			    e = e || window.event;
+			    e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+			    var eTarget = e.target || e.srcElement;
+
+			    var clickedListItem = closest(eTarget, function(el) {
+			        return el.tagName === 'A';
+			    });
+
+			    if(!clickedListItem) {
+			        return;
+			    }
+
+			    var clickedGallery = clickedListItem.parentNode;
+
+			    var childNodes = clickedListItem.parentNode.childNodes,
+			        numChildNodes = childNodes.length,
+			        nodeIndex = 0,
+			        index;
+
+			    for (var i = 0; i < numChildNodes; i++) {
+			        if(childNodes[i].nodeType !== 1) { 
+			            continue; 
+			        }
+
+			        if(childNodes[i] === clickedListItem) {
+			            index = nodeIndex;
+			            break;
+			        }
+			        nodeIndex++;
+			    }
+
+			    if(index >= 0) {
+			        openPhotoSwipe( index, clickedGallery );
+			    }
+			    return false;
+			};
+
+			var photoswipeParseHash = function() {
+				var hash = window.location.hash.substring(1),
+			    params = {};
+
+			    if(hash.length < 5) { // pid=1
+			        return params;
+			    }
+
+			    var vars = hash.split('&');
+			    for (var i = 0; i < vars.length; i++) {
+			        if(!vars[i]) {
+			            continue;
+			        }
+			        var pair = vars[i].split('=');  
+			        if(pair.length < 2) {
+			            continue;
+			        }           
+			        params[pair[0]] = pair[1];
+			    }
+
+			    if(params.gid) {
+			    	params.gid = parseInt(params.gid, 10);
+			    }
+
+			    return params;
+			};
+
+			var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
+			    var pswpElement = document.querySelectorAll('.pswp')[0],
+			        gallery,
+			        options,
+			        items;
+
+				items = parseThumbnailElements(galleryElement);
+
+			    // define options (if needed)
+			    options = {
+
+			        galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+			        getThumbBoundsFn: function(index) {
+			            // See Options->getThumbBoundsFn section of docs for more info
+			            var thumbnail = items[index].el.children[0],
+			                pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+			                rect = thumbnail.getBoundingClientRect(); 
+
+			            return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+			        },
+
+			        addCaptionHTMLFn: function(item, captionEl, isFake) {
+						if(!item.title) {
+							captionEl.children[0].innerText = '';
+							return false;
+						}
+						captionEl.children[0].innerHTML = item.title +  '<br/><small>Photo: ' + item.author + '</small>';
+						return true;
+			        },
+					
+			    };
+
+
+			    if(fromURL) {
+			    	if(options.galleryPIDs) {
+			    		// parse real index when custom PIDs are used 
+			    		// http://photoswipe.com/documentation/faq.html#custom-pid-in-url
+			    		for(var j = 0; j < items.length; j++) {
+			    			if(items[j].pid == index) {
+			    				options.index = j;
+			    				break;
+			    			}
+			    		}
+				    } else {
+				    	options.index = parseInt(index, 10) - 1;
+				    }
+			    } else {
+			    	options.index = parseInt(index, 10);
+			    }
+
+			    // exit if index not found
+			    if( isNaN(options.index) ) {
+			    	return;
+			    }
+
+
+
+				var radios = document.getElementsByName('gallery-style');
+				for (var i = 0, length = radios.length; i < length; i++) {
+				    if (radios[i].checked) {
+				        if(radios[i].id == 'radio-all-controls') {
+
+				        } else if(radios[i].id == 'radio-minimal-black') {
+				        	options.mainClass = 'pswp--minimal--dark';
+					        options.barsSize = {top:0,bottom:0};
+							options.captionEl = false;
+							options.fullscreenEl = false;
+							options.shareEl = false;
+							options.bgOpacity = 0.85;
+							options.tapToClose = true;
+							options.tapToToggleControls = false;
+				        }
+				        break;
+				    }
+				}
+
+			    if(disableAnimation) {
+			        options.showAnimationDuration = 0;
+			    }
+
+			    // Pass data to PhotoSwipe and initialize it
+			    gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+
+			    // see: http://photoswipe.com/documentation/responsive-images.html
+				var realViewportWidth,
+				    useLargeImages = false,
+				    firstResize = true,
+				    imageSrcWillChange;
+
+				gallery.listen('beforeResize', function() {
+
+					var dpiRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
+					dpiRatio = Math.min(dpiRatio, 2.5);
+				    realViewportWidth = gallery.viewportSize.x * dpiRatio;
+
+
+				    if(realViewportWidth >= 1200 || (!gallery.likelyTouchDevice && realViewportWidth > 800) || screen.width > 1200 ) {
+				    	if(!useLargeImages) {
+				    		useLargeImages = true;
+				        	imageSrcWillChange = true;
+				    	}
+				        
+				    } else {
+				    	if(useLargeImages) {
+				    		useLargeImages = false;
+				        	imageSrcWillChange = true;
+				    	}
+				    }
+
+				    if(imageSrcWillChange && !firstResize) {
+				        gallery.invalidateCurrItems();
+				    }
+
+				    if(firstResize) {
+				        firstResize = false;
+				    }
+
+				    imageSrcWillChange = false;
+
+				});
+
+				gallery.listen('gettingData', function(index, item) {
+				    if( useLargeImages ) {
+				        item.src = item.o.src;
+				        item.w = item.o.w;
+				        item.h = item.o.h;
+				    } else {
+				        item.src = item.m.src;
+				        item.w = item.m.w;
+				        item.h = item.m.h;
+				    }
+				});
+
+			    gallery.init();
+			};
+
+			// select all gallery elements
+			var galleryElements = document.querySelectorAll( gallerySelector );
+			for(var i = 0, l = galleryElements.length; i < l; i++) {
+				galleryElements[i].setAttribute('data-pswp-uid', i+1);
+				galleryElements[i].onclick = onThumbnailsClick;
+			}
+
+			// Parse URL and open gallery if it contains #&pid=3&gid=1
+			var hashData = photoswipeParseHash();
+			if(hashData.pid && hashData.gid) {
+				openPhotoSwipe( hashData.pid,  galleryElements[ hashData.gid - 1 ], true, true );
+			}
+		};
+
+		initPhotoSwipeFromDOM('.demo-gallery');
+
+	})();
+
+	</script>
 </body>
 </html>

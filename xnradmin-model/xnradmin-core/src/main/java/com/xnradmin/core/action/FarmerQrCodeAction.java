@@ -103,8 +103,13 @@ public class FarmerQrCodeAction extends ParentAction{
 	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/farmerQrCode/info.jsp") })
 	public String info()
 	{
-		this.farmerQrCodeVo = farmerQrCodeService.getListFarmerqrCode();
+		setPageInfo();
 		return StrutsResMSG.SUCCESS;
+	}
+	private void setPageInfo()
+	{
+		this.farmerQrCodeVo = this.farmerQrCodeService.getList(query, super.getPageNum(),super.getNumPerPage());
+		super.totalCount = this.farmerQrCodeService.getCount(query);
 	}
 	@Action(value="generateQr",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
 	public String generateQr()

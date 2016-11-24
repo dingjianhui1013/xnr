@@ -64,4 +64,45 @@ public class FarmerQrCodeService {
 		// TODO Auto-generated method stub
 		commonDao.delete(farmerQrCode);
 	}
+	
+	public List<FarmerQrCodeVo> getList(FarmerQrCodeVo query, int pageNum, int numPerPage) {
+		// TODO Auto-generated method stub
+		String hql = getHql(query);
+		List farmerQrCodes = commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
+		List<FarmerQrCodeVo> resList = new LinkedList<FarmerQrCodeVo>();
+		for (int i = 0; i < farmerQrCodes.size(); i++) {
+			Object[] obj = (Object[]) farmerQrCodes.get(i);
+			FarmerQrCode farmerQrCode = (FarmerQrCode)obj[0];
+			Farmer farmer = (Farmer)obj[1];
+			BusinessGoods businessGoods = (BusinessGoods)obj[2];
+			FarmerQrCodeVo farmerQrCodeVo = new FarmerQrCodeVo();
+			farmerQrCodeVo.setFarmerQrCode(farmerQrCode);
+			farmerQrCodeVo.setFarmer(farmer);
+			farmerQrCodeVo.setBusinessGoods(businessGoods);
+			resList.add(farmerQrCodeVo);
+		}
+		return resList;
+	}
+	public String getHql(FarmerQrCodeVo query)
+	{
+		StringBuffer hql = new StringBuffer();
+		hql.append("from FarmerQrCode a,Farmer b ,BusinessGoods c where a.farmerId = b.userId and a.goodsId = c.id ");
+		if(query==null)
+		{
+			return hql.append(" order by a.id desc").toString();
+		}
+		if(query.getFarmer().getUserName()!=null)
+		{
+			hql.append(" and b.userName like '%").append(query.getFarmer().getUserName()).append("%'");
+		}
+		if(query.getBusinessGoods().getGoodsName()!=null)
+		{
+			hql.append(" and c.goodsName like '%").append(query.getBusinessGoods().getGoodsName()).append("%'");
+		}
+		return hql.toString();
+	}
+	public int getCount(FarmerQrCodeVo query) {
+		String hql = "select count(*) "+getHql(query);
+		return commonDao.getNumberOfEntitiesWithHql(hql);
+	}
 }
