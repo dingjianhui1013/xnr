@@ -6,6 +6,7 @@
 <title>个人中心</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<%@include file="header.jsp" %>
 <script type="text/javascript">
 	$(function(){
 		$('#editMsg').click(function(){
@@ -34,23 +35,74 @@
 			success : function(data) {
 				//alert(data.status);
 				if (data.status == 1) {
-					$("#check_phoneError").hide();
-					$("#check_phone").hide();
-					$("#check_phone").html("");
+					$("#check_yz").hide();
+					//$("#check_yz").html("");
 					phoneFlag = true;
 				} else {
-					$("#check_phoneError").show();
-					$("#check_phone").show();
-					$("#check_phone").html(" <span style=\"color: red;font-size: 10px\">手机号码已被注册</span>");
+					$("#check_yz").show();
+					//$("#check_yz").html(" <span style=\"color: red;font-size: 10px\">密码错误</span>");
 				}
 			}
 		});
+	}
+	//验证密码
+	function checkPassword() {
+		var password = $("#password").val();
+		if (password.length<6||password.length>20) {
+			$("#check_passwordError").show();
+			$("#check_password").show();
+			$("#check_password").html(" <span style=\"color: red;font-size: 10px\">请输入6-20位的密码</span>");
+			return false;
+		} else {
+			$("#check_passwordError").hide();
+			$("#check_password").hide();
+			$("#check_password").html("");
+			return true;
+		}
+	}
+
+	//验证确认密码
+	function checkConfirmPassword() {
+		var password = $("#password").val();
+		var confirmPassword = $("#confirmPassword").val();
+		if (password.length == 0) {
+			$("#check_passwordError").show();
+			$("#check_password").show();
+			$("#check_password").html(" <span style=\"color: red;font-size: 10px\">请输入6-20位的密码</span>");
+			return false;
+		} else {
+			if (confirmPassword.length == 0) {
+				$("#check_confirmPasswordError").show();
+				$("#check_confirmPassword").show();
+				$("#check_confirmPassword").html(" <span style=\"color: red;font-size: 10px\">请输入确认密码</span>");
+				return false;
+			} else if (password != confirmPassword) {
+				$("#check_confirmPasswordError").show();
+				$("#check_confirmPassword").show();
+				$("#check_confirmPassword").html(" <span style=\"color: red;font-size: 10px\">确认密码和密码不一致</span>");
+				$("#confirmPassword").val("");
+				return false;
+			} else {
+				$("#check_confirmPasswordError").hide();
+				$("#check_confirmPassword").hide();
+				$("#check_confirmPassword").html("");
+				return true;
+			}
+		}
+	}
+	
+	function save() {
+		if (phoneFlag && checkPassword() && checkConfirmPassword()) {//&&checkcode
+			$("#submitForm").submit();
+		}else{
+			yzPassword();
+		}
 	}
 </script>
 </head>
 <body> 
 <!--header-->	
-<%@include file="header.jsp" %>
+
 <!--head//-->
 <div class="single-sec">
 	 <div class="container">
@@ -271,24 +323,34 @@
                 </div>
                  <div class="p-orderList editList">
                  		<h3>密码修改</h3>
-                		<form class="form-horizontal">
+                		<form class="form-horizontal" id="submitForm" action="">
                                   <div class="form-group">
                                     <label for="inputEmail3" class="col-sm-2 control-label">原始密码：</label>
                                     <div class="col-sm-10">
-                                      <input type="password" id="yuanshimima" name="yuanshimima" class="form-control" id="" value="">
-                                      <span style="color: red;font-size: 10px">手机号码已被注册</span>
+                                      <input onchange="yzPassword()" type="password" id="yuanshimima" name="yuanshimima" class="form-control" id="" value="">
+                                      <span id="check_yz" style="color: red;font-size: 10px;display: none;">密码错误</span>
                                     </div>
                                   </div>
                                   <div class="form-group">
                                     <label for="inputEmail3" class="col-sm-2 control-label">新密码：</label>
                                     <div class="col-sm-10">
-                                      <input type="password" class="form-control" id="" value="" onblur="yzPassword()">
+                                      <input type="password" class="form-control" id="password" name="user.password" value="" onblur="checkPassword()">
+                                      <p class="errorTips" id="check_passwordError"
+											style="display: none">
+											<span class="glyphicon glyphicon-remove-sign errorIcon"></span>
+											<span id="check_password" style="display: none"></span>
+										</p>
                                     </div>
                                   </div>
                                   <div class="form-group">
                                     <label for="inputEmail3" class="col-sm-2 control-label">确认密码：</label>
                                     <div class="col-sm-10">
-                                      <input type="password" class="form-control" id="" value="">
+                                      <input type="password" class="form-control" id="confirmPassword" value="" onblur="checkConfirmPassword()">
+                                      <p class="errorTips" id="check_confirmPasswordError"
+										style="display: none">
+										<span class="glyphicon glyphicon-remove-sign errorIcon"></span>
+										<span id="check_confirmPassword" style="display: none"></span>
+									</p>
                                     </div>
                                   </div>
                                   <div class="form-group">

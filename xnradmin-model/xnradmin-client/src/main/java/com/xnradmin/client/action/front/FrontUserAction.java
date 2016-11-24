@@ -1,6 +1,7 @@
 package com.xnradmin.client.action.front;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -178,7 +179,16 @@ public class FrontUserAction {
 	 */
 	@Action(value = "saveForm",results = {@Result(name = StrutsResMSG.SUCCESS, type = "redirect",location="/front/personalCenter.action")})
     public String saveForm() {
-		frontUserService.modifyName(user);
+		
+		try {
+			user.setUserName(new String(user.getUserName().getBytes("iso-8859-1"),"UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} 
+		boolean a = frontUserService.modifyName(user);
+		if(a){
+			((FrontUser)(ServletActionContext.getRequest().getSession().getAttribute("user"))).setUserName(user.getUserName());
+		}
         return StrutsResMSG.SUCCESS;
     }
 	/**
