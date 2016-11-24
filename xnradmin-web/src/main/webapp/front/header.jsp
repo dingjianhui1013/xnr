@@ -59,7 +59,7 @@
 <div class="logoWrap">	
 	<div class="container">	
 		<div class="logo">
-			<a href="index.action">
+			<a href="/front/index.action">
 			<h1><img src="${basePath }images/front/login_logo.png" /></h1>
 			</a>
 		</div>
@@ -70,7 +70,7 @@
 			</form>
 		</div>
 		 <div class="pull-right cart box_1">
-			 <a href="checkout.html">
+			 <a href="/front/shopingCart/shoppingCart.action">
 				<h3> <div class="total">
 					<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
 					<span class="simpleCart_total"></span> (<span id="simpleCart_quantity" class="simpleCart_quantity"></span>)

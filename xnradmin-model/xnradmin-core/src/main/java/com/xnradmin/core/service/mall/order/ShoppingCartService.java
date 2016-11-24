@@ -5,6 +5,7 @@ package com.xnradmin.core.service.mall.order;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -18,8 +19,14 @@ import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.mall.order.ShoppingCartDAO;
 import com.xnradmin.constant.ViewConstant;
+import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.ShoppingCart;
+import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.vo.business.OutPlanVO;
+import com.xnradmin.vo.front.BusinessGoodsCartVo;
 import com.xnradmin.vo.mall.OrderVO;
 
 /**
@@ -59,6 +66,30 @@ public class ShoppingCartService {
 	public ShoppingCart findByid(String id) {
 		return dao.findById(Integer.parseInt(id));
 	}
+	
+	
+	
+	public List<BusinessGoodsCartVo>findByUserId(Integer userId){
+		String hql = "from ShoppingCart cart , BusinessGoods good  where cart.goodsId = good.id and cart.clientUserId = " + userId;
+		List<Object[]> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<BusinessGoodsCartVo> resList = new LinkedList<BusinessGoodsCartVo>();
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			ShoppingCart cart = (ShoppingCart) obj[0];
+			BusinessGoods goods = (BusinessGoods) obj[1];
+			
+			BusinessGoodsCartVo businessGoodsCartVo = new BusinessGoodsCartVo();
+			businessGoodsCartVo.setCart(cart);
+			businessGoodsCartVo.setGoods(goods);;
+			
+			resList.add(businessGoodsCartVo);
+		}
+		return resList;
+
+	}
+	
+	
+	
 
 	/**
 	 * @param po
