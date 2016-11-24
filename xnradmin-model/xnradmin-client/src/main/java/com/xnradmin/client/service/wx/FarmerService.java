@@ -1,7 +1,6 @@
 package com.xnradmin.client.service.wx;
 
 import java.io.File;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +20,6 @@ import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.wx.FarmerDao;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.FarmerQrCode;
-import com.xnradmin.vo.business.OutPlanVO;
-import com.xnradmin.vo.client.wx.WXMenuVO;
 
 @Service("farmerService")
 @Transactional

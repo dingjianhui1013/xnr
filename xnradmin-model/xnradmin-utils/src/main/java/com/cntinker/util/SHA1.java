@@ -5,6 +5,7 @@ package com.cntinker.util;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.Date;
 
 import com.cntinker.util.wx.connect.AesException;
 
@@ -196,6 +197,16 @@ public class SHA1 {
 		String s = new String(ob);
 		return s;
 	}
+	// 将字节转换为十六进制字符串 小写
+		private static String byteToHexStringX(byte ib) {
+			char[] Digit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
+					'b', 'c', 'd', 'e', 'f' };
+			char[] ob = new char[2];
+			ob[0] = Digit[(ib >>> 4) & 0X0F];
+			ob[1] = Digit[ib & 0X0F];
+			String s = new String(ob);
+			return s;
+		}
 
 	// 将字节数组转换为十六进制字符串
 	private static String byteArrayToHexString(byte[] bytearray) {
@@ -205,6 +216,14 @@ public class SHA1 {
 		}
 		return strDigest;
 	}
+	// 将字节数组转换为十六进制字符串 小写
+		private static String byteArrayToHexStringX(byte[] bytearray) {
+			String strDigest = "";
+			for (int i = 0; i < bytearray.length; i++) {
+				strDigest += byteToHexStringX(bytearray[i]);
+			}
+			return strDigest;
+		}
 
 	// 计算sha-1摘要，返回相应的字节数组
 	public byte[] getDigestOfBytes(byte[] byteData) {
@@ -220,9 +239,12 @@ public class SHA1 {
 	public String getDigestOfString(byte[] byteData) {
 		return byteArrayToHexString(getDigestOfBytes(byteData));
 	}
-
+	// 计算sha-1摘要，返回相应的十六进制字符串 小写
+		public String getDigestOfStringX(byte[] byteData) {
+			return byteArrayToHexStringX(getDigestOfBytes(byteData));
+		}
 	public static void main(String[] args) {
-		String data = "123456";
+		String data = "jsapi_ticket=kgt8ON7yVITDhtdwci0qedZ3YgtqFiCX950LjjODTLjWFrylnvS0uLW7sIDezqnQf1yOYHId2ifbrtMdml-hiw&noncestr=Wm3WZYTPz0wzccnW&timestamp=1479908350284&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImageF.jsp";
 		System.out.println(data);
 		String digest = new SHA1().getDigestOfString(data.getBytes());
 		System.out.println(digest);
