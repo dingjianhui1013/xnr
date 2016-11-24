@@ -788,7 +788,7 @@ public class BusinessCategoryAction extends ParentAction {
 	public String del() throws IOException, JSONException {
 		businessCategoryService
 				.removeCategoryId(categoryId);
-		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "businessCategory",
+		super.success(null, null, "businessCategory",
 				null);
 		return null;
 	}

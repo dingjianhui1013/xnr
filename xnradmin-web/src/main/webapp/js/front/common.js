@@ -4,17 +4,12 @@ $(function(){
 		 _index=$(this).index();
 		 $(this).addClass('cur').siblings().removeClass('cur');
          $('.sortListBox1 div.sortListCon').eq(_index).show().siblings().hide();
-	});
+	})
 	$('.sortTab2 li').hover(function(){
 		 _index=$(this).index();
 		 $(this).addClass('cur').siblings().removeClass('cur');
          $('.sortListBox2 div.sortListCon').eq(_index).show().siblings().hide();
-	});
-	$('.sortTab3 li').hover(function(){
-		 _index=$(this).index();
-		 $(this).addClass('cur').siblings().removeClass('cur');
-        $('.sortListBox3 div.sortListCon').eq(_index).show().siblings().hide();
-	});
+	})
 	$('.instroTab li').click(function(){
 		 _index=$(this).index();
 		 $(this).addClass('cur').siblings().removeClass('cur');
@@ -74,5 +69,12 @@ $(function(){
 			}
 
 		})
+
+		$('.pSlideNavUl li').click(function(){
+			_index=$(this).index();
+			$(this).addClass('active').siblings().removeClass('active');
+			$('.p-contentBox .p-orderList').eq(_index).show().siblings().hide();
+		})
+
 
 })

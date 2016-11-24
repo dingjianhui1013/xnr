@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -106,16 +107,27 @@ public class FrontUserAction {
 			this.message = "用户名密码错误";
 			return StrutsResMSG.FAILED;
 		}else{
-			CookieHelper.addCookie(ServletActionContext.getResponse(), "user", frontUser.getUserName(), 365 * 24 * 60 * 60);
+			HttpSession session = ServletActionContext.getRequest().getSession();
+			session.setAttribute("user", frontUser);
+//			CookieHelper.addCookie(ServletActionContext.getResponse(), "user", frontUser.getUserName(), 365 * 24 * 60 * 60);
 			return StrutsResMSG.SUCCESS;
 		}
     }
-	
+	/**
+     * 退出
+     * @return
+     */
+	@Action(value = "exit",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/front/index.action")})
+    public String exit() {
+			ServletActionContext.getRequest().getSession().setAttribute("user", null);
+//			CookieHelper.addCookie(ServletActionContext.getResponse(), "user", frontUser.getUserName(), 365 * 24 * 60 * 60);
+			return StrutsResMSG.SUCCESS;
+	}
 	/**
 	 * 注册 注册成功跳到登录页面,失败则停留在原页面
 	 * @return
 	 */
-	@Action(value = "register",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/login.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
+	@Action(value = "register",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/regSuccess.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
     public String register() {
 		boolean save = frontUserService.save(frontUser);
 		if(save){
