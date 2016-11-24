@@ -47,7 +47,25 @@ public class FrontUserAction {
     private String userName;//登陆
     private String password;//登陆
     private String message;//登陆信息
-    
+    private FrontUser user;//修改用户信息
+    private String yuanshimima;//原始密码
+
+	public String getYuanshimima() {
+		return yuanshimima;
+	}
+
+	public void setYuanshimima(String yuanshimima) {
+		this.yuanshimima = yuanshimima;
+	}
+
+	public FrontUser getUser() {
+		return user;
+	}
+
+	public void setUser(FrontUser user) {
+		this.user = user;
+	}
+
 	public String getMessage() {
 		return message;
 	}
@@ -155,6 +173,35 @@ public class FrontUserAction {
         return StrutsResMSG.SUCCESS;
     }
 	
-	
-
+	/**
+	 * 保存用户信息
+	 */
+	@Action(value = "saveForm",results = {@Result(name = StrutsResMSG.SUCCESS, type = "redirect",location="/front/personalCenter.action")})
+    public String saveForm() {
+		frontUserService.modifyName(user);
+        return StrutsResMSG.SUCCESS;
+    }
+	/**
+	 * 验证原始密码
+	 */
+	@Action(value = "validateYuanshimima",results = {@Result(name = StrutsResMSG.SUCCESS, type = "json")})
+	public String validateYuanshimima(){
+		FrontUser u = (FrontUser)(ServletActionContext.getRequest().getSession().getAttribute("user"));
+		final boolean flag = u.getPassword().equals(this.yuanshimima);
+        //true 存在  false 不存在
+        if (flag) {
+            this.status ="-1";
+        } else {
+            this.status = "1";
+        }
+    return StrutsResMSG.SUCCESS;
+	}
+	/**
+	 *修改密码
+	 */
+	@Action(value = "savePassword",results = {@Result(name = StrutsResMSG.SUCCESS, type = "redirect",location="/front/personalCenter.action")})
+    public String savePassword() {
+		frontUserService.modifyPassword(user);
+        return StrutsResMSG.SUCCESS;
+    }
 }

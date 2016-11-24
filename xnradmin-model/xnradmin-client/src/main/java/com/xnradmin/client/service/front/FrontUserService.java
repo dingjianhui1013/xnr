@@ -118,6 +118,34 @@ public class FrontUserService {
 			return false;
 		}
 	}
+	public boolean modifyName(FrontUser frontUser){
+		try {
+			StringBuffer hql = new StringBuffer("update FrontUser set ");
+			if(frontUser.getUserName()!=null&&!"".equals(frontUser.getUserName())){
+				hql.append("userName='").append(frontUser.getUserName()).append("' ");
+			}
+			hql.append("where id=").append(frontUser.getId());
+			commonDao.executeUpdateOrDelete(hql.toString());
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	public boolean modifyPassword(FrontUser frontUser){
+		try {
+			StringBuffer hql = new StringBuffer("update FrontUser set ");
+			if(frontUser.getUserName()!=null&&!"".equals(frontUser.getUserName())){
+				hql.append("password='").append(frontUser.getPassword()).append("' ");
+			}
+			hql.append("where id=").append(frontUser.getId());
+			commonDao.executeUpdateOrDelete(hql.toString());
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	public boolean delete(String id){
 		try {
 			String hql = "delete from FrontUser where id="+id;
