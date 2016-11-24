@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
+import com.xnradmin.po.front.ReceiptAddress;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 
 @Service("IndexFrontService")
 public class IndexFrontService {
+	private Logger log = Logger.getLogger(IndexFrontService.class);
 	@Autowired
 	private CommonDAO commonDao;
 	
@@ -131,5 +134,45 @@ public class IndexFrontService {
 		}else{
 			return l.get(0);
 		}
+	}
+	/***
+	 * 增加收货地址
+	 */
+	public void saveAddress(ReceiptAddress receiptAddress)
+	{
+		try {
+			commonDao.save(receiptAddress);
+			log.debug("地址保存成功");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			log.debug("地址保存失败");
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 遍历收货地址
+	 */
+	public List<ReceiptAddress> getListAddress()
+	{
+		String hql = "from ReceiptAddress";
+		List<ReceiptAddress> list = commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
+		return list;
+	}
+	public void setDefault(String setDefaultId) {
+		String hql = "update ReceiptAddress set type=1 where id ="+setDefaultId;
+		commonDao.executeUpdateOrDelete(hql);
+	}
+	public void changeDefault() {
+		String getIdhql ="from ReceiptAddress where type=1";
+		List<ReceiptAddress> idList = (List)commonDao.getEntitiesByPropertiesWithHql(getIdhql, 0,0);
+		if(!idList.isEmpty())
+		{
+			String hql = " update ReceiptAddress set type=0 where id = "+idList.get(0).getId();
+			commonDao.executeUpdateOrDelete(hql);
+		}
+	}
+	public void deleteAddress(ReceiptAddress receiptAddress) {
+		// TODO Auto-generated method stub
+		commonDao.delete(receiptAddress);
 	}
 }

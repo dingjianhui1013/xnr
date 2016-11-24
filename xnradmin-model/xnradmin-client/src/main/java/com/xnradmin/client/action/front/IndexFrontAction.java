@@ -25,6 +25,7 @@ import com.xnradmin.vo.front.ProductDetailVo;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.front.FrontUser;
+import com.xnradmin.po.front.ReceiptAddress;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 
 @Controller
@@ -41,6 +42,10 @@ public class IndexFrontAction  {
 	private String goodsId;
 	private BusinessGoodsVO businessGoodsVO;
 	private Map<String, List<BusinessGoods>> related_classification;
+	private ReceiptAddress receiptAddress;
+	private List<ReceiptAddress> receiptAddressList;
+	private String setDefaultId;
+	private String locationId;
 	public ProductDetailVo getProductDetailVo() {
 		return productDetailVo;
 	}
@@ -65,6 +70,31 @@ public class IndexFrontAction  {
 	public void setRelated_classification(
 			Map<String, List<BusinessGoods>> related_classification) {
 		this.related_classification = related_classification;
+	}
+	public ReceiptAddress getReceiptAddress() {
+		return receiptAddress;
+	}
+	public void setReceiptAddress(ReceiptAddress receiptAddress) {
+		this.receiptAddress = receiptAddress;
+	}
+	public List<ReceiptAddress> getReceiptAddressList() {
+		return receiptAddressList;
+	}
+	public void setReceiptAddressList(List<ReceiptAddress> receiptAddressList) {
+		this.receiptAddressList = receiptAddressList;
+	}
+	public String getSetDefaultId() {
+		return setDefaultId;
+	}
+	public void setSetDefaultId(String setDefaultId) {
+		this.setDefaultId = setDefaultId;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
 	}
 
 	@Autowired
@@ -114,6 +144,7 @@ public class IndexFrontAction  {
 			return StrutsResMSG.FAILED;
 		}
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+		this.receiptAddressList = indexFrontService.getListAddress();
 		return StrutsResMSG.SUCCESS;
 	}
 	/**
@@ -146,6 +177,28 @@ public class IndexFrontAction  {
 			return StrutsResMSG.FAILED;
 		}
 		this.goodsId = findGoodsByName.getId().toString();
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="addAddress",results = {@Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/front/personalCenter.action")})
+	public String addAddress()
+	{
+		indexFrontService.saveAddress(receiptAddress);
+		locationId = "address";
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="setDefault",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/personalCenter.action")})
+	public String setDefault()
+	{
+		indexFrontService.changeDefault();
+		indexFrontService.setDefault(setDefaultId);
+		locationId = "address";
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="deleteAddress",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/personalCenter.action")})
+	public String deleteAddress()
+	{
+		indexFrontService.deleteAddress(receiptAddress);
+		locationId = "address";
 		return StrutsResMSG.SUCCESS;
 	}
 	//getter And setter

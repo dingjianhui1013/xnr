@@ -19,6 +19,7 @@
 		   backdrop: "static"
 		})
 		})
+// 		$(".")
 	
 	})
 	// 验证原始密码
@@ -98,6 +99,14 @@
 			yzPassword();
 		}
 	}
+	function sub()
+	{
+		$("#addAddress").submit();
+	}
+	function setDefault(id)
+	{
+		window.location.href="/front/setDefault.action?setDefaultId="+id;
+	}
 </script>
 </head>
 <body> 
@@ -121,7 +130,7 @@
                 <ul class="pSlideNavUl">
                 	<li class="active"><a href="#">账号信息</a></li> 
                     <li id="myorder"><a href="#">我的订单</a></li> 
-                    <li><a href="#">地址管理</a></li> 
+                    <li id="address"><a href="#">地址管理</a></li> 
                     <li><a href="#">密码修改</a></li> 
                 </ul>
 		 	</div>
@@ -271,54 +280,34 @@
 					<h3>地址管理</h3>
                 	<a href="javascript:;" class="btn btn-default add-address" id="addAddressBtn">新增收货地址</a>
                 	<div class="addressBox">
-                		<div class="addressList">
-							<form class="form-horizontal" role="form">
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">收货人：</label>
-							    <p class="form-control-static">张某某</p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">地址：</label>
-							    <p class="form-control-static">山东省日照某某小区</p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">电话：</label>
-							    <p class="form-control-static">13601023443</p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">电子邮箱：</label>
-							    <p class="form-control-static">13601023443</p>
-							  </div>
-							  <div class="editBox">
-							  	 <button type="submit" class="btn btn-default">修改</button>
-							  	 <button type="submit" class="btn btn-default">设为默认</button>
-							  </div>
-							</form>
-                		</div>
-                		<div class="addressList">
-							<form class="form-horizontal" role="form">
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">收货人：</label>
-							    <p class="form-control-static">张某某</p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">地址：</label>
-							    <p class="form-control-static">山东省日照某某小区</p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">电话：</label>
-							    <p class="form-control-static">13601023443</p>
-							  </div>
-							  <div class="form-group">
-							    <label class="col-sm-2 control-label">电子邮箱：</label>
-							    <p class="form-control-static">13601023443</p>
-							  </div>
-							  <div class="editBox">
-							  	 <button type="submit" class="btn btn-default" id="editMsg">修改</button>
-							  	 <button type="submit" class="btn btn-default">设为默认</button>
-							  </div>
-							</form>
-                		</div>
+                	<c:forEach items="${receiptAddressList}" var = "address">
+	                	 <div class="addressList">
+								<form class="form-horizontal" role="form">
+								  <div class="form-group">
+								    <label class="col-sm-2 control-label">收货人：</label>
+								    <p class="form-control-static">${address.receiptName}</p>
+								  </div>
+								  <div class="form-group">
+								    <label class="col-sm-2 control-label">地址：</label>
+								    <p class="form-control-static">${address.province} ${address.city } ${address.county} ${address.detailedAddress }</p>
+								  </div>
+								  <div class="form-group">
+								    <label class="col-sm-2 control-label">电话：</label>
+								    <p class="form-control-static">${address.tel}</p>
+								  </div>
+								  <div class="form-group">
+								    <label class="col-sm-2 control-label">电子邮箱：</label>
+								    <p class="form-control-static">${address.email}</p>
+								  </div>
+								  <div class="editBox">
+								  	 <c:if test="${address.type==1 }"><button type="button" class="btn btn-default">默认地址</button></c:if>
+								 	 <c:if test="${address.type==0|| address.type==null}"><button type="button" class="btn btn-default" onclick="setDefault('${address.id}')">设为默认</button></c:if>
+								  	 <button type="button" class="btn btn-default">修改</button>
+								  	 <a  class="btn btn-default" href="/front/deleteAddress.action?receiptAddress.id=${address.id}">删除</a>
+								  </div>
+								</form>
+	                		</div>
+                	</c:forEach>
                 	</div>
                 </div>
                  <div class="p-orderList editList">
@@ -375,7 +364,7 @@
         <h4 class="modal-title" id="myModalLabel">修改地址信息</h4>
       </div>
       <div class="modal-body">
-		      <form role="form">
+		      <form role="form" >
 				  <div class="form-group">
 				    <label for="">收货人：</label>
 				    <input type="text" class="form-control" id="" placeholder="张三">
@@ -392,7 +381,7 @@
       </div>
       <div class="modal-footer">
          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">保存</button>
+         <button type="button" class="btn btn-primary">保存</button>
       </div>
     </div>
   </div>
@@ -406,45 +395,45 @@
         <h4 class="modal-title" id="myModalLabel">新增收货地址</h4>
       </div>
       <div class="modal-body">
-		      <form role="form">
+		      <form role="form" id="addAddress" action="/front/addAddress.action">
 				  <div class="form-group">
 				    <label for="">收货人：</label>
-				    <input type="text" class="form-control" id="" placeholder="请输入收货人信息">
+				    <input type="text" class="form-control" id="" name="receiptAddress.receiptName" placeholder="请输入收货人信息">
 				  </div>
 				  <div class="form-group">
 				    <label for="">地址：</label>
 				    <div class="selAddressBox">
-					    <select class="form-control provinceSel" class="">
-					    	<option>北京市</option>
-					    	<option>河北省</option>
-					    	<option>山东省</option>
+					    <select class="form-control provinceSel" class="" name="receiptAddress.province">
+					    	<option value="北京市">北京市</option>
+					    	<option value="河北省">河北省</option>
+					    	<option value="山东省">山东省</option>
 					    </select>
-					    <select class="form-control citySel" >
-					    	<option>北京市</option>
-					    	<option>三河市</option>
-					    	<option>济南市</option>
+					    <select class="form-control citySel" name="receiptAddress.city">
+					    	<option value="北京市">北京市</option>
+					    	<option value="三河市">三河市</option>
+					    	<option value="济南市">济南市</option>
 					    </select>
-					    <select class="form-control countrySel">
-					    	<option>燕郊</option>
-					    	<option>河北省</option>
-					    	<option>济南县区</option>
+					    <select class="form-control countrySel" name="receiptAddress.county">
+					    	<option value="燕郊">燕郊</option>
+					    	<option value="河北省">河北省</option>
+					    	<option value="济南县区">济南县区</option>
 					    </select>
 				    </div>
-				    <input type="text" class="form-control detailAddress" placeholder="请输入详情地址" />
+				    <input type="text" class="form-control detailAddress" name ="receiptAddress.detailAddress" placeholder="请输入详情地址" />
 				  </div>
 				  <div class="form-group">
 				    <label for="">电话号码：</label>
-				    <input type="text" class="form-control" id="" placeholder="请输入电话号码">
+				    <input type="text" class="form-control" id="" name="receiptAddress.tel" placeholder="请输入电话号码">
 				  </div>
 				  <div class="form-group">
 				    <label for="">电子邮箱：</label>
-				    <input type="email" class="form-control" id="" placeholder="请输入电子邮箱：">
+				    <input type="email" class="form-control" id="" name="receiptAddress.email" placeholder="请输入电子邮箱：">
 				  </div>
 				</form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">保存</button>
+        <button type="button" class="btn btn-primary" onclick="sub()">保存</button>
       </div>
     </div>
   </div>
