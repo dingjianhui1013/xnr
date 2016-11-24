@@ -2,7 +2,7 @@ body{
 	background:#fff;
 	font-family:"微软雅黑";
 	font-size: 62.5%;
-	font-size: 1.4rem;
+	font-size: 1.2rem;
 }
 body a{
 	transition: 0.5s all;
@@ -1763,9 +1763,7 @@ ul.unit li.productCol{ width: 40%;}
 .add-addItem{width:60%;}
 .add-addItem .form-group{ overflow: hidden;}
 .add-addItem em{color:red; padding:0.5rem;}
-.chooseNum{ }
-.checkOrderInfo ul.unit li,.checkOrderInfo ul.cart-header li{ width: 20%;}
-.checkOrderInfo ul.unit li.productCol{width:40%;}
+
 
 
 ul.cart-header{
@@ -2079,18 +2077,9 @@ a.cpns:hover{
 .selAddressBox{ overflow: hidden;}
 .detailAddress{margin-top:0.5rem;}
 .p-orderList h3{ font-size: 1.2rem; /* border-bottom: 1px solid #ddd; */ padding-bottom: 1rem; margin-bottom: 2rem;}
-.accountBox{/* border:1px solid #ddd;  */padding:2rem 6rem; }
+.accountBox{border:1px solid #ddd; padding:3rem 6rem; min-height: 520px;}
 .accountEditBox{text-align: left; padding-left:16%;}
 .accountEditBox .btn-primary{ width:10%;}
-.editList h3{ font-weight: bold; font-size: 1.6rem;border-bottom: 1px solid #ddd;}
-.saveUserName{ padding: 0.6rem 1rem; color:#629715; font-weight: bold;}
-.editUserName:hover,.editUserName:visited,.saveUserName:hover,.saveUserName:visited{color:#629715;}
-.editUserName{ padding: 0rem 1rem; color:#629715; font-weight: bold;}
-.editUserInput{ display: none;}
-.d-userName{padding:7px 0; display: inline-block;}
-.r-userNameBox{ float: left; width: 70%;}
-.editUserInput input{ width: 40%;}
-/* .r-editName{ width: 70%;border:1px solid red;} */
 /*contact us*/
 .contact_info{ width: 90%; margin:0px auto;}
 .contact_info h3{ font-size: 1.6rem; font-weight: bold; margin-bottom: 1rem;}
@@ -2098,7 +2087,7 @@ a.cpns:hover{
 
 /*order-check*/
 .order-checkBox h3{ font-size: 1.6rem; font-weight: bold; margin-bottom: 1rem;padding-bottom:1rem;border-bottom: 1px solid #ddd; }
-.addr-name{ font-size: 1.4rem; padding-left: 0.5rem;margin-bottom: 1rem;}
+.addr-name{ font-size: 1.4rem; padding-left: 0.5rem;}
 .addr-name a{color:#629715;}
 .addr-address{padding:0.5rem;}
 .addr-address span{ padding: 0 0.5rem;}

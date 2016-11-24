@@ -76,35 +76,5 @@ $(function(){
 			$('.p-contentBox .p-orderList').eq(_index).show().siblings().hide();
 		})
 
-		$('.eidtAddressBtn').click(function(){
-			$('#editAddres').show();
-			$(this).hide();
-			$('#defalutAddBox .addr-address').hide();
-		})
-		var urlFlag= GetQueryString('flag')
-		if(urlFlag!=''&& urlFlag!=null){
-			var _index=$('#'+urlFlag).index();
-			$('#'+urlFlag).addClass('active').siblings().removeClass('active');
-			$('.p-contentBox .p-orderList').eq(_index).show().siblings().hide();
-		}
-		/*截取函数*/
-		function GetQueryString(name)    
-		{           
-		    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); 
-		    var r = window.location.search.substr(1).match(reg);  
-		    if (r!=null){                
-		        return unescape(r[2]);           
-		    }            
-		    else{    
-		        return null;       
-		    }      
-		}
-		$('#editUserName').click(function(){
-			$('#d-userName').hide();
-			$(this).hide();
-			$('.editUserInput').show();
-
-		})
-
 
 })

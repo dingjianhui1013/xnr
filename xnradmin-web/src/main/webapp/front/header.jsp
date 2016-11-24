@@ -44,11 +44,11 @@
 						<li><a href="login.jsp">登录</a></li>|
 					</c:if>
 					<c:if test="${!empty user}">
-						<li class="top_link">用户名:<a href="personalCenter.action">${user.userName}</a></li>|
+						<li class="top_link">用户名:<a href="mailto:info@example.com">${user.userName}</a></li>|
 						<li><a href="exit.action">退出</a></li>|
 					</c:if>
 					<li><a href="register.jsp">注册</a></li>|
-					<li><a href="personalCenter.action?flag=myorder">订单中心</a></li>
+					<li><a href="personalCenter.jsp">订单中心</a></li>
 				</ul>
 
 			</div>
