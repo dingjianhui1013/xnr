@@ -20,6 +20,7 @@ import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXInit;
+import com.xnradmin.po.wx.connect.WXurl;
 import com.xnradmin.vo.business.OutPlanVO;
 
 @Service("OutPlanService")
@@ -250,6 +251,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 					+ "\n被拒绝。拒绝原因为："+outPlanVO.getOutPlan().getRemarks();
 		}
 		String access_token = WXGetTokenService.accessTokenIsOvertime();
+		String access_tokenF = WXFGetTokenService.accessTokenIsOvertime();
 	    Text text = new Text();
 	    text.setContent(message);
 	    TextMessage textMessage = new TextMessage();
@@ -259,6 +261,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	    textMessage.setText(text);
 	    textMessage.setSafe(0);
 	    String outputStr = JSONObject.fromObject(textMessage).toString();
-	    WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + access_token, "POST", outputStr);
+	    WeixinUtil.httpRequest(WXurl.WX_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_token), "POST", outputStr);
+	    WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
 	}
 }

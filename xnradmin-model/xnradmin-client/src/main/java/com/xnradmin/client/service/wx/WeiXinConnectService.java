@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,12 +40,17 @@ import com.xnradmin.po.wx.connect.WXurl;
 @Transactional
 public class WeiXinConnectService {
 	
+	private static Logger log = Logger.getLogger(WeiXinConnectService.class);
 	@Autowired
 	private FarmerService farmerService;
 	@Autowired
 	private WXFarmerImageService wXFarmerImageService;
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	/***
+	 * 服务号解析用户发消息XML
+	 * @return
+	 */
 	public String processRequest() {
 		HttpServletRequest request = ServletActionContext.getRequest();
         String respMessage = null;
@@ -53,20 +59,19 @@ public class WeiXinConnectService {
             String FromUserName = requestMap.get("FromUserName"); // 发送方帐号（open_id）
             String ToUserName = requestMap.get("ToUserName"); // 公众帐号
             String MsgType = requestMap.get("MsgType"); // 消息类型
-            System.out.println("**************");
-            	System.out.println(FromUserName+":"+ToUserName+":"+MsgType);
-            System.out.println("**************");
             if (WXMsgType.REQ_MESSAGE_TYPE_TEXT.equals(MsgType))
   	      {
   	        String Content = requestMap.get("Content"); // 接收用户发送的文本消息内容
-		  	  System.out.println("**************");
-		      	System.out.println(Content+"：：：Content");
-		      System.out.println("**************");
   	        String message = null;
-  	        if(Content.indexOf("t")!=-1)
+  	        log.debug("*****************");
+  	        log.debug("messge:"+Content);
+  	        log.debug("ttttttt:"+Content.startsWith("t"));
+  	        log.debug("*****************");
+  	        if(Content.startsWith("t"))
   	        {
   	        	String type=Content.substring(1, Content.length());
-  	        	Map<String, Integer> index_count = wXFarmerImageService.read(FromUserName, type);
+//  	        	Map<String, Integer> index_count = wXFarmerImageService.read(FromUserName, type);
+  	        	Map<String, Integer> index_count = wXFarmerImageService.findImageByUserId(FromUserName, type);
   	        	Iterator iter =index_count.entrySet().iterator(); 
   	        	while (iter.hasNext()) { 
   		        	Map.Entry entry = (Map.Entry) iter.next(); 
@@ -89,6 +94,7 @@ public class WeiXinConnectService {
   		        	}
   		        	
   	        	}
+  	        	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
   	        }else
   	        {
   		        message = "温馨提示：\n上传图片可直接回复图片或选择菜单上传"
@@ -103,14 +109,11 @@ public class WeiXinConnectService {
   	        {
   	        	Farmer farmer = new Farmer();
   	        	farmer.setUserId(FromUserName);
-  	        	String access_Token = WXGetTokenService.accessTokenIsOvertime();
+  	        	String access_Token = WXFGetTokenService.accessTokenIsOvertime();
   	        	JSONObject userInformation = WeixinUtil.httpRequest(
   						WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
   								access_Token).replace("OPENID",
   										FromUserName), "GET", null);
-  	        	System.out.println("***************************");
-  	        	System.out.println("userInformation：：："+userInformation);
-  	        	System.out.println("***************************");
   	        	farmer.setUserName(userInformation.getString("nickname"));
   	        	farmer.setHeadPortrait(userInformation.getString("headimgurl"));
   	        	farmerService.saveFarmer(farmer);
@@ -119,7 +122,8 @@ public class WeiXinConnectService {
   	      }
   	      if (WXMsgType.REQ_MESSAGE_TYPE_IMAGE.equals(MsgType)) {
   	        String picUrl = requestMap.get(WXMessage.PICURL);
-  	    	wXFarmerImageService.create(FromUserName, picUrl);
+//  	    	wXFarmerImageService.create(FromUserName, picUrl);
+  	    	wXFarmerImageService.save(FromUserName, picUrl);
   	    	String types = farmerService.getFenleiByUserId(FromUserName);
   	    	List<BusinessGoods> list = businessGoodsService.getTypeNameById(types);
   	    	StringBuffer me = new StringBuffer();

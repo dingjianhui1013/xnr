@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
@@ -17,7 +18,6 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.client.service.wx.OutPlanService;
@@ -27,12 +27,12 @@ import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
-import com.xnradmin.po.CommonPermissionMenuRelation;
-import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.po.wx.connect.WXInit;
+import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
 import com.xnradmin.vo.business.OutPlanVO;
 
@@ -41,7 +41,7 @@ import com.xnradmin.vo.business.OutPlanVO;
 @Namespace("/page/wx/outplan")
 @ParentPackage("json-default")
 public class OutPlanAction extends ParentAction{
-	
+	private static Logger log = Logger.getLogger(OutPlanAction.class);
 	private OutPlan outplan ;
 	private String deleteId;
 	private String eidtId;
@@ -161,6 +161,10 @@ public class OutPlanAction extends ParentAction{
 	private FarmerService farmerService;
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	/**
+	 * 企业号生产计划跳转
+	 * @return
+	 */
 	@Action(value = "outplan",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/outplan/outplan.jsp") })
 	public String outplan(){
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -171,6 +175,22 @@ public class OutPlanAction extends ParentAction{
 						.replace("CODE", code), "GET", null);
 		this.userId = userId.getString("UserId");
 		String types = farmerService.getFenleiByUserId(userId.getString("UserId"));
+        goodslist = businessGoodsService.getTypeNameById(types);
+		return StrutsResMSG.SUCCESS;
+	}
+	/***
+	 * 服务号跳转生产计划
+	 * @return
+	 */
+	@Action(value = "outplanF",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/outplan/outplanF.jsp") })
+	public String outplanF(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String code = request.getParameter("code");
+		JSONObject userId = WeixinUtil.httpRequest(
+				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
+						.replace("CODE", code), "GET", null);
+		this.userId = userId.getString("openid");
+		String types = farmerService.getFenleiByUserId(userId.getString("openid"));
         goodslist = businessGoodsService.getTypeNameById(types);
 		return StrutsResMSG.SUCCESS;
 	}
@@ -187,19 +207,50 @@ public class OutPlanAction extends ParentAction{
 		businessWeight = outPlanService.getWeight(weightId);
 		return StrutsResMSG.SUCCESS;
 	}
-	
-	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
+	/**
+	 * 企业号保存生产计划
+	 * @return
+	 */
+	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
 	public String save(){
 		outplan.setCreateBy(outplan.getUserId());
 		outplan.setExamine(0);//待审核
 		outPlanService.save(outplan);
 		return StrutsResMSG.SUCCESS;
 	}
+	/**
+	 * 服务号保存生产计划
+	 * @return
+	 */
+	@Action(value = "saveF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
+	public String saveF(){
+		outplan.setCreateBy(outplan.getUserId());
+		outplan.setExamine(0);//待审核
+		outPlanService.save(outplan);
+		return StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 企业号删除生产计划
+	 * @return
+	 */
 	@Action(value = "deletePlan",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
 	public String delete(){
 		outPlanService.delete(deleteId);
 		return StrutsResMSG.SUCCESS;
 	}
+	/**
+	 * 服务号 删除生产计划
+	 * @return
+	 */
+	@Action(value = "deletePlanF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
+	public String deleteF(){
+		outPlanService.delete(deleteId);
+		return StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 企业号 生产计划修改
+	 * @return
+	 */
 	@Action(value = "editPlanForm",results = { @Result(name = StrutsResMSG.SUCCESS,location ="/wx/admin/seting/outplan/planEdit.jsp" ) })//  
 	public String eidtForm(){
 		OutPlanVO outPlanVO = outPlanService.getById(eidtId);
@@ -208,8 +259,30 @@ public class OutPlanAction extends ParentAction{
 		ServletActionContext.getRequest().setAttribute("outPlanVO",  outPlanVO);
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value = "saveEdit",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect" ) })
+	/**
+	 * 服务号修改生产计划
+	 * @return
+	 */
+	@Action(value = "editPlanFormF",results = { @Result(name = StrutsResMSG.SUCCESS,location ="/wx/admin/seting/outplan/planEditF.jsp" ) })//  
+	public String eidtFormF(){
+		OutPlanVO outPlanVO = outPlanService.getById(eidtId);
+		String types = farmerService.getFenleiByUserId(outPlanVO.getOutPlan().getUserId());
+        goodslist = businessGoodsService.getTypeNameById(types);
+		ServletActionContext.getRequest().setAttribute("outPlanVO",  outPlanVO);
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	@Action(value = "saveEdit",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect" ) })
 	public String saveEdit(){
+		outPlanService.saveEdit(outplan);
+		return StrutsResMSG.SUCCESS;
+	}
+	/***
+	 * 服务号保存修改的生产计划
+	 * @return
+	 */
+	@Action(value = "saveEditF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
+	public String saveEditF(){
 		outPlanService.saveEdit(outplan);
 		return StrutsResMSG.SUCCESS;
 	}

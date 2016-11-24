@@ -21,6 +21,8 @@ import com.xnradmin.po.wx.connect.Button;
 import com.xnradmin.po.wx.connect.Menu;
 import com.xnradmin.po.wx.connect.ViewButton;
 import com.xnradmin.po.wx.connect.WXInit;
+import com.xnradmin.po.wx.connect.WXfInit;
+import com.xnradmin.po.wx.connect.WXurl;
 public class WeixinUtil
 {
   public static int createMenu()
@@ -46,6 +48,38 @@ public class WeixinUtil
 	  WXGetTokenService.accessTokenIsOvertime();
 	  String access_tokenString = WXGetTokenService.accessTokenIsOvertime();
 	  JSONObject jsonObject = httpRequest("https://qyapi.weixin.qq.com/cgi-bin/menu/create?access_token=" + access_tokenString + "&agentid="+WXInit.AGENT_ID, "POST", jsonMenu);
+    if ((jsonObject != null) && 
+      (jsonObject.getInt("errcode") != 0)) {
+      result = jsonObject.getInt("errcode");
+    }
+    return result;
+  }
+  /***
+   * 
+   * @return
+   */
+  public static int createFMenu()
+  {		
+	  ViewButton btn3 = new ViewButton();
+	  btn3.setName("个人中心");
+	  btn3.setType("view");
+	  btn3.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
+	  
+	  ViewButton btn2 = new ViewButton();
+	  btn2.setName("生产计划");
+	  btn2.setType("view");
+	  btn2.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2foutplan%2foutplanF.action").replace("SCOPE", "snsapi_base"));
+	  
+	  ViewButton btn1 = new ViewButton();
+	  btn1.setName("上传图片");
+	  btn1.setType("view");
+	  btn1.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fwxconnect%2foAuthF.action").replace("SCOPE", "snsapi_base"));
+	  Menu menu  = new Menu();
+	  menu.setButton(new Button[]{btn1,btn2,btn3});
+	  String jsonMenu = JSONObject.fromObject(menu).toString();
+	  int result = 0;
+	  String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
+	  JSONObject jsonObject = httpRequest(WXurl.WXF_CRATE_URL.replace("ACCESS_TOKEN", access_tokenString), "POST", jsonMenu);
     if ((jsonObject != null) && 
       (jsonObject.getInt("errcode") != 0)) {
       result = jsonObject.getInt("errcode");

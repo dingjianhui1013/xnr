@@ -12,8 +12,11 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -33,11 +37,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cntinker.util.SHA1;
 import com.cntinker.util.wx.connect.SignUtil;
 import com.cntinker.util.wx.connect.WXBizMsgCrypt;
 import com.xnradmin.client.service.wx.FarmerImageService;
 import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.client.service.wx.OutPlanService;
+import com.xnradmin.client.service.wx.WXFGetTokenService;
+import com.xnradmin.client.service.wx.WXFarmerImageService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
 import com.xnradmin.client.service.wx.WeixinUtil;
@@ -122,6 +129,8 @@ public class WXConnectAction {
 	private BusinessGoodsService businessGoodsService;
 	@Autowired
 	private FarmerService farmerService;
+	@Autowired
+	private WXFarmerImageService wXFarmerImageService;
 	@Action(value = "connect")
 	public void connect() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -222,7 +231,10 @@ public class WXConnectAction {
 		}
 		
 	}
-
+	/***
+	 * 企业号点击链接跳转到上传页面
+	 * @return
+	 */
 	@Action(value = "oAuth", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImage.jsp") })
 	public String oAuth(){
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -243,7 +255,40 @@ public class WXConnectAction {
 		}
 		return StrutsResMSG.SUCCESS;
 	}
-
+	/***
+	 * 服务号点击链接跳转到上传页面
+	 * @return
+	 */
+	@Action(value = "oAuthF", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImageF.jsp") })
+	public String oAuthF(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String code = request.getParameter("code");
+		String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
+		JSONObject userId = WeixinUtil.httpRequest(
+				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
+						.replace("CODE", code), "GET", null);
+		if (userId.toString().indexOf("errcode") == -1) {
+			JSONObject userInformation = WeixinUtil.httpRequest(
+					WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
+							access_tokenString).replace("OPENID",
+							userId.getString("openid")), "GET", null);
+			if (userInformation.toString().indexOf("40001")!=-1){
+				access_tokenString =WXFGetTokenService.getAccessToken();
+				userInformation = WeixinUtil.httpRequest(
+						WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
+								access_tokenString).replace("OPENID",
+								userId.getString("openid")), "GET", null);
+			}
+			String userName = userInformation.getString("nickname");
+			this.userId = userId.getString("openid");
+			this.userName = userName;
+		}
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	/***
+	 * 企业号创建菜单
+	 */
 	@Action(value = "createMenu")
 	public void createMenu() {
 		int type = WeixinUtil.createMenu();
@@ -253,7 +298,50 @@ public class WXConnectAction {
 			log.info("菜单创建失败");
 		}
 	}
+	/***
+	 * 服务号创建菜单
+	 */
+	@Action(value="createFMenu")
+	public void createFMenu()
+	{
+		int type = WeixinUtil.createFMenu();
+		if (type == 0) {
+			log.info("菜单创建成功 ");
+		} else {
+			log.info("菜单创建失败");
+		}
+	}
 
+	@Action(value = "uploadFF")
+	public void uploadFF() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
+		JSONObject jsapi_ticket = WeixinUtil.httpRequest(
+				WXurl.WXF_GET_JSAPI_TICKET.replace("ACCESS_TOKEN",
+						access_tokenString), "GET", null);
+		Long time = Long.valueOf( new Date().getTime());
+		String timep = time.toString().substring(0, 10);
+		String noncestr = "Wm3WZYTPz0wzccnW";
+		String s1 = "jsapi_ticket="
+				+ jsapi_ticket.getString("ticket")
+				+ "&noncestr="
+				+ noncestr
+				+ "&timestamp="
+				+ timep
+				+ "&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImageF.jsp";
+		String signature = new SHA1().getDigestOfStringX(s1.getBytes());
+		String types = farmerService.getFenleiByUserId(userId);
+    	List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
+		HttpSession session = request.getSession();
+		session.setAttribute("timep", timep);
+		session.setAttribute("noncestr", noncestr);
+		session.setAttribute("signature", signature);
+		session.setAttribute("userName", userName);
+		session.setAttribute("userId", userId);
+		session.setAttribute("typeNames", typeNames);
+		session.setAttribute("skiptUrl", WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
+	}
+	
 	@Action(value = "uploadF")
 	public void uploadF() {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -286,15 +374,15 @@ public class WXConnectAction {
 	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })
 	public String ceshi() {
 //		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
-//		List<String> imagedates = farmerImageService.getImageDates("dingjinghui");
+//		List<String> imagedates = farmerImageService.getImageDates("owt3dwebfPG2E19lodY9oqIwZ0wk");
 //		for (String images : imagedates) {
 //			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 //			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
 //			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
-//			List<String> typeList = farmerImageService.findByType(images,"dingjinghui");
+//			List<String> typeList = farmerImageService.findByType(images,"owt3dwebfPG2E19lodY9oqIwZ0wk");
 //			for (String type : typeList) {
 //			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
-//				List<String> imageList = farmerImageService.findByImages(type,images,"dingjinghui");
+//				List<String> imageList = farmerImageService.findByImages(type,images,"owt3dwebfPG2E19lodY9oqIwZ0wk");
 //				type_images.put(typeName, imageList);
 //			}
 //			type_imagesList.add(type_images);
@@ -302,19 +390,81 @@ public class WXConnectAction {
 //			date_type_images.add(date_type_image);
 //		}
 //		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
-		List<OutPlanVO> outplans = outPlanService.getListByUserId("dingjinghui",0,0);
-		System.out.println(outplans);
+//		List<OutPlanVO> outplans = outPlanService.getListByUserId("dingjinghui",0,0);
+//		System.out.println(outplans);
+		wXFarmerImageService.findImageByUserId("owt3dwds69_EA04QBLrTvTjNgmdI", "7444");
 		return StrutsResMSG.SUCCESS;
 	}
 
+	/***
+	 * 服务号下载
+	 */
+	@ResponseBody
+	@Action(value = "downloadFF")
+	public void downloadFF() {
+		String serverIds[] = serverId.split(",");
+		String access_token = WXFGetTokenService.accessTokenIsOvertime();
+		for (int i = 0; i < serverIds.length; i++) {
+			String requestUrl = WXurl.WXF_DOWN_IMAGE.replace("ACCESS_TOKEN", access_token)
+					.replace("MEDIA_ID", serverIds[i]);
+			HttpURLConnection conn = null;
+			try {
+				URL url = new URL(requestUrl);
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setDoInput(true);
+				conn.setRequestMethod("GET");
+				conn.setConnectTimeout(30000);
+				conn.setReadTimeout(30000);
+				InputStream in = conn.getInputStream();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				int b;
+				while ((b = in.read()) != -1) {
+					baos.write(b);
+				}
+				byte[] bytes = baos.toByteArray();
+				BufferedOutputStream bos = null;
+				String typeName = businessGoodsService.findByid(type).getGoodsName();
+				String imageUrl = userId+File.separator+typeName;
+				String filePath = ServletActionContext.getServletContext()
+						.getRealPath("/farmerImage");
+				String imageName = new Date().getTime() + "_" + userId + ".jpg";
+				String fileName = filePath+File.separator+imageUrl+File.separator+imageName;
+				File file = new File(filePath+File.separator+imageUrl);
+				if (!file.exists()) {
+					file.mkdirs();
+				}
+				File imageFile = new File(fileName);
+				imageFile.createNewFile();
+				bos = new BufferedOutputStream(new FileOutputStream(imageFile));
+				bos.write(bytes);
+				bos.close();
+				baos.close();
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				FarmerImage farmerImage  = new FarmerImage();
+				farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+File.separator+imageName);
+				farmerImage.setUserName(userName);
+				farmerImage.setUserId(userId);
+				farmerImage.setType(type);
+				farmerImage.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+				farmerImageService.saveFarmerImage(farmerImage);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+			}
+		}
+		this.userId = userId;
+		this.userName = userName;
+	}
 	@ResponseBody
 	@Action(value = "downloadF")
 	public void downloadF() {
 		String serverIds[] = serverId.split(",");
-		String Url = "https://qyapi.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
 		String access_token = WXGetTokenService.accessTokenIsOvertime();
 		for (int i = 0; i < serverIds.length; i++) {
-			String requestUrl = Url.replace("ACCESS_TOKEN", access_token)
+			String requestUrl = WXurl.WX_DOWN_IMAGE.replace("ACCESS_TOKEN", access_token)
 					.replace("MEDIA_ID", serverIds[i]);
 			HttpURLConnection conn = null;
 			try {

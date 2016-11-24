@@ -22,12 +22,12 @@ import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
 
-public class WXGetTokenService {
+public class WXFGetTokenService {
 
 	public static String accessTokenIsOvertime()
 	{
 		HttpServletRequest request = ServletActionContext.getRequest();
-		String fileName=request.getSession().getServletContext().getRealPath("/WEB-INF/classes/wx/AccessToken.xml");
+		String fileName=request.getSession().getServletContext().getRealPath("/WEB-INF/classes/wx/AccessTokenF.xml");
 		SAXReader saxReader = new SAXReader();
 		File inputFile = new File(fileName);
 		String accessToken  = "";
@@ -64,13 +64,14 @@ public class WXGetTokenService {
 	}
 	public static String getAccessToken()
 	{
-		 JSONObject access_token = WeixinUtil.httpRequest(WXurl.WX_ACCESS_TOKEN_URL.replace("CORPID", WXInit.CORPID).replace("CORPSECRET", WXInit.CORPSECRET),"GET",null);
+//		 JSONObject access_token = WeixinUtil.httpRequest("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid="+WXInit.CORPID+"&corpsecret="+WXInit.CORPSECRET, "GET", null);
+		JSONObject access_token = WeixinUtil.httpRequest(WXurl.WXF_ACCESS_TOKEN_URL.replace("APPID", WXfInit.APPID).replace("APPSECRET", WXfInit.APPSECRET),"GET",null);
 		 String access_tokenString = access_token.getString("access_token");
 		 return access_tokenString;
 	}
 	public static void writeAccessToken(String accessToken,long time,HttpServletRequest request)
 	{
-		String fileName=request.getSession().getServletContext().getRealPath("/WEB-INF/classes/wx/AccessToken.xml");
+		String fileName=request.getSession().getServletContext().getRealPath("/WEB-INF/classes/wx/AccessTokenF.xml");
 		SAXReader saxReader = new SAXReader();
 		File inputFile = new File(fileName);
         try {

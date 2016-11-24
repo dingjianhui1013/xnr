@@ -4,10 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,11 +25,16 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.FarmerImage;
+import com.xnradmin.po.wx.connect.FarmerImageBak;
 
-@Service
+@Service("wXFarmerImageService")
+@Transactional
 public class WXFarmerImageService { 
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
@@ -39,6 +42,8 @@ public class WXFarmerImageService {
 	private FarmerService farmerService;
 	@Autowired
 	private FarmerImageService farmerImageService;
+	@Autowired
+	private CommonDAO common;
 	public void create(String userId,String picUrl) throws Exception, DocumentException
 	{
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -63,6 +68,46 @@ public class WXFarmerImageService {
 	    XMLWriter writer = new XMLWriter(new FileWriter(fileName));
 	    writer.write(doc);
 	    writer.close();
+	}
+	public void save(String userId,String picUrl)
+	{
+		FarmerImageBak farmerImageBak = new FarmerImageBak();
+		farmerImageBak.setPicUrl(picUrl);
+		farmerImageBak.setUserId(userId);
+		farmerImageBak.setCreateDate(new Date());
+		common.save(farmerImageBak);
+	}
+	public Map<String, Integer> findImageByUserId(String userId,String type)
+	{
+		String index="0";
+		Map<String, Integer> index_count = new HashMap<String, Integer>();
+		int count = 0;
+		String hql = "from FarmerImageBak where userId = '"+userId+"' and typeName is null order by createDate asc";
+		List<FarmerImageBak> list = (List)common.getEntityByPropertiesWithHql(hql);
+		BusinessGoods businessgoods = businessGoodsService.findByid(type);
+		if(businessgoods!=null)
+		{
+			String typeName = businessGoodsService.findByid(type).getGoodsName();
+			if(!list.isEmpty())
+			{
+				FarmerImageBak farmerImageBak =list.get(0);
+				hql = "update FarmerImageBak set typeName = '"+typeName+"' where id ="+ farmerImageBak.getId();
+				common.executeUpdateOrDelete(hql);
+			}else
+			{
+				index="2";
+			}
+		}else
+		{
+			index="1";
+		}
+		count=list.size();
+		count--;
+		index_count.put(index, count);
+		return index_count;
+	}
+	public static void main(String[] args) {
+		new WXFarmerImageService().findImageByUserId("owt3dwds69_EA04QBLrTvTjNgmdI", "7589");
 	}
 	public Map read(String userId,String type)
 	{

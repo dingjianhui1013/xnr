@@ -1,10 +1,16 @@
 package com.xnradmin.core.action;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -150,6 +156,34 @@ public class FarmerQrCodeAction extends ParentAction{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+	@Action(value="downloadFarmerQrCode",results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String downloadFarmerQrCode() throws Exception
+	{
+		String filepath = ServletActionContext.getServletContext()
+		.getRealPath(farmerQrCode.getQrCodeUrl());
+		File file = new File(filepath);
+		String fileName = new Date().getTime()+".png";
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType(response.getContentType());
+		response.setHeader("Content-disposition",
+				"attachment; filename="+fileName);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		int len = 0;
+		FileInputStream inputStream = new FileInputStream(file);
+		byte [] buffer  = new byte[3];
+		while((len = inputStream.read(buffer)) != -1)
+		{
+			baos.write(buffer, 0,  len);
+		}
+		byte[] bytes = baos.toByteArray();
+		response.setHeader("Content-Length", String.valueOf(bytes.length));
+		BufferedOutputStream bos = null;
+		bos = new BufferedOutputStream(response.getOutputStream());
+		bos.write(bytes);
+		bos.close();
+		baos.close();
 		return null;
 	}
 	@Override
