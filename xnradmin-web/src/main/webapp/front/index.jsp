@@ -8,6 +8,22 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="康源公社" content="康源,公社,蔬菜,有机" />
 <%@include file="header.jsp"%>
+<script type="text/javascript">
+function addToCart(id){
+	var userId = ${user.id};
+	$.ajax({
+		type:"POST", 
+		url:"/front/shopingCart/add.action",
+		data:{"goodsId":id,"goodsCount":1,"clientUserId":userId,_:new Date().getTime()},
+		dataType:"json",
+		success:function(msg){
+				
+			}
+		});
+	
+}
+
+</script>
 <!-- /start menu -->
 </head>
 <body> 
@@ -143,7 +159,7 @@
 								 <span class="disc">￥${good.businessGoods.goodsOriginalPrice }/${good.businessWeight.weightName }</span>
 								 </div>
 								 <div class="shrt">
-									<a href="product.html"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
+									<a href="javascript:addToCart(${good.businessGoods.id })"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
 							 	</div>
 								 </a>
 								 </div>

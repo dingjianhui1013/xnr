@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.cntinker.security.MD5Encoder;
 import com.cntinker.util.CookieHelper;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.front.FrontUserService;
@@ -121,6 +122,7 @@ public class FrontUserAction {
      */
 	@Action(value = "login",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/front/index.action"),@Result(name = StrutsResMSG.FAILED, location = "/front/login.jsp") })
     public String login() {
+		this.password = (MD5Encoder.encode32(this.password));
 		FrontUser frontUser = frontUserService.getByPhoneOrEmail(this.userName,this.password);
 		if(null== frontUser){
 			this.message = "用户名密码错误";
@@ -197,6 +199,7 @@ public class FrontUserAction {
 	@Action(value = "validateYuanshimima",results = {@Result(name = StrutsResMSG.SUCCESS, type = "json")})
 	public String validateYuanshimima(){
 		FrontUser u = (FrontUser)(ServletActionContext.getRequest().getSession().getAttribute("user"));
+		this.yuanshimima = MD5Encoder.encode32(this.yuanshimima);
 		final boolean flag = u.getPassword().equals(this.yuanshimima);
         //true 存在  false 不存在
         if (!flag) {

@@ -69,7 +69,7 @@
 	                    <label>
 	                      <input type="checkbox"> 记住我
 	                    </label>
-	                    <a class="pull-right forgotPwd" href="forgotPwd.jsp">忘记密码</a>
+	                   <!--  <a class="pull-right forgotPwd" href="forgotPwd.jsp">忘记密码</a> -->
 	                  </div>
 	                </div>
 	              </div>

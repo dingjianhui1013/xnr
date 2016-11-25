@@ -136,6 +136,7 @@ public class FrontUserService {
 	}
 	public boolean modifyPassword(FrontUser frontUser){
 		try {
+			frontUser.setPassword(MD5Encoder.encode32(frontUser.getPassword()));
 			StringBuffer hql = new StringBuffer("update FrontUser set ");
 			if(frontUser.getPassword()!=null&&!"".equals(frontUser.getPassword())){
 				hql.append("password='").append(frontUser.getPassword()).append("' ");

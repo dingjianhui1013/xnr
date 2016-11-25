@@ -10,6 +10,48 @@
 <%@include file="header.jsp"%>
 
 </head>
+<script type="text/javascript">
+
+
+function plusNum(id)
+{
+		var index = $("#count"+id).val();
+		index++;
+		$("#count"+id).val(index);
+}
+function minusNum(id)
+{
+		var index = $("#count"+id).val();
+		index--;
+		if(index>=1)
+			{
+				$("#count"+id).val(index);
+			}else
+				{
+				$("#count"+id).val(1);
+				}
+}
+
+
+
+function delfromCart(id){
+	var userId = ${user.id};
+	
+	$.ajax({
+		type:"POST", 
+		url:"/front/shopingCart/del.action",
+		data:{"shoppingCartId":id,_:new Date().getTime()},
+		dataType:"json",
+		success:function(msg){
+				
+			}
+		});
+	
+}
+
+
+</script>
+
 <body> 
 
 <!--header-->	
@@ -17,7 +59,7 @@
 <div class="checkout">	 
 	 <div class="container">	
 		 <ol class="breadcrumb">
-		  <li><a href="index.html">首页</a></li>
+		  <li><a href="/front/index.action">首页</a></li>
 		  <li class="active">购物车</li>
 		 </ol>
 		 <div class="product-price1">
@@ -49,15 +91,15 @@
 								<li><span>${cartVo.goods.goodsOriginalPrice}</span></li>
 								<li class="cart-num">
 									<div class="addNum">						
-										<span><input type="text" class="item_quantity" value="${cartVo.cart.goodsCount}" /></span>
+										<span><input type="text" id="count${cartVo.cart.id }" class="item_quantity" value="${cartVo.cart.goodsCount}" /></span>
 										<span>
-											<a href="#" class="plusNum">+</a>
-											<a href="#" class="minus-Num">-</a>
+											<a id="plus${cartVo.cart.id }" href="javascript:plusNum(${cartVo.cart.id })" class="plusNum">+</a>
+											<a id="mimus${cartVo.cart.id }" href="javascript:minusNum(${cartVo.cart.id })" class="minus-Num">-</a>
 										</span>
 									</div>
 								</li>
 								<li><span>${cartVo.cart.totalPrice}</span></li>
-								<li><span><a href="#" class="delBtn1">删除</a></span></li>
+								<li><span><a href="javascript:delfromCart(${cartVo.cart.id})" class="delBtn1">删除</a></span></li>
 								<div class="clearfix"> </div>
 								</ul>
 								
@@ -117,7 +159,7 @@
 											
 									  </div>
 									</li>
-									<li class="operateBtn"><a href="#" class="btn btn-default delBtn1">删除</a></li>
+									<li class="operateBtn"><a href="" class="btn btn-default delBtn1">删除</a></li>
 									<div class="clearfix"> </div>
 								</ul>
 						  </div>
