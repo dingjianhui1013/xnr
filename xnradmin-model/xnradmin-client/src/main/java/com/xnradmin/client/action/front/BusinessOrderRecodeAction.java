@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.cntinker.util.StringHelper;
+import com.xnradmin.client.service.front.ReceiptAddressService;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.StaffService;
@@ -49,6 +50,7 @@ import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.client.ClientUserRegionInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
+import com.xnradmin.po.front.ReceiptAddress;
 import com.xnradmin.po.mall.region.Area;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
@@ -69,6 +71,9 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	@Autowired
 	private BusinessOrderRecordService orderRecordService;
 
+	
+	@Autowired
+	private ReceiptAddressService addressService;
 	
 	@Autowired
 	private ShoppingCartService shoppingCartService;
@@ -106,6 +111,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 
 	private FrontUser user;
 	private List<BusinessGoodsCartVo> cartVoList;
+	private  List<ReceiptAddress> addrs;
 	
 	private String goods;
 	private String userReal;
@@ -284,6 +290,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	
 	
 
+	public List<ReceiptAddress> getAddrs() {
+		return addrs;
+	}
+
+	public void setAddrs(List<ReceiptAddress> addrs) {
+		this.addrs = addrs;
+	}
+
 	public FrontUser getUser() {
 		return user;
 	}
@@ -314,11 +328,18 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	@Action(value = "businessConfirm",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
     public String businessConfirm() {
 		
-		 user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
-			
+		
+		 
+		
+		 user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
+		
+		 
+		 addrs = addressService.findByUserId(user.getId(), "0");
+		 
+
 		 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
 		
-		return StrutsResMSG.SUCCESS;
+		 return StrutsResMSG.SUCCESS;
 		
     }
 
@@ -356,140 +377,43 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	@Action(value = "add", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
+	@Action(value = "add",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
 	public String add() throws JSONException {
-		JSONArray goodsArray = new JSONArray(new JSONObject(goods).get("goods")
-				.toString());
-		JSONArray addresArray = new JSONArray(new JSONObject(userReal).get(
-				"userReal").toString());
-		// 获取下单商品及数量
-		findBusinessGoodsList();
-		businessOrderVoList = new ArrayList<BusinessOrderVO>();
-		for (int i = 0; i < goodsArray.length(); i++) {
-			BusinessOrderVO vo = new BusinessOrderVO();
-			boolean flag = false;
-			BusinessGoodsVO goodsVo = new BusinessGoodsVO();
-			// 获取每一个JsonObject对象
-			JSONObject tempGoods = goodsArray.getJSONObject(i);
-			// 获取每一个对象中的值
-			String goodsId = tempGoods.getString("goodsId");
-			String goodsCount = tempGoods.getString("goodsCount");
-			for (int j = 0; j < goodsList.size(); j++) {
-				if (goodsList.get(j).getId().toString().equals(goodsId)
-						&& !StringHelper.isNull(goodsCount)) {
-					goodsVo.setBusinessGoods(goodsList.get(j));
-					flag = true;
-				}
-			}
-			if (flag) {
-				int gc = Integer.parseInt(goodsCount);
-				if (gc <= 0)
-					break;
-				vo.setBusinessGoodsVO(goodsVo);
-				BusinessOrderGoodsRelation po = new BusinessOrderGoodsRelation();
-				po.setGoodsCount(gc);
-				vo.setBusinessOrderGoodsRelation(po);
-				businessOrderVoList.add(vo);
-			}
-		}
-
-		// 获取送货信息
-		for (int i = 0; i < addresArray.length(); i++) {
-			// 获取每一个JsonObject对象
-			JSONObject tempAddres = addresArray.getJSONObject(i);
-			// 获取每一个对象中的值
-			clientUserRegionId = tempAddres.getString("clientUserRegionId");
-			userRealMobile = tempAddres.getString("userRealMobile");
-			userRealAddress = tempAddres.getString("userRealAddress");
-			userRealName = tempAddres.getString("userRealName");
-			areaId = tempAddres.getString("areaId");
-			staffId = String.valueOf(tempAddres.getInt("staffId"));
-			payType = tempAddres.getString("payType");
-		}
-
-		// --------------------------------------------------------------------
-		// 取得当前登录人信息
-		CommonStaff staff = staffService.findByid(staffId);
-		ClientUserInfo clientUserInfo = clientUserInfoService.findByProperty(
-				"staffId", Integer.parseInt(staffId));
-
-		// 批量增加商品
-		if (businessOrderVoList == null) {
-			errorMsg = "未选择商品";
-		} else if (staff != null) {
-			System.out.println("start:::");
-			ClientUserRegionInfo cri = new ClientUserRegionInfo();
-			if (!StringHelper.isNull(staffId)) {
-				if (clientUserRegionId.equals("new")
-						&& !StringHelper.isNull(areaId)
-						&& !StringHelper.isNull(userRealAddress)
-						&& !StringHelper.isNull(userRealName)
-						&& !StringHelper.isNull(userRealMobile)) {
-					cri.setCountryId(1);
-					cri.setCountryName("中国");
-					Area area = areaService.findByid(areaId);
-					if (area != null) {
-						cri.setProvinceId(area.getProvinceId());
-						cri.setProvinceName(area.getProvince());
-						cri.setCityId(area.getCityId());
-						cri.setCityName(area.getCity());
-						cri.setAreaId(area.getId());
-						cri.setAreaName(area.getArea());
-					}
-					if (!StringHelper.isNull(userRealAddress)) {
-						cri.setUserRealAddress(userRealAddress);
-					}
-					if (clientUserInfo != null) {
-						cri.setClientUserInfoId(clientUserInfo.getId());
-					}
-					if (!StringHelper.isNull(userRealMobile)) {
-						cri.setUserRealMobile(userRealMobile);
-					}
-					if (!StringHelper.isNull(userRealName)) {
-						cri.setUserRealName(userRealName);
-					}
-					if (!StringHelper.isNull(staffId)) {
-						cri.setStaffId(Integer.parseInt(staffId));
-					}
-					cri.setCreateTime(new Timestamp(System.currentTimeMillis()));
-					cri.setModifyTime(new Timestamp(System.currentTimeMillis()));
-					clientUserRegionInfoService.saveBusiness(cri);
-				} else {
-					List<ClientUserRegionInfo> list = clientUserRegionInfoService
-							.findByProperty("staffId",
-									Integer.parseInt(staffId));
-					cri = list.get(0);
-				}
-			}
-			// 增加新订单
+		
+		 	user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
+		   
+		
+		 	ReceiptAddress address = addressService.findByUserId(user.getId());
+		 	
+		 	
 			BusinessOrderRecord orderRecord = new BusinessOrderRecord();
-			if (clientUserInfo != null) {
-				orderRecord.setClientUserId(clientUserInfo.getId());
+			if (user != null) {
+				orderRecord.setClientUserId(Integer.parseInt(user.getId().toString()));
 			}
 			String outTradeNo = StringHelper.getSystime("yyyyMMddHHmmss")
 					+ StringHelper.getRandom(5);
 			orderRecord.setOrderNo(outTradeNo);
-			orderRecord.setClientUserName(staff.getStaffName());
-			orderRecord.setClientUserMobile(staff.getMobile());
-			orderRecord.setClientUserEmail(staff.getEmail());
-			orderRecord.setStaffId(staffId);
-			orderRecord.setUserRealMobile(cri.getUserRealMobile());
-			orderRecord.setCountryId(cri.getCountryId());
-			orderRecord.setCountryName(cri.getCountryName());
-			orderRecord.setProvinceId(cri.getProvinceId());
-			orderRecord.setProvinceName(cri.getProvinceName());
-			orderRecord.setCityId(cri.getCityId());
-			orderRecord.setCityName(cri.getCityName());
-			orderRecord.setAreaId(cri.getAreaId());
-			orderRecord.setAreaName(cri.getAreaName());
-			orderRecord.setUserRealAddress(cri.getUserRealAddress());
-			orderRecord.setUserRealPlane(cri.getUserRealPlane());
-			orderRecord.setUserRealName(cri.getUserRealName());
-			orderRecord.setUserRealPostcode(cri.getUserRealPostcode());
-			orderRecord.setTheEarliestTime(staff.getTheEarliestTime());
-			orderRecord.setTheLatestTime(staff.getTheLatestTime());
-			orderRecord.setBillTime(staff.getBillTime());
-			orderRecord.setBillTimeName(staff.getBillTimeName());
+			orderRecord.setClientUserName(address.getReceiptName());
+			orderRecord.setClientUserMobile(address.getTel());
+			orderRecord.setClientUserEmail(address.getEmail());
+		
+			orderRecord.setUserRealMobile(address.getTel());
+			orderRecord.setCountryId(null);
+			orderRecord.setCountryName(address.getCounty());
+			orderRecord.setProvinceId(null);
+			orderRecord.setProvinceName(address.getProvince());
+			orderRecord.setCityId(null);
+			orderRecord.setCityName(address.getCity());
+			orderRecord.setAreaId(null);
+			orderRecord.setAreaName(address.getDetailedAddress());
+			orderRecord.setUserRealAddress(address.getDetailedAddress());
+			orderRecord.setUserRealPlane(null);
+			orderRecord.setUserRealName(address.getReceiptName());
+			orderRecord.setUserRealPostcode(null);
+			orderRecord.setTheEarliestTime(null);
+			orderRecord.setTheLatestTime(null);
+			orderRecord.setBillTime(null);
+			orderRecord.setBillTimeName(null);
 			orderRecord.setRequiredDeliveryTime(Timestamp
 					.valueOf(requiredDeliveryTime + " 00:00:00"));
 			orderRecord.setPaymentProvider(197);
@@ -517,43 +441,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			Float tempOriginalPrice = 0f;
 			Float tempTotalPrice = 0f;
 			Float tempPurchasePrice = 0f;
-			for (int i = 0; businessOrderVoList.size() > i; i++) {
-				BusinessOrderVO dvo = businessOrderVoList.get(i);
-				BusinessGoods goods = dvo.getBusinessGoodsVO()
-						.getBusinessGoods();
-				// 取得商品数量
-				BigDecimal d1 = new BigDecimal(dvo
-						.getBusinessOrderGoodsRelation().getGoodsCount());
-				BigDecimal d2;
-				// 计算原价
-				d2 = new BigDecimal(goods.getGoodsOriginalPrice()
-						* staff.getViewDiscount());
-				BigDecimal o1 = new BigDecimal(d1.multiply(d2).floatValue());
-				BigDecimal o2 = new BigDecimal(tempOriginalPrice);
-				tempOriginalPrice = o1.add(o2).floatValue();
-
-				// 计算进货价
-				if (goods.getGoodsPurchasePrice() != null) {
-					d2 = new BigDecimal(goods.getGoodsPurchasePrice());
-				} else {
-					d2 = new BigDecimal(0);
-				}
-				BigDecimal p1 = new BigDecimal(d1.multiply(d2).floatValue());
-				BigDecimal p2 = new BigDecimal(tempPurchasePrice);
-				tempPurchasePrice = p1.add(p2).floatValue();
-
-				// 折扣计算(当折扣小于1的时候，则进行折扣计算)
-				if (staff.getDiscount() != null && staff.getDiscount() != 1
-						&& staff.getDiscount() > 0) {
-					BigDecimal t1 = new BigDecimal(staff.getDiscount());
-					BigDecimal t2 = new BigDecimal(tempOriginalPrice);
-					tempTotalPrice = t1.multiply(t2).floatValue();
-					orderRecord.setDiscount(staff.getDiscount());
-				} else {
-					tempTotalPrice = tempOriginalPrice;
-					orderRecord.setDiscount(1f);
-				}
-			}
+			
 			orderRecord.setOriginalPrice(tempOriginalPrice);
 			orderRecord.setTotalPrice(tempTotalPrice);
 			orderRecord.setPurchasePrice(tempPurchasePrice);
@@ -569,53 +457,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			orderRecord.setUserRealDescription(userDesc);
 			Long newOrderRecordId = orderRecordService.save(orderRecord);
 			orderRecordId = String.valueOf(newOrderRecordId);
-			// 为新订单添加商品
-			for (int i = 0; businessOrderVoList.size() > i; i++) {
-				BusinessOrderVO dvo = businessOrderVoList.get(i);
-				BusinessOrderGoodsRelation ogr = new BusinessOrderGoodsRelation();
-				BusinessGoods goods = dvo.getBusinessGoodsVO()
-						.getBusinessGoods();
-				ogr.setOrderRecordId(newOrderRecordId);
-				BusinessGoods p = goodsService.findByid(goods.getId()
-						.toString());
-				ogr.setGoodsWeightId(p.getGoodsWeightId());
-				if (clientUserInfo != null) {
-					ogr.setClientUserId(clientUserInfo.getId());
-				}
-				ogr.setGoodsId(goods.getId());
-				ogr.setGoodsCount(dvo.getBusinessOrderGoodsRelation()
-						.getGoodsCount());
-				ogr.setOriginalPrice(goods.getGoodsOriginalPrice()
-						* staff.getViewDiscount());
-				ogr.setPurchasePrice(goods.getGoodsPurchasePrice());
-				// 计算折扣后价格
-				if (staff.getDiscount() != null && staff.getDiscount() != 1
-						&& staff.getDiscount() > 0) {
-					BigDecimal r1 = new BigDecimal(staff.getDiscount());
-					BigDecimal r2 = new BigDecimal(
-							goods.getGoodsOriginalPrice()
-									* staff.getViewDiscount());
-					ogr.setDiscount(staff.getDiscount());
-					ogr.setCurrentPrice(r1.multiply(r2).floatValue());
-					ogr.setCurrentPriceType(216);
-				} else {
-					ogr.setDiscount(1f);
-					ogr.setCurrentPrice(goods.getGoodsOriginalPrice()
-							* staff.getViewDiscount());
-					ogr.setCurrentPriceType(215);
-				}
-				ogr.setStaffId(staffId);
-				ogr.setPrimaryConfigurationId(1);
-				ogr.setOrderGoodsRelationTime(new Timestamp(System
-						.currentTimeMillis()));
-				orderGoodsRelationService.save(ogr);
-			}
-			errorMsg = "0";
-			System.out.println("end:::");
-		} else {
-			errorMsg = "用户不存在";
-		}
-		// --------------------------------------------------------------------
+			
 
 		return StrutsResMSG.SUCCESS;
 	}

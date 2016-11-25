@@ -19,7 +19,7 @@ public class ReceiptAddress {
 	private String tel;
 	private String detailedAddress;
 	private String email;
-	private String type;//默认地址
+	private String type;           //是否为默认地址
 	
 	private Long frontUserId;      //关联用户Id
 	

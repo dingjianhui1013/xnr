@@ -11,6 +11,45 @@
 <%@include file="header.jsp"%>
 
 </head>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$('#newAddressForm').submit(function() {
+		$.ajax({
+            url:"mobileSurveyAction_addSurvey.action",//提交地址
+            data:$("#newAddressForm").serialize(),//将表单数据序列化
+            type:"POST",
+            dataType:"json",
+            success:function(result){
+                if (result.success == '100'){
+                    $("#mySection").hide();
+                    $(".footer").hide();
+                    $("#alertMsg").show();
+                     
+                }else{
+                    alert("失败！");
+                }
+            }
+        });	
+	});
+});
+
+
+function changePaymentMethod(index){
+	if(index = 0){
+		$("#wechat").addClass("active");
+		$("#alipay").removeClass("active");
+	}else if(index = 1){
+		$("#alipay").addClass("active");
+		$("#wechat").removeClass("active");
+	}
+}
+
+
+</script>
+
+
 <!---->
 <div class="checkout">	 
 	 <div class="container">	
@@ -26,33 +65,40 @@
 						 <div class="receiptBox ">
 							<div class="defalutAddBox" style="display:block" id="defalutAddBox">
 								<p class="addr-name"><b>收货人信息：</b><a href="#" class="eidtAddressBtn">[修改]</a></p>
+								
 								<p class="addr-address"><span>张某某</span><span>1360103343</span><span>北京市昌平区回龙观</span></p>
 							</div>
 							 <div class="infoItem editAddres" id="editAddres"style="display:none;">
 							 	<form class="form-horizontal">
 							 		<div class="radio addListItem cur">
+							 		<c:forEach items="${addrs}" var="addr">
+							 			<c:if test="${addr.type==1}">
 								        <label>
-								          <input type="radio" name="optionsRadios" id="optionsRadios1" value="option2">
-								          <span>张某某</span>
-								          <span>山东省日照市</span>
-								          <span>13502034321</span>
+								          <input type="radio" name="optionsRadios" id="addr${addr.id}" value="${addr.id}">
+								          <span>${addr.receiptName}</span>
+								          <span>${addr.detailedAddress}</span>
+								          <span>${addr.tel}</span>
 								          <div class="operatorBox">
 									          <a href="#" class="editAddBtn">编辑</a>
 									          <a href="#" class="delAddBtn">删除</a>
 								          </div>
 								        </label>
+								        </c:if>
+								       </c:forEach> 
 										</div>
 										<div class="radio addListItem">
+										<c:forEach items="${addrs}" var="addr">
 								        <label>
 								          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-								          <span>王某某</span>
-								          <span>山东省日照市</span>
-								          <span>13502034321</span>
+								          <span>${addr.receiptName}</span>
+								          <span>${addr.detailedAddress}</span>
+								          <span>${addr.tel}</span>
 								          <div class="operatorBox">
 									          <a href="#" class="editAddBtn">编辑</a>
 									          <a href="#" class="delAddBtn">删除</a>
 								          </div>
 								        </label>
+								        </c:forEach>
 										</div>
 										<div class="radio addListItem">
 								        <label>
@@ -61,11 +107,11 @@
 								        </label>
 										</div>
 										<div class="add-addItem">
-											<form class="form-horizontal" role="form">
+											<form id="newAddressForm" class="form-horizontal" role="form">
 												  <div class="form-group">
 												    <label class="col-sm-2 control-label"><em>*</em>收货人：</label>
 												    <div class="col-sm-6">
-											          <input type="text" class="form-control" id="" placeholder="请输入收货人">
+											          <input type="text" class="form-control" name="" id="" placeholder="请输入收货人">
 											        </div>
 												  </div>
 												  <div class="form-group">
@@ -75,10 +121,14 @@
 											          	<option value="">山东省</option>
 											          </select>
 											          <select class="form-control citySel">
-											          	<option value="">日照市</option>
+											          	<option value="">济南市</option>
 											          </select>
 											          <select class="form-control countrySel">
-											          	<option value=""></option>
+											          	<option value="0">市中区</option>
+											          	<option value="1">历下区</option>
+											          	<option value="2">历城区</option>
+											          	<option value="3">高新区</option>
+											          	<option value="4">槐荫区</option>
 											          </select>
 												  </div>
 												  </div>
@@ -106,8 +156,8 @@
 						<div class="receiptBox">
 							 <p class="addr-name"><b>支付及配送方式：</b></p>
 							 <div class="infoItem paymentMode">
-							 	<a href="#" class="active">微信支付</a>
-							 	<a href="#">支付宝支付</a>
+							 	<a href="changePaymentMethod(0)" id="wechat"  class="active">微信支付</a>
+							 	<a href="changePaymentMethod(1)" id="alipay"  >支付宝支付</a>
 							 </div>
 						</div>
 						<div class="receiptBox checkOrderInfo">
@@ -152,7 +202,7 @@
 				 			<p>总价:<span class="t-money">￥120.00</span></p>
 				 			<p>已节省:-￥120.00</p>
 			 			</div>
-			 			<a href="#" class=" cartSubmitBtn">提交订单</a>
+			 			<a href="/front/orderrecord/add.action" class=" cartSubmitBtn">提交订单</a>
 			 		</li>
 			 	</ul>
 		 	</div>

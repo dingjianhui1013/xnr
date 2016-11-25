@@ -214,7 +214,12 @@ public class IndexFrontAction  {
 		indexFrontService.updateAddress(receiptAddress);
 		return StrutsResMSG.SUCCESS;
 	}
-	
+	@Action(value="contact",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/contact.jsp")})
+	public String contact()
+	{
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+		return StrutsResMSG.SUCCESS;
+	}
 	//getter And setter
 	public List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> getAllBusinessCategorys() {
 		return allBusinessCategorys;
