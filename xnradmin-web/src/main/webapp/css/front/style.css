@@ -397,7 +397,7 @@ figure.effect-bubba:hover p {
 	/* border-bottom: 2px solid #1db66f; */
 }
 .featured h3{ 
-	background-image: url(../images/iconBg.png); 
+	background-image: url(../images/front/iconBg.png); 
 	background-position:0px -68px;
 	background-repeat:no-repeat; 
 	color:#333;padding-left: 4.5rem;
@@ -809,7 +809,7 @@ ul.tabs-menu li.active a{
 	left:0;
 }
 .product-grid {
-	width: 30%;
+	width: 22%;
 	margin: 0 3% 4% 0;
 	float: left;	
 	position: relative;
@@ -1741,7 +1741,7 @@ ul.unit li.productCol{ width: 40%;}
 	  text-align:center;
 }
 .cart-con .checkCol{ width: 30%;}
-.cart-con .totalCol{ width: 70%;}
+.cart-con .totalCol{ width: 100%;}
 .totalMoney .t-money{margin-right: 2rem; font-size: 1.6rem; color: #e4393c; font-weight: bold; padding:0 0.5rem;}
 .cart-num .addNum{ width: 100%;margin-left: 4rem;}
 .checkout {
