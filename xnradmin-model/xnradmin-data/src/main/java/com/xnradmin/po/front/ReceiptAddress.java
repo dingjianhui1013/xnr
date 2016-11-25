@@ -20,6 +20,10 @@ public class ReceiptAddress {
 	private String detailedAddress;
 	private String email;
 	private String type;//默认地址
+	
+	private Long frontUserId;      //关联用户Id
+	
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -85,5 +89,17 @@ public class ReceiptAddress {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public Long getFrontUserId() {
+		return frontUserId;
+	}
+	public void setFrontUserId(Long frontUserId) {
+		this.frontUserId = frontUserId;
+	}
+	
+	
+	
+	
+	
+	
 	
 }
