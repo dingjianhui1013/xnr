@@ -185,9 +185,10 @@ public class FrontUserService {
 		return isok;
 	}
 	public boolean reset(String id){
+		String password = MD5Encoder.encode32("111111");
 		boolean isok = false;
 		if(id!=null&&!"".equals(id)){
-			String hql = "update FrontUser set password='111111' where id="+id;
+			String hql = "update FrontUser set password='"+password+"' where id="+id;
 			try {
 				commonDao.executeUpdateOrDelete(hql);
 				isok = true;

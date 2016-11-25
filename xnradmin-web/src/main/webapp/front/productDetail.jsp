@@ -68,18 +68,18 @@ function addToCart(id){
 					<div class="single_left">
 						<div class="flexslider">
 							<ul class="slides">
-								<li data-thumb="${basePath }${businessGoodsVO.businessGoods.goodsBigLogo}">
+								<li data-thumb="${basePath }${businessGoodsVO.businessGoods.goodsLogo}">
 									<div class="thumb-image">
 										<img src="${basePath }${businessGoodsVO.businessGoods.goodsLogo}" data-imagezoom="true"
 											class="img-responsive">
 									</div>
 								</li>
-<%-- 								<li data-thumb="${basePath }images/front/products/sc-img2.jpg"> --%>
-<!-- 									<div class="thumb-image"> -->
-<%-- 										<img src="${basePath }images/front/products/sc-img1.jpg" data-imagezoom="true" --%>
-<!-- 											class="img-responsive"> -->
-<!-- 									</div> -->
-<!-- 								</li> -->
+								<li data-thumb="${basePath }${businessGoodsVO.businessGoods.goodsLogo}">
+									<div class="thumb-image">
+										<img src="${basePath }${businessGoodsVO.businessGoods.goodsLogo}" data-imagezoom="true"
+											class="img-responsive">
+									</div>
+								</li>
 <%-- 								<li data-thumb="${basePath }images/front/products/sc-img3.jpg"> --%>
 <!-- 									<div class="thumb-image"> -->
 <%-- 										<img src="${basePath }images/front/products/sc-img3.jpg" data-imagezoom="true" --%>
