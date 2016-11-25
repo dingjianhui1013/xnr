@@ -28,7 +28,7 @@
 		<div class="header_top-sec">
 			<div class="top_right">
 				<ul>
-					<li><a href="#">欢迎光临康源公社！</a></li>|
+					<li><a href="/front/index.action">欢迎光临康源公社！</a></li>|
 					<li><a href="#contact">联系我们</a></li>
 				</ul>
 			</div>
@@ -41,14 +41,14 @@
 				<!--登录后显示-->
 				<ul>
 					<c:if test="${empty user}">
-						<li><a href="login.jsp">登录</a></li>|
+						<li><a href="/front/login.jsp">登录</a></li>|
 					</c:if>
 					<c:if test="${!empty user}">
-						<li class="top_link">用户名:<a href="personalCenter.action">${user.userName}</a></li>|
-						<li><a href="exit.action">退出</a></li>|
+						<li class="top_link">用户名:<a href="/front/personalCenter.action">${user.userName}</a></li>|
+						<li><a href="/front/exit.action">退出</a></li>|
 					</c:if>
-					<li><a href="register.jsp">注册</a></li>|
-					<li><a href="personalCenter.action?flag=myorder">订单中心</a></li>
+					<li><a href="/front/register.jsp">注册</a></li>|
+					<li><a href="/front/personalCenter.action?flag=myorder">订单中心</a></li>
 				</ul>
 
 			</div>
@@ -84,7 +84,7 @@
 <div class="guiderBox">
 	<div class="container">
 		<ul class="memenu skyblue pull-left">
-			<li class="active"><a href="index.action">首页</a></li>
+			<li class="active"><a href="/front/index.action">首页</a></li>
 			<c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
 				<c:forEach items="${firstBusinessCategory }" var="first">
 				<li class="grid"><a href="#"> ${ first.key.categoryName}</a>
@@ -107,7 +107,7 @@
 				</c:forEach>
 			</li>
 			</c:forEach>
-			<li class="grid"><a href="#contact">关于我们</a></li>
+			<li class="grid"><a href="/front/contact.action">关于我们</a></li>
 		</ul>
 	 </div>
 </div>

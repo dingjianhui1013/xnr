@@ -16,17 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
-import com.xnradmin.vo.front.ProductDetailVo;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
 import com.xnradmin.vo.business.BusinessGoodsVO;
+import com.xnradmin.vo.front.ProductDetailVo;
 
 @Controller
 @Scope("prototype")
@@ -45,7 +44,7 @@ public class IndexFrontAction  {
 	private ReceiptAddress receiptAddress;
 	private List<ReceiptAddress> receiptAddressList;
 	private String setDefaultId;
-	private String locationId;
+	private String flag;
 	public ProductDetailVo getProductDetailVo() {
 		return productDetailVo;
 	}
@@ -89,12 +88,11 @@ public class IndexFrontAction  {
 	public void setSetDefaultId(String setDefaultId) {
 		this.setDefaultId = setDefaultId;
 	}
-
-	public String getLocationId() {
-		return locationId;
+	public String getFlag() {
+		return flag;
 	}
-	public void setLocationId(String locationId) {
-		this.locationId = locationId;
+	public void setFlag(String flag) {
+		this.flag = flag;
 	}
 
 	@Autowired
@@ -143,8 +141,9 @@ public class IndexFrontAction  {
 		if(null==user){
 			return StrutsResMSG.FAILED;
 		}
+		this.flag = flag;
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
-		this.receiptAddressList = indexFrontService.getListAddress();
+		this.receiptAddressList = indexFrontService.getListAddress(user);
 		return StrutsResMSG.SUCCESS;
 	}
 	/**
@@ -179,26 +178,42 @@ public class IndexFrontAction  {
 		this.goodsId = findGoodsByName.getId().toString();
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value="addAddress",results = {@Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/front/personalCenter.action")})
+	@Action(value="addAddress",results = {@Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/front/personalCenter.action",params = {"flag", "address" })})
 	public String addAddress()
 	{
 		indexFrontService.saveAddress(receiptAddress);
-		locationId = "address";
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value="setDefault",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/personalCenter.action")})
+	@Action(value="setDefault",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/personalCenter.action",params = {"flag", "address" })})
 	public String setDefault()
 	{
-		indexFrontService.changeDefault();
+		indexFrontService.changeDefault(receiptAddress);
 		indexFrontService.setDefault(setDefaultId);
-		locationId = "address";
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value="deleteAddress",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/personalCenter.action")})
+	@Action(value="deleteAddress",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect",location = "/front/personalCenter.action",params = {"flag", "address" })})
 	public String deleteAddress()
 	{
 		indexFrontService.deleteAddress(receiptAddress);
-		locationId = "address";
+//		this.locationId = "address";
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="modifyAddress",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
+	public String modifyAddress()
+	{
+		this.receiptAddress = indexFrontService.getAddress(receiptAddress);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="saveModifyAddress",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/personalCenter.action",params = {"flag", "address" })})
+	public String saveModifyAddress()
+	{
+		indexFrontService.updateAddress(receiptAddress);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="contact",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/contact.jsp")})
+	public String contact()
+	{
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		return StrutsResMSG.SUCCESS;
 	}
 	//getter And setter

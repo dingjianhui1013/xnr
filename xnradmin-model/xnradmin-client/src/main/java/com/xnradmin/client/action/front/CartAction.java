@@ -82,13 +82,21 @@ public class CartAction extends ParentAction {
 	private ShoppingCart shoppingCart;
 	private Status status;
 	private Goods goods;
-	
+	private boolean delStatus;//删除购物车
 	private List<BusinessGoodsCartVo> cartVoList;
 	
 
 	
 	
 	
+
+	public boolean isDelStatus() {
+		return delStatus;
+	}
+
+	public void setDelStatus(boolean delStatus) {
+		this.delStatus = delStatus;
+	}
 
 	public List<BusinessGoodsCartVo> getCartVoList() {
 		return cartVoList;
@@ -396,8 +404,9 @@ public class CartAction extends ParentAction {
 
 	@Action(value = "del", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
 	public String del() throws IOException, JSONException {
-		shoppingCartService
-				.removeShoppingCartId(shoppingCartId);
+		if(null!=ServletActionContext.getRequest().getSession().getAttribute("user")){
+			this.delStatus = shoppingCartService.removeShoppingCartById(shoppingCartId);
+		}
 		return StrutsResMSG.SUCCESS;
 	}
 }
