@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
@@ -87,7 +88,8 @@ public class ShoppingCartAction extends ParentAction {
 	private PrimaryConfiguration primaryConfiguration;
 	private Status status;
 	private Goods goods;
-
+	private String userId;
+	private Map<Float,Integer> count_number;
 	public ShoppingCartService getShoppingCartService() {
 		return shoppingCartService;
 	}
@@ -314,9 +316,25 @@ public class ShoppingCartAction extends ParentAction {
 		this.goodsList = goodsList;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public Map<Float, Integer> getCount_number() {
+		return count_number;
+	}
+
+	public void setCount_number(Map<Float, Integer> count_number) {
+		this.count_number = count_number;
+	}
+
 	@Override
 	public boolean isPublic() {
-		return false;
+		return true;
 	};
 
 	static Log log = LogFactory.getLog(ShoppingCart.class);
@@ -565,5 +583,11 @@ public class ShoppingCartAction extends ParentAction {
 	public String all() throws IOException {
 		super.toJsonArray(shoppingCartService.listAll());
 		return null;
+	}
+	@Action(value="getTotalAndNumber",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
+	public String getTotalAndNumber()
+	{
+		count_number = shoppingCartService.getCartMoney(userId);
+		return StrutsResMSG.SUCCESS;
 	}
 }

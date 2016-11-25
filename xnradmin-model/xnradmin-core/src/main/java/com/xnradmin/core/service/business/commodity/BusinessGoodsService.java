@@ -408,11 +408,19 @@ public class BusinessGoodsService {
 		String hql  = "from BusinessGoods a,BusinessWeight b where a.goodsWeightId = b.id and a.id = "+goodsId;
 		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
 		BusinessGoodsVO businessGoodsVO = new BusinessGoodsVO();
-		Object[] o = (Object[])l.get(0);
-		BusinessGoods businessGoods = (BusinessGoods)o[0];
-		BusinessWeight businessWeight = (BusinessWeight)o[1];
-		businessGoodsVO.setBusinessGoods(businessGoods);
-		businessGoodsVO.setBusinessWeight(businessWeight);
+		if(!l.isEmpty())
+		{
+			Object[] o = (Object[])l.get(0);
+			BusinessGoods businessGoods = (BusinessGoods)o[0];
+			BusinessWeight businessWeight = (BusinessWeight)o[1];
+			businessGoodsVO.setBusinessGoods(businessGoods);
+			businessGoodsVO.setBusinessWeight(businessWeight);
+		}
+//		Object[] o = (Object[])l.get(0);
+//		BusinessGoods businessGoods = (BusinessGoods)o[0];
+//		BusinessWeight businessWeight = (BusinessWeight)o[1];
+//		businessGoodsVO.setBusinessGoods(businessGoods);
+//		businessGoodsVO.setBusinessWeight(businessWeight);
 		return businessGoodsVO;
 		
 		

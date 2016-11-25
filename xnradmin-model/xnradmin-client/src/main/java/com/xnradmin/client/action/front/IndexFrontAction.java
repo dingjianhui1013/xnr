@@ -118,6 +118,7 @@ public class IndexFrontAction  {
 		BusinessCategory businessCategory = businessCategoryService.findByid(businessGoodsVO.getBusinessGoods().getGoodsCategoryId());
 		BusinessCategory businessCategoryF = businessCategoryService.findByid(businessCategory.getCategoryParentId().toString());
 		productDetailVo.setFirstName(businessCategoryService.findByid(businessCategoryF.getCategoryParentId().toString()).getCategoryName());
+		productDetailVo.setFirstClassification(businessCategoryService.findByid(businessCategoryF.getCategoryParentId().toString()).getId().toString());
 		productDetailVo.setSecoundName(businessCategory.getCategoryName());
 		productDetailVo.setFoodName(businessGoodsVO.getBusinessGoods().getGoodsName());
 		this.productDetailVo = productDetailVo;

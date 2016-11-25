@@ -50,6 +50,7 @@ import com.xnradmin.client.service.wx.WeiXinConnectService;
 import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.FarmerImage;
@@ -131,6 +132,8 @@ public class WXConnectAction {
 	private FarmerService farmerService;
 	@Autowired
 	private WXFarmerImageService wXFarmerImageService;
+	@Autowired
+	private ShoppingCartService shoppingCartService;
 	@Action(value = "connect")
 	public void connect() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -392,7 +395,6 @@ public class WXConnectAction {
 //		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
 //		List<OutPlanVO> outplans = outPlanService.getListByUserId("dingjinghui",0,0);
 //		System.out.println(outplans);
-		wXFarmerImageService.findImageByUserId("owt3dwds69_EA04QBLrTvTjNgmdI", "7444");
 		return StrutsResMSG.SUCCESS;
 	}
 

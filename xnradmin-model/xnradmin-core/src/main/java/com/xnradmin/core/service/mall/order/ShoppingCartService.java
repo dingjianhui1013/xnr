@@ -5,8 +5,10 @@ package com.xnradmin.core.service.mall.order;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -396,6 +398,20 @@ public class ShoppingCartService {
 	 */
 	public List<ShoppingCart> listAll() {
 		return dao.findAll();
+	}
+	public Map<Float, Integer> getCartMoney(String userId)
+	{
+		Float count = 0F;
+		Integer number = 0;
+		Map<Float, Integer> count_number = new HashMap<Float, Integer>();
+		String hql = "from ShoppingCart where clientUserId = '"+userId+"'";
+		List<ShoppingCart> list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		for (ShoppingCart shoppingCart : list) {
+			count+=shoppingCart.getTotalPrice();
+			number+=shoppingCart.getGoodsCount();
+		}
+		count_number.put(count, number);
+		return count_number;
 	}
 
 }

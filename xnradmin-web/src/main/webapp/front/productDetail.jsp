@@ -47,8 +47,23 @@ function addToCart(id){
 		});
 		
 	}
+function addToCart(id,money){
+	var userId = ${user.id};
+	var goodsNumber = $("#goodsNumber").val()
+	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(2));
+	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
+	$.ajax({
+		type:"POST", 
+		url:"/front/shopingCart/add.action",
+		data:{"goodsId":id,"goodsCount":goodsNumber,"clientUserId":userId,_:new Date().getTime()},
+		dataType:"json",
+		success:function(msg){
+				alert("加入成功");
+			}
+		});
+	
 }
-
+}
 </script>
 </head>
 <body>
@@ -59,6 +74,7 @@ function addToCart(id){
 			<ol class="breadcrumb">
 				<li><a href="/front/index.action">首页</a></li>
 				<li class="">${productDetailVo.firstName }</li>
+<%-- 				/front/product.action?productCategoryId=${productDetailVo.firstClassification}&&first=${productDetailVo.firstName}&&three=${productDetailVo.secoundName} --%>
 				<li class="">${productDetailVo.secoundName }</li>
 				<li class="">${productDetailVo.foodName }</li>
 			</ol>
@@ -122,13 +138,23 @@ function addToCart(id){
 								</p>
 								<div class="addCart-box">
 									<div class="addNum">
+<<<<<<< HEAD
+										<span><input type="text" class="item_quantity"
+											value="1" id="goodsNumber"></span> <span> <a href="javascript:plusNum()" class="plusNum">+</a>
+											<a href="javascript:minusNum()" class="minus-Num">-</a>
+=======
 										<span><input id="count${businessGoodsVO.businessGoods.id }" type="text" class="item_quantity" value="1"/></span>
 										<span>
 											<a id="plus${businessGoodsVO.businessGoods.id }" href="javascript:plusNum(${businessGoodsVO.businessGoods.id })" class="plusNum">+</a>
 											<a id="mimus${businessGoodsVO.businessGoods.id }" href="javascript:minusNum(${businessGoodsVO.businessGoods.id })" class="minus-Num">-</a>
+>>>>>>> refs/heads/dev
 										</span>
 									</div>
+<<<<<<< HEAD
+									<span class="addCart"> <a href="javascript:addToCart(${businessGoodsVO.businessGoods.id},${businessGoodsVO.businessGoods.goodsOriginalPrice})">加入购物车</a>
+=======
 									<input type="button" id="add${businessGoodsVO.businessGoods.id }" onclick="javascript:addToCart(${businessGoodsVO.businessGoods.id })" class="item_add" value="加入购物车">
+>>>>>>> refs/heads/dev
 									</span>
 								</div>
 							</div>
@@ -263,8 +289,7 @@ function addToCart(id){
 						<div class="single-bottom">
 						<c:forEach items="${rc.value}" var="rcv">
 							
-							<a href="#"><span class="glyphicon glyphicon-chevron-right"
-								aria-hidden="true"></span><span>${rcv.goodsName }</span>
+							<a href="/front/productDetail.action?goodsId=${rcv.id}"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>${rcv.goodsName }</span></a>
 						</c:forEach>
 						</div>
 					</c:forEach>
