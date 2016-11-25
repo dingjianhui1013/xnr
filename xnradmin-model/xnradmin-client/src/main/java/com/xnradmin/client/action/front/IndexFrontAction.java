@@ -172,7 +172,11 @@ public class IndexFrontAction  {
 	 */
 	@Action(value="search",results = {@Result(name = StrutsResMSG.FAILED, type="redirect" ,location = "/front/index.action"),@Result(name = StrutsResMSG.SUCCESS, type="redirect" ,location = "/front/productDetail.action?goodsId=${goodsId}")})
 	public String search()
-	{	BusinessGoods findGoodsByName = indexFrontService.findGoodsByName(this.search);
+	{	
+		if(null==this.search||"".equals(this.search)){
+			return StrutsResMSG.FAILED;
+		}
+		BusinessGoods findGoodsByName = indexFrontService.findGoodsByName(this.search);
 		if(null == findGoodsByName){
 			return StrutsResMSG.FAILED;
 		}

@@ -11,8 +11,9 @@
 <script type="text/javascript">
 function addToCart(id,money){
 	var userId = ${user.id};
-	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money).toFixed(2));
-	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+1));
+	if(userId!=null&&userId!=""){
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money).toFixed(2));
+		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+1));
 	$.ajax({
 		type:"POST", 
 		url:"/front/shopingCart/add.action",
@@ -22,7 +23,7 @@ function addToCart(id,money){
 				alert("加入成功");
 			}
 		});
-	
+	}
 }
 
 </script>

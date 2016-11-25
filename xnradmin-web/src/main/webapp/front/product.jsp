@@ -34,8 +34,9 @@ function addToCart(obj,money){
 	var userId = ${user.id};
 	var id = $(obj).attr("id").substring(3);
 	var count = $("#count"+id).val();
-	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
-	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
+	if(userId!=null&&userId!=""){
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
+		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
 	$.ajax({
 		type:"POST", 
 		url:"/front/shopingCart/add.action",
@@ -45,7 +46,7 @@ function addToCart(obj,money){
 				alert("加入成功");
 			}
 		});
-	
+	}
 }
 
 
