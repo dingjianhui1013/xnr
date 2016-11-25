@@ -2084,7 +2084,7 @@ a.cpns:hover{
 .accountEditBox{text-align: left; padding-left:16%;}
 .accountEditBox .btn-primary{ width:10%;}
 .editList h3.titBox{ font-weight: bold; font-size: 1.6rem;border-bottom: 1px solid #ddd;}
-.saveUserName{ padding: 0.6rem 1rem; color:#629715; font-weight: bold;}
+.editUserInput .saveUserName{ width:10%;padding: 0.6rem 1rem; color:#629715; font-weight: bold;background:none;border:none; }
 .editUserName:hover,.editUserName:visited,.saveUserName:hover,.saveUserName:visited{color:#629715;}
 .editUserName{ padding: 0rem 1rem; color:#629715; font-weight: bold;}
 .editUserInput{ display: none;}

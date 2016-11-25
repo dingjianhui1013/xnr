@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cntinker.security.MD5Encoder;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.wx.connect.Farmer;
@@ -22,7 +23,7 @@ public class FrontUserService {
 	
 	
 	public boolean isExistloginName(String phone){
-	    String hql = "from FrontUser where phone="+phone;
+	    String hql = "from FrontUser where phone='"+phone+"'";
         List<FrontUser> list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
         if(list.size()>0){
             return true;
@@ -42,6 +43,7 @@ public class FrontUserService {
 			if(frontUser.getUserName()==null||"".equals(frontUser.getUserName())){
 				frontUser.setUserName(frontUser.getPhone());
 			}
+			frontUser.setPassword(MD5Encoder.encode32(frontUser.getPassword()));
 			commonDao.save(frontUser);
 			return true;
 		} catch (Exception e) {
@@ -134,6 +136,7 @@ public class FrontUserService {
 	}
 	public boolean modifyPassword(FrontUser frontUser){
 		try {
+			frontUser.setPassword(MD5Encoder.encode32(frontUser.getPassword()));
 			StringBuffer hql = new StringBuffer("update FrontUser set ");
 			if(frontUser.getPassword()!=null&&!"".equals(frontUser.getPassword())){
 				hql.append("password='").append(frontUser.getPassword()).append("' ");

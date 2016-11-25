@@ -141,7 +141,21 @@ public class ShoppingCartService {
 	public int removeShoppingCartId(String id) {
 		return dao.removeShoppingCartId(Long.valueOf(id));
 	}
-
+	/**
+	 * 删除购物车
+	 */
+	public boolean removeShoppingCartById(String id){
+		String hql = "delete from ShoppingCart where id="+id;
+		try {
+			int executeUpdateOrDelete = commonDao.executeUpdateOrDelete(hql);
+			if(executeUpdateOrDelete>0){
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * @param brandname
 	 * @return int
