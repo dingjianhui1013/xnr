@@ -107,7 +107,7 @@
 				</c:forEach>
 			</li>
 			</c:forEach>
-			<li class="grid"><a href="#contact">关于我们</a></li>
+			<li class="grid"><a href="/front/contact.action">关于我们</a></li>
 		</ul>
 	 </div>
 </div>
