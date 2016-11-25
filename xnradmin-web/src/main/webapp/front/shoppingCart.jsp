@@ -12,11 +12,15 @@
 </head>
 <script type="text/javascript">
 function add(a, b) {
-	return (a*100+b*100)/100;
+	var  c=a+b;
+	var d=c.toFixed(1);	
+	return d;
 }
 
 function sub(a, b) {
-	return (a*100-b*100)/100;
+	var  c=a-b;
+	var d=c.toFixed(1);	
+	return d;
 }
 
 
@@ -28,12 +32,12 @@ function plusNum(id)
 		var totalpricesNew = add(totalprices,price);
 		var xiaojiNew = add(xiaoji,price);
 // 		alert(totalpricesNew);
-		if(Number.isInteger(totalpricesNew) ){
-			totalpricesNew = totalpricesNew+".0"
-		}
-		if(Number.isInteger(xiaojiNew) ){
-			xiaojiNew = xiaojiNew+".0"
-		}
+// 		if(Number.isInteger(totalpricesNew) ){
+// 			totalpricesNew = totalpricesNew+".0"
+// 		}
+// 		if(Number.isInteger(xiaojiNew) ){
+// 			xiaojiNew = xiaojiNew+".0"
+// 		}
 		$("#totalprices").html(totalpricesNew);
 		$("#xiaoji"+id).html(xiaojiNew);
 		var index = $("#count"+id).val();
@@ -51,12 +55,12 @@ function minusNum(id)
 			{
 				var totalpricesNew = sub(totalprices,price);
 				var xiaojiNew = sub(xiaoji,price);
-				if(Number.isInteger(totalpricesNew) ){
-					totalpricesNew = totalpricesNew+".0"
-				}
-				if(Number.isInteger(xiaojiNew) ){
-					xiaojiNew = xiaojiNew+".0"
-				}
+// 				if(Number.isInteger(totalpricesNew) ){
+// 					totalpricesNew = totalpricesNew+".0"
+// 				}
+// 				if(Number.isInteger(xiaojiNew) ){
+// 					xiaojiNew = xiaojiNew+".0"
+// 				}
 				$("#totalprices").html(totalpricesNew);
 				$("#xiaoji"+id).html(xiaojiNew);
 				$("#count"+id).val(index);
@@ -213,7 +217,7 @@ function delfromCart(id){
 			 		<li class="totalCol">
 			 			<a href="/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
 			 			<div class="pull-right totalMoney">
-				 			<p>总价:<span class="t-money" id="totalprices"><fmt:formatNumber type="number" value="<c:out value="${totalprices }"/>" pattern="0.0" maxFractionDigits="1"/> </span>￥</p>
+				 			<p>总价:<span class="t-money" id="totalprices"><fmt:formatNumber type="number" value="${totalprices }" pattern="0.0" maxFractionDigits="1"/> </span>￥</p>
 				 			<!-- <p>已节省:-￥120.00</p> -->
 			 			</div>
 			 		</li>
