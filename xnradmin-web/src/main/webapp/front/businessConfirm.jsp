@@ -202,7 +202,7 @@ function changePaymentMethod(index){
 				 			<p>总价:<span class="t-money">￥120.00</span></p>
 				 			<p>已节省:-￥120.00</p>
 			 			</div>
-			 			<a href="/front/orderrecord/add.action" class=" cartSubmitBtn">提交订单</a>
+			 			<a href="<%=basePath%>/front/orderrecord/add.action" class=" cartSubmitBtn">提交订单</a>
 			 		</li>
 			 	</ul>
 		 	</div>

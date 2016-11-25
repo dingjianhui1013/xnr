@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -165,5 +167,12 @@ public class FarmerService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String getStatus(String userId) {
+		String hql = "from Farmer where userId='"+userId+"'";
+		Farmer farmer = ((List<Farmer>)commonDao.getEntityByPropertiesWithHql(hql)).get(0);
+		String status = farmer.getStatus();
+		return status;
 	}
 }

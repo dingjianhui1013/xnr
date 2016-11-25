@@ -22,6 +22,7 @@ public class Farmer implements Serializable{
 	private String userId;
 	private String headPortrait;
 	private String types;
+	private String status;//审核状态
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false) 
@@ -58,6 +59,13 @@ public class Farmer implements Serializable{
 	}
 	public void setTypes(String types) {
 		this.types = types;
+	}
+	@Column(name="status")
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

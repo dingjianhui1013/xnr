@@ -66,7 +66,7 @@
 						<td>
 							<a title="编辑" target="dialog" href="page/farmerQrCode/anthinfo.action?qrCodeId=${loop.farmerQrCode.id}" class="btnEdit">编辑</a>
 							<a title="删除" target="ajaxTodo" href="page/farmerQrCode/deleteFarmerQrCode.action?farmerQrCode.id=${loop.farmerQrCode.id}" class="btnDel">删除</a>
-							<a title="下载" href="page/farmerQrCode/downloadFarmerQrCode.action?farmerQrCode.qrCodeUrl=${loop.farmerQrCode.qrCodeUrl}" class="btnDel">下载</a>
+							<a title="下载" href="page/farmerQrCode/downloadFarmerQrCode.action?farmerQrCode.qrCodeUrl=${loop.farmerQrCode.qrCodeUrl}" class="btnSelect">下载</a>
 						</td>	
 					</tr>				
 				</c:forEach>

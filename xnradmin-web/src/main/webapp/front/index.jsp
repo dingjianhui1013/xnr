@@ -16,7 +16,7 @@ function addToCart(id,money){
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+1));
 	$.ajax({
 		type:"POST", 
-		url:"/front/shopingCart/add.action",
+		url:"<%=basePath%>/front/shopingCart/add.action",
 		data:{"goodsId":id,"goodsCount":1,"clientUserId":userId,_:new Date().getTime()},
 		dataType:"json",
 		success:function(msg){
@@ -77,7 +77,7 @@ function addToCart(id,money){
 			 <ul id="flexiselDemo1">
 			 <c:forEach items="${indexGoods }" var="good" varStatus="status">
 				 <li>
-					 <a href="/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo}" alt=""/>	
+					 <a href="<%=basePath%>/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo}" alt=""/>	
 					  <div class="arrival-info">
 						 <h4>${ good.businessGoods.goodsName} </h4>
 						 <p>约${good.businessGoods.goodsWeight }g</p>
@@ -155,7 +155,7 @@ function addToCart(id,money){
 					 				<div class="feature-grids">
 					 			</c:if>
 					 			<div class="col-md-3 feature-grid jewel">
-								 <a href="/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo }" alt=""/>	
+								 <a href="<%=basePath%>/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo }" alt=""/>	
 							 	<div class="arrival-info">
 								 <h4>${ good.businessGoods.goodsName} </h4>
 								 <p>约${good.businessGoods.goodsWeight }g</p>

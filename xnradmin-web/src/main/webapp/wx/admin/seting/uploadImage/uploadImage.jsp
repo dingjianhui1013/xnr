@@ -15,9 +15,15 @@
 <script src="<%=path %>/js/verifyCode.js" type="text/javascript"></script>
 <script>
 $(function(){
-	$.get("<%= path %>/page/wx/wxconnect/uploadF.action",{userName:$("#userName").val(),userId:$("#userId").val(),_:new Date().getTime()},function (data){
-		  window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImage.jsp";
-	  },"json");
+// 	if(status==null||status=="0")
+// 		{
+// 			alert("您的账号没有通过审核，请联系管理员！");
+// 		}else
+// 			{
+				$.get("<%= path %>/page/wx/wxconnect/uploadF.action",{userName:$("#userName").val(),userId:$("#userId").val(),_:new Date().getTime()},function (data){
+					  window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImage.jsp";
+				  },"json");
+// 			}
 });
 </script>
 </head>
@@ -25,6 +31,7 @@ $(function(){
 	<form action="">
 		<input type="hidden" value="${userName}" id="userName"/>
 		<input type="hidden" value="${userId}" id="userId"/>
+		<input type="hidden" value="${status}" id="status">
 	</form>
 </body>
 </html>

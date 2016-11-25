@@ -72,6 +72,7 @@ public class WXConnectAction {
 	private String type;
 	private String outPlanId;
 	private OutPlanVO outplanVO;
+	private String status;
 	private List<BusinessCategory> businesCategorys;
 	public String getType() {
 		return type;
@@ -118,6 +119,14 @@ public class WXConnectAction {
 
 	public void setOutplanVO(OutPlanVO outplanVO) {
 		this.outplanVO = outplanVO;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@Autowired
@@ -253,6 +262,7 @@ public class WXConnectAction {
 							userId.getString("UserId")), "GET", null);
 			String userName = userInformation.getString("name");
 			this.userId = userId.getString("UserId");
+//			this.status = farmerService.getStatus(userId.getString("UserId"));
 			this.userName = userName;
 
 		}
@@ -283,6 +293,7 @@ public class WXConnectAction {
 								userId.getString("openid")), "GET", null);
 			}
 			String userName = userInformation.getString("nickname");
+//			this.status = farmerService.getStatus(userId.getString("openid"));
 			this.userId = userId.getString("openid");
 			this.userName = userName;
 		}

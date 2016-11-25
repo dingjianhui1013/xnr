@@ -47,7 +47,7 @@ $(function(){
 		<div class="header_top-sec">
 			<div class="top_right">
 				<ul>
-					<li><a href="/front/index.action">欢迎光临康源公社！</a></li>|
+					<li><a href="<%=basePath%>/front/index.action">欢迎光临康源公社！</a></li>|
 					<li><a href="#contact">联系我们</a></li>
 				</ul>
 			</div>
@@ -60,14 +60,14 @@ $(function(){
 				<!--登录后显示-->
 				<ul>
 					<c:if test="${empty user}">
-						<li><a href="/front/login.jsp">登录</a></li>|
+						<li><a href="<%=basePath%>/front/login.jsp">登录</a></li>|
 					</c:if>
 					<c:if test="${!empty user}">
-						<li class="top_link">用户名:<a href="/front/personalCenter.action">${user.userName}</a></li>|
-						<li><a href="/front/exit.action">退出</a></li>|
+						<li class="top_link">用户名:<a href="<%=basePath%>/front/personalCenter.action">${user.userName}</a></li>|
+						<li><a href="<%=basePath%>/front/exit.action">退出</a></li>|
 					</c:if>
-					<li><a href="/front/register.jsp">注册</a></li>|
-					<li><a href="/front/personalCenter.action?flag=myorder">订单中心</a></li>
+					<li><a href="<%=basePath%>/front/register.jsp">注册</a></li>|
+					<li><a href="<%=basePath%>/front/personalCenter.action?flag=myorder">订单中心</a></li>
 				</ul>
 
 			</div>
@@ -78,18 +78,18 @@ $(function(){
 <div class="logoWrap">	
 	<div class="container">	
 		<div class="logo">
-			<a href="/front/index.action">
+			<a href="<%=basePath%>/frontindex.action">
 			<h1><img src="${basePath}images/front/login_logo.png" /></h1>
 			</a>
 		</div>
 		<div class="pull-left searchBox">
-			<form action="/front/search.action" class="form-inline" method="post">
+			<form action="<%=basePath%>/frontsearch.action" class="form-inline" method="post">
 			<input type="text"  name="search" placeholder="请输入搜索内容" class="searchInput"/>
 			<input type="submit" value="搜索" class="searchBtn">
 			</form>
 		</div>
 		 <div class="pull-right cart box_1">
-			 <a href="/front/shopingCart/shoppingCart.action">
+			 <a href="<%=basePath%>/frontshopingCart/shoppingCart.action">
 				<h3>
 				<div class="total">
 					<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
@@ -104,7 +104,7 @@ $(function(){
 <div class="guiderBox">
 	<div class="container">
 		<ul class="memenu skyblue pull-left">
-			<li class="active"><a href="/front/index.action">首页</a></li>
+			<li class="active"><a href="<%=basePath%>/frontindex.action">首页</a></li>
 			<c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
 				<c:forEach items="${firstBusinessCategory }" var="first">
 				<li class="grid"><a href="#"> ${ first.key.categoryName}</a>
@@ -116,7 +116,7 @@ $(function(){
 								<h4> ${ second.key.categoryName} </h4>
 								<ul>
 									<c:forEach items="${second.value }" var="threeBusinessCategory">
-									<li><a href="/front/product.action?productCategoryId=${threeBusinessCategory.id}&&first=${ first.key.categoryName}&&three=${ threeBusinessCategory.categoryName}">${threeBusinessCategory.categoryName }</a></li>
+									<li><a href="<%=basePath%>/frontproduct.action?productCategoryId=${threeBusinessCategory.id}&&first=${ first.key.categoryName}&&three=${ threeBusinessCategory.categoryName}">${threeBusinessCategory.categoryName }</a></li>
 									</c:forEach>
 								</ul>
 							</div>
@@ -127,7 +127,7 @@ $(function(){
 				</c:forEach>
 			</li>
 			</c:forEach>
-			<li class="grid"><a href="/front/contact.action">关于我们</a></li>
+			<li class="grid"><a href="<%=basePath%>/frontcontact.action">关于我们</a></li>
 		</ul>
 	 </div>
 </div>

@@ -23,7 +23,6 @@ function sub(a, b) {
 	return d;
 }
 
-
 function plusNum(id)
 {		var price = Number($("#price"+id).html());  
 		var xiaoji = Number($("#xiaoji"+id).html());
@@ -42,6 +41,8 @@ function plusNum(id)
 		$("#xiaoji"+id).html(xiaojiNew);
 		var index = $("#count"+id).val();
 		index++;
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+Number(price)).toFixed(2));
+		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(1)));
 		$("#count"+id).val(index);
 }
 function minusNum(id)
@@ -64,6 +65,8 @@ function minusNum(id)
 				$("#totalprices").html(totalpricesNew);
 				$("#xiaoji"+id).html(xiaojiNew);
 				$("#count"+id).val(index);
+				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(2));
+				$("#simpleCart_number").html((Number($("#simpleCart_number").html())-Number(1)));
 			}else
 				{
 				$("#count"+id).val(1);
@@ -133,7 +136,7 @@ function delfromCart(id){
 								<li><span id="price${cartVo.cart.id }">${cartVo.goods.goodsOriginalPrice}</span></li>
 								<li class="cart-num">
 									<div class="addNum">						
-										<span><input type="text" id="count${cartVo.cart.id }" class="item_quantity" value="${cartVo.cart.goodsCount}" /></span>
+										<span><input type="text" id="count${cartVo.cart.id }" class="item_quantity" value="${cartVo.cart.goodsCount}" readonly="readonly"/></span>
 										<span>
 											<a id="plus${cartVo.cart.id }" href="javascript:plusNum(${cartVo.cart.id })" class="plusNum">+</a>
 											<a id="mimus${cartVo.cart.id }" href="javascript:minusNum(${cartVo.cart.id })" class="minus-Num">-</a>

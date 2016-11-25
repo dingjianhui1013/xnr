@@ -39,7 +39,7 @@ function addToCart(obj,money){
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
 	$.ajax({
 		type:"POST", 
-		url:"/front/shopingCart/add.action",
+		url:"<%=basePath%>/front/shopingCart/add.action",
 		data:{"goodsId":id,"goodsCount":count,"clientUserId":userId,_:new Date().getTime()},
 		dataType:"json",
 		success:function(msg){
@@ -64,7 +64,7 @@ function addToCart(obj,money){
 			 <div class="col-md-12 product-model-sec">
 			 	<c:forEach items="${productList}" var="product" varStatus="status">
 					 <div class="product-grid love-grid">	
-				 		<a href="/front/productDetail.action?goodsId=${product.businessGoods.id}">				
+				 		<a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">				
 							<div class="product-img b-link-stripe b-animate-go  thickbox">
 								<img src="${basePath }${product.businessGoods.goodsLogo}" class="img-responsive" alt=""/>
 								<div class="b-wrapper">
@@ -76,8 +76,8 @@ function addToCart(obj,money){
 						</a>						
 						<div class="product-info simpleCart_shelfItem">
 							<div class="product-info-cust prt_name">
-								<h4><a href="/front/productDetail.action?goodsId=${product.businessGoods.id}">${product.businessGoods.goodsName} </a></h4>
-								<p><a href="/front/productDetail.action?goodsId=${product.businessGoods.id}">农场出品，清脆爽口</a></p>
+								<h4><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">${product.businessGoods.goodsName} </a></h4>
+								<p><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">农场出品，清脆爽口</a></p>
 								<p class="item_price">￥${product.businessGoods.goodsOriginalPrice }/${product.businessWeight.weightName }</p>
 								<div class="addCartBox">	
 									<div class="addNum">						

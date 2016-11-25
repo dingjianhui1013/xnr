@@ -12,7 +12,7 @@
 <div class="contact">
 	  <div class="container">
 		 <ol class="breadcrumb">
-		  <li><a href="/front/index.action">首页</a></li>
+		  <li><a href="<%=basePath%>/front/index.action">首页</a></li>
 		  <li class="active">关于我们</li>
 		 </ol>
 		<div class="contact_info">

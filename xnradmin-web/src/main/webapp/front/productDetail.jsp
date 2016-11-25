@@ -9,43 +9,23 @@
 <%@include file="header.jsp"%>
 <!-- /start menu -->
 <script type="text/javascript">
-
-
-function plusNum(id)
+function plusNum()
 {
-		var index = $("#count"+id).val();
+		var index = $(".item_quantity").val();
 		index++;
-		$("#count"+id).val(index);
-}
-function minusNum(id)
+		$(".item_quantity").val(index);
+	}
+function minusNum()
 {
-		var index = $("#count"+id).val();
+		var index = $(".item_quantity").val();
 		index--;
 		if(index>=1)
 			{
-				$("#count"+id).val(index);
+				$(".item_quantity").val(index);
 			}else
 				{
-				$("#count"+id).val(1);
+				$(".item_quantity").val(1);
 				}
-}
-
-
-
-function addToCart(id){
-	var userId = ${user.id};
-	var count = $("#count"+id).val();
-	if(userId!=null&&userId!=""){
-	$.ajax({
-		type:"POST", 
-		url:"/front/shopingCart/add.action",
-		data:{"goodsId":id,"goodsCount":count,"clientUserId":userId,_:new Date().getTime()},
-		dataType:"json",
-		success:function(msg){
-				
-			}
-		});
-		
 	}
 function addToCart(id,money){
 	var userId = ${user.id};
@@ -54,7 +34,7 @@ function addToCart(id,money){
 	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
 	$.ajax({
 		type:"POST", 
-		url:"/front/shopingCart/add.action",
+		url:"<%=basePath%>/frontshopingCart/add.action",
 		data:{"goodsId":id,"goodsCount":goodsNumber,"clientUserId":userId,_:new Date().getTime()},
 		dataType:"json",
 		success:function(msg){
@@ -62,7 +42,6 @@ function addToCart(id,money){
 			}
 		});
 	
-}
 }
 </script>
 </head>
@@ -72,7 +51,7 @@ function addToCart(id,money){
 	<div class="single-sec">
 		<div class="container">
 			<ol class="breadcrumb">
-				<li><a href="/front/index.action">首页</a></li>
+				<li><a href="<%=basePath%>/frontindex.action">首页</a></li>
 				<li class="">${productDetailVo.firstName }</li>
 <%-- 				/front/product.action?productCategoryId=${productDetailVo.firstClassification}&&first=${productDetailVo.firstName}&&three=${productDetailVo.secoundName} --%>
 				<li class="">${productDetailVo.secoundName }</li>
@@ -138,23 +117,12 @@ function addToCart(id,money){
 								</p>
 								<div class="addCart-box">
 									<div class="addNum">
-<<<<<<< HEAD
 										<span><input type="text" class="item_quantity"
 											value="1" id="goodsNumber"></span> <span> <a href="javascript:plusNum()" class="plusNum">+</a>
 											<a href="javascript:minusNum()" class="minus-Num">-</a>
-=======
-										<span><input id="count${businessGoodsVO.businessGoods.id }" type="text" class="item_quantity" value="1"/></span>
-										<span>
-											<a id="plus${businessGoodsVO.businessGoods.id }" href="javascript:plusNum(${businessGoodsVO.businessGoods.id })" class="plusNum">+</a>
-											<a id="mimus${businessGoodsVO.businessGoods.id }" href="javascript:minusNum(${businessGoodsVO.businessGoods.id })" class="minus-Num">-</a>
->>>>>>> refs/heads/dev
 										</span>
 									</div>
-<<<<<<< HEAD
 									<span class="addCart"> <a href="javascript:addToCart(${businessGoodsVO.businessGoods.id},${businessGoodsVO.businessGoods.goodsOriginalPrice})">加入购物车</a>
-=======
-									<input type="button" id="add${businessGoodsVO.businessGoods.id }" onclick="javascript:addToCart(${businessGoodsVO.businessGoods.id })" class="item_add" value="加入购物车">
->>>>>>> refs/heads/dev
 									</span>
 								</div>
 							</div>
@@ -289,7 +257,7 @@ function addToCart(id,money){
 						<div class="single-bottom">
 						<c:forEach items="${rc.value}" var="rcv">
 							
-							<a href="/front/productDetail.action?goodsId=${rcv.id}"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>${rcv.goodsName }</span></a>
+							<a href="<%=basePath%>/frontproductDetail.action?goodsId=${rcv.id}"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>${rcv.goodsName }</span></a>
 						</c:forEach>
 						</div>
 					</c:forEach>

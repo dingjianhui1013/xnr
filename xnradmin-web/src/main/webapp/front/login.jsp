@@ -34,7 +34,7 @@
 <div class="logoWrap">	
 	<div class="container">	
 		<div class="logo">
-			<a href="/front/index.action">
+			<a href="<%=basePath%>/frontindex.action">
 			<h1><img src="${basePath }images/front/login_logo.png" /></h1>
 			</a>
 		</div>
@@ -48,7 +48,7 @@
 			<img src="${basePath }images/front/loginBigImg.png" />
 		</div>
 		<div class="loginBox col-sm-6">
-	         <form class="form-horizontal" method="post" action="/front/login.action">
+	         <form class="form-horizontal" method="post" action="<%=basePath%>/frontlogin.action">
 	              <h4 class="loginBoxTit">账户登录</h4>
 	              <div class="form-group">
 	                <label for="inputEmail3" class="col-sm-2 control-label">手机号：</label>
