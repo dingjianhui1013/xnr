@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.cntinker.util.StringHelper;
+import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.client.service.front.FrontUserService;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
@@ -30,6 +32,7 @@ import com.xnradmin.core.service.mall.commodity.GoodsService;
 import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.core.service.mall.seting.PrimaryConfigurationService;
 import com.xnradmin.po.CommonStaff;
+import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.common.status.Status;
@@ -59,7 +62,7 @@ public class CartAction extends ParentAction {
 	@Autowired
 	private FrontUserService userService;
 
-	
+	@Autowired IndexFrontService indexFrontService;
 	
 	@Autowired
 	private StatusService statusService;
@@ -84,11 +87,20 @@ public class CartAction extends ParentAction {
 	private Goods goods;
 	private boolean delStatus;//删除购物车
 	private List<BusinessGoodsCartVo> cartVoList;
-	
+	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;//导航菜单
 
 	
 	
 	
+
+	public List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> getAllBusinessCategorys() {
+		return allBusinessCategorys;
+	}
+
+	public void setAllBusinessCategorys(
+			List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys) {
+		this.allBusinessCategorys = allBusinessCategorys;
+	}
 
 	public boolean isDelStatus() {
 		return delStatus;
@@ -291,13 +303,15 @@ public class CartAction extends ParentAction {
 	 * 跳转到购物车页面
 	 * @return
 	 */
-	@Action(value = "shoppingCart",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/shoppingCart.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
+	@Action(value = "shoppingCart",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/shoppingCart.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/login.jsp") })
     public String shoppingCart() {
 		
 		 user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
-		
+		if(null==user){
+			return StrutsResMSG.FAILED;
+		}
 		 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
-		
+		 this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		return StrutsResMSG.SUCCESS;
 		
     }

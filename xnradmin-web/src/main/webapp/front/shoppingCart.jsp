@@ -11,20 +11,54 @@
 
 </head>
 <script type="text/javascript">
+function add(a, b) {
+	return (a*100+b*100)/100;
+}
+
+function sub(a, b) {
+	return (a*100-b*100)/100;
+}
 
 
 function plusNum(id)
-{
+{		var price = Number($("#price"+id).html());  
+		var xiaoji = Number($("#xiaoji"+id).html());
+		var totalprices = Number($("#totalprices").html());
+		
+		var totalpricesNew = add(totalprices,price);
+		var xiaojiNew = add(xiaoji,price);
+// 		alert(totalpricesNew);
+		if(Number.isInteger(totalpricesNew) ){
+			totalpricesNew = totalpricesNew+".0"
+		}
+		if(Number.isInteger(xiaojiNew) ){
+			xiaojiNew = xiaojiNew+".0"
+		}
+		$("#totalprices").html(totalpricesNew);
+		$("#xiaoji"+id).html(xiaojiNew);
 		var index = $("#count"+id).val();
 		index++;
 		$("#count"+id).val(index);
 }
 function minusNum(id)
-{
+{		var price = Number.parseFloat($("#price"+id).html());
+		var xiaoji = Number.parseFloat($("#xiaoji"+id).html());
+		var totalprices = Number.parseFloat($("#totalprices").html());
+		
 		var index = $("#count"+id).val();
 		index--;
 		if(index>=1)
 			{
+				var totalpricesNew = sub(totalprices,price);
+				var xiaojiNew = sub(xiaoji,price);
+				if(Number.isInteger(totalpricesNew) ){
+					totalpricesNew = totalpricesNew+".0"
+				}
+				if(Number.isInteger(xiaojiNew) ){
+					xiaojiNew = xiaojiNew+".0"
+				}
+				$("#totalprices").html(totalpricesNew);
+				$("#xiaoji"+id).html(xiaojiNew);
 				$("#count"+id).val(index);
 			}else
 				{
@@ -46,7 +80,10 @@ function delfromCart(id){
 				
 			}
 		});
-	
+	var price = Number($("#price"+id).html());
+	var index = Number($("#count"+id).val());
+	var totalpricesNew = Number($("#totalprices").html())-price*index;
+	$("#totalprices").html(totalpricesNew);
 }
 
 
@@ -79,16 +116,17 @@ function delfromCart(id){
 							<div class="clearfix"> </div>
 						  </ul>
 						  <div class="cartListBox">
+						  <c:set var="totalprices" value="0" />
 						  <c:forEach items="${cartVoList}" var="cartVo" varStatus="status">
 						  
 								<ul class="cart-header"id="test">
 								<li class="checkCol"><input type="checkbox" /></ >
 								<li class="productCol">
-									<a href="productDetail.html" >
-										<img src="images/products/sc-img3.jpg" class="pull-left img-responsive" alt=""></a>
+									<a href="/front/productDetail.action?goodsId=${cartVo.goods.id}" >
+										<img src="${basePath }${cartVo.goods.goodsLogo}" class="pull-left img-responsive" alt=""></a>
 										<span class="pull-left cart-pDetail">${cartVo.goods.goodsName} 约${cartVo.goods.goodsWeight }g</span>
 								</li>
-								<li><span>${cartVo.goods.goodsOriginalPrice}</span></li>
+								<li><span id="price${cartVo.cart.id }">${cartVo.goods.goodsOriginalPrice}</span></li>
 								<li class="cart-num">
 									<div class="addNum">						
 										<span><input type="text" id="count${cartVo.cart.id }" class="item_quantity" value="${cartVo.cart.goodsCount}" /></span>
@@ -98,72 +136,72 @@ function delfromCart(id){
 										</span>
 									</div>
 								</li>
-								<li><span>${cartVo.cart.totalPrice}</span></li>
+								<li><span id="xiaoji${cartVo.cart.id }">${cartVo.cart.totalPrice}</span></li>
 								<li><span><a href="javascript:delfromCart(${cartVo.cart.id})" class="delBtn1">删除</a></span></li>
 								<div class="clearfix"> </div>
 								</ul>
-								
+							 <c:set var="totalprices" value="${totalprices+cartVo.cart.totalPrice }"/>	
 							</c:forEach>	
 						  </div>
 					 </div>
 					 <!--pc端购物车-->
 					 <!--mobile端购物车-->
-					 <div class="in-check-mobile" >
-						  <div class="cartListBox">
-								<ul class="cart-header">
-									<li class="checkCol"><input type="checkbox" /></li>
-									<li class="productCol">
-										<a href="productDetail.html" >
-											<img src="images/products/sc-img3.jpg" class="pull-left img-responsive" alt="">
-										</a>
-										<div class="pull-left cart-pDetail">
-											<span class="">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</span>
-											<div class="priceLine">
-												<p class="m-price redColor">￥60.00</p>
-												<div class="pull-left cart-num">
-													<div class="addNum">						
-														<span><input type="text" class="item_quantity" value="1" /></span>
-														<span>
-															<a href="#" class="plusNum">+</a>
-															<a href="#" class="minus-Num">-</a>
-														</span>
-													</div>
-												</div>
-											</div>
+<!-- 					 <div class="in-check-mobile" > -->
+<!-- 						  <div class="cartListBox"> -->
+<!-- 								<ul class="cart-header"> -->
+<!-- 									<li class="checkCol"><input type="checkbox" /></li> -->
+<!-- 									<li class="productCol"> -->
+<!-- 										<a href="productDetail.html" > -->
+<!-- 											<img src="images/products/sc-img3.jpg" class="pull-left img-responsive" alt=""> -->
+<!-- 										</a> -->
+<!-- 										<div class="pull-left cart-pDetail"> -->
+<!-- 											<span class="">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</span> -->
+<!-- 											<div class="priceLine"> -->
+<!-- 												<p class="m-price redColor">￥60.00</p> -->
+<!-- 												<div class="pull-left cart-num"> -->
+<!-- 													<div class="addNum">						 -->
+<!-- 														<span><input type="text" class="item_quantity" value="1" /></span> -->
+<!-- 														<span> -->
+<!-- 															<a href="#" class="plusNum">+</a> -->
+<!-- 															<a href="#" class="minus-Num">-</a> -->
+<!-- 														</span> -->
+<!-- 													</div> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
 											
-									  </div>
-									</li>
-									<li class="operateBtn"><a href="#" class="btn btn-default delBtn1">删除</a></li>
-									<div class="clearfix"> </div>
-								</ul>
-								<ul class="cart-header" >
-									<li class="checkCol"><input type="checkbox" /></li>
-									<li class="productCol">
-										<a href="productDetail.html" >
-											<img src="images/products/sc-img3.jpg" class="pull-left img-responsive" alt="">
-										</a>
-										<div class="pull-left cart-pDetail">
-											<span class="">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</span>
-											<div class="priceLine">
-												<p class="m-price redColor">￥60.00</p>
-												<div class="pull-left cart-num">
-													<div class="addNum">						
-														<span><input type="text" class="item_quantity" value="1" /></span>
-														<span>
-															<a href="#" class="plusNum">+</a>
-															<a href="#" class="minus-Num">-</a>
-														</span>
-													</div>
-												</div>
-											</div>
+<!-- 									  </div> -->
+<!-- 									</li> -->
+<!-- 									<li class="operateBtn"><a href="#" class="btn btn-default delBtn1">删除</a></li> -->
+<!-- 									<div class="clearfix"> </div> -->
+<!-- 								</ul> -->
+<!-- 								<ul class="cart-header" > -->
+<!-- 									<li class="checkCol"><input type="checkbox" /></li> -->
+<!-- 									<li class="productCol"> -->
+<!-- 										<a href="productDetail.html" > -->
+<!-- 											<img src="images/products/sc-img3.jpg" class="pull-left img-responsive" alt=""> -->
+<!-- 										</a> -->
+<!-- 										<div class="pull-left cart-pDetail"> -->
+<!-- 											<span class="">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</span> -->
+<!-- 											<div class="priceLine"> -->
+<!-- 												<p class="m-price redColor">￥60.00</p> -->
+<!-- 												<div class="pull-left cart-num"> -->
+<!-- 													<div class="addNum">						 -->
+<!-- 														<span><input type="text" class="item_quantity" value="1" /></span> -->
+<!-- 														<span> -->
+<!-- 															<a href="#" class="plusNum">+</a> -->
+<!-- 															<a href="#" class="minus-Num">-</a> -->
+<!-- 														</span> -->
+<!-- 													</div> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
 											
-									  </div>
-									</li>
-									<li class="operateBtn"><a href="" class="btn btn-default delBtn1">删除</a></li>
-									<div class="clearfix"> </div>
-								</ul>
-						  </div>
-					 </div>
+<!-- 									  </div> -->
+<!-- 									</li> -->
+<!-- 									<li class="operateBtn"><a href="" class="btn btn-default delBtn1">删除</a></li> -->
+<!-- 									<div class="clearfix"> </div> -->
+<!-- 								</ul> -->
+<!-- 						  </div> -->
+<!-- 					 </div> -->
 					 <!--mobile端购物车-->
 				  </div>					  
 			 </div>
@@ -171,12 +209,12 @@ function delfromCart(id){
 		 <div class="cart-fixBar">
 		 	<div class="container">
 			 	<ul class="cart-con">
-			 		<li class="checkCol"><input type="checkbox" />全选</li>
+			 		<!-- <li class="checkCol"><input type="checkbox" />全选</li> -->
 			 		<li class="totalCol">
 			 			<a href="/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
 			 			<div class="pull-right totalMoney">
-				 			<p>总价:<span class="t-money">￥120.00</span></p>
-				 			<p>已节省:-￥120.00</p>
+				 			<p>总价:<span class="t-money" id="totalprices"><fmt:formatNumber type="number" value="<c:out value="${totalprices }"/>" pattern="0.0" maxFractionDigits="1"/> </span>￥</p>
+				 			<!-- <p>已节省:-￥120.00</p> -->
 			 			</div>
 			 		</li>
 			 	</ul>

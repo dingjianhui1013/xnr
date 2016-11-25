@@ -38,7 +38,7 @@ function addToCart(obj){
 	var id = $(obj).attr("id").substring(3);
 	
 	var count = $("#count"+id).val();
-	
+	if(userId!=null&&userId!=""){
 	$.ajax({
 		type:"POST", 
 		url:"/front/shopingCart/add.action",
@@ -48,7 +48,7 @@ function addToCart(obj){
 				
 			}
 		});
-	
+	}
 }
 
 

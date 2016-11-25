@@ -11,6 +11,7 @@
 <script type="text/javascript">
 function addToCart(id){
 	var userId = ${user.id};
+	if(userId!=null&&userId!=""){
 	$.ajax({
 		type:"POST", 
 		url:"/front/shopingCart/add.action",
@@ -20,7 +21,7 @@ function addToCart(id){
 				
 			}
 		});
-	
+	}
 }
 
 </script>
