@@ -2,14 +2,14 @@ package com.xnradmin.vo.front;
 
 public class ProductDetailVo {
 
-	private String FirstClassification;
+	private String firstClassification;
 	private String secoundClassification;
 	private String foodClassification;
-	private String FirstName;
+	private String firstName;
 	private String secoundName;
 	private String foodName;
 	public String getFirstClassification() {
-		return FirstClassification;
+		return firstClassification;
 	}
 	public String getSecoundClassification() {
 		return secoundClassification;
@@ -17,17 +17,8 @@ public class ProductDetailVo {
 	public String getFoodClassification() {
 		return foodClassification;
 	}
-	public void setFirstClassification(String firstClassification) {
-		FirstClassification = firstClassification;
-	}
-	public void setSecoundClassification(String secoundClassification) {
-		this.secoundClassification = secoundClassification;
-	}
-	public void setFoodClassification(String foodClassification) {
-		this.foodClassification = foodClassification;
-	}
 	public String getFirstName() {
-		return FirstName;
+		return firstName;
 	}
 	public String getSecoundName() {
 		return secoundName;
@@ -35,8 +26,17 @@ public class ProductDetailVo {
 	public String getFoodName() {
 		return foodName;
 	}
+	public void setFirstClassification(String firstClassification) {
+		this.firstClassification = firstClassification;
+	}
+	public void setSecoundClassification(String secoundClassification) {
+		this.secoundClassification = secoundClassification;
+	}
+	public void setFoodClassification(String foodClassification) {
+		this.foodClassification = foodClassification;
+	}
 	public void setFirstName(String firstName) {
-		FirstName = firstName;
+		this.firstName = firstName;
 	}
 	public void setSecoundName(String secoundName) {
 		this.secoundName = secoundName;
@@ -44,5 +44,6 @@ public class ProductDetailVo {
 	public void setFoodName(String foodName) {
 		this.foodName = foodName;
 	}
+	
 	
 }

@@ -30,22 +30,19 @@ function minusNum(id)
 				}
 }
 
-
-
-function addToCart(obj){
+function addToCart(obj,money){
 	var userId = ${user.id};
-	
 	var id = $(obj).attr("id").substring(3);
-	
 	var count = $("#count"+id).val();
-	
+	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
+	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
 	$.ajax({
 		type:"POST", 
 		url:"/front/shopingCart/add.action",
 		data:{"goodsId":id,"goodsCount":count,"clientUserId":userId,_:new Date().getTime()},
 		dataType:"json",
 		success:function(msg){
-				
+				alert("加入成功");
 			}
 		});
 	
@@ -89,7 +86,7 @@ function addToCart(obj){
 											<a id="mimus${product.businessGoods.id }" href="javascript:minusNum(${product.businessGoods.id })" class="minus-Num">-</a>
 										</span>
 									</div>
-									<input type="button" id="add${product.businessGoods.id }" onclick="javascript:addToCart(this)" class="item_add" value="加入购物车">
+									<input type="button" id="add${product.businessGoods.id }" onclick="javascript:addToCart(this,${product.businessGoods.goodsOriginalPrice })" class="item_add" value="加入购物车">
 								</div>
 							</div>													
 							<div class="clearfix"> </div>

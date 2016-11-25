@@ -6,8 +6,8 @@
 	String basePath = request.getScheme() + "://"
 	        + request.getServerName() + ":" + request.getServerPort()
 	        + path + "/";
-	
 	request.setAttribute("basePath",basePath);
+	
 %>
 <link href="${basePath }css/front/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
 <link href="${basePath }css/front/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -17,11 +17,29 @@
 <script src="${basePath }js/front/jquery-1.11.3.min.js"></script>
 <script src="${basePath }js/front/bootstrap.min.js"></script>
 <script type="text/javascript" src="${basePath }js/front/common.js"></script>
-<script type="application/x-javascript"> 
-	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
-</script>
-<script src="${basePath }js/front/simpleCart.min.js"> </script>
+<!-- <script type="application/x-javascript">  -->
+<!--  	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }  -->
+<!-- </script> -->
+<%-- <script src="${basePath }js/front/simpleCart.min.js"> </script> --%>
 <script type="text/javascript" src="${basePath }js/front/memenu.js"></script>
+<script type="text/javascript">
+$(function(){
+	$.ajax({
+		url:"/page/wx/admin/order/shoppingCart/getTotalAndNumber.action",
+		type:"POST",
+		data:{"userId":'${user.id}'},
+		dataType:"JSON",
+		success:function(data)
+		{
+			$.each(data.count_number, function(key, value) { 
+					$("#simpleCart_total").html(key);
+					$("#simpleCart_number").html(value)
+				}); 
+		}
+		
+	});
+})
+</script>
 
 <div class="top_bg">
 	<div class="container">
@@ -60,7 +78,7 @@
 	<div class="container">	
 		<div class="logo">
 			<a href="/front/index.action">
-			<h1><img src="${basePath }images/front/login_logo.png" /></h1>
+			<h1><img src="${basePath}images/front/login_logo.png" /></h1>
 			</a>
 		</div>
 		<div class="pull-left searchBox">
@@ -71,10 +89,11 @@
 		</div>
 		 <div class="pull-right cart box_1">
 			 <a href="/front/shopingCart/shoppingCart.action">
-				<h3> <div class="total">
+				<h3>
+				<div class="total">
 					<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
-					<span class="simpleCart_total"></span> (<span id="simpleCart_quantity" class="simpleCart_quantity"></span>)
-					</div>
+					<span id="simpleCart_total"></span> (<span id="simpleCart_number">0</span>)
+				</div>
 				</h3>
 			</a>
 		 	<div class="clearfix"> </div>

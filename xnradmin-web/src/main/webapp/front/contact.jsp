@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>关于我们</title>
 </head>
 <body>
 <%@include file="header.jsp" %>
