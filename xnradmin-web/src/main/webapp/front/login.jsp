@@ -60,7 +60,7 @@
 	                <label for="inputPassword3" class="col-sm-2 control-label">密码：</label>
 	                <div class="col-sm-10">
 	                  <input type="password" name="password" class="form-control" id="inputPassword3" placeholder="请输入密码">
-	                  <span style="color: red;font-size: 10px">${message }</span>
+	                  <p style="color: red;font-size: 10px;padding-top:15px">${message }</p>
 	                </div>
 	              </div>
 	              <div class="form-group">

@@ -214,7 +214,7 @@
 		 	</div>
 			<div class="p-contentBox pull-left">
                 <div class="p-orderList editList" style="display:block">
-                 	<h3>账号信息</h3>
+                 	<h3 class="titBox">账号信息</h3>
                 	<div class="accountBox">
 							<form action="saveForm.action" class="form-horizontal" role="form">
 								<input type="hidden" name="user.id" value="${user.id }">
@@ -247,7 +247,7 @@
                 	</div>
                 </div>
 				<div class="p-orderList editList" id="p-orderList">
-					<h3>我的订单</h3>
+					<h3 class="titBox">我的订单</h3>
                     <div class="orderListBox">
                     	<div class="orderTitCol">
                     		<ul>
@@ -269,7 +269,7 @@
                     	<div class="orderTitCol">
                     		<ul>
                     			<li class="ordercol-d">
-                    				<a href="#"><img src="images/products/sc-img1.jpg"></a>
+                    				<a href="#"><img src="${basePath }images/front/products/sc-img1.jpg"></a>
 	  	                          	 <div class="orderCon">
 	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
 	  		                          </div>
@@ -296,7 +296,7 @@
                     	<div class="orderTitCol">
                     		<ul>
                     			<li class="ordercol-d">
-                    				<a href="#"><img src="images/products/sc-img1.jpg"></a>
+                    				<a href="#"><img src="${basePath }images/front/products/sc-img1.jpg"></a>
 	  	                          	 <div class="orderCon">
 	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
 	  		                          </div>
@@ -323,7 +323,7 @@
                     	<div class="orderTitCol">
                     		<ul>
                     			<li class="ordercol-d">
-                    				<a href="#"><img src="images/products/sc-img1.jpg"></a>
+                    				<a href="#"><img src="${basePath }images/front/products/sc-img2.jpg"></a>
 	  	                          	 <div class="orderCon">
 	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
 	  		                          </div>
@@ -355,7 +355,7 @@
 				<!--分页end-->
                 </div>
                 <div class="p-orderList editList">
-					<h3>地址管理</h3>
+					<h3 class="titBox">地址管理</h3>
                 	<a href="javascript:;" class="btn btn-default add-address" id="addAddressBtn">新增收货地址</a>
                 	<div class="addressBox">
                 	<c:forEach items="${receiptAddressList}" var = "address">
@@ -389,7 +389,7 @@
                 	</div>
                 </div>
                  <div class="p-orderList editList">
-                 		<h3>密码修改</h3>
+                 		<h3 class="titBox">密码修改</h3>
                 		<form class="form-horizontal" id="submitForm" action="savePassword.action">
                 				<input type="hidden" name="user.id" value="${user.id }">
                                   <div class="form-group">

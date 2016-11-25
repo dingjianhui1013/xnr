@@ -75,7 +75,9 @@ function addToCart(id,money){
 		  </div>
 		 <div class="arrival-grids">			 
 			 <ul id="flexiselDemo1">
+			 <c:set var="h" value="0"/>
 			 <c:forEach items="${indexGoods }" var="good" varStatus="status">
+			 	<c:if test="${h<8 }">
 				 <li>
 					 <a href="<%=basePath%>/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo}" alt=""/>	
 					  <div class="arrival-info">
@@ -85,6 +87,8 @@ function addToCart(id,money){
 					 </div>
 					 </a>
 				 </li>
+				 </c:if>
+				 <c:set var="h" value="${h+1 }"/>
 				</c:forEach>
 				</ul>
 				<script type="text/javascript">
