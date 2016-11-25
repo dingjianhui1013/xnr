@@ -9,17 +9,16 @@
 <%@include file="header.jsp" %>
 <script type="text/javascript">
 	$(function(){
-		$('#editMsg').click(function(){
-			$('#myModal').modal({
-		   backdrop: "static"
-		})
-		})
+// 		$('#editMsg').click(function(){
+// 			$('#myModal').modal({
+// 		   backdrop: "static"
+// 		})
+// 		})
 		$('#addAddressBtn').click(function(){
 			$('#newAddressBox').modal({
 		   backdrop: "static"
 		})
 		})
-// 		$(".")
 	
 	})
 	// 验证原始密码
@@ -101,11 +100,90 @@
 	}
 	function sub()
 	{
-		$("#addAddress").submit();
+		var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+		if($("#addReceiptName").val()=="")
+			{
+				$("#addReceiptNameError").html("请输入收货人")
+			}else if($("#addDetailAddress").val()=="")
+				{
+					$("#addDeailError").html("请输入详细 地址");
+					$("#addReceiptNameError").html("")
+				}else if($("#addTel").val()=="")
+					{
+						$("#addTelError").html("请输入手机号")
+						$("#addDeailError").html("");
+					}else if($("#addEmail").val()=="")
+						{
+						$("#addEmailError").html("请输入邮箱");
+						$("#addTelError").html("")
+						}else if(!$("#addEmail").val().match(reg))
+							{
+								$("#addEmailError").html("请输入正确的邮箱");
+								$("#addTelError").html("")
+								emailV.val("");
+							}else
+								{
+									$("#addEmailError").html("");
+									$("#addAddress").submit();
+								}
 	}
 	function setDefault(id)
 	{
-		window.location.href="/front/setDefault.action?setDefaultId="+id;
+		window.location.href="/front/setDefault.action?setDefaultId="+id+"&receiptAddress.frontUserId=${user.id}";
+	}
+	function verificationEmail()
+	{
+		var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+		var emailV = $("#addEmail").val();
+		if((!emailV.match(reg)))
+			{
+				$("#addEmailError").html("请输入正确的邮箱");
+				emailV.val("");
+			}
+	
+	}
+	function modifyAddress(id){
+		$(".modifyAddress").click(function(){
+			$.ajax({
+				url:"/front/modifyAddress.action",
+				type:'POST',
+				data:{"receiptAddress.id":id,"_":new Date().getTime()},
+				dataType:'JSON',
+				success:function(data){
+					$("#addressId").val(data.receiptAddress.id);
+					$("#modifyReceiptName").val(data.receiptAddress.receiptName);
+					$("#modifyTel").val(data.receiptAddress.tel);
+					$("#modifyDetailAddress").val(data.receiptAddress.detailedAddress);
+					$("#modifyReceiptName").val(data.receiptAddress.receiptName);
+					$("#modifyCity option[value="+data.receiptAddress.city+"]").attr("selected",true);
+					$("#modifyProvince option[value="+data.receiptAddress.province+"]").attr("selected",true);
+					$("#modifyCounty option[value="+data.receiptAddress.county+"]").attr("selected",true);
+					$("#myModal").modal({
+						backdrop: "static"
+					})
+				}
+			});
+		})
+	}
+	function modify()
+	{
+		var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+		if($("#modifyReceiptName").val()=="")
+			{
+				$("#mReceiptNameError").html("请输入收货人")
+			}else if($("#modifyDetailAddress").val()=="")
+				{
+					$("#mDeailError").html("请输入详细 地址");
+					$("#mReceiptNameError").html("")
+				}else if($("#modifyTel").val()=="")
+					{
+						$("#mTelError").html("请输入手机号")
+						$("#mDeailError").html("");
+					}else
+						{
+							$("#mEmailError").html("");
+							$("#mAddress").submit();
+						}
 	}
 </script>
 </head>
@@ -302,7 +380,7 @@
 								  <div class="editBox">
 								  	 <c:if test="${address.type==1 }"><button type="button" class="btn btn-default">默认地址</button></c:if>
 								 	 <c:if test="${address.type==0|| address.type==null}"><button type="button" class="btn btn-default" onclick="setDefault('${address.id}')">设为默认</button></c:if>
-								  	 <button type="button" class="btn btn-default">修改</button>
+								  	 <button type="button" class="btn btn-default modifyAddress" onclick="modifyAddress('${address.id}')">修改</button>
 								  	 <a  class="btn btn-default" href="/front/deleteAddress.action?receiptAddress.id=${address.id}">删除</a>
 								  </div>
 								</form>
@@ -364,24 +442,46 @@
         <h4 class="modal-title" id="myModalLabel">修改地址信息</h4>
       </div>
       <div class="modal-body">
-		      <form role="form" >
+		      <form role="form" id="mAddress" action="/front/saveModifyAddress.action">
 				  <div class="form-group">
 				    <label for="">收货人：</label>
-				    <input type="text" class="form-control" id="" placeholder="张三">
+				    <input type="text" class="form-control" id="modifyReceiptName" name="receiptAddress.receiptName" placeholder="请输入收货人">
+				    <input type="hidden" value="${user.id}" name="receiptAddress.frontUserId">
+				    <input type="hidden"  name="receiptAddress.id"  id="addressId">
+				  	<span style="color: red;font-size: 10px" id="mReceiptNameError"></span>
 				  </div>
 				  <div class="form-group">
-				    <label for="">地址：</label>
-				    <input type="text" class="form-control" id="" placeholder="山东省日照某某小区">
+				   <label for="">地址：</label>
+				    <div class="selAddressBox">
+					    <select class="form-control provinceSel" id="modifyProvince" class="" name="receiptAddress.province">
+					    	<option value="北京市">北京市</option>
+					    	<option value="河北省">河北省</option>
+					    	<option value="山东省">山东省</option>
+					    </select>
+					    <select class="form-control citySel" id="modifyCity" name="receiptAddress.city">
+					    	<option value="北京市">北京市</option>
+					    	<option value="三河市">三河市</option>
+					    	<option value="济南市">济南市</option>
+					    </select>
+					    <select class="form-control countrySel" id="modifyCounty" name="receiptAddress.county">
+					    	<option value="燕郊">燕郊</option>
+					    	<option value="河北省">河北省</option>
+					    	<option value="济南县区">济南县区</option>
+					    </select>
+					 </div>
+					    <input type="text" class="form-control detailAddress" id="modifyDetailAddress" name ="receiptAddress.detailedAddress" placeholder="请输入详情地址" />
+				  		<span style="color: red;font-size: 10px" id="mDeailError"></span>
 				  </div>
 				  <div class="form-group">
 				    <label for="">电话号码：</label>
-				    <input type="text" class="form-control" id="" placeholder="136030454">
+				    <input type="text" class="form-control" id="modifyTel" maxlength="11" onkeyup='this.value=this.value.replace(/\D/gi,"")' name="receiptAddress.tel" placeholder="请输入手机号">
+				 	<span style="color: red;font-size: 10px" id="mTel"></span>
 				  </div>
 				</form>
       </div>
       <div class="modal-footer">
          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-         <button type="button" class="btn btn-primary">保存</button>
+         <button type="button" class="btn btn-primary" onclick="modify()">保存</button>
       </div>
     </div>
   </div>
@@ -398,7 +498,9 @@
 		      <form role="form" id="addAddress" action="/front/addAddress.action">
 				  <div class="form-group">
 				    <label for="">收货人：</label>
-				    <input type="text" class="form-control" id="" name="receiptAddress.receiptName" placeholder="请输入收货人信息">
+				    <input type="text" class="form-control" id="addReceiptName" name="receiptAddress.receiptName" placeholder="请输入收货人信息">
+				    <input type="hidden" value="${user.id}" name="receiptAddress.frontUserId">
+				  	<span style="color: red;font-size: 10px" id="addReceiptNameError"></span>
 				  </div>
 				  <div class="form-group">
 				    <label for="">地址：</label>
@@ -419,15 +521,18 @@
 					    	<option value="济南县区">济南县区</option>
 					    </select>
 				    </div>
-				    <input type="text" class="form-control detailAddress" name ="receiptAddress.detailAddress" placeholder="请输入详情地址" />
+				    <input type="text" class="form-control detailAddress" id="addDetailAddress" name ="receiptAddress.detailAddress" placeholder="请输入详情地址" />
+				  	<span style="color: red;font-size: 10px" id="addDeailError"></span>
 				  </div>
 				  <div class="form-group">
 				    <label for="">电话号码：</label>
-				    <input type="text" class="form-control" id="" name="receiptAddress.tel" placeholder="请输入电话号码">
+				    <input type="text" class="form-control" id="addTel" maxlength="11" onkeyup='this.value=this.value.replace(/\D/gi,"")' name="receiptAddress.tel" placeholder="请输入电话号码">
+				  	<span style="color: red;font-size: 10px" id="addTelError"></span>
 				  </div>
 				  <div class="form-group">
 				    <label for="">电子邮箱：</label>
-				    <input type="email" class="form-control" id="" name="receiptAddress.email" placeholder="请输入电子邮箱：">
+				    <input type="email" class="form-control" id="addEmail" onblur="verificationEmail()" name="receiptAddress.email" placeholder="请输入电子邮箱：">
+				  	<span style="color: red;font-size: 10px"  id="addEmailError"></span>
 				  </div>
 				</form>
       </div>
