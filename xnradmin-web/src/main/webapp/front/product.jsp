@@ -31,21 +31,25 @@ function minusNum(id)
 }
 
 function addToCart(obj,money){
-	var userId = ${user.id};
+	var userId = $("#userId").val();
 	var id = $(obj).attr("id").substring(3);
 	var count = $("#count"+id).val();
 	if(userId!=null&&userId!=""){
 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
-	$.ajax({
-		type:"POST", 
-		url:"<%=basePath%>/front/shopingCart/add.action",
-		data:{"goodsId":id,"goodsCount":count,"clientUserId":userId,_:new Date().getTime()},
-		dataType:"json",
-		success:function(msg){
-				alert("加入成功");
-			}
-		});
+		$.ajax({
+			type:"POST", 
+			url:"<%=basePath%>/front/shopingCart/add.action",
+			data:{"goodsId":id,"goodsCount":count,"clientUserId":userId,_:new Date().getTime()},
+			dataType:"json",
+			success:function(msg){
+				layer.msg("加入成功");
+				}
+			});
+	}else
+	{
+		layer.msg("请先登录");
+		setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
 	}
 }
 

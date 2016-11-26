@@ -76,7 +76,7 @@ function minusNum(id)
 
 
 function delfromCart(id){
-	var userId = ${user.id};
+	var userId = $("#userId");
 	
 	$.ajax({
 		type:"POST", 

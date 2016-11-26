@@ -17,6 +17,7 @@
 <link href="${basePath }css/front/memenu.css" rel="stylesheet" type="text/css" media="all" />
 <script src="${basePath }js/front/jquery-1.11.3.min.js"></script>
 <script src="${basePath }js/front/bootstrap.min.js"></script>
+<script src="${basePath }js/layer/layer.js"></script>
 <script type="text/javascript" src="${basePath }js/front/common.js"></script>
 <!-- <script type="application/x-javascript">  -->
 <!--  	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }  -->
@@ -128,6 +129,7 @@ $(function(){
 			</li>
 			</c:forEach>
 			<li class="grid"><a href="<%=basePath%>/front/contact.action">关于我们</a></li>
+			<input type="hidden" id="userId" value="${user.id}"/>
 		</ul>
 	 </div>
 </div>

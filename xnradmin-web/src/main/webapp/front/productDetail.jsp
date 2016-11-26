@@ -28,19 +28,25 @@ function minusNum()
 				}
 	}
 function addToCart(id,money){
-	var userId = ${user.id};
-	var goodsNumber = $("#goodsNumber").val()
-	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(2));
-	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
-	$.ajax({
-		type:"POST", 
-		url:"<%=basePath%>/front/shopingCart/add.action",
-		data:{"goodsId":id,"goodsCount":goodsNumber,"clientUserId":userId,_:new Date().getTime()},
-		dataType:"json",
-		success:function(msg){
-				alert("加入成功");
-			}
-		});
+	var userId = $("#userId").val()
+	if(userId!=null&&userId!=""){
+		var goodsNumber = $("#goodsNumber").val()
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(2));
+		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
+		$.ajax({
+			type:"POST", 
+			url:"<%=basePath%>/front/shopingCart/add.action",
+			data:{"goodsId":id,"goodsCount":goodsNumber,"clientUserId":userId,_:new Date().getTime()},
+			dataType:"json",
+			success:function(msg){
+				layer.msg("加入成功");
+				}
+			});
+	}else
+		{
+			layer.msg("请先登录");
+			setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
+		}
 	
 }
 </script>
@@ -122,7 +128,7 @@ function addToCart(id,money){
 											<a href="javascript:minusNum()" class="minus-Num">-</a>
 										</span>
 									</div>
-									<span class="addCart"> <a href="javascript:addToCart(${businessGoodsVO.businessGoods.id},${businessGoodsVO.businessGoods.goodsOriginalPrice})">加入购物车</a>
+									<span class="addCart"> <a href="javascript:addToCart('${businessGoodsVO.businessGoods.id}','${businessGoodsVO.businessGoods.goodsOriginalPrice}')">购物车</a>
 									</span>
 								</div>
 							</div>

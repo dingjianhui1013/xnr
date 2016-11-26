@@ -10,7 +10,7 @@
 <%@include file="header.jsp"%>
 <script type="text/javascript">
 function addToCart(id,money){
-	var userId = ${user.id};
+	var userId = $("#userId").val();
 	if(userId!=null&&userId!=""){
 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money).toFixed(2));
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+1));
@@ -20,9 +20,13 @@ function addToCart(id,money){
 		data:{"goodsId":id,"goodsCount":1,"clientUserId":userId,_:new Date().getTime()},
 		dataType:"json",
 		success:function(msg){
-				alert("加入成功");
+			layer.msg('加入成功');
 			}
 		});
+	}else
+	{
+		layer.msg("请先登录");
+		setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
 	}
 }
 
