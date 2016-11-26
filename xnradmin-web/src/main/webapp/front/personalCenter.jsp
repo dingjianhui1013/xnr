@@ -129,7 +129,7 @@
 	}
 	function setDefault(id)
 	{
-		window.location.href="<%=basePath%>/frontsetDefault.action?setDefaultId="+id+"&receiptAddress.frontUserId=${user.id}";
+		window.location.href="<%=basePath%>/front/setDefault.action?setDefaultId="+id+"&receiptAddress.frontUserId=${user.id}";
 	}
 	function verificationEmail()
 	{
@@ -145,7 +145,7 @@
 	function modifyAddress(id){
 		$(".modifyAddress").click(function(){
 			$.ajax({
-				url:"<%=basePath%>/frontmodifyAddress.action",
+				url:"<%=basePath%>/front/modifyAddress.action",
 				type:'POST',
 				data:{"receiptAddress.id":id,"_":new Date().getTime()},
 				dataType:'JSON',
@@ -381,7 +381,7 @@
 								  	 <c:if test="${address.type==1 }"><button type="button" class="btn btn-default">默认地址</button></c:if>
 								 	 <c:if test="${address.type==0|| address.type==null}"><button type="button" class="btn btn-default" onclick="setDefault('${address.id}')">设为默认</button></c:if>
 								  	 <button type="button" class="btn btn-default modifyAddress" onclick="modifyAddress('${address.id}')">修改</button>
-								  	 <a  class="btn btn-default" href="<%=basePath%>/frontdeleteAddress.action?receiptAddress.id=${address.id}">删除</a>
+								  	 <a  class="btn btn-default" href="<%=basePath%>/front/deleteAddress.action?receiptAddress.id=${address.id}">删除</a>
 								  </div>
 								</form>
 	                		</div>
@@ -442,7 +442,7 @@
         <h4 class="modal-title" id="myModalLabel">修改地址信息</h4>
       </div>
       <div class="modal-body">
-		      <form role="form" id="mAddress" action="<%=basePath%>/frontsaveModifyAddress.action">
+		      <form role="form" id="mAddress" action="<%=basePath%>/front/saveModifyAddress.action">
 				  <div class="form-group">
 				    <label for="">收货人：</label>
 				    <input type="text" class="form-control" id="modifyReceiptName" name="receiptAddress.receiptName" placeholder="请输入收货人">
@@ -495,7 +495,7 @@
         <h4 class="modal-title" id="myModalLabel">新增收货地址</h4>
       </div>
       <div class="modal-body">
-		      <form role="form" id="addAddress" action="<%=basePath%>/frontaddAddress.action">
+		      <form role="form" id="addAddress" action="<%=basePath%>/front/addAddress.action">
 				  <div class="form-group">
 				    <label for="">收货人：</label>
 				    <input type="text" class="form-control" id="addReceiptName" name="receiptAddress.receiptName" placeholder="请输入收货人信息">

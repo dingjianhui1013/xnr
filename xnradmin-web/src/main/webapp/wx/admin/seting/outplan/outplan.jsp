@@ -29,7 +29,12 @@
 <script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 <script type="text/javascript" src="<%=path %>/js/common.js"></script>
 <script type="text/javascript">
-		
+$(function(){
+	if("${status}"==null||"${status}"==""||"${status}".val()=="0")
+		{
+			alert("请联系系统管理员，审核身份！")
+		}
+});
 		function validationPin(){
 			var goodsId = $("#goodsId").val();
  			var dateStart = $("#dateStart").val();

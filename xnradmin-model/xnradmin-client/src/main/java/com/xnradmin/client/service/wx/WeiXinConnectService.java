@@ -63,10 +63,6 @@ public class WeiXinConnectService {
   	      {
   	        String Content = requestMap.get("Content"); // 接收用户发送的文本消息内容
   	        String message = null;
-  	        log.debug("*****************");
-  	        log.debug("messge:"+Content);
-  	        log.debug("ttttttt:"+Content.startsWith("t"));
-  	        log.debug("*****************");
   	        if(Content.startsWith("t"))
   	        {
   	        	String type=Content.substring(1, Content.length());
@@ -107,6 +103,7 @@ public class WeiXinConnectService {
   	    	String event = requestMap.get("Event");
   	        if ("subscribe".equals(event))
   	        {
+  	        	String message = null;
   	        	Farmer farmer = new Farmer();
   	        	farmer.setUserId(FromUserName);
   	        	String access_Token = WXFGetTokenService.accessTokenIsOvertime();
@@ -117,20 +114,32 @@ public class WeiXinConnectService {
   	        	farmer.setUserName(userInformation.getString("nickname"));
   	        	farmer.setHeadPortrait(userInformation.getString("headimgurl"));
   	        	farmerService.saveFarmer(farmer);
-  	        	respMessage = respfText(FromUserName, ToUserName, "关注成功", "1234567890123456");
+  	        	message = "欢迎关注康源公社服务号\n"
+  	        			+ "温馨提示：\n上传图片可直接回复图片或选择菜单上传"
+   		        		+ "\n上传生产计划请选择菜单进行上传"
+   		        		+ "\n查看个人信息请选择菜单进行查看";
+  	        	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
   	        }
   	      }
   	      if (WXMsgType.REQ_MESSAGE_TYPE_IMAGE.equals(MsgType)) {
   	        String picUrl = requestMap.get(WXMessage.PICURL);
+  	        String status = farmerService.getStatus(FromUserName);
+  	        String message = null;
+  	        if(status==null||status=="0")
+  	        {
+  	        	message = "请联系系统管理员，审核身份！";
+  	        }else
+  	        {
 //  	    	wXFarmerImageService.create(FromUserName, picUrl);
-  	    	wXFarmerImageService.save(FromUserName, picUrl);
-  	    	String types = farmerService.getFenleiByUserId(FromUserName);
-  	    	List<BusinessGoods> list = businessGoodsService.getTypeNameById(types);
-  	    	StringBuffer me = new StringBuffer();
-  	    	for (BusinessGoods businessGoods : list) {
-  				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"\n");
-  			}
-  	    	String message = "请按顺序回复上传图片分类："+me.toString();
+	  	    	wXFarmerImageService.save(FromUserName, picUrl);
+	  	    	String types = farmerService.getFenleiByUserId(FromUserName);
+	  	    	List<BusinessGoods> list = businessGoodsService.getTypeNameById(types);
+	  	    	StringBuffer me = new StringBuffer();
+	  	    	for (BusinessGoods businessGoods : list) {
+	  				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"\n");
+	  			}
+	  	    	message = "请按顺序回复上传图片分类："+me.toString();
+  	        }
   	    	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
   	      }
   	    }

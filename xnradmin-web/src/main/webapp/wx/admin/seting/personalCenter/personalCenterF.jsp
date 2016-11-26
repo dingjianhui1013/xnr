@@ -34,7 +34,12 @@
     <script type="text/javascript">
     </script>
 	<script type="text/javascript" >
-	
+	$(function(){
+		if("${status}"==null||"${status}"==""||"${status}".val()=="0")
+			{
+				alert("请联系系统管理员，审核身份！")
+			}
+	})
 		function deletePlan(id){
 			var status = true;
 			//获取状态

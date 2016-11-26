@@ -70,7 +70,8 @@
 			<tr>							
 				<th width="25"">ID</th>
 				<th width="45">用户ID</th>
-				<th width="245">用户名称</th>
+				<th width="45">用户名称</th>
+				<th width="45">审核状态</th>
 				<th width="45">用户头像</th>
 				<th width="45">操作</th>
 			</tr>
@@ -82,6 +83,10 @@
 						<td>${loop.id}</td>
 						<td>${loop.userId}</td>
 						<td>${loop.userName}</td>
+						<td>
+							<c:if test="${loop.status=='0'||loop.status==null}">未审核</c:if>
+							<c:if test="${loop.status=='1'}">已审核</c:if>
+						</td>
 						<td><image src="${loop.headPortrait}64" /></td>
 						<td><a title="商品" target="dialog" href="page/wx/farmer/anthinfo.action?farmerId=${loop.id}" class="btnAuth">商品</a>
 						<a title="生成二维码" href="javascript:void(0)" class="btnSelect" onclick="generate('${loop.userId}')">生成二维码</a></td>

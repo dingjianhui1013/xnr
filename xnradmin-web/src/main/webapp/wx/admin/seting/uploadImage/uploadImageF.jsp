@@ -14,10 +14,16 @@
 <script src="<%=path %>/js/jquery-1.7.2.js" type="text/javascript"></script>
 <script src="<%=path %>/js/verifyCode.js" type="text/javascript"></script>
 <script>
-$(function(){
-	$.get("<%= path %>/page/wx/wxconnect/uploadFF.action",{userName:$("#userName").val(),userId:$("#userId").val(),_:new Date().getTime()},function (data){
-		  window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImageF.jsp";
-	  },"json");
+$(function(){ 
+	if($("#status").val()==null||$("#status").val()==""||$("#status").val()=="0")
+		{
+			alert("请联系系统管理员，进行身份审核！");
+		}else
+			{
+				$.get("<%= path %>/page/wx/wxconnect/uploadFF.action",{userName:$("#userName").val(),userId:$("#userId").val(),_:new Date().getTime()},function (data){
+					window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImageF.jsp";
+				  },"json");
+			}
 });
 </script>
 </head>
@@ -25,6 +31,7 @@ $(function(){
 	<form action="">
 		<input type="hidden" value="${userName}" id="userName"/>
 		<input type="hidden" value="${userId}" id="userId"/>
+		<input type="hidden" value="${status}" id="status"/>
 	</form>
 </body>
 </html>

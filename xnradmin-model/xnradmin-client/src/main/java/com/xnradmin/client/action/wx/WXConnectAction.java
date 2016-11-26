@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -235,7 +236,6 @@ public class WXConnectAction {
 	  
 	        // 调用核心业务类接收消息、处理消息  
 	        String respMessage = connectService.processRequest();  
-	          
 	        // 响应消息  
 	        PrintWriter out = response.getWriter();  
 	        out.print(respMessage);  
@@ -262,7 +262,7 @@ public class WXConnectAction {
 							userId.getString("UserId")), "GET", null);
 			String userName = userInformation.getString("name");
 			this.userId = userId.getString("UserId");
-//			this.status = farmerService.getStatus(userId.getString("UserId"));
+			this.status = farmerService.getStatus(userId.getString("UserId"));
 			this.userName = userName;
 
 		}
@@ -293,7 +293,7 @@ public class WXConnectAction {
 								userId.getString("openid")), "GET", null);
 			}
 			String userName = userInformation.getString("nickname");
-//			this.status = farmerService.getStatus(userId.getString("openid"));
+			this.status = farmerService.getStatus(userId.getString("openid"));
 			this.userId = userId.getString("openid");
 			this.userName = userName;
 		}
@@ -345,14 +345,17 @@ public class WXConnectAction {
 				+ "&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImageF.jsp";
 		String signature = new SHA1().getDigestOfStringX(s1.getBytes());
 		String types = farmerService.getFenleiByUserId(userId);
-    	List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
 		HttpSession session = request.getSession();
+		if(types!=null)
+		{
+			List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
+			session.setAttribute("typeNames", typeNames);
+		}
 		session.setAttribute("timep", timep);
 		session.setAttribute("noncestr", noncestr);
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
-		session.setAttribute("typeNames", typeNames);
 		session.setAttribute("skiptUrl", WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
 	}
 	
@@ -375,14 +378,17 @@ public class WXConnectAction {
 		String signature = DigestUtils.shaHex(s1);
 //		businesCategorys = outPlanService.getBusinessCategoryS();
 		String types = farmerService.getFenleiByUserId(userId);
-    	List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
 		HttpSession session = request.getSession();
 		session.setAttribute("timep", timep);
 		session.setAttribute("noncestr", noncestr);
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
-		session.setAttribute("typeNames", typeNames);
+		if(type!=null)
+		{
+			List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
+			session.setAttribute("typeNames", typeNames);
+		}
 	}
 
 	@Action(value = "ceshi",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })

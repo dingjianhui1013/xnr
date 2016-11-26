@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.xnradmin.client.service.wx.FarmerImageService;
+import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
 import com.xnradmin.client.service.wx.WeixinUtil;
@@ -43,6 +44,8 @@ public class PersonalCenterAction {
 	private FarmerImageService farmerImageService ;
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	@Autowired 
+	private FarmerService farmerService;
 	private String imageUrl;
 	private String status;
 	private String imageid;
@@ -81,6 +84,7 @@ public class PersonalCenterAction {
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
 		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
 		List<String> imagedates = farmerImageService.getImageDates(userId.getString("UserId"));
+		this.status  = farmerService.getStatus(userId.getString("UserId"));
 		for (String images : imagedates) {
 			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
@@ -109,11 +113,11 @@ public class PersonalCenterAction {
 		JSONObject userId = WeixinUtil.httpRequest(
 				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
 						.replace("CODE", code), "GET", null);
-		log.debug("userId"+userId);
 		List<OutPlanVO> outplans = outPlanService.getListByUserId(userId.getString("openid"),0,0);
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
 		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
 		List<String> imagedates = farmerImageService.getImageDates(userId.getString("openid"));
+		this.status = farmerService.getStatus(userId.getString("openid"));
 		for (String images : imagedates) {
 			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();

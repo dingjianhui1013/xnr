@@ -56,7 +56,7 @@ public class OutPlanAction extends ParentAction{
 	private List<OutPlanVO> voList;//后台列表
 	private String weightId;
 	private BusinessWeight businessWeight;
-	
+	private String status;
 	public String getRemarks() {
 		return remarks;
 	}
@@ -81,8 +81,12 @@ public class OutPlanAction extends ParentAction{
 	public void setQuery(OutPlanVO query) {
 		this.query = query;
 	}
-	
-	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public String getExamineId() {
 		return examineId;
 	}
@@ -175,6 +179,7 @@ public class OutPlanAction extends ParentAction{
 						.replace("CODE", code), "GET", null);
 		this.userId = userId.getString("UserId");
 		String types = farmerService.getFenleiByUserId(userId.getString("UserId"));
+		this.status  = farmerService.getStatus(userId.getString("UserId"));
         goodslist = businessGoodsService.getTypeNameById(types);
 		return StrutsResMSG.SUCCESS;
 	}
@@ -191,6 +196,7 @@ public class OutPlanAction extends ParentAction{
 						.replace("CODE", code), "GET", null);
 		this.userId = userId.getString("openid");
 		String types = farmerService.getFenleiByUserId(userId.getString("openid"));
+		this.status  = farmerService.getStatus(userId.getString("openid"));
         goodslist = businessGoodsService.getTypeNameById(types);
 		return StrutsResMSG.SUCCESS;
 	}

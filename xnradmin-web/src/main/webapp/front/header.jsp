@@ -78,18 +78,18 @@ $(function(){
 <div class="logoWrap">	
 	<div class="container">	
 		<div class="logo">
-			<a href="<%=basePath%>/frontindex.action">
+			<a href="<%=basePath%>/front/index.action">
 			<h1><img src="${basePath}images/front/login_logo.png" /></h1>
 			</a>
 		</div>
 		<div class="pull-left searchBox">
-			<form action="<%=basePath%>/frontsearch.action" class="form-inline" method="post">
+			<form action="<%=basePath%>/front/search.action" class="form-inline" method="post">
 			<input type="text"  name="search" placeholder="请输入搜索内容" class="searchInput"/>
 			<input type="submit" value="搜索" class="searchBtn">
 			</form>
 		</div>
 		 <div class="pull-right cart box_1">
-			 <a href="<%=basePath%>/frontshopingCart/shoppingCart.action">
+			 <a href="<%=basePath%>/front/shopingCart/shoppingCart.action">
 				<h3>
 				<div class="total">
 					<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
@@ -104,7 +104,7 @@ $(function(){
 <div class="guiderBox">
 	<div class="container">
 		<ul class="memenu skyblue pull-left">
-			<li class="active"><a href="<%=basePath%>/frontindex.action">首页</a></li>
+			<li class="active"><a href="<%=basePath%>/front/index.action">首页</a></li>
 			<c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
 				<c:forEach items="${firstBusinessCategory }" var="first">
 				<li class="grid"><a href="#"> ${ first.key.categoryName}</a>
@@ -116,7 +116,7 @@ $(function(){
 								<h4> ${ second.key.categoryName} </h4>
 								<ul>
 									<c:forEach items="${second.value }" var="threeBusinessCategory">
-									<li><a href="<%=basePath%>/frontproduct.action?productCategoryId=${threeBusinessCategory.id}&&first=${ first.key.categoryName}&&three=${ threeBusinessCategory.categoryName}">${threeBusinessCategory.categoryName }</a></li>
+									<li><a href="<%=basePath%>/front/product.action?productCategoryId=${threeBusinessCategory.id}&&first=${ first.key.categoryName}&&three=${ threeBusinessCategory.categoryName}">${threeBusinessCategory.categoryName }</a></li>
 									</c:forEach>
 								</ul>
 							</div>
@@ -127,7 +127,7 @@ $(function(){
 				</c:forEach>
 			</li>
 			</c:forEach>
-			<li class="grid"><a href="<%=basePath%>/frontcontact.action">关于我们</a></li>
+			<li class="grid"><a href="<%=basePath%>/front/contact.action">关于我们</a></li>
 		</ul>
 	 </div>
 </div>

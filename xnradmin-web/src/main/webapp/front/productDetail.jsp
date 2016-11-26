@@ -34,7 +34,7 @@ function addToCart(id,money){
 	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
 	$.ajax({
 		type:"POST", 
-		url:"<%=basePath%>/frontshopingCart/add.action",
+		url:"<%=basePath%>/front/shopingCart/add.action",
 		data:{"goodsId":id,"goodsCount":goodsNumber,"clientUserId":userId,_:new Date().getTime()},
 		dataType:"json",
 		success:function(msg){
@@ -51,7 +51,7 @@ function addToCart(id,money){
 	<div class="single-sec">
 		<div class="container">
 			<ol class="breadcrumb">
-				<li><a href="<%=basePath%>/frontindex.action">首页</a></li>
+				<li><a href="<%=basePath%>/front/index.action">首页</a></li>
 				<li class="">${productDetailVo.firstName }</li>
 <%-- 				/front/product.action?productCategoryId=${productDetailVo.firstClassification}&&first=${productDetailVo.firstName}&&three=${productDetailVo.secoundName} --%>
 				<li class="">${productDetailVo.secoundName }</li>
@@ -257,7 +257,7 @@ function addToCart(id,money){
 						<div class="single-bottom">
 						<c:forEach items="${rc.value}" var="rcv">
 							
-							<a href="<%=basePath%>/frontproductDetail.action?goodsId=${rcv.id}"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>${rcv.goodsName }</span></a>
+							<a href="<%=basePath%>/front/productDetail.action?goodsId=${rcv.id}"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>${rcv.goodsName }</span></a>
 						</c:forEach>
 						</div>
 					</c:forEach>

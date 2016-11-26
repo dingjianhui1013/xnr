@@ -15,15 +15,15 @@
 <script src="<%=path %>/js/verifyCode.js" type="text/javascript"></script>
 <script>
 $(function(){
-// 	if(status==null||status=="0")
-// 		{
-// 			alert("您的账号没有通过审核，请联系管理员！");
-// 		}else
-// 			{
+	if($("#status").val()==null||$("#status").val()==""||$("#status").val()=="0")
+	{
+		alert("请联系系统管理员，进行身份审核！");
+	}else
+		{
 				$.get("<%= path %>/page/wx/wxconnect/uploadF.action",{userName:$("#userName").val(),userId:$("#userId").val(),_:new Date().getTime()},function (data){
 					  window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImage.jsp";
 				  },"json");
-// 			}
+			}
 });
 </script>
 </head>

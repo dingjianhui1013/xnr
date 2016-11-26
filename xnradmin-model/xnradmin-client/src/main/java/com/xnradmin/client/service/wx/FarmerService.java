@@ -85,7 +85,11 @@ public class FarmerService {
 	public String getFenleiByUserId(String userId){
 		String hql = "select types from Farmer where userId='"+userId+"'";
 		List types = (List)commonDao.getEntityByPropertiesWithHql(hql);
-		String s = types==null?"":(String)types.get(0);
+		String s=null;
+		if(!types.isEmpty())
+		{
+			s = types==null?"":(String)types.get(0);
+		}
 		return s;
 }
 	public String[] getFenleisByUserId(String userId){
@@ -171,8 +175,13 @@ public class FarmerService {
 
 	public String getStatus(String userId) {
 		String hql = "from Farmer where userId='"+userId+"'";
-		Farmer farmer = ((List<Farmer>)commonDao.getEntityByPropertiesWithHql(hql)).get(0);
-		String status = farmer.getStatus();
+		List<Farmer> list= (List<Farmer>)commonDao.getEntityByPropertiesWithHql(hql);
+		String status = null;
+		if(!list.isEmpty())
+		{
+			Farmer farmer = list.get(0);
+			status = farmer.getStatus();
+		}
 		return status;
 	}
 }
