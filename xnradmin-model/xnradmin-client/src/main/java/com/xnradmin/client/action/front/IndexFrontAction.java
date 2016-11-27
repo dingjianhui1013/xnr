@@ -157,13 +157,10 @@ public class IndexFrontAction  {
 		this.productList = indexFrontService.listBusinessGoodsByCategoryId(productCategoryId);
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 //		this.indexGoods = indexFrontService.listBusinessGoodsVO();
-		try {
-			this.first = new String(this.first.getBytes("iso-8859-1"),"UTF-8"); 
-			this.three = new String(this.three.getBytes("iso-8859-1"),"UTF-8"); 
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//			this.first = new String(this.first.getBytes("iso-8859-1"),"UTF-8"); 
+//			this.three = new String(this.three.getBytes("iso-8859-1"),"UTF-8"); 
+		this.first = first;
+		this.three = three;
 		return StrutsResMSG.SUCCESS;
 	}
 	/**

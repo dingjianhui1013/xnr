@@ -182,11 +182,6 @@ public class FrontUserAction {
 	@Action(value = "saveForm",results = {@Result(name = StrutsResMSG.SUCCESS, type = "redirect",location="/front/personalCenter.action")})
     public String saveForm() {
 		
-		try {
-			user.setUserName(new String(user.getUserName().getBytes("iso-8859-1"),"UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} 
 		boolean a = frontUserService.modifyName(user);
 		if(a){
 			((FrontUser)(ServletActionContext.getRequest().getSession().getAttribute("user"))).setUserName(user.getUserName());

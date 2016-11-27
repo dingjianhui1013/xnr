@@ -230,7 +230,6 @@
 								    		<input name="user.userName" type="text" value="${user.userName }" class="pull-left form-control"/>
 								    		<input type="submit"  class="form-control-static pull-left saveUserName" value="[保存]"/>
 								    	</span>
-								    	
 								    </p>
 								 </div>
 							    <p></p>

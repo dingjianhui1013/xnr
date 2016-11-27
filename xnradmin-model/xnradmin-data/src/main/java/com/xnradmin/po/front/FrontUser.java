@@ -13,9 +13,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * FrontUser entity. @author MyEclipse Persistence Tools
- */
 @Entity
 @Table(name = "front_user")
 public class FrontUser implements java.io.Serializable {
