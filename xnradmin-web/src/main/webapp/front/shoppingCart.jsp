@@ -285,7 +285,7 @@ function modefyToCart(id){
 			 		<li class="totalCol">
 			 			<a href="${basePath}/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
 			 			<div class="pull-right totalMoney">
-				 			<p>总价:￥<span class="t-money" id="totalprices"> </span></p>
+				 			<p>总价:￥<span class="t-money" id="totalprices"> 0</span></p>
 				 			<!-- <p>已节省:-￥120.00</p> -->
 			 			</div>
 			 		</li>
