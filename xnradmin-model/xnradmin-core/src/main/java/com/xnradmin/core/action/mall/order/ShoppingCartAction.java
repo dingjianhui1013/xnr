@@ -89,7 +89,7 @@ public class ShoppingCartAction extends ParentAction {
 	private Status status;
 	private Goods goods;
 	private String userId;
-	private Map<Float,Integer> count_number;
+	private Map<String,Integer> count_number;
 	public ShoppingCartService getShoppingCartService() {
 		return shoppingCartService;
 	}
@@ -324,11 +324,11 @@ public class ShoppingCartAction extends ParentAction {
 		this.userId = userId;
 	}
 
-	public Map<Float, Integer> getCount_number() {
+	public Map<String, Integer> getCount_number() {
 		return count_number;
 	}
 
-	public void setCount_number(Map<Float, Integer> count_number) {
+	public void setCount_number(Map<String, Integer> count_number) {
 		this.count_number = count_number;
 	}
 
