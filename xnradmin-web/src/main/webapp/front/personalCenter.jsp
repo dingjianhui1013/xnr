@@ -521,7 +521,7 @@
 					    	<option value="济南县区">济南县区</option>
 					    </select>
 				    </div>
-				    <input type="text" class="form-control detailAddress" id="addDetailAddress" name ="receiptAddress.detailAddress" placeholder="请输入详情地址" />
+				    <input type="text" class="form-control detailAddress" id="addDetailAddress" name ="receiptAddress.detailedAddress" placeholder="请输入详情地址" />
 				  	<span style="color: red;font-size: 10px" id="addDeailError"></span>
 				  </div>
 				  <div class="form-group">

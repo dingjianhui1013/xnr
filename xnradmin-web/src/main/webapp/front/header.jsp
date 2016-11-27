@@ -27,7 +27,7 @@
 <script type="text/javascript">
 $(function(){
 	$.ajax({
-		url:"/page/wx/admin/order/shoppingCart/getTotalAndNumber.action",
+		url:"${basePath}/page/wx/admin/order/shoppingCart/getTotalAndNumber.action",
 		type:"POST",
 		data:{"userId":'${user.id}'},
 		dataType:"JSON",

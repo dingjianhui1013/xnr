@@ -218,7 +218,7 @@ function delfromCart(id){
 			 	<ul class="cart-con">
 			 		<!-- <li class="checkCol"><input type="checkbox" />全选</li> -->
 			 		<li class="totalCol">
-			 			<a href="/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
+			 			<a href="${basePath}/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
 			 			<div class="pull-right totalMoney">
 				 			<p>总价:￥<span class="t-money" id="totalprices"><fmt:formatNumber type="number" value="${totalprices }" pattern="0.0" maxFractionDigits="1"/> </span></p>
 				 			<!-- <p>已节省:-￥120.00</p> -->
