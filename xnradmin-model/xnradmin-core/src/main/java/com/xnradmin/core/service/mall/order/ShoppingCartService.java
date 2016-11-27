@@ -413,5 +413,13 @@ public class ShoppingCartService {
 		count_number.put(count, number);
 		return count_number;
 	}
-
+	public boolean modifyCount(String cartId,Integer goodsCount,Float totalPrice){
+		String hql = "update ShoppingCart set goodsCount="+goodsCount+",totalPrice="+totalPrice+" where id="+cartId;
+		try {
+			commonDao.executeUpdateOrDelete(hql);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

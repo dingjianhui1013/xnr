@@ -88,10 +88,18 @@ public class CartAction extends ParentAction {
 	private boolean delStatus;//删除购物车
 	private List<BusinessGoodsCartVo> cartVoList;
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;//导航菜单
+	private String cartId;//修改购物车数量
+	
+	
+	
 
-	
-	
-	
+	public String getCartId() {
+		return cartId;
+	}
+
+	public void setCartId(String cartId) {
+		this.cartId = cartId;
+	}
 
 	public List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> getAllBusinessCategorys() {
 		return allBusinessCategorys;
@@ -387,6 +395,7 @@ public class CartAction extends ParentAction {
 	public String modify() throws Exception {
 		log.debug("modif action!");
 		log.debug("modify shoppingCart: " + shoppingCartId);
+		
 		// 取得当前登录人信息
 		/*if(!StringHelper.isNull(uid) && !StringHelper.isNull(goodsId) && !StringHelper.isNull(shoppingCartId)
 				&& !StringHelper.isNull(goodsCount)){
@@ -415,7 +424,12 @@ public class CartAction extends ParentAction {
 		}*/
 		return StrutsResMSG.SUCCESS;
 	}
-
+	@Action(value = "modifyCount", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
+	public String modifyCount(){
+		shoppingCartService.modifyCount(this.cartId,this.goodsCount,this.totalPrice);
+		return StrutsResMSG.SUCCESS;
+	}
+	
 	@Action(value = "del", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
 	public String del() throws IOException, JSONException {
 		if(null!=ServletActionContext.getRequest().getSession().getAttribute("user")){

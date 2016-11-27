@@ -14,21 +14,21 @@
 function add(a, b) {
 	var  c=a+b;
 	var d=c.toFixed(1);	
-	return d;
+	return Number(d);
 }
 
 function sub(a, b) {
 	var  c=a-b;
 	var d=c.toFixed(1);	
-	return d;
+	return Number(d);
 }
 
 function plusNum(id)
 {		var price = Number($("#price"+id).html());  
 		var xiaoji = Number($("#xiaoji"+id).html());
-		var totalprices = Number($("#totalprices").html());
+		//var totalprices = Number($("#totalprices").html());
 		
-		var totalpricesNew = add(totalprices,price);
+		//var totalpricesNew = add(totalprices,price);
 		var xiaojiNew = add(xiaoji,price);
 // 		alert(totalpricesNew);
 // 		if(Number.isInteger(totalpricesNew) ){
@@ -37,24 +37,27 @@ function plusNum(id)
 // 		if(Number.isInteger(xiaojiNew) ){
 // 			xiaojiNew = xiaojiNew+".0"
 // 		}
-		$("#totalprices").html(totalpricesNew);
+		//$("#totalprices").html(totalpricesNew);
+		
 		$("#xiaoji"+id).html(xiaojiNew);
 		var index = $("#count"+id).val();
 		index++;
-		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+Number(price)).toFixed(2));
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+Number(price)).toFixed(1));
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(1)));
 		$("#count"+id).val(index);
+		modefyToCart(id);
+		totalprice();
 }
 function minusNum(id)
-{		var price = Number.parseFloat($("#price"+id).html());
-		var xiaoji = Number.parseFloat($("#xiaoji"+id).html());
-		var totalprices = Number.parseFloat($("#totalprices").html());
+{		var price = Number($("#price"+id).html());
+		var xiaoji = Number($("#xiaoji"+id).html());
+		//var totalprices = Number($("#totalprices").html());
 		
 		var index = $("#count"+id).val();
 		index--;
 		if(index>=1)
 			{
-				var totalpricesNew = sub(totalprices,price);
+				//var totalpricesNew = sub(totalprices,price);
 				var xiaojiNew = sub(xiaoji,price);
 // 				if(Number.isInteger(totalpricesNew) ){
 // 					totalpricesNew = totalpricesNew+".0"
@@ -62,15 +65,18 @@ function minusNum(id)
 // 				if(Number.isInteger(xiaojiNew) ){
 // 					xiaojiNew = xiaojiNew+".0"
 // 				}
-				$("#totalprices").html(totalpricesNew);
+				//$("#totalprices").html(totalpricesNew);
+				
 				$("#xiaoji"+id).html(xiaojiNew);
 				$("#count"+id).val(index);
 				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(2));
 				$("#simpleCart_number").html((Number($("#simpleCart_number").html())-Number(1)));
+				modefyToCart(id);
 			}else
 				{
 				$("#count"+id).val(1);
 				}
+		totalprice();
 }
 
 
@@ -91,9 +97,57 @@ function delfromCart(id){
 	var index = Number($("#count"+id).val());
 	var totalpricesNew = Number($("#totalprices").html())-price*index;
 	$("#totalprices").html(totalpricesNew);
+	totalprice();
 }
 
-
+//计算总价格
+function totalprice(){
+	var totalprice = 0;
+	$('input:checkbox:checked').each(function(i){
+		if($(this).attr("id")!="checkAll"){
+		var cartId = ($(this).attr("cartId"));
+		var xiaoji = Number($("#xiaoji"+cartId).html());
+		totalprice = add(totalprice,xiaoji);
+		}
+	});
+	$("#totalprices").html(totalprice);
+}
+//计算全选价格
+function totalpriceAll(obj){
+	var totalprice = 0;
+	//alert(obj.checked);
+	if(obj.checked==true){
+		$('input:checkbox').each(function(i){
+			if($(this).attr("id")!="checkAll"){
+			var cartId = ($(this).attr("cartId"));
+			var xiaoji = Number($("#xiaoji"+cartId).html());
+			totalprice = add(totalprice,xiaoji);
+			}
+		});	
+	}
+	
+	$("#totalprices").html(totalprice);
+}
+//修改数据库，购物车的商品数量和小计
+function modefyToCart(id){
+	var userId = $("#userId").val();
+	var count = $("#count"+id).val();
+	var xiaoji = Number($("#xiaoji"+id).html());
+	if(userId!=null&&userId!=""){
+		$.ajax({
+			type:"POST", 
+			url:"<%=basePath%>/front/shopingCart/modifyCount.action",
+			data:{"cartId":id,"goodsCount":count,"totalPrice":xiaoji,_:new Date().getTime()},
+			dataType:"json",
+			success:function(msg){
+				}
+			});
+	}else
+	{
+		layer.msg("请先登录");
+		setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
+	}
+}
 </script>
 
 <body> 
@@ -113,7 +167,7 @@ function delfromCart(id){
 					 <!--pc端购物车-->
 					 <div class="in-check">
 						  <ul class="unit">
-							<li class="checkCol"><label for="checkAll" id="checkALLBtn"><input type="checkbox" id="checkAll"/>全选</label>
+							<li class="checkCol"><label for="checkAll" id="checkALLBtn"><input type="checkbox" id="checkAll" onclick="totalpriceAll(this)"/>全选</label>
 							</li>
 							<li class="productCol"><span>商品</span></li>		
 							<li><span>单价</span></li>
@@ -123,11 +177,10 @@ function delfromCart(id){
 							<div class="clearfix"> </div>
 						  </ul>
 						  <div class="cartListBox">
-						  <c:set var="totalprices" value="0" />
 						  <c:forEach items="${cartVoList}" var="cartVo" varStatus="status">
 						  
 								<ul class="cart-header"id="test">
-								<li class="checkCol"><input type="checkbox" /></ >
+								<li class="checkCol"><input type="checkbox" cartId="${cartVo.cart.id }" onclick="totalprice()"/>
 								<li class="productCol">
 									<a href="/front/productDetail.action?goodsId=${cartVo.goods.id}" >
 										<img src="${basePath }${cartVo.goods.goodsLogo}" class="pull-left img-responsive" alt=""></a>
@@ -147,7 +200,6 @@ function delfromCart(id){
 								<li><span><a href="javascript:delfromCart(${cartVo.cart.id})" class="delBtn1">删除</a></span></li>
 								<div class="clearfix"> </div>
 								</ul>
-							 <c:set var="totalprices" value="${totalprices+cartVo.cart.totalPrice }"/>	
 							</c:forEach>	
 						  </div>
 					 </div>
@@ -220,7 +272,7 @@ function delfromCart(id){
 			 		<li class="totalCol">
 			 			<a href="${basePath}/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
 			 			<div class="pull-right totalMoney">
-				 			<p>总价:￥<span class="t-money" id="totalprices"><fmt:formatNumber type="number" value="${totalprices }" pattern="0.0" maxFractionDigits="1"/> </span></p>
+				 			<p>总价:￥<span class="t-money" id="totalprices"> </span></p>
 				 			<!-- <p>已节省:-￥120.00</p> -->
 			 			</div>
 			 		</li>
