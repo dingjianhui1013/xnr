@@ -3,7 +3,9 @@
  */
 package com.xnradmin.core.service.mall.order;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -87,6 +89,12 @@ public class ShoppingCartService {
 			resList.add(businessGoodsCartVo);
 		}
 		return resList;
+
+	}
+	public List<ShoppingCart> findBygoodsCount(String goodsId,Integer userId){
+		String hql = "from ShoppingCart cart  where cart.goodsId = '"+goodsId+"' and cart.clientUserId = " + userId;
+		List<ShoppingCart> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		return list;
 
 	}
 	
@@ -399,18 +407,26 @@ public class ShoppingCartService {
 	public List<ShoppingCart> listAll() {
 		return dao.findAll();
 	}
-	public Map<Float, Integer> getCartMoney(String userId)
+	public Map<String, Integer> getCartMoney(String userId)
 	{
 		Float count = 0F;
 		Integer number = 0;
-		Map<Float, Integer> count_number = new HashMap<Float, Integer>();
+		Map<String, Integer> count_number = new HashMap<String, Integer>();
 		String hql = "from ShoppingCart where clientUserId = '"+userId+"'";
 		List<ShoppingCart> list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
-		for (ShoppingCart shoppingCart : list) {
-			count+=shoppingCart.getTotalPrice();
-			number+=shoppingCart.getGoodsCount();
+		if(list.isEmpty())
+		{
+			count_number.put("0.00", number);
+		}else
+		{
+			for (ShoppingCart shoppingCart : list) {
+				count+=shoppingCart.getTotalPrice();
+				number+=shoppingCart.getGoodsCount();
+			}
+			DecimalFormat df = new DecimalFormat("#.00");
+			count_number.put(df.format(count).toString(), number);
 		}
-		count_number.put(count, number);
+		
 		return count_number;
 	}
 	public boolean modifyCount(String cartId,Integer goodsCount,Float totalPrice){

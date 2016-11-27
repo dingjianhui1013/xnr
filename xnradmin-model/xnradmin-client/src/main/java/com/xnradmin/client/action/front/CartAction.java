@@ -334,25 +334,50 @@ public class CartAction extends ParentAction {
 	 */
 	@Action(value = "add", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
 	public String add() throws Exception {
-		ShoppingCart po = new ShoppingCart();
+		
 		if(!StringHelper.isNull(clientUserId) && !StringHelper.isNull(goodsId) &&!StringHelper.isNull(goodsCount.toString())){
 			FrontUser frontUser = userService.findByid(clientUserId);
 			BusinessGoods goods = goodsService.findByid(goodsId);
 			if(frontUser!=null && goods!=null && frontUser.getId()!=null){
-				po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
-				po.setGoodsId(goods.getId());
-				po.setGoodsCount(goodsCount);
 				
+				List<ShoppingCart> list = shoppingCartService.findBygoodsCount(goodsId, Integer.parseInt(frontUser.getId().toString()));
+				if(!list.isEmpty())
+				{
+					int count = list.get(0).getGoodsCount();
+					ShoppingCart po = list.get(0);
+					po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
+					po.setGoodsId(goods.getId());
+					po.setGoodsCount(goodsCount+count);
+					
+					
+					po.setCurrentPrice(goods.getGoodsOriginalPrice());
+					po.setTotalPrice(list.get(0).getTotalPrice()+(goods.getGoodsOriginalPrice()*goodsCount));
+					po.setCurrentPriceType(121);
+					
+					po.setOriginalPrice(goods.getGoodsOriginalPrice());
+					po.setOriginalTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
+					po.setPrimaryConfigurationId(1);
+					po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
+					int res = shoppingCartService.modify(po);
+				}else
+				{
+					ShoppingCart po = new ShoppingCart();
+					po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
+					po.setGoodsId(goods.getId());
+					po.setGoodsCount(goodsCount);
+					
+					
+					po.setCurrentPrice(goods.getGoodsOriginalPrice());
+					po.setTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
+					po.setCurrentPriceType(121);
+					
+					po.setOriginalPrice(goods.getGoodsOriginalPrice());
+					po.setOriginalTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
+					po.setPrimaryConfigurationId(1);
+					po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
+					int res = shoppingCartService.save(po);
+				}
 				
-				po.setCurrentPrice(goods.getGoodsOriginalPrice());
-				po.setTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
-				po.setCurrentPriceType(121);
-				
-				po.setOriginalPrice(goods.getGoodsOriginalPrice());
-				po.setOriginalTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
-				po.setPrimaryConfigurationId(1);
-				po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
-				int res = shoppingCartService.save(po);
 				//如果用户已经添加过这个商品，就把这个商品数量加1
 				/*if(res==1){
 					List<ShoppingCart> poList = shoppingCartService.webList(clientUserInfo.getId().toString(), 
