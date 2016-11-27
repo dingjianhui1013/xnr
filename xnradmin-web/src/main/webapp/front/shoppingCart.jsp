@@ -11,6 +11,7 @@
 
 </head>
 <script type="text/javascript">
+
 function add(a, b) {
 	var  c=a+b;
 	var d=c.toFixed(1);	
@@ -83,7 +84,7 @@ function minusNum(id)
 
 function delfromCart(id){
 	var userId = $("#userId");
-	
+	var totalpriceAll = 0;
 	$.ajax({
 		type:"POST", 
 		url:"/front/shopingCart/del.action",
@@ -95,9 +96,21 @@ function delfromCart(id){
 		});
 	var price = Number($("#price"+id).html());
 	var index = Number($("#count"+id).val());
-	var totalpricesNew = Number($("#totalprices").html())-price*index;
-	$("#totalprices").html(totalpricesNew);
+	$("#ul"+id).remove();
+	
+	//var totalpricesNew = Number($("#totalprices").html())-price*index;
+	//$("#totalprices").html(totalpricesNew);
 	totalprice();
+	//计算总价
+	$('input:checkbox').each(function(i){
+		if($(this).attr("id")!="checkAll"){
+		var cartId = ($(this).attr("cartId"));
+		var xiaoji = Number($("#xiaoji"+cartId).html());
+		totalpriceAll = add(totalpriceAll,xiaoji);
+		}
+	});
+	$("#simpleCart_total").html(totalpriceAll);
+	$("#simpleCart_number").html((Number($("#simpleCart_number").html())-index));
 }
 
 //计算总价格
@@ -179,7 +192,7 @@ function modefyToCart(id){
 						  <div class="cartListBox">
 						  <c:forEach items="${cartVoList}" var="cartVo" varStatus="status">
 						  
-								<ul class="cart-header"id="test">
+								<ul class="cart-header" id="ul${cartVo.cart.id }">
 								<li class="checkCol"><input type="checkbox" cartId="${cartVo.cart.id }" onclick="totalprice()"/>
 								<li class="productCol">
 									<a href="/front/productDetail.action?goodsId=${cartVo.goods.id}" >
