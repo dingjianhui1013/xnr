@@ -134,6 +134,8 @@ public class FrontUserAction {
 			HttpSession session = ServletActionContext.getRequest().getSession();
 			session.setAttribute("user", frontUser);
 //			CookieHelper.addCookie(ServletActionContext.getResponse(), "user", frontUser.getUserName(), 365 * 24 * 60 * 60);
+			//cookie购物车入库
+			
 			return StrutsResMSG.SUCCESS;
 		}
     }

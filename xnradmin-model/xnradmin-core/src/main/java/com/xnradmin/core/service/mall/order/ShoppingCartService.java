@@ -12,12 +12,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
+import com.mongodb.util.JSON;
 import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.dao.CommonDAO;
@@ -91,6 +95,32 @@ public class ShoppingCartService {
 		return resList;
 
 	}
+	
+	public List<BusinessGoodsCartVo> cookieToVo(String cookie){
+		List<BusinessGoodsCartVo> resList = new LinkedList<BusinessGoodsCartVo>();
+		JSONArray json = JSONArray.fromObject(cookie );
+		if(json.size()>0){
+		   for(int i=0;i<json.size();i++){
+		    JSONObject job = json.getJSONObject(i);  // 
+		    BusinessGoodsCartVo businessGoodsCartVo = new BusinessGoodsCartVo();
+		    ShoppingCart shoppingCart = new ShoppingCart();
+		    shoppingCart.setGoodsId(Integer.parseInt(job.get("goodsId").toString()));
+		    shoppingCart.setGoodsCount(Integer.parseInt(job.get("goodsCount").toString()));
+		    String hql = "from BusinessGoods good  where id= "+job.get("goodsId");
+		    List<BusinessGoods> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		    BusinessGoods businessGoods = list.get(0);
+		    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+		    businessGoodsCartVo.setCart(shoppingCart);
+		    businessGoodsCartVo.setGoods(businessGoods);
+		    resList.add(businessGoodsCartVo);
+		  }
+		}
+		
+		return resList;
+
+	}
+	
+	
 	public List<ShoppingCart> findBygoodsCount(String goodsId,Integer userId){
 		String hql = "from ShoppingCart cart  where cart.goodsId = '"+goodsId+"' and cart.clientUserId = " + userId;
 		List<ShoppingCart> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);

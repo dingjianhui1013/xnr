@@ -34,9 +34,9 @@ function addToCart(obj,money){
 	var userId = $("#userId").val();
 	var id = $(obj).attr("id").substring(3);
 	var count = $("#count"+id).val();
+	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
+	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
 	if(userId!=null&&userId!=""){
-		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
-		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
 		$.ajax({
 			type:"POST", 
 			url:"<%=basePath%>/front/shopingCart/add.action",
@@ -48,12 +48,35 @@ function addToCart(obj,money){
 			});
 	}else
 	{
-		layer.msg("请先登录");
-		setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
+		//layer.msg("请先登录");
+		//setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
+		var cart = getCartCookie();
+		
+		var item=new Object();
+		item.cookieId = getUuid();
+		item.goodsId = id;
+		item.goodsCount = count;
+		item.price = Number($("#price"+id).val());
+		cart.push(item);
+		$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
+		layer.msg("加入成功");
 	}
 }
 
-
+function getCartCookie(){
+	var cartCookie = $.cookie('cart')//拿到cookie
+	if(cartCookie==null||cartCookie==""){
+		var cartCookie = [];
+		return cartCookie;
+	}
+	return JSON.parse(cartCookie); 
+}
+function getUuid(){
+	  var len=32;//32长度
+	  var radix=16;//16进制
+	  var chars='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');var uuid=[],i;radix=radix||chars.length;if(len){for(i=0;i<len;i++)uuid[i]=chars[0|Math.random()*radix];}else{var r;uuid[8]=uuid[13]=uuid[18]=uuid[23]='-';uuid[14]='4';for(i=0;i<36;i++){if(!uuid[i]){r=0|Math.random()*16;uuid[i]=chars[(i==19)?(r&0x3)|0x8:r];}}}
+	  return uuid.join('');
+}
 </script>
 
 
@@ -98,6 +121,7 @@ function addToCart(obj,money){
 							<div class="product-info-cust prt_name">
 								<h4><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">${product.businessGoods.goodsName} </a></h4>
 								<p><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">农场出品，清脆爽口</a></p>
+								<input id="price${product.businessGoods.id}" type="hidden" value="${product.businessGoods.goodsOriginalPrice }"/>
 								<p class="item_price">￥${product.businessGoods.goodsOriginalPrice }/${product.businessWeight.weightName }</p>
 								<div class="addCartBox">	
 									<div class="addNum">						
