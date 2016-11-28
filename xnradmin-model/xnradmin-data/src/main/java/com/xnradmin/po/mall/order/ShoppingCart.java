@@ -49,6 +49,7 @@ public class ShoppingCart implements java.io.Serializable{
     private Integer primaryConfigurationId; //对应商城ID
 	
     private Timestamp shoppingCartTime; //生成时间 
+    private String cookieCartId;//cookie
     
     /** default constructor */
     public ShoppingCart(){
@@ -163,6 +164,14 @@ public class ShoppingCart implements java.io.Serializable{
 
 	public void setOriginalTotalPrice(Float originalTotalPrice) {
 		this.originalTotalPrice = originalTotalPrice;
+	}
+	@Column(name = "cookie_cart_id")
+	public String getCookieCartId() {
+		return cookieCartId;
+	}
+
+	public void setCookieCartId(String cookieCartId) {
+		this.cookieCartId = cookieCartId;
 	}
 	
 	

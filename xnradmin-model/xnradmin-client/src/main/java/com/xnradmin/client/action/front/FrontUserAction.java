@@ -2,9 +2,11 @@ package com.xnradmin.client.action.front;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -135,6 +137,13 @@ public class FrontUserAction {
 			session.setAttribute("user", frontUser);
 //			CookieHelper.addCookie(ServletActionContext.getResponse(), "user", frontUser.getUserName(), 365 * 24 * 60 * 60);
 			//cookie购物车入库
+			Cookie cookieByName = CookieHelper.getCookieByName(ServletActionContext.getRequest(), "cart");
+			if(null != cookieByName){
+				String cookieCart = cookieByName.getValue();
+				if(null!=cookieCart&&!"".equals(cookieCart)){
+					cookieCart = URLDecoder.decode(cookieCart);
+				}
+			}
 			
 			return StrutsResMSG.SUCCESS;
 		}

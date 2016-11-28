@@ -53,7 +53,7 @@ $(function(){
 		{
 			var item = cart[x];
 			count = count + Number(item.goodsCount);
-			totalPrice = totalPrice+item.price*count;
+			totalPrice = totalPrice+item.price*Number(item.goodsCount);
 		}
 		$("#simpleCart_total").html(totalPrice);
 		$("#simpleCart_number").html(count)
