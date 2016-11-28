@@ -378,7 +378,7 @@
 								  </div>
 								  <div class="editBox">
 								  	 <c:if test="${address.type==1 }"><button type="button" class="btn btn-default">默认地址</button></c:if>
-								 	 <c:if test="${address.type==0|| address.type==null}"><button type="button" class="btn btn-default" onclick="setDefault('${address.id}')">设为默认</button></c:if>
+								 	 <c:if test="${address.type==0 || address.type==null}"><button type="button" class="btn btn-default" onclick="setDefault('${address.id}')">设为默认</button></c:if>
 								  	 <button type="button" class="btn btn-default modifyAddress" onclick="modifyAddress('${address.id}')">修改</button>
 								  	 <a  class="btn btn-default" href="<%=basePath%>/front/deleteAddress.action?receiptAddress.id=${address.id}">删除</a>
 								  </div>

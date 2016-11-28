@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
+import com.sun.webkit.dom.RectImpl;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
@@ -236,5 +237,11 @@ public class IndexFrontService {
 				+ receiptAddress.getDetailedAddress() + "' where id ="
 				+ receiptAddress.getId();
 		commonDao.executeUpdateOrDelete(hql);
+	}
+
+	public List<ReceiptAddress> findAddress(Long frontUserId) {
+		String hql = "from ReceiptAddress where frontUserId = "+frontUserId;
+		List<ReceiptAddress> list = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		return list;
 	}
 }

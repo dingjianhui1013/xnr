@@ -182,6 +182,14 @@ public class IndexFrontAction  {
 	@Action(value="addAddress",results = {@Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/front/personalCenter.action",params = {"flag", "address" })})
 	public String addAddress()
 	{
+		List<ReceiptAddress> list =  indexFrontService.findAddress(receiptAddress.getFrontUserId());
+		if(list.isEmpty())
+		{
+			receiptAddress.setType("1");
+		}else
+		{
+			receiptAddress.setType("0");
+		}
 		indexFrontService.saveAddress(receiptAddress);
 		return StrutsResMSG.SUCCESS;
 	}

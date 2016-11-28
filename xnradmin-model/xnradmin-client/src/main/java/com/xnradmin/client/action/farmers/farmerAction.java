@@ -40,6 +40,7 @@ public class farmerAction extends ParentAction{
 	@Autowired BusinessGoodsService  businessGoodsService;
 	@Autowired
 	private FarmerImageService farmerImageService;
+	private String status;
 	public List<BusinessGoods> getAllBusinessGoods() {
 		return allBusinessGoods;
 	}
@@ -87,6 +88,12 @@ public class farmerAction extends ParentAction{
 	}
 	public void setFarmerImages(List<FarmerImage> farmerImages) {
 		this.farmerImages = farmerImages;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	@Override
 	public boolean isPublic() {
@@ -137,4 +144,24 @@ public class farmerAction extends ParentAction{
 		farmerImages = farmerImageService.findFarmerImage(farmerId, goodsId);
 		return StrutsResMSG.SUCCESS;
 	}
+	@Action(value="examine",results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String examine()
+	{
+		try {
+			farmerService.examineUser(farmerId,status);
+			super.success(null, null, "FarmerManagement",null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			try {
+				super.error("系统异常");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	 
 }
