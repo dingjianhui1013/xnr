@@ -86,10 +86,14 @@
 						<td>
 							<c:if test="${loop.status=='0'||loop.status==null}">未审核</c:if>
 							<c:if test="${loop.status=='1'}">已审核</c:if>
+							<c:if test="${loop.status=='2'}">拒绝审核</c:if>
 						</td>
 						<td><image src="${loop.headPortrait}64" /></td>
 						<td><a title="商品" target="dialog" href="page/wx/farmer/anthinfo.action?farmerId=${loop.id}" class="btnAuth">商品</a>
-						<a title="生成二维码" href="javascript:void(0)" class="btnSelect" onclick="generate('${loop.userId}')">生成二维码</a></td>
+						<a title="生成二维码" href="javascript:void(0)" class="btnEdit" onclick="generate('${loop.userId}')">生成二维码</a>
+						<a title="通过审核" target="ajaxTodo" href="/page/wx/farmer/examine.action?farmerId=${loop.id}&status=1" class="btnSelect" >通过审核</a>
+						<a title="拒绝审核" target="ajaxTodo" href="/page/wx/farmer/examine.action?farmerId=${loop.id}&status=2" class="btnDel" >拒接审核</a>
+						</td>
 					</tr>				
 				</c:forEach>
 			</c:if>			

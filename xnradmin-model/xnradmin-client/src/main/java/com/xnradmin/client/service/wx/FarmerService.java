@@ -184,4 +184,9 @@ public class FarmerService {
 		}
 		return status;
 	}
+
+	public void examineUser(String farmerId, String status) {
+		String hql = "update Farmer set status = '"+status+"' where id="+farmerId;
+		commonDao.executeUpdateOrDelete(hql);
+	}
 }
