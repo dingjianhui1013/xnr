@@ -90,6 +90,10 @@ h1.b1,h2.b2,h3.b3 {
 	color:#333;
 }
 .regtipsBox{ text-align: center; padding:5rem 2rem;border:1px solid #ddd; font-size: 1.6rem;}
+.searchTips{ width:40%; margin:0px auto; padding:10rem 2rem}
+.searchTips p{margin-bottom:0.6rem;}
+.searchTipsNav{margin:1rem; padding:1rem; font-size:1.4rem; border-bottom:1px solid #ddd; }
+.searchTipsNav span{color:#e4393c; font-weight:bold;}
 .tipsBtnBox{margin-top: 2rem;}
 .regtipsBox p{margin-bottom: 1rem;}
 .top_left{

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -85,7 +86,7 @@ $(function(){
 		</div>
 		<div class="pull-left searchBox">
 			<form action="<%=basePath%>/front/search.action" class="form-inline" method="post">
-			<input type="text"  name="search" placeholder="请输入搜索内容" class="searchInput"/>
+			<input type="text"  name="search" value="${search }" placeholder="请输入搜索内容" class="searchInput"/>
 			<input type="submit" value="搜索" class="searchBtn">
 			</form>
 		</div>

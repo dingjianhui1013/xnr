@@ -60,12 +60,28 @@ function addToCart(obj,money){
 <body>
 <div class="product-model">	 
 	 <div class="container">
+		 <c:if test="${!empty first && !empty three}">
 			<ol class="breadcrumb">
 				  <li><a href="index.action">首页</a></li>
 				  <li class="">${first}</li>
 				  <li class="">${three}</li>
-		 	</ol>		
+		 	</ol>
+		 </c:if>		
 			 <div class="col-md-12 product-model-sec">
+			 	<c:if test="${empty productList}">
+			 		<div class="searchTips">
+				 			<p>很抱歉！没有找到与“${search}”相关的商品。</p>
+				 			<p>建议您：</p>
+				 			<p>1.查看您输入的文字是否有误;</p>
+				 			<p>2.调整输入的关键字;</p>
+			 				<a href="<%=basePath%>front/index.action">返回首页>></a>
+			 		</div>
+			 	</c:if>
+			 	<c:if test="${empty first && empty three}">
+			 		<c:if test="${!empty productList}">
+			 			<h3 class="searchTipsNav"><span>“${search}”</span>搜索到${fn:length(productList)}件相关商品</h3>
+			 		</c:if>
+				 </c:if>
 			 	<c:forEach items="${productList}" var="product" varStatus="status">
 					 <div class="product-grid love-grid">	
 				 		<a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">				
