@@ -87,7 +87,7 @@ function delfromCart(id){
 	var totalpriceAll = 0;
 	$.ajax({
 		type:"POST", 
-		url:"/front/shopingCart/del.action",
+		url:"<%=basePath%>front/shopingCart/del.action",
 		data:{"shoppingCartId":id,_:new Date().getTime()},
 		dataType:"json",
 		success:function(msg){
@@ -195,7 +195,7 @@ function modefyToCart(id){
 								<ul class="cart-header" id="ul${cartVo.cart.id }">
 								<li class="checkCol"><input type="checkbox" cartId="${cartVo.cart.id }" onclick="totalprice()"/>
 								<li class="productCol">
-									<a href="/front/productDetail.action?goodsId=${cartVo.goods.id}" >
+									<a href="${basePath }front/productDetail.action?goodsId=${cartVo.goods.id}" >
 										<img src="${basePath }${cartVo.goods.goodsLogo}" class="pull-left img-responsive" alt=""></a>
 										<span class="pull-left cart-pDetail">${cartVo.goods.goodsName} 约${cartVo.goods.goodsWeight }g</span>
 								</li>
