@@ -127,6 +127,9 @@ public class FrontUserAction {
 		if(null== frontUser){
 			this.message = "用户名密码错误";
 			return StrutsResMSG.FAILED;
+		}else if(!"1".equals(frontUser.getType())){
+			this.message = "您的账号未审核通过，请联系管理员";
+			return StrutsResMSG.FAILED;
 		}else{
 			HttpSession session = ServletActionContext.getRequest().getSession();
 			session.setAttribute("user", frontUser);

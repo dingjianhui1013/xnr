@@ -55,7 +55,7 @@ public class FrontUserService {
 	 * 根据手机或者邮箱查询用户
 	 */
 	public FrontUser getByPhoneOrEmail(String userName,String password){
-		String hql = "from FrontUser where type=1 and password='"+password+"' and (phone='"+userName+"' or email='"+userName+"')";
+		String hql = "from FrontUser where password='"+password+"' and (phone='"+userName+"' or email='"+userName+"')";
 		List<FrontUser> list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		if(list.isEmpty()){
 			return null;
