@@ -17,8 +17,12 @@
 $(function(){ 
 	if($("#status").val()==null||$("#status").val()==""||$("#status").val()=="0")
 		{
-			alert("请联系系统管理员，进行身份审核！");
-		}else
+			var farmerId = $('#userId').val();
+			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId="+farmerId;
+		}else if ($("#status").val()=="3")
+			{
+				alert("审核信息已经提交，请等待！")
+			}else
 			{
 				$.get("<%= path %>/page/wx/wxconnect/uploadFF.action",{userName:$("#userName").val(),userId:$("#userId").val(),_:new Date().getTime()},function (data){
 					window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImageF.jsp";

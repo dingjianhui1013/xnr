@@ -35,9 +35,12 @@
     </script>
 	<script type="text/javascript" >
 	$(function(){
-		if("${status}"==null||"${status}"==""||"${status}".val()=="0")
+		if("${status}"==null||"${status}"==""||"${status}"=="0")
+		{
+			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId=$('#userId').val()";
+		}else if ("${status}"=="3")
 			{
-				alert("请联系系统管理员，审核身份！")
+				alert("审核信息已经提交，请等待！")
 			}
 	})
 		function deletePlan(id){
@@ -152,6 +155,7 @@
 					    	 <c:set var="i" value="1"/>
 					    	 <c:set var="ii" value="1"/>
 					    	 <c:set var="count" value="1" />
+					    	 <input type="hidden" value="${userId}" id="userId"/>
 					    	 	<c:forEach items="${date_type_images}" var="dtis">
 									<li id="datecount${count}"><span class="circleIcon"></span>
 									<c:forEach items="${dtis}" var="dti">

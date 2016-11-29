@@ -30,9 +30,12 @@
 <script type="text/javascript" src="<%=path %>/js/common.js"></script>
 <script type="text/javascript">
 $(function(){
-	if("${status}"==null||"${status}"==""||"${status}".val()=="0")
+	if("${status}"==null||"${status}"==""||"${status}"=="0")
+	{
+		window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId=$('#userId').val()";
+	}else if ("${status}"=="1")
 		{
-			alert("请联系系统管理员，审核身份！")
+			alert("审核信息已经提交，请等待！")
 		}
 });
 		function validationPin(){
@@ -141,7 +144,7 @@ $(function(){
 		</div>
 		<div class="contentBox">
 			<form id="form" role="form" action="save.action" method="post">
-				<input type="hidden" value="${userId }" name="outplan.userId">
+				<input type="hidden" value="${userId }" id = "userId" name="outplan.userId">
 				<div class="form-group">
 <!-- 					<label for="" class="col-sm-2 control-label labelFont">选择分类</label> -->
 <!-- 					<div class="col-sm-10"> -->

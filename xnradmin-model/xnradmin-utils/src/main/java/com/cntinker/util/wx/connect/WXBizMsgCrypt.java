@@ -175,12 +175,6 @@ public class WXBizMsgCrypt
   public String VerifyURL(String msgSignature, String timeStamp, String nonce, String echoStr)
     throws AesException
   {
-	  System.out.println("================");
-	  System.out.println("token: "+this.token);
-	  System.out.println("timeStamp: "+timeStamp);
-	  System.out.println("nonce: "+nonce);
-	  System.out.println("echoStr: "+echoStr);
-	  System.out.println("================");
     String signature = SHA1.getSHA1(this.token, timeStamp, nonce, echoStr);
 
     if (!(signature.equals(msgSignature))) {

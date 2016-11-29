@@ -1,8 +1,14 @@
 package com.xnradmin.client.action.farmers;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -15,11 +21,15 @@ import org.springframework.stereotype.Controller;
 import com.xnradmin.client.service.wx.FarmerImageService;
 import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.constant.AjaxResult;
+import com.xnradmin.constant.SessionConstant;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.core.util.AjaxUtil;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.po.wx.connect.FarmerExamine;
 import com.xnradmin.po.wx.connect.FarmerImage;
 
 @Controller
@@ -40,7 +50,12 @@ public class farmerAction extends ParentAction{
 	@Autowired BusinessGoodsService  businessGoodsService;
 	@Autowired
 	private FarmerImageService farmerImageService;
+	@Autowired
+	private CommonDAO commonDAO;
 	private String status;
+	private FarmerExamine farmerExamine;
+	private String msg;
+	private String remarks;
 	public List<BusinessGoods> getAllBusinessGoods() {
 		return allBusinessGoods;
 	}
@@ -95,6 +110,24 @@ public class farmerAction extends ParentAction{
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public FarmerExamine getFarmerExamine() {
+		return farmerExamine;
+	}
+	public void setFarmerExamine(FarmerExamine farmerExamine) {
+		this.farmerExamine = farmerExamine;
+	}
+	public String getMsg() {
+		return msg;
+	}
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 	@Override
 	public boolean isPublic() {
 		return true;
@@ -110,6 +143,32 @@ public class farmerAction extends ParentAction{
 		this.farmerList = this.farmerService.getList(query, super.getPageNum(),
 				super.getNumPerPage());
 		super.totalCount = this.farmerService.getCount(query);
+	}
+	@Action(value="farmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examine.jsp") })
+	public String farmerExamine()
+	{
+		this.farmerId = farmerId;
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="saveFarmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examine.jsp") })
+	public String saveFarmerExamine()
+	{
+		Farmer farmer = farmerService.getUserNameById(farmerExamine.getFarmerId());
+		farmerService.examineUser(farmerExamine.getFarmerId(), "3");
+		farmerService.examineRelease(farmerId, "3", remarks);
+		commonDAO.save(farmerExamine);
+		this.msg = "审核信息已提交，请等待！";
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="showExamine",results = {@Result(name=StrutsResMSG.SUCCESS,location = "/wx/admin/seting/examine/examineInfo.jsp")})
+	public String showExamine()
+	{
+		List<FarmerExamine> farmerExamines = farmerService.findExamineByUserId(farmerId);
+		if(!farmerExamines.isEmpty())
+		{
+			farmerExamine = farmerExamines.get(0);
+		}
+		return StrutsResMSG.SUCCESS;
 	}
 	/**
 	 * 带信息到分类页面
@@ -144,11 +203,53 @@ public class farmerAction extends ParentAction{
 		farmerImages = farmerImageService.findFarmerImage(farmerId, goodsId);
 		return StrutsResMSG.SUCCESS;
 	}
+	@Action(value="examineNo",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/noPage.jsp")})
+	public String examineNO()
+	{
+		this.farmerId = farmerId;
+		this.status = status;
+		return  StrutsResMSG.SUCCESS;
+	}
+	@Action(value="saveExamineNO",results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String saveExamineNO()
+	{
+		try {
+			Integer personId =0;
+			if(super.getCurrentStaff()==null)
+			{
+				HttpServletRequest request = ServletActionContext.getRequest();
+		        HttpServletResponse response = ServletActionContext.getResponse();
+		        HttpSession session = request.getSession();
+		        Object obj = session.getAttribute(SessionConstant.SESSION_LOGIN_STAFF);
+		        if(true){
+		            if(obj == null){
+		            	ServletActionContext.getResponse().setContentType(
+		                        "text/html;charset=utf-8");
+		                PrintWriter out = ServletActionContext.getResponse().getWriter();
+		                out.print(AjaxUtil.getTimeout("登陆超时，请重新登陆"));
+		                out.flush();
+		                out.close();
+		            }
+		        }
+			}else
+			{
+				personId = super.getCurrentStaff().getId();
+				farmerService.examineUser(farmerId,status,remarks,personId);
+				farmerService.examineRelease(farmerId, status, remarks);
+				super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "FarmerManagement",null);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return StrutsResMSG.SUCCESS;
+	}
 	@Action(value="examine",results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
 	public String examine()
 	{
 		try {
 			farmerService.examineUser(farmerId,status);
+			farmerService.examineRelease(farmerId, status, remarks);
 			super.success(null, null, "FarmerManagement",null);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

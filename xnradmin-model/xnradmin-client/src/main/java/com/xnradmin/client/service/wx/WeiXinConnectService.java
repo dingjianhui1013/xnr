@@ -23,6 +23,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.cntinker.util.wx.connect.Text;
+import com.cntinker.util.wx.connect.TextMessageF;
 import com.cntinker.util.wx.connect.WXMessage;
 import com.cntinker.util.wx.connect.WXMsgType;
 import com.xnradmin.client.messag.resp.Article;
@@ -113,6 +115,7 @@ public class WeiXinConnectService {
   										FromUserName), "GET", null);
   	        	farmer.setUserName(userInformation.getString("nickname"));
   	        	farmer.setHeadPortrait(userInformation.getString("headimgurl"));
+  	        	farmer.setStatus("0");
   	        	farmerService.saveFarmer(farmer);
   	        	message = "欢迎关注康源公社服务号\n"
   	        			+ "温馨提示：\n上传图片可直接回复图片或选择菜单上传"
@@ -125,10 +128,24 @@ public class WeiXinConnectService {
   	        String picUrl = requestMap.get(WXMessage.PICURL);
   	        String status = farmerService.getStatus(FromUserName);
   	        String message = null;
-  	        if(status==null||status=="0")
+  	        if(status.equals("0"))
   	        {
-  	        	message = "请联系系统管理员，审核身份！";
-  	        }else
+  	        	message ="点击上方文字进行填写信息";
+  	        	String access_tokenF = WXFGetTokenService.accessTokenIsOvertime();
+  	        	String messages = "<a href=\"http://weixin.robustsoft.cn/xnr/page/wx/farmer/farmerExamine.action?farmerId="+FromUserName+"\">请前往页面填写审核信息。</a>";
+  	        	Text text = new Text();
+	  	  		text.setContent(messages);
+	  	  		TextMessageF textMessageF =new TextMessageF();
+	  	  		textMessageF.setTouser(FromUserName);
+	  	  		textMessageF.setMsgtype("text");
+	  	  		textMessageF.setText(text);
+	  	  		String outputStr = JSONObject.fromObject(textMessageF).toString();
+  	        	JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+  	        }else if(status.equals("3"))
+  	        {
+  	        	message = "审核资料已提交，请等待审核！";
+  	        }
+  	        else
   	        {
 //  	    	wXFarmerImageService.create(FromUserName, picUrl);
 	  	    	wXFarmerImageService.save(FromUserName, picUrl);
@@ -140,6 +157,7 @@ public class WeiXinConnectService {
 	  			}
 	  	    	message = "请按顺序回复上传图片分类："+me.toString();
   	        }
+  	        log.debug(message+"************");
   	    	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
   	      }
   	    }

@@ -1,6 +1,7 @@
 package com.xnradmin.client.service.wx;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cntinker.util.StringHelper;
 import com.cntinker.util.Qrcode.MatrixToImageWriter;
+import com.cntinker.util.wx.connect.Text;
+import com.cntinker.util.wx.connect.TextMessage;
+import com.cntinker.util.wx.connect.TextMessageF;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -21,7 +25,11 @@ import com.google.zxing.common.BitMatrix;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.wx.FarmerDao;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.po.wx.connect.FarmerExamine;
 import com.xnradmin.po.wx.connect.FarmerQrCode;
+import com.xnradmin.po.wx.connect.WXInit;
+import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.OutPlanVO;
 
 @Service("farmerService")
 @Transactional
@@ -186,7 +194,59 @@ public class FarmerService {
 	}
 
 	public void examineUser(String farmerId, String status) {
-		String hql = "update Farmer set status = '"+status+"' where id="+farmerId;
+		String hql = "update Farmer set status = '"+status+"' where userId='"+farmerId+"'";
 		commonDao.executeUpdateOrDelete(hql);
+	}
+	public void examineUser(String farmerId, String status,String remarks,Integer personId) {
+		String hql = "update Farmer set status = '"+status+"',remarks = '"+remarks+"',examineStaff= '"+personId+"' where userId='"+farmerId+"'";
+		commonDao.executeUpdateOrDelete(hql);
+	}
+
+	public List<FarmerExamine> findExamineByUserId(String userId) {
+		String hql = "from FarmerExamine where farmerId = '"+userId+"'";
+		List<FarmerExamine> list = (List)commonDao.getEntityByPropertiesWithHql(hql);
+		return list;
+	}
+	public void examineRelease(String farmerId,String status,String remarks)
+	{
+		String message = "";
+		if(status.equals("1"))
+		{
+			message = "你的账户已经通过审核。";
+		}else if(status.equals("2"))
+		{
+			message = "你的账户未通过审核。未通过原因："+remarks;
+		}else
+		{
+			message = "您的信息已经提交，请耐心等待审核！";
+		}
+		
+		String access_tokenF = WXFGetTokenService.accessTokenIsOvertime();
+		/*
+		 * 此处为企业号发送消息文本。
+		 	String access_token = WXGetTokenService.accessTokenIsOvertime();
+		    Text text = new Text();
+		    text.setContent(message);
+		    TextMessage textMessage = new TextMessage();
+		    textMessage.setTouser(farmerId);
+		    textMessage.setMsgtype("text");
+		   //如果是服务号此处注释掉
+		    textMessage.setAgentid(WXInit.AGENT_ID);
+		    textMessage.setText(text);
+		    textMessage.setSafe(0);
+		    String outputStr = JSONObject.fromObject(textMessage).toString();
+		   JSONObject json =  WeixinUtil.httpRequest(WXurl.WX_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_token), "POST", outputStr);
+		 */
+		/*
+		 * 此处为服务好发送文本。
+		 */
+		Text text = new Text();
+		text.setContent(message);
+		TextMessageF textMessageF =new TextMessageF();
+		textMessageF.setTouser(farmerId);
+		textMessageF.setMsgtype("text");
+		textMessageF.setText(text);
+		String outputStr = JSONObject.fromObject(textMessageF).toString();
+		JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
 	}
 }

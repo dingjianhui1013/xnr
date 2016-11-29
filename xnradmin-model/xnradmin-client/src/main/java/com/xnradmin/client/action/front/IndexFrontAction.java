@@ -226,6 +226,11 @@ public class IndexFrontAction  {
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		return StrutsResMSG.SUCCESS;
 	}
+	@Action(value="pay",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/pay.jsp") })
+	public String pay()
+	{
+		return StrutsResMSG.SUCCESS;
+	}
 	//getter And setter
 	public List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> getAllBusinessCategorys() {
 		return allBusinessCategorys;

@@ -257,6 +257,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	    TextMessage textMessage = new TextMessage();
 	    textMessage.setTouser(outPlanVO.getOutPlan().getUserId());
 	    textMessage.setMsgtype("text");
+	   //如果是服务号此处注释掉
 	    textMessage.setAgentid(WXInit.AGENT_ID);
 	    textMessage.setText(text);
 	    textMessage.setSafe(0);

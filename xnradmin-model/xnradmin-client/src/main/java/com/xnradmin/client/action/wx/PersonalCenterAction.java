@@ -49,7 +49,7 @@ public class PersonalCenterAction {
 	private String imageUrl;
 	private String status;
 	private String imageid;
-	
+	private String userId;
 	public String getImageid() {
 		return imageid;
 	}
@@ -67,6 +67,12 @@ public class PersonalCenterAction {
 	}
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	/***
 	 * 企业号个人中心跳转
@@ -118,6 +124,7 @@ public class PersonalCenterAction {
 		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
 		List<String> imagedates = farmerImageService.getImageDates(userId.getString("openid"));
 		this.status = farmerService.getStatus(userId.getString("openid"));
+		this.userId = userId.getString("openid");
 		for (String images : imagedates) {
 			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();

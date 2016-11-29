@@ -84,15 +84,18 @@
 						<td>${loop.userId}</td>
 						<td>${loop.userName}</td>
 						<td>
-							<c:if test="${loop.status=='0'||loop.status==null}">未审核</c:if>
-							<c:if test="${loop.status=='1'}">已审核</c:if>
-							<c:if test="${loop.status=='2'}">拒绝审核</c:if>
+							<c:if test="${loop.status=='0'||loop.status==null}">未提交审核数据</c:if>
+							<c:if test="${loop.status=='1'}"><a title="查看提交资料" target="dialog" href="${basePath }page/wx/farmer/showExamine.action?farmerId=${loop.userId}" >已审核</a></c:if>
+							<c:if test="${loop.status=='2'}"><a title="查看提交资料" target="dialog" href="${basePath }page/wx/farmer/showExamine.action?farmerId=${loop.userId}" >拒绝审核</a></c:if>
+							<c:if test="${loop.status=='3'}"><a title="查看提交资料" target="dialog" href="${basePath }page/wx/farmer/showExamine.action?farmerId=${loop.userId}" >已提交审核数据</a></c:if>
 						</td>
 						<td><image src="${loop.headPortrait}64" /></td>
 						<td><a title="商品" target="dialog" href="page/wx/farmer/anthinfo.action?farmerId=${loop.id}" class="btnAuth">商品</a>
 						<a title="生成二维码" href="javascript:void(0)" class="btnEdit" onclick="generate('${loop.userId}')">生成二维码</a>
-						<a title="通过审核" target="ajaxTodo" href="/page/wx/farmer/examine.action?farmerId=${loop.id}&status=1" class="btnSelect" >通过审核</a>
-						<a title="拒绝审核" target="ajaxTodo" href="/page/wx/farmer/examine.action?farmerId=${loop.id}&status=2" class="btnDel" >拒接审核</a>
+						<c:if test="${loop.status!='0'}">
+							<a title="通过审核" target="ajaxTodo" href="${basePath }page/wx/farmer/examine.action?farmerId=${loop.userId}&status=1" class="btnSelect" >通过审核</a>
+							<a title="拒绝审核" target="dialog" href="${basePath }page/wx/farmer/examineNo.action?farmerId=${loop.userId}&status=2" class="btnDel" >拒接审核</a>
+						</c:if>
 						</td>
 					</tr>				
 				</c:forEach>

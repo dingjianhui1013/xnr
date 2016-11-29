@@ -23,6 +23,8 @@ public class Farmer implements Serializable{
 	private String headPortrait;
 	private String types;
 	private String status;//审核状态
+	private String remarks;
+	private String examineStaff;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false) 
@@ -40,6 +42,20 @@ public class Farmer implements Serializable{
 	@Column(name="head_portrait")
 	public String getHeadPortrait() {
 		return headPortrait;
+	}
+	@Column(name="remarks")
+	public String getRemarks() {
+		return remarks;
+	}
+	@Column(name="examine_staff")
+	public String getExamineStaff() {
+		return examineStaff;
+	}
+	public void setExamineStaff(String examineStaff) {
+		this.examineStaff = examineStaff;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 	public void setHeadPortrait(String headPortrait) {
 		this.headPortrait = headPortrait;
