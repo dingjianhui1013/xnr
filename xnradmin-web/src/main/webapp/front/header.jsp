@@ -18,6 +18,7 @@
 <link href="${basePath }css/front/memenu.css" rel="stylesheet" type="text/css" media="all" />
 <script src="${basePath }js/front/jquery-1.11.3.min.js"></script>
 <script src="${basePath }js/front/bootstrap.min.js"></script>
+<script src="${basePath }js/front/json2.js"></script>
 <script src="${basePath }js/layer/layer.js"></script>
 <script type="text/javascript" src="${basePath }js/front/common.js"></script>
 <script type="text/javascript" src="${basePath }js/front/jquery.cookie.js"></script> 

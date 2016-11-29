@@ -30,6 +30,7 @@ import com.xnradmin.client.service.front.FrontUserService;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.vo.business.BusinessGoodsVO;
@@ -44,6 +45,8 @@ public class FrontUserAction {
     
     @Autowired
     private FrontUserService frontUserService;
+    @Autowired
+	private ShoppingCartService shoppingCartService;
     
     private String status;//状态
     private String phone;//注册手机验证
@@ -142,6 +145,7 @@ public class FrontUserAction {
 				String cookieCart = cookieByName.getValue();
 				if(null!=cookieCart&&!"".equals(cookieCart)){
 					cookieCart = URLDecoder.decode(cookieCart);
+					shoppingCartService.saveCookieCart(cookieCart,frontUser);
 				}
 			}
 			

@@ -35,7 +35,7 @@ function addToCart(id,money){
 		item.goodsCount = 1;
 		item.price = Number($("#price"+id).val());
 		cart.push(item);
-		$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
+		$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); //jQstringify
 		layer.msg("加入成功");
 	}
 }
