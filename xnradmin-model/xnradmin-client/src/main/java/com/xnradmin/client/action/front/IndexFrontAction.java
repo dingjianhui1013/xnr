@@ -167,19 +167,18 @@ public class IndexFrontAction  {
 	 * 搜索
 	 * @return
 	 */
-	@Action(value="search",results = {@Result(name = StrutsResMSG.FAILED, type="redirect" ,location = "/front/index.action"),@Result(name = StrutsResMSG.SUCCESS, type="redirect" ,location = "/front/productDetail.action?goodsId=${goodsId}")})
+	@Action(value="search",results = {@Result(name = StrutsResMSG.FAILED, type="redirect" ,location = "/front/index.action"),@Result(name = StrutsResMSG.SUCCESS ,location = "/front/product.jsp")})
 	public String search()
 	{	
 		if(null==this.search||"".equals(this.search)){
 			return StrutsResMSG.FAILED;
 		}
-		BusinessGoods findGoodsByName = indexFrontService.findGoodsByName(this.search);
-		if(null == findGoodsByName){
-			return StrutsResMSG.FAILED;
-		}
-		this.goodsId = findGoodsByName.getId().toString();
+		this.productList = indexFrontService.listBusinessGoodsByGoodsName(this.search);
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+		
 		return StrutsResMSG.SUCCESS;
 	}
+	
 	@Action(value="addAddress",results = {@Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "/front/personalCenter.action",params = {"flag", "address" })})
 	public String addAddress()
 	{

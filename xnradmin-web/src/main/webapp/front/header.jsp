@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -17,8 +18,10 @@
 <link href="${basePath }css/front/memenu.css" rel="stylesheet" type="text/css" media="all" />
 <script src="${basePath }js/front/jquery-1.11.3.min.js"></script>
 <script src="${basePath }js/front/bootstrap.min.js"></script>
+<script src="${basePath }js/front/json2.js"></script>
 <script src="${basePath }js/layer/layer.js"></script>
 <script type="text/javascript" src="${basePath }js/front/common.js"></script>
+<script type="text/javascript" src="${basePath }js/front/jquery.cookie.js"></script> 
 <!-- <script type="application/x-javascript">  -->
 <!--  	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }  -->
 <!-- </script> -->
@@ -26,21 +29,45 @@
 <script type="text/javascript" src="${basePath }js/front/memenu.js"></script>
 <script type="text/javascript">
 $(function(){
-	$.ajax({
-		url:"${basePath}/page/wx/admin/order/shoppingCart/getTotalAndNumber.action",
-		type:"POST",
-		data:{"userId":'${user.id}'},
-		dataType:"JSON",
-		success:function(data)
+	var userId = $("#userId").val();
+	if(userId!=null&&userId!=""){
+		$.ajax({
+			url:"${basePath}/page/wx/admin/order/shoppingCart/getTotalAndNumber.action",
+			type:"POST",
+			data:{"userId":'${user.id}'},
+			dataType:"JSON",
+			success:function(data)
+			{
+				$.each(data.count_number, function(key, value) { 
+						$("#simpleCart_total").html(key);
+						$("#simpleCart_number").html(value)
+					}); 
+			}
+			
+		});
+	}else{
+		var cart = getCartCookie();
+		var count = 0;
+		var totalPrice = 0;
+		var x;
+		for (x in cart)
 		{
-			$.each(data.count_number, function(key, value) { 
-					$("#simpleCart_total").html(key);
-					$("#simpleCart_number").html(value)
-				}); 
+			var item = cart[x];
+			count = count + Number(item.goodsCount);
+			totalPrice = totalPrice+item.price*Number(item.goodsCount);
 		}
-		
-	});
+		$("#simpleCart_total").html(totalPrice);
+		$("#simpleCart_number").html(count)
+	}
 })
+function getCartCookie(){
+	var cartCookie = $.cookie('cart')//拿到cookie
+	if(cartCookie==null||cartCookie==""){
+		var cartCookie = [];
+		return cartCookie;
+	}
+	return JSON.parse(cartCookie); 
+}
 </script>
 
 <div class="top_bg">
@@ -85,7 +112,7 @@ $(function(){
 		</div>
 		<div class="pull-left searchBox">
 			<form action="<%=basePath%>/front/search.action" class="form-inline" method="post">
-			<input type="text"  name="search" placeholder="请输入搜索内容" class="searchInput"/>
+			<input type="text"  name="search" value="${search }" placeholder="请输入搜索内容" class="searchInput"/>
 			<input type="submit" value="搜索" class="searchBtn">
 			</form>
 		</div>

@@ -2,9 +2,11 @@ package com.xnradmin.client.action.front;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -28,6 +30,7 @@ import com.xnradmin.client.service.front.FrontUserService;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.vo.business.BusinessGoodsVO;
@@ -42,6 +45,8 @@ public class FrontUserAction {
     
     @Autowired
     private FrontUserService frontUserService;
+    @Autowired
+	private ShoppingCartService shoppingCartService;
     
     private String status;//状态
     private String phone;//注册手机验证
@@ -134,6 +139,16 @@ public class FrontUserAction {
 			HttpSession session = ServletActionContext.getRequest().getSession();
 			session.setAttribute("user", frontUser);
 //			CookieHelper.addCookie(ServletActionContext.getResponse(), "user", frontUser.getUserName(), 365 * 24 * 60 * 60);
+			//cookie购物车入库
+			Cookie cookieByName = CookieHelper.getCookieByName(ServletActionContext.getRequest(), "cart");
+			if(null != cookieByName){
+				String cookieCart = cookieByName.getValue();
+				if(null!=cookieCart&&!"".equals(cookieCart)){
+					cookieCart = URLDecoder.decode(cookieCart);
+					shoppingCartService.saveCookieCart(cookieCart,frontUser);
+				}
+			}
+			
 			return StrutsResMSG.SUCCESS;
 		}
     }

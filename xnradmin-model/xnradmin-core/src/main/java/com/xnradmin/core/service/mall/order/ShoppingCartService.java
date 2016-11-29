@@ -12,12 +12,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
+import com.mongodb.util.JSON;
 import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.dao.CommonDAO;
@@ -25,6 +29,7 @@ import com.xnradmin.core.dao.mall.order.ShoppingCartDAO;
 import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
+import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.wx.OutPlan;
@@ -66,7 +71,42 @@ public class ShoppingCartService {
 		dao.save(po);
 		return 0;
 	}
-
+	/**
+	 * 保存cookie中的购物车信息
+	 */
+	public boolean saveCookieCart(String cart,FrontUser frontUser){
+		try {
+			JSONArray json = JSONArray.fromObject(cart );
+			if(json.size()>0){
+			   for(int i=0;i<json.size();i++){
+				   JSONObject job = json.getJSONObject(i);
+				   if (this.dao.findByCookieId(job.get("cookieId").toString(),frontUser.getId().toString()).size() > 0) {
+						continue;
+				   }
+				   ShoppingCart po = new ShoppingCart();
+					po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
+					po.setGoodsId(Integer.parseInt(job.get("goodsId").toString()));
+					po.setGoodsCount(Integer.parseInt(job.get("goodsCount").toString()));
+					po.setCookieCartId(job.get("cookieId").toString());
+					
+					po.setCurrentPrice(Float.valueOf(job.get("price").toString()));
+					po.setTotalPrice(Float.valueOf(job.get("price").toString())*Integer.parseInt(job.get("goodsCount").toString()));
+					po.setCurrentPriceType(121);
+					
+					po.setOriginalPrice(Float.valueOf(job.get("price").toString()));
+					po.setOriginalTotalPrice(Float.valueOf(job.get("price").toString())*Integer.parseInt(job.get("goodsCount").toString()));
+					po.setPrimaryConfigurationId(1);
+					po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
+					
+					dao.save(po);
+			  }
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	public ShoppingCart findByid(String id) {
 		return dao.findById(Integer.parseInt(id));
 	}
@@ -91,6 +131,33 @@ public class ShoppingCartService {
 		return resList;
 
 	}
+	
+	public List<BusinessGoodsCartVo> cookieToVo(String cookie){
+		List<BusinessGoodsCartVo> resList = new LinkedList<BusinessGoodsCartVo>();
+		JSONArray json = JSONArray.fromObject(cookie );
+		if(json.size()>0){
+		   for(int i=0;i<json.size();i++){
+		    JSONObject job = json.getJSONObject(i);  // 
+		    BusinessGoodsCartVo businessGoodsCartVo = new BusinessGoodsCartVo();
+		    ShoppingCart shoppingCart = new ShoppingCart();
+		    shoppingCart.setGoodsId(Integer.parseInt(job.get("goodsId").toString()));
+		    shoppingCart.setGoodsCount(Integer.parseInt(job.get("goodsCount").toString()));
+		    shoppingCart.setCookieCartId(job.get("cookieId").toString());
+		    String hql = "from BusinessGoods good  where id= "+job.get("goodsId");
+		    List<BusinessGoods> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		    BusinessGoods businessGoods = list.get(0);
+		    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+		    businessGoodsCartVo.setCart(shoppingCart);
+		    businessGoodsCartVo.setGoods(businessGoods);
+		    resList.add(businessGoodsCartVo);
+		  }
+		}
+		
+		return resList;
+
+	}
+	
+	
 	public List<ShoppingCart> findBygoodsCount(String goodsId,Integer userId){
 		String hql = "from ShoppingCart cart  where cart.goodsId = '"+goodsId+"' and cart.clientUserId = " + userId;
 		List<ShoppingCart> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);

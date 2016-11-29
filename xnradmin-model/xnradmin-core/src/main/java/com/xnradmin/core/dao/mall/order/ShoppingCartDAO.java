@@ -112,7 +112,19 @@ public class ShoppingCartDAO{
             throw re;
         }
     }
-    
+    /**
+     * 
+     * @param cookieId
+     * @return
+     */
+    public List findByCookieId(String cookieId,String clientUserId){
+        try{
+            String queryString = "from ShoppingCart where cookieCartId= '"+cookieId+"' and clientUserId="+clientUserId;
+            return commonDao.getEntitiesByPropertiesWithHql(queryString,0,0);
+        }catch(RuntimeException re){
+            throw re;
+        }
+    }
     public List findAll(){
         log.debug("finding all ShoppingCart instances");
         try{

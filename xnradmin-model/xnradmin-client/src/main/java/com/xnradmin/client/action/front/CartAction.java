@@ -2,10 +2,15 @@ package com.xnradmin.client.action.front;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.HttpCookie;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
@@ -18,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.cntinker.util.CookieHelper;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.client.service.front.FrontUserService;
@@ -311,12 +317,20 @@ public class CartAction extends ParentAction {
 	 * 跳转到购物车页面
 	 * @return
 	 */
-	@Action(value = "shoppingCart",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/shoppingCart.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/login.jsp") })
+	@Action(value = "shoppingCart",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/shoppingCart.jsp") })
     public String shoppingCart() {
 		
 		 user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
 		if(null==user){
-			return StrutsResMSG.FAILED;
+			Cookie cookieByName = CookieHelper.getCookieByName(ServletActionContext.getRequest(), "cart");
+			if(null != cookieByName){
+				String cookieCart = cookieByName.getValue();
+				if(null!=cookieCart&&!"".equals(cookieCart)){
+					cookieCart = URLDecoder.decode(cookieCart);
+					cartVoList = shoppingCartService.cookieToVo(cookieCart);
+				}
+			}
+		return StrutsResMSG.SUCCESS;
 		}
 		 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
 		 this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
-import com.sun.webkit.dom.RectImpl;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
@@ -144,7 +143,21 @@ public class IndexFrontService {
 		}
 		return resList;
 	}
-
+	public List<BusinessGoodsVO> listBusinessGoodsByGoodsName(String goodsName) {
+		String hql = "from BusinessGoods a,BusinessCategory b,BusinessWeight c where a.goodsCategoryId=b.id and a.goodsWeightId=c.id and a.goodsName like '%"
+				+ goodsName + "%'";
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<BusinessGoodsVO> resList = new LinkedList<BusinessGoodsVO>();
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = (Object[]) l.get(i);
+			BusinessGoodsVO businessGoodsVO = new BusinessGoodsVO();
+			businessGoodsVO.setBusinessGoods((BusinessGoods) obj[0]);
+			businessGoodsVO.setBusinessCategory((BusinessCategory) obj[1]);
+			businessGoodsVO.setBusinessWeight((BusinessWeight) obj[2]);
+			resList.add(businessGoodsVO);
+		}
+		return resList;
+	}
 	public BusinessGoods findGoodsByName(String goodsName) {
 		String hql = "from BusinessGoods where goodsName like '%" + goodsName
 				+ "%'";
