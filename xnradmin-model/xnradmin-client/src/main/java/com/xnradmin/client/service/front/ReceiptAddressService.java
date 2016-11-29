@@ -22,6 +22,8 @@ public class ReceiptAddressService {
 	private CommonDAO commonDao;
 	
 	
+	
+	
 	/**
 	 * 
 	 */
@@ -41,9 +43,9 @@ public class ReceiptAddressService {
 		}
 	}
 	
-	public List<ReceiptAddress> findByUserId(Long userId, String type){
+	public List<ReceiptAddress> findListByUserId(Long userId){
 		
-		String hql = " from ReceiptAddress where userId = "+userId+" and type = "+type;
+		String hql = " from ReceiptAddress where frontUserId = "+userId+" and type !=null ";
 		
 		List<ReceiptAddress> list = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		
@@ -58,7 +60,7 @@ public class ReceiptAddressService {
 	
 	public ReceiptAddress findByUserId(Long userId){
 		
-		String hql = " from ReceiptAddress where userId = "+userId+" and type = 0";
+		String hql = " from ReceiptAddress where frontUserId = "+userId+" and type = 1";
 		
 		List<ReceiptAddress> list = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		
@@ -69,7 +71,17 @@ public class ReceiptAddressService {
 		}
 	}
 	
-	
+	public ReceiptAddress findByType1(String type){
+		String hql = " from ReceiptAddress where type = 1";
+		
+		List<ReceiptAddress> list = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		
+		if(list.isEmpty()){
+			return null;
+		}else{
+			return list.get(0);
+		}
+	}
 	
 	public boolean delete(String id){
 		try {
@@ -81,6 +93,10 @@ public class ReceiptAddressService {
 		}
 	}
 	
-
+	public boolean update(ReceiptAddress addr){
+		String hql = "update ReceiptAddress set type="+addr.getType() + " where id = "+addr.getId();
+		commonDao.executeUpdateOrDelete(hql.toString());
+		return true;
+	}
 	
 }
