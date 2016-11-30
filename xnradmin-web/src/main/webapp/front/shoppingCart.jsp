@@ -134,6 +134,7 @@ function totalprice(obj){
 	
 	
 	if($(obj).is(":checked") == true) {
+		
 		if(cartids==""||cartids.length==0){
 			$("#cartids").val($(obj).val());
 		}else{
@@ -340,8 +341,8 @@ function modefyToCart(id){
 			 		<li class="totalCol">
 			 		
 			 		    <form action="/front/orderrecord/businessConfirm.action">
-			 		    	<input type="hidden" name="cartids"/>
-			 		    	<input type="hidden" name="totalMoney"/>
+			 		    	<input type="hidden" id="cartids" name="cartids"/>
+			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/>
 			 		    
 			 		    <input type="submit" class="pull-right cartSubmitBtn" value="去结算">
 			 		    </form>
