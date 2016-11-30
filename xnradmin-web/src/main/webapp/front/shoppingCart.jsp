@@ -83,7 +83,7 @@ function minusNum(id)
 				var xiaojiNew = sub(xiaoji,price);
 				$("#xiaoji"+id).html(xiaojiNew);
 				$("#count"+id).val(index);
-				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(2));
+				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(1));
 				$("#simpleCart_number").html((Number($("#simpleCart_number").html())-Number(1)));
 				if(userId!=null&&userId!=""){
 					modefyToCart(id);

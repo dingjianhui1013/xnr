@@ -39,7 +39,7 @@ $(function(){
 			success:function(data)
 			{
 				$.each(data.count_number, function(key, value) { 
-						$("#simpleCart_total").html(key);
+						$("#simpleCart_total").html(Number(key).toFixed(1));
 						$("#simpleCart_number").html(value)
 					}); 
 			}
@@ -56,7 +56,7 @@ $(function(){
 			count = count + Number(item.goodsCount);
 			totalPrice = totalPrice+item.price*Number(item.goodsCount);
 		}
-		$("#simpleCart_total").html(totalPrice);
+		$("#simpleCart_total").html(totalPrice.toFixed(1));
 		$("#simpleCart_number").html(count)
 	}
 })
