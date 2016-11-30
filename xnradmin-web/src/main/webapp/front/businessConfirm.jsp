@@ -14,35 +14,147 @@
 
 <script type="text/javascript">
 
-$(document).ready(function() {
-	$('#newAddressForm').submit(function() {
-		$.ajax({
-            url:"mobileSurveyAction_addSurvey.action",//提交地址
-            data:$("#newAddressForm").serialize(),//将表单数据序列化
-            type:"POST",
-            dataType:"json",
-            success:function(result){
-                if (result.success == '100'){
-                    $("#mySection").hide();
-                    $(".footer").hide();
-                    $("#alertMsg").show();
-                     
-                }else{
-                    alert("失败！");
-                }
-            }
-        });	
-	});
+
+$(function(){
+	 radioBound();
 });
 
 
+
+function radioBound(){
+	 $(":radio").click(function(){
+		   //$(this).val();
+		   
+		  $(this).parent().parent().css('background','#fff3e8');
+		  alert($(this).parent().parent().attr("id"));
+		  $("#receiptAddressId").val($(this).parent().parent().attr("id").subString(5));
+		  
+		  
+		  
+		  $(":radio").each(function(){
+				if(this.checked == false) {
+					$(this).parent().parent().css('background','white');
+				}
+				
+				
+				if(this.value == 'addnewoption'){
+					$("#receiptName").val("");
+	            	$("#detailedAddress").val("");
+	            	$("#telAddress").val("");
+				}
+			})
+
+		  
+		   
+		  });
+}
+
+
+function useNewAddress(){
+	
+	
+	
+	var url = '<%=basePath%>front/receiptAddress/saveNewReceiptAddress.action';   
+	
+	var receiptName = $("#receiptName").val();
+	var detailedAddress = $("#detailedAddress").val();
+	var telAddress = $("#telAddress").val();
+	var county = $("#county").val();
+	$.ajax({
+        url:url,
+        data:{"receiptName":receiptName,"detailedAddress":detailedAddress,"telAddress":telAddress,"county":county,_:new Date().getTime()},
+        type:"POST",
+        dataType:"json",
+        success:function(data){
+        	
+            if (data.saveSuccess == 1){
+            	$("#receiptName").val("");
+            	$("#detailedAddress").val("");
+            	$("#telAddress").val("");
+            	
+            	
+            	var str = "<label id='label"+data.addressId+"' style='background: #fff3e8'><span><input type='radio' name='optionsRadios' checked='checked'></span> <span>"+receiptName+"</span><span>"+detailedAddress+"</span><span>"+telAddress+"</span><div class='operatorBox'>"
+		          +"<a href='javascript:editAddress("+data.addressId+")' class='editAddBtn'>编辑</a>"
+		          +"<a href='javascript:deleteAddress("+data.addressId+")' class='delAddBtn'>删除</a>"
+	          	  +"</div></label>";
+        		
+        		$("#addresstype0").append(str);
+        	
+            	$("#addnewoption").parent().parent().css('background','white');
+            	
+            	
+            	radioBound();
+            	
+            }else{
+                
+            }
+        }
+    });	
+	
+}
+
+
+function editAddress(addressId){
+	
+	var url = '<%=basePath%>front/receiptAddress/getReceiptAddress.action';
+	
+	$.ajax({
+        url:url,
+        data:{"addressId":addressId,_:new Date().getTime()},
+        type:"POST",
+        dataType:"json",
+        success:function(data){
+            if (data.getSuccess == 1){
+            	$("#receiptName").val(data.receiptName);
+            	$("#detailedAddress").val(data.detailedAddress);
+            	$("#telAddress").val(data.telAddress);
+            	$("#county").val(data.county);
+            }else{
+                
+            }
+        }
+    });	
+	
+}
+
+
+function deleteAddress(addressId){
+var url = '<%=basePath%>front/receiptAddress/deleteReceiptAddress.action';
+	
+	$.ajax({
+        url:url,
+        data:{"addressId":addressId,_:new Date().getTime()},
+        type:"POST",
+        dataType:"json",
+        success:function(data){
+            if (data.deleteSuccess == 1){
+            	$("#label"+addressId).css('display','none');
+            	
+            }else{
+                
+            }
+        }
+    });	
+}
+
+
 function changePaymentMethod(index){
-	if(index = 0){
+	
+	
+	
+	if(index == "0"){
+	
 		$("#wechat").addClass("active");
 		$("#alipay").removeClass("active");
-	}else if(index = 1){
+		
+		$("#paymethod").val("0");
+		
+	}else if(index == "1"){
+		
 		$("#alipay").addClass("active");
 		$("#wechat").removeClass("active");
+		
+		$("#paymethod").val("0");
 	}
 }
 
@@ -66,86 +178,100 @@ function changePaymentMethod(index){
 							<div class="defalutAddBox" style="display:block" id="defalutAddBox">
 								<p class="addr-name"><b>收货人信息：</b><a href="#" class="eidtAddressBtn">[修改]</a></p>
 								
-								<p class="addr-address"><span>张某某</span><span>1360103343</span><span>北京市昌平区回龙观</span></p>
+								<c:forEach items="${addrs}" var="addr">
+								<c:if test="${addr.type==1}">
+								<p class="addr-address"><span>${addr.receiptName}</span><span>${addr.tel}</span><span>${addr.detailedAddress}</span></p>
+								</c:if>
+								</c:forEach>
+								
 							</div>
 							 <div class="infoItem editAddres" id="editAddres"style="display:none;">
 							 	<form class="form-horizontal">
-							 		<div class="radio addListItem cur">
+							 		<div class="radio addListItem">
 							 		<c:forEach items="${addrs}" var="addr">
 							 			<c:if test="${addr.type==1}">
-								        <label>
-								          <input type="radio" name="optionsRadios" id="addr${addr.id}" value="${addr.id}">
+								        <label id="label${addr.id}" style="background: #fff3e8">
+								        <span>
+								          <input type="radio" checked="checked" name="optionsRadios" id="addr${addr.id}" value="${addr.id}">
+								         </span> 
 								          <span>${addr.receiptName}</span>
 								          <span>${addr.detailedAddress}</span>
 								          <span>${addr.tel}</span>
 								          <div class="operatorBox">
-									          <a href="#" class="editAddBtn">编辑</a>
-									          <a href="#" class="delAddBtn">删除</a>
+									          <a href="javascript:editAddress(${addr.id})" class="editAddBtn">编辑</a>
+									          <a href="javascript:deleteAddress(${addr.id})" class="delAddBtn">删除</a>
 								          </div>
 								        </label>
 								        </c:if>
 								       </c:forEach> 
 										</div>
-										<div class="radio addListItem">
+										<div class="radio addListItem" id="addresstype0">
 										<c:forEach items="${addrs}" var="addr">
-								        <label>
-								          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+										<c:if test="${addr.type==0}">
+								        <label id="label${addr.id}">
+								        <span>
+								          <input type="radio" name="optionsRadios" id="addr${addr.id}" value="${addr.id}">
+								         </span> 
 								          <span>${addr.receiptName}</span>
 								          <span>${addr.detailedAddress}</span>
 								          <span>${addr.tel}</span>
 								          <div class="operatorBox">
-									          <a href="#" class="editAddBtn">编辑</a>
-									          <a href="#" class="delAddBtn">删除</a>
+									          <a href="javascript:editAddress(${addr.id})"  class="editAddBtn">编辑</a>
+									          <a href="javascript:deleteAddress(${addr.id})" class="delAddBtn">删除</a>
 								          </div>
 								        </label>
+								        </c:if>
 								        </c:forEach>
 										</div>
 										<div class="radio addListItem">
 								        <label>
-								          <input type="radio" name="optionsRadios" id="optionsRadios3" value="option2">
+								        <span>
+								          <input type="radio" name="optionsRadios" id="addnewoption" value="addnewoption">
+								         </span> 
+								         
 								          <span>使用新地址</span>
 								        </label>
 										</div>
 										<div class="add-addItem">
-											<form id="newAddressForm" class="form-horizontal" role="form">
+											<form id="newAddressForm"  class="form-horizontal" role="form">
 												  <div class="form-group">
 												    <label class="col-sm-2 control-label"><em>*</em>收货人：</label>
 												    <div class="col-sm-6">
-											          <input type="text" class="form-control" name="" id="" placeholder="请输入收货人">
+											          <input type="text" class="form-control" name="receiptName" id="receiptName" placeholder="请输入收货人">
 											        </div>
 												  </div>
 												  <div class="form-group">
 												    <label class="col-sm-2 control-label">所在地区：</label>
 												    <div class="col-sm-6">
-											          <select class="form-control provinceSel">
-											          	<option value="">山东省</option>
+											          <select class="form-control provinceSel" id="province">
+											          	<option value="山东省">山东省</option>
 											          </select>
-											          <select class="form-control citySel">
-											          	<option value="">济南市</option>
+											          <select class="form-control citySel" id="city">
+											          	<option value="济南市">济南市</option>
 											          </select>
-											          <select class="form-control countrySel">
-											          	<option value="0">市中区</option>
-											          	<option value="1">历下区</option>
-											          	<option value="2">历城区</option>
-											          	<option value="3">高新区</option>
-											          	<option value="4">槐荫区</option>
+											          <select class="form-control countrySel" id="county">
+											          	<option value="市中区">市中区</option>
+											          	<option value="历下区">历下区</option>
+											          	<option value="历城区">历城区</option>
+											          	<option value="高新区">高新区</option>
+											          	<option value="槐荫区">槐荫区</option>
 											          </select>
 												  </div>
 												  </div>
 												  <div class="form-group">
 												    <label class="col-sm-2 control-label">详细地址：</label>
 													    <div class="col-sm-6">
-												          <input type="text" class="form-control" id="" placeholder="请输入详细地址">
+												          <input type="text" class="form-control" name="detailedAddress" id="detailedAddress" placeholder="请输入详细地址">
 												        </div>
 												  </div>
 												  <div class="form-group">
 												    <label class="col-sm-2 control-label">电话号码：</label>
 													    <div class="col-sm-6">
-												          <input type="text" class="form-control" id="" placeholder="请输入电话">
+												          <input type="text" class="form-control" name="telAddress" id="telAddress" placeholder="请输入电话">
 												        </div>
 												  </div>
 												  <div class="editBox">
-												  	 <button type="submit" class="btn btn-primary col-sm-offset-2">保存收货地址</button>
+												  	 <button type="button" onclick="useNewAddress()" class="btn btn-primary col-sm-offset-2">保存收货地址</button>
 												  </div>
 											</form>
 										</div>
@@ -156,8 +282,8 @@ function changePaymentMethod(index){
 						<div class="receiptBox">
 							 <p class="addr-name"><b>支付及配送方式：</b></p>
 							 <div class="infoItem paymentMode">
-							 	<a href="changePaymentMethod(0)" id="wechat"  class="active">微信支付</a>
-							 	<a href="changePaymentMethod(1)" id="alipay"  >支付宝支付</a>
+							 	<a href="javascript:changePaymentMethod(0)" id="wechat"  class="active">微信支付</a>
+							 	<a href="javascript:changePaymentMethod(1)" id="alipay"  >支付宝支付</a>
 							 </div>
 						</div>
 						<div class="receiptBox checkOrderInfo">
@@ -199,10 +325,22 @@ function changePaymentMethod(index){
 			 	<ul class="cart-con">
 			 		<li class="pull-right totalCol">
 			 			<div class=" totalMoney">
-				 			<p>总价:<span class="t-money">￥120.00</span></p>
-				 			<p>已节省:-￥120.00</p>
+				 			<p>总价:<span class="t-money">${totalMoney}</span></p>
+				 			
 			 			</div>
-			 			<a href="<%=basePath%>/front/orderrecord/add.action" class=" cartSubmitBtn">提交订单</a>
+			 			
+			 			<form action="/front/orderrecord/add.action">
+			 			
+			 			<input type="hidden" id="paymethod" name="paymethod">
+			 			<input type="hidden" id="receiptAddressId" name="receiptAddressId">
+						<input type="hidden" id="totalMoney" name="totalMoney">
+						<input type="hidden" value="${cartids}" name="certids">
+						
+									 			
+			 			<input type="submit"  class="cartSubmitBtn"  value="提交订单"  />
+			 			
+			 			</form>
+			 			
 			 		</li>
 			 	</ul>
 		 	</div>

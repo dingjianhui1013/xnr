@@ -51,6 +51,7 @@ import com.xnradmin.po.client.ClientUserRegionInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
+import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.mall.region.Area;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
@@ -113,6 +114,13 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private List<BusinessGoodsCartVo> cartVoList;
 	private  List<ReceiptAddress> addrs;
 	
+	
+	
+	private String receiptName;
+	private String detailedAddress;
+	private String telAddress;
+	
+	private String listJson; // List页面返回的JSON值
 	private String goods;
 	private String userReal;
 	private String clientUserRegionId;
@@ -133,6 +141,62 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private List<BusinessGoods> goodsList;
 	List<BusinessOrderVO> voList;
 	private String userDesc;
+
+	
+	private String cartids;
+	private String totalMoney;
+	
+	
+	
+	
+	
+	public String getCartids() {
+		return cartids;
+	}
+
+	public void setCartids(String cartids) {
+		this.cartids = cartids;
+	}
+
+	public String getTotalMoney() {
+		return totalMoney;
+	}
+
+	public void setTotalMoney(String totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+
+	public String getListJson() {
+		return listJson;
+	}
+
+	public void setListJson(String listJson) {
+		this.listJson = listJson;
+	}
+
+	public String getReceiptName() {
+		return receiptName;
+	}
+
+	public void setReceiptName(String receiptName) {
+		this.receiptName = receiptName;
+	}
+
+	public String getDetailedAddress() {
+		return detailedAddress;
+	}
+
+	public void setDetailedAddress(String detailedAddress) {
+		this.detailedAddress = detailedAddress;
+	}
+
+	public String getTelAddress() {
+		return telAddress;
+	}
+
+	public void setTelAddress(String telAddress) {
+		this.telAddress = telAddress;
+	}
 
 	public String getGoods() {
 		return goods;
@@ -334,10 +398,30 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		 user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
 		
 		 
-		 addrs = addressService.findByUserId(user.getId(), "0");
+		 addrs = addressService.findListByUserId(user.getId());
 		 
-
-		 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
+         if(cartids=="all"){
+        	 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));	 
+         }else{
+        	 
+        	 cartVoList = new ArrayList<BusinessGoodsCartVo>();
+        	 
+        	 String[] cartIdArray = cartids.split(",");
+        	 
+        	 for(int i=0;i<cartIdArray.length;i++){
+        		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
+        		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
+        		 
+        		 BusinessGoodsCartVo vo = new BusinessGoodsCartVo();
+        		 vo.setCart(cart);
+        		 vo.setGoods(goods);
+        		 cartVoList.add(vo);
+        		 
+        	 }
+        	 
+        	 
+         }
+		 
 		
 		 return StrutsResMSG.SUCCESS;
 		
@@ -414,8 +498,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			orderRecord.setTheLatestTime(null);
 			orderRecord.setBillTime(null);
 			orderRecord.setBillTimeName(null);
-			orderRecord.setRequiredDeliveryTime(Timestamp
-					.valueOf(requiredDeliveryTime + " 00:00:00"));
+			//orderRecord.setRequiredDeliveryTime(Timestamp
+					//.valueOf(requiredDeliveryTime + " 00:00:00"));
 			orderRecord.setPaymentProvider(197);
 			Status statusCode = statusService.findByid("197");
 			orderRecord.setPaymentProviderName(statusCode.getStatusName());
@@ -742,4 +826,55 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	public void setUserDesc(String userDesc) {
 		this.userDesc = userDesc;
 	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 保存对象接口
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "saveNewReceiptAddress", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json",params = {
+			"enableGZIP", "true" }) })
+	public String saveNewAddress() throws Exception {
+		
+		
+		
+		
+		user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
+		
+		JSONObject json = new JSONObject();
+		json.put("result", 0);
+		try {
+			ReceiptAddress address = new ReceiptAddress();
+			
+			address.setDetailedAddress(detailedAddress);
+			address.setFrontUserId(user.getId());
+			address.setReceiptName(receiptName);
+			address.setTel(telAddress);
+			
+			addressService.save(address);
+			json.put("result", 1);
+		} catch (Exception e) {
+			
+		}
+		
+		
+		listJson = json.toString();
+		
+		
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	
+	
+	
+	
+	
+	
 }

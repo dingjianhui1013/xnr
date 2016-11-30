@@ -136,7 +136,7 @@ function delfromCart(id){
 }
 
 //计算总价格
-function totalprice(){
+function totalprice(obj){
 	var totalprice = 0;
 	$('input:checkbox:checked').each(function(i){
 		if($(this).attr("id")!="checkAll"){
@@ -146,6 +146,38 @@ function totalprice(){
 		}
 	});
 	$("#totalprices").html(totalprice);
+	
+	$("#totalMoney").val(totalprice);
+	
+	
+	
+	var cartids = $("#cartids").val();
+	
+	
+	
+	if($(obj).is(":checked") == true) {
+		
+		if(cartids==""||cartids.length==0){
+			$("#cartids").val($(obj).val());
+		}else{
+			$("#cartids").val(cartids+","+$(obj).val());
+		}	
+	}else{
+		if(cartids.indexOf($(obj).val())>-1){
+			cartids = cartids.replace($(obj).val(), "");
+			cartids = cartids.replace(",,", ",");
+			if(cartids.indexOf(",")==0){
+				cartids = cartids.subString(1);
+			}
+			
+			$("#cartids").val(cartids);
+			
+		}
+		
+	}
+	
+	
+	
 }
 //计算全选价格
 function totalpriceAll(obj){
@@ -162,6 +194,30 @@ function totalpriceAll(obj){
 	}
 	
 	$("#totalprices").html(totalprice);
+	
+	$("#totalMoney").val(totalprice);
+	
+	
+	var cartids = "";
+	
+	if($(obj).is(":checked") == true) {
+		/* $('input:checkbox').each(function(i){
+			if($(this).attr("id")!="checkAll"){
+			
+			if(cartids==""||cartids.length==0){
+				cartids = $(this).val();
+			}else{
+				cartids = cartids +","+$(this).val();  
+			}	
+		}
+		}); */	
+		
+		$("#cartids").val("all");
+		
+	}else{
+		$("#cartids").val("");
+	}
+	
 }
 //修改数据库，购物车的商品数量和小计
 function modefyToCart(id){
@@ -215,17 +271,19 @@ function modefyToCart(id){
 						  <c:forEach items="${cartVoList}" var="cartVo" varStatus="status">
 						  		<c:if test="${!empty cartVo.cart.id }">
 								<ul class="cart-header" id="ul${cartVo.cart.id }">
+
 								</c:if>
 								<c:if test="${empty cartVo.cart.id }">
 								<ul class="cart-header" id="ul${cartVo.cart.cookieCartId }">
 								</c:if>
 								<li class="checkCol">
 								<c:if test="${!empty cartVo.cart.id }">
-								<input type="checkbox" cartId="${cartVo.cart.id }" onclick="totalprice()"/>
+								<input type="checkbox" value="${cartVo.cart.id }" cartId="${cartVo.cart.id }" onclick="totalprice(this)"/>
 								</c:if>
 								<c:if test="${empty cartVo.cart.id }">
-								<input type="checkbox" cartId="${cartVo.cart.cookieCartId }" onclick="totalprice()"/>
+								<input type="checkbox" value="${cartVo.cart.id }" cartId="${cartVo.cart.cookieCartId }" onclick="totalprice(this)"/>
 								</c:if>
+
 								<li class="productCol">
 									<a href="${basePath }front/productDetail.action?goodsId=${cartVo.goods.id}" >
 										<img src="${basePath }${cartVo.goods.goodsLogo}" class="pull-left img-responsive" alt=""></a>
@@ -354,10 +412,18 @@ function modefyToCart(id){
 			 	<ul class="cart-con">
 			 		<!-- <li class="checkCol"><input type="checkbox" />全选</li> -->
 			 		<li class="totalCol">
-			 			<a href="${basePath}/front/orderrecord/businessConfirm.action" class="pull-right cartSubmitBtn">去结算</a>
+			 		
+			 		    <form action="/front/orderrecord/businessConfirm.action">
+			 		    	<input type="hidden" id="cartids" name="cartids"/>
+			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/>
+			 		    
+			 		    <input type="submit" class="pull-right cartSubmitBtn" value="去结算">
+			 		    </form>
+			 		
+			 			
 			 			<div class="pull-right totalMoney">
 				 			<p>总价:￥<span class="t-money" id="totalprices"> 0</span></p>
-				 			<!-- <p>已节省:-￥120.00</p> -->
+				 			
 			 			</div>
 			 		</li>
 			 	</ul>
