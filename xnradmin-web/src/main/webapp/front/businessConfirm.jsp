@@ -17,6 +17,7 @@
 
 $(function(){
 	 radioBound();
+	
 });
 
 
@@ -329,12 +330,12 @@ function changePaymentMethod(index){
 				 			
 			 			</div>
 			 			
-			 			<form method="post" action="/front/orderrecord/add.action">
+			 			<form id="inputForm" method="post" action="/front/orderrecord/add.action">
 			 			
 			 			<input type="hidden" id="paymethod" name="paymethod" value="0">
 			 			<input type="hidden" id="receiptAddressId" name="receiptAddressId">
 						<input type="hidden" id="totalMoney" name="totalMoney" value="${totalMoney}">
-						<input type="hidden" value="${cartids}" name="certids">
+						<input type="hidden" value="${cartids}" name="cartids">
 						
 									 			
 			 			<input type="submit"  class="cartSubmitBtn"  value="提交订单"  />

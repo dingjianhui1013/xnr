@@ -12,6 +12,21 @@
 </head>
 <script type="text/javascript">
 
+function onSubmit(){
+	if($("#cartids").val()== ""){
+		layer.msg("请至少选择一种商品!");
+		return false;
+	}
+	
+	$("#inputForm").submit();
+	return true;
+			
+
+}
+
+
+
+
 function add(a, b) {
 	var  c=a+b;
 	var d=c.toFixed(1);	
@@ -344,7 +359,7 @@ function modefyToCart(id){
 			 		    	<input type="hidden" id="cartids" name="cartids"/>
 			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/>
 			 		    
-			 		    <input type="submit" class="pull-right cartSubmitBtn" value="去结算">
+			 		    <input type="submit" onclick="return onSubmit()" class="pull-right cartSubmitBtn" value="去结算">
 			 		    </form>
 			 		
 			 			
