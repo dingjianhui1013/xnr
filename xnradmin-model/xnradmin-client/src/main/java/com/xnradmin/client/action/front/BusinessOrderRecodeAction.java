@@ -401,7 +401,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		 
 		 addrs = addressService.findListByUserId(user.getId());
 		 
-         if(cartids=="all"){
+         if(cartids.equals("all")){
         	 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));	 
          }else{
         	 
@@ -544,7 +544,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			
 			
 			
-			 if(cartids=="all"){
+			 if(cartids.equals("all")){
 	        	 
 				 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
 				 
