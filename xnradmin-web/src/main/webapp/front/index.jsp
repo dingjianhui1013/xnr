@@ -11,7 +11,7 @@
 <script type="text/javascript">
 function addToCart(id,money){
 	var userId = $("#userId").val();
-	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money).toFixed(2));
+	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money).toFixed(1));
 	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+1));
 	if(userId!=null&&userId!=""){
 	$.ajax({
