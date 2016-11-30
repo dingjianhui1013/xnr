@@ -4,6 +4,7 @@
 package com.xnradmin.core.util;
 
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -11,13 +12,14 @@ import com.cntinker.util.ConfigHelper;
 import com.cntinker.util.HttpHelper;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.constant.EnvConstant;
+import com.xnradmin.core.test.TestLog4j;
 import com.xnradmin.dto.ScriptDTO;
 
 /**
  * @autohr: bin_liu
  */
 public class SpringBase{
-
+	private static Logger log = Logger.getLogger(SpringBase.class);
     private static ApplicationContext ctx;
     
     private static ConfigHelper c;
@@ -42,7 +44,7 @@ public class SpringBase{
         c = new ConfigHelper(new HttpHelper());
         String xnradmin_home = c.getCfgPath().substring(0,c.getCfgPath().indexOf("WEB-INF")-1);
         System.setProperty(EnvConstant.XICHEADMIN_HOME,xnradmin_home);
-        System.out.println("xnradmin home: "+xnradmin_home);
+        log.debug("xnradmin home: "+xnradmin_home);
         // String logPath = smsplattform_home + SystemHelper.getFileSeparator()
         // + "logs" + SystemHelper.getFileSeparator()
         // + StringHelper.getSystime("yyyy")
@@ -60,16 +62,16 @@ public class SpringBase{
 
             String file = "";
 
-            System.out.println("osName: " + osName);
+            log.debug("osName: " + osName);
             initEnv();
             file = c.getCfgPath().substring(0,c.getCfgPath().indexOf("/conf"))
                     + "/spring/applicationContext-main.xml";
             
-            System.out.println("path:"+file);
+            log.debug("path:"+file);
             if(osName.indexOf("Linux") > -1 || osName.indexOf("Mac") > -1)
                 file = "/" + file;
 
-            System.out.println("[Server start Load Spring Config]: " + file);
+            log.debug("[Server start Load Spring Config]: " + file);
             ctx = new FileSystemXmlApplicationContext(file);            
             scriptDto = (ScriptDTO) SpringBase.getCtx().getBean("ScriptDTO");
         }catch(Exception e){

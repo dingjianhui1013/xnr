@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.wx.FarmerDao;
 import com.xnradmin.po.wx.connect.Farmer;
@@ -34,7 +36,7 @@ import com.xnradmin.vo.business.OutPlanVO;
 @Service("farmerService")
 @Transactional
 public class FarmerService {
-
+	private static Logger log = Logger.getLogger(WXConnectAction.class);
 	@Autowired
 	private FarmerDao farmerDao;
 	@Autowired
@@ -153,7 +155,7 @@ public class FarmerService {
 			File file1 = new File(dir, imageName);
 
 			MatrixToImageWriter.writeToFile(bitMatrix, "png", file1);
-			System.out.println("二维码生成成功!");
+			log.debug("二维码生成成功!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -175,7 +177,7 @@ public class FarmerService {
 			File file1 = new File(dir, imageName);
 
 			MatrixToImageWriter.writeToFile(bitMatrix, "png", file1);
-			System.out.println("二维码生成成功!");
+			log.debug("二维码生成成功!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

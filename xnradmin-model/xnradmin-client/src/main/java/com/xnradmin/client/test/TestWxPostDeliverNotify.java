@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +31,7 @@ import com.xnradmin.vo.client.wx.WXPayInfoVO;
  * 
  */
 public class TestWxPostDeliverNotify {
-
+	private static Logger log = Logger.getLogger(TestWxPostDeliverNotify.class);
 	private static void sendPost() throws JSONException, IOException {
 		String appid = "wxaeabc3bd7fd54699";
 		String openid = "ohmUCjzaoZzX6gTX3CxDO2B-LfE4";
@@ -64,14 +65,14 @@ public class TestWxPostDeliverNotify {
 		obj.put("app_signature", app_signature);
 		obj.put("sign_method", "sha1");
 
-		System.out.println("json: " + obj.toString());
+		log.debug("json: " + obj.toString());
 
 		String url = "https://api.weixin.qq.com/pay/delivernotify?access_token=";
 		String accessToken = "di8wmtSA7t0dNZHvR_2ztfhqf254J4_HRgc--7RJuKX2f2rl4YBUrzMoeAi6XSIErbEcn1C-68MbcyeirUncjg";
 		url += accessToken;
-		System.out.println("url:" + url);
+		log.debug("url:" + url);
 		String res = HttpHelper.postXml(url, obj.toString());
-		System.out.println(res);
+		log.debug(res);
 
 	}
 
@@ -94,7 +95,7 @@ public class TestWxPostDeliverNotify {
 					.append(map.get(str[i]).toString());
 			isAnd = true;
 		}
-		System.out.println("str: " + bigStr.toString().toLowerCase());
+		log.debug("str: " + bigStr.toString().toLowerCase());
 		// SHA1加密
 		String digest = new SHA1().getDigestOfString(
 				bigStr.toString().getBytes()).toLowerCase();
@@ -135,7 +136,7 @@ public class TestWxPostDeliverNotify {
 
 		String sign = notifyService.getSignOut(v);
 
-		System.out.println("sign:" + sign);
+		log.debug("sign:" + sign);
 
 		StringBuffer o = new StringBuffer();
 		// 公众平台账户的AppId；
@@ -159,10 +160,10 @@ public class TestWxPostDeliverNotify {
 		o.append(",\"sign_method\":\"").append("sha1").append("\"");
 		o.append("}");
 
-		System.out.println("notifyUrl:" + notifyUrl);
-		System.out.println("body:" + o.toString());
+		log.debug("notifyUrl:" + notifyUrl);
+		log.debug("body:" + o.toString());
 		String res = HttpHelper.postXml(notifyUrl, o.toString(), "UTF-8");
-		System.out.println("sign res: " + res);
+		log.debug("sign res: " + res);
 	}
 
 	public static void main(String[] args) throws Exception {

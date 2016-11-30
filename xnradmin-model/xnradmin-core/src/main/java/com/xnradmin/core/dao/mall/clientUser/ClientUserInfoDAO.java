@@ -155,7 +155,7 @@ public class ClientUserInfoDAO{
             if(id!=null){
             	queryString = queryString + " and id!="+id;
             }
-            System.out.println("queryString:::"+queryString);
+            log.debug("queryString:::"+queryString);
             return commonDao.getEntitiesByPropertiesWithHql(queryString,0,0,value);
         }catch(RuntimeException re){
             log.error("find by property name failed",re);

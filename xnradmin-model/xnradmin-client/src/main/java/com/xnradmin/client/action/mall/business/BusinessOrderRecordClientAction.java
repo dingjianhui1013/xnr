@@ -395,7 +395,6 @@ public class BusinessOrderRecordClientAction extends ParentAction {
 		if (businessOrderVoList == null) {
 			errorMsg = "未选择商品";
 		} else if (staff != null) {
-			System.out.println("start:::");
 			ClientUserRegionInfo cri = new ClientUserRegionInfo();
 			if (!StringHelper.isNull(staffId)) {
 				if (clientUserRegionId.equals("new")
@@ -589,7 +588,6 @@ public class BusinessOrderRecordClientAction extends ParentAction {
 				orderGoodsRelationService.save(ogr);
 			}
 			errorMsg = "0";
-			System.out.println("end:::");
 		} else {
 			errorMsg = "用户不存在";
 		}
@@ -859,7 +857,6 @@ public class BusinessOrderRecordClientAction extends ParentAction {
 				DecimalFormat df = new DecimalFormat("#.00");
 				endJson.put("price", df.format(tempTotalPrice));
 				response.getWriter().println(endJson.toString());
-				System.out.println("end:::");
 			} else {
 				response.getWriter().println(
 						"Error: not found coop or parameter error");

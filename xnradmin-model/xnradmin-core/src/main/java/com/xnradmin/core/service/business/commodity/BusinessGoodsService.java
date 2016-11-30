@@ -441,7 +441,7 @@ public class BusinessGoodsService {
 	public int modifyAllGoods(File f, CommonStaff staff) throws IOException {
 		PoiExcelHelper ph = new PoiExcelHelper();
 
-		// System.out.println("modifyAllGoods::::: "
+		// log.debug("modifyAllGoods::::: "
 		// + System.getProperty(EnvConstant.XICHEADMIN_HOME));
 		String dir = System.getProperty(EnvConstant.XICHEADMIN_HOME)
 				+ "/data/temp/";

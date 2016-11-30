@@ -3,19 +3,22 @@
 */
 package com.xnradmin.script.business.test;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
+
+import com.xnradmin.core.util.WxUtil;
 
 /**
  * @author: liubin
  *
  */
 public class T {
-
+	private static Logger log = Logger.getLogger(T.class);
 	public static void main(String[] args) throws Exception {
 		String js = "{\"errcode\":0,\"errmsg\":\"ok\"}";
 		JSONObject jso = new JSONObject(js);
 		
-		System.out.println(jso.get("errcode"));
-		System.out.println(jso.get("errmsg"));
+		log.debug(jso.get("errcode"));
+		log.debug(jso.get("errmsg"));
 	}
 }

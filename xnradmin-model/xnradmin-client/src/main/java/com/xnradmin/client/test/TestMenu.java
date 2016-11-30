@@ -23,7 +23,6 @@ public class TestMenu {
 		WXMenuService service = (WXMenuService) SpringBase.getCtx().getBean(
 				"WXMenuService");
 		String res = service.reload("1");
-		System.out.println(res);
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -51,7 +51,7 @@ public class UploadOrderService {
 	public void excelIntoDB(String sourceFile) throws Exception {
 		List<ArrayList<String>> dataLst = new PoiExcelHelper().read(sourceFile,
 				0);
-		System.out.println("文件总行数：" + dataLst.size());
+		log.debug("文件总行数：" + dataLst.size());
 		for (int i = 0; i < dataLst.size(); i++) {
 			UploadOrder uploadOrder = null;
 			if(i>0){
@@ -196,7 +196,7 @@ public class UploadOrderService {
 			hql = hql + " and a.createTime > '" + createStartTime
 					+ "' and a.createTime < '" + createEndTime + "'";
 		}
-		System.out.println("hql::" + hql);
+		log.debug("hql::" + hql);
 		return this.commonDao.getNumberOfEntitiesWithHql(hql);
 		
 	}
@@ -276,7 +276,7 @@ public class UploadOrderService {
 		} else {
 			hql += " order by a.id desc";
 		}
-		System.out.println("hql::" + hql);
+		log.debug("hql::" + hql);
 		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,
 				pageSize);
 		List<DishesVO> resList = new ArrayList<DishesVO>();
@@ -406,7 +406,7 @@ public class UploadOrderService {
 		} else {
 			hql += " order by id desc";
 		}
-		System.out.println(hql);
+		log.debug(hql);
 		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,
 				curPage, pageSize);
 		return l;
@@ -488,7 +488,7 @@ public class UploadOrderService {
 		} else {
 			hql += " order by e.id desc";
 		}
-		System.out.println(hql);
+		log.debug(hql);
 		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,
 				curPage, pageSize);
 		return l;

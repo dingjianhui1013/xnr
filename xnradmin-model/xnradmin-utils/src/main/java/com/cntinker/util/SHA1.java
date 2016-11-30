@@ -7,6 +7,8 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.wx.connect.AesException;
 
 
@@ -18,6 +20,7 @@ import com.cntinker.util.wx.connect.AesException;
  * 站点 ：      http://wuzhut.com<br/>
  */
 public class SHA1 {
+	private static Logger log = Logger.getLogger(SHA1.class);
 	private final int[] abcde = { 0x67452301, 0xefcdab89, 0x98badcfe,
 			0x10325476, 0xc3d2e1f0 };
 	// 摘要数据存储数组
@@ -245,11 +248,11 @@ public class SHA1 {
 		}
 	public static void main(String[] args) {
 		String data = "jsapi_ticket=kgt8ON7yVITDhtdwci0qedZ3YgtqFiCX950LjjODTLjWFrylnvS0uLW7sIDezqnQf1yOYHId2ifbrtMdml-hiw&noncestr=Wm3WZYTPz0wzccnW&timestamp=1479908350284&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImageF.jsp";
-		System.out.println(data);
+		log.debug(data);
 		String digest = new SHA1().getDigestOfString(data.getBytes());
-		System.out.println(digest);
+		log.debug(digest);
 
-		// System.out.println( ToMD5.convertSHA1(data).toUpperCase());
+		// log.debug( ToMD5.convertSHA1(data).toUpperCase());
 	}
 	public static String getSHA1(String token, String timestamp, String nonce, String encrypt)
 		    throws AesException

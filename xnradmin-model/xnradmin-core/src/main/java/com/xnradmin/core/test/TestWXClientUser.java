@@ -6,6 +6,7 @@ package com.xnradmin.core.test;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.cntinker.util.HttpHelper;
@@ -19,7 +20,7 @@ import com.meterware.httpunit.WebResponse;
  * 
  */
 public class TestWXClientUser {
-
+	private static Logger log = Logger.getLogger(TestWXClientUser.class);
 	private static void test(String openid, String accessToken)
 			throws MalformedURLException, IOException, SAXException {
 		if (StringHelper.isNull(openid)) {
@@ -30,17 +31,17 @@ public class TestWXClientUser {
 		}
 		String url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="
 				+ accessToken + "&openid=" + openid + "&lang=zh_CN";
-		System.out.println("测试utf8: "+HttpHelper.sendGet(url, "UTF-8"));
+		log.debug("测试utf8: "+HttpHelper.sendGet(url, "UTF-8"));
 
-		System.out.println("测试gbk: "+HttpHelper.sendGet(url, "GBK"));
+		log.debug("测试gbk: "+HttpHelper.sendGet(url, "GBK"));
 
 		HttpunitHelper webLogin = new HttpunitHelper();
 		WebConversation wc = webLogin.init("", true);
 
 		WebResponse r = wc.getResponse(url);
-		System.out.println("测试source : "+r.getText());
+		log.debug("测试source : "+r.getText());
 		
-		System.out.println("测试utf-8 : "+new String(r.getText().getBytes("GBK"),"UTF-8"));
+		log.debug("测试utf-8 : "+new String(r.getText().getBytes("GBK"),"UTF-8"));
 	}
 	
 	
@@ -50,12 +51,12 @@ public class TestWXClientUser {
 		String url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="
 				+ accessToken + "&openid=" + openid + "&lang=zh_CN";
 		String[] res = HttpHelper.sendGetReturnHeaderRes(url,"utf-8");
-		System.out.println(res[0]);
-		System.out.println(res[1]);
+		log.debug(res[0]);
+		log.debug(res[1]);
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("args[0]=openid args[1]=accessToken");
+		log.debug("args[0]=openid args[1]=accessToken");
 		//test(args[0], args[1]);
 		//test(null,null);
 		test2();

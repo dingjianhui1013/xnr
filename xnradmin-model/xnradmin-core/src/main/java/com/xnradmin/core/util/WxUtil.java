@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.json.JSONException;
@@ -20,7 +21,7 @@ import com.cntinker.util.XmlHelper;
  * 
  */
 public class WxUtil {
-
+	private static Logger log = Logger.getLogger(WxUtil.class);
 	private volatile String content;
 
 	public WxUtil(String content) {
@@ -37,9 +38,9 @@ public class WxUtil {
 			DocumentException {
 		String c = "<xml><ToUserName><![CDATA[gh_89a513424520]]></ToUserName><FromUserName><![CDATA[oSMtluP7xOWVd-5_axZqPlEBziHE]]></FromUserName><CreateTime>1408011424</CreateTime><MsgType><![CDATA[event]]></MsgType><Event><![CDATA[unsubscribe]]></Event><EventKey><![CDATA[]]></EventKey></xml>";
 		WxUtil wu = new WxUtil(c);
-		System.out.println(wu.getDataFromKey("ToUserName"));
-		System.out.println(wu.getDataFromKey("FromUserName"));
-		System.out.println(wu.getDataFromKey("CreateTime"));
+		log.debug(wu.getDataFromKey("ToUserName"));
+		log.debug(wu.getDataFromKey("FromUserName"));
+		log.debug(wu.getDataFromKey("CreateTime"));
 	}
 
 	private static void testJson() throws JSONException {
@@ -53,9 +54,9 @@ public class WxUtil {
 		while (it.hasNext()) {
 			String key = it.next().toString();
 			System.out.print("key:" + key);
-			System.out.println(" - value:" + obj.get(key));
+			log.debug(" - value:" + obj.get(key));
 		}
-		System.out.println(obj);
+		log.debug(obj);
 
 	}
 
@@ -64,16 +65,16 @@ public class WxUtil {
 		JSONObject obj = new JSONObject();
 		obj.put("a", "1");
 		obj.put("b", "2");
-		System.out.println(obj);
+		log.debug(obj);
 
 		// String res = HttpHelper
 		// .sendGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET");
-		// System.out.println(res);
+		// log.debug(res);
 		Object o = obj.get("test");
 		if(o==null){
-			System.out.println("this is null");
+			log.debug("this is null");
 		}
-		System.out.println(o);
+		log.debug(o);
 		
 	}
 

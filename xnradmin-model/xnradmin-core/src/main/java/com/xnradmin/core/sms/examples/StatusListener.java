@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cntinker.util.StringHelper;
@@ -18,6 +19,7 @@ import com.xnradmin.constant.CacheKey;
 import com.xnradmin.po.sms.SmsRecord;
 
 public class StatusListener {
+	private static Logger log = Logger.getLogger(StatusListener.class);
 	private MemCachedBase cache;
 	private SmsRecordService service;
 	private static StatusListener statusListener;
@@ -47,7 +49,7 @@ public class StatusListener {
 			String phone = map.get("phone");
 			String sTime = map.get("statusTime");
 			String status = map.get("status");
-			System.out.println("show report");
+			log.debug("show report");
 
 			if (StringHelper.isNull(msgID))
 				continue;
@@ -56,21 +58,21 @@ public class StatusListener {
 					+ msgID);
 		
 			
-			System.out.println("cached record :" +cache.get(CacheKey.SMS_INFO_KEY
+			log.debug("cached record :" +cache.get(CacheKey.SMS_INFO_KEY
 					+ msgID));
-			System.out.println(record.getMsgID()+":"+msgID);
-			System.out.println(record.getPhone());
-			System.out.println(sTime);
+			log.debug(record.getMsgID()+":"+msgID);
+			log.debug(record.getPhone());
+			log.debug(sTime);
 			
 			if (record == null || !record.getMsgID().trim().equals(msgID.trim()) ||!record.getPhone().equals(phone))continue;
 			
-			System.out.println("cached record msgId:" + record.getMsgID());
-			System.out.println("msgID is succ");
+			log.debug("cached record msgId:" + record.getMsgID());
+			log.debug("msgID is succ");
 
 			if (record.getMtTime() == null || StringHelper.isNull(sTime)
 					|| StringHelper.isNull(msgID))
 				continue;
-			System.out.println("Time is succ");
+			log.debug("Time is succ");
 
 			SimpleDateFormat df = new SimpleDateFormat("dd");// 获得天
 			try {
@@ -78,13 +80,13 @@ public class StatusListener {
 
 				String day = df.format(record.getMtTime());// 下发时间
 				String sday = df.format(statusTime);// 状态报告时间
-				System.out.println("mt:" + day);
-				System.out.println("st:" + sday);
+				log.debug("mt:" + day);
+				log.debug("st:" + sday);
 
 				// 判断是否超过3天
 				if (Integer.parseInt(sday) - Integer.parseInt(day) >= 3)
 					return;
-				System.out.println("update is succ");
+				log.debug("update is succ");
 				// 更新数据库
 				record.setStatus(status);
 				record.setStatusTime(statusTime);
@@ -102,7 +104,7 @@ public class StatusListener {
 	public void execute() {
 		// while (true) {
 		// try {
-		// System.out.println("lnl");
+		// log.debug("lnl");
 		showReport();
 		// Thread.sleep(5*60*1000);
 		// } catch (InterruptedException e) {

@@ -10,11 +10,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
+import com.cntinker.data.HttpCookie;
+
 /**
  * @author bin_liu
  */
 public class ConfigHelper{
-
+	private static Logger log = Logger.getLogger(ConfigHelper.class);
     /**
      * 配置文件的绝对路径
      */
@@ -42,7 +46,7 @@ public class ConfigHelper{
 
         String osName = System.getProperty("os.name");
         String path = flagClass.getClass().getResource("").toString();
-        System.out.println("path:" + path);
+        log.debug("path:" + path);
         if(osName.indexOf("Win") > -1){
             path = path.substring(path.indexOf("/") + 1);
 
@@ -60,7 +64,7 @@ public class ConfigHelper{
             worklassPath = path.substring(0,path.indexOf("WEB-INF") + 8)+"classes/";
             cfgPath = path.substring(0,path.indexOf("WEB-INF")+8) + "classes/conf/";
         }
-        System.out.println("cfgPath: " + cfgPath);
+        log.debug("cfgPath: " + cfgPath);
     }
 
     /**
@@ -84,19 +88,19 @@ public class ConfigHelper{
 
     public static void main(String[] args) throws Exception{
         ConfigHelper c = new ConfigHelper(StringHelper.getInstancle());
-        System.out.println(c.getCfgPath());
+        log.debug(c.getCfgPath());
         // 默认配置文件目录
-        System.out.println(c.getValueByName("server.properties",
+        log.debug(c.getValueByName("server.properties",
                 "platform.server.businessServer"));
         // 变更配置文件目录
-        System.out.println(c
+        log.debug(c
                 .getValueByName("client.properties","client.server"));
 
         String s = "file:/D:/source/hualu/smsplatform/smsplatform-web/target/smsplatform-web/WEB-INF/classes/com/cntinker/util/";
         System.out
                 .println(s.substring(s.indexOf("/") + 1,s.indexOf("WEB-INF")));
-        System.out.println(c.getCfgPath().substring(0,
+        log.debug(c.getCfgPath().substring(0,
                 c.getCfgPath().indexOf("WEB-INF")));
-        System.out.println(c.getCfgPath());
+        log.debug(c.getCfgPath());
     }
 }

@@ -25,6 +25,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
+import com.xnradmin.core.test.TestMobile;
+
 import sun.misc.BASE64Decoder;
 
 /**
@@ -32,6 +36,7 @@ import sun.misc.BASE64Decoder;
  */
 public class StringHelper {
 
+	private static Logger log = Logger.getLogger(StringHelper.class);
 	public static StringHelper getInstancle() {
 		return new StringHelper();
 	}
@@ -800,7 +805,7 @@ public class StringHelper {
 		p = Pattern.compile(compile);// 匹配条件
 		m = p.matcher(text);
 		while (m.find()) {
-			// System.out.println(strMail.substring(m.start(),m.end()));
+			// log.debug(strMail.substring(m.start(),m.end()));
 			String str = text.substring(m.start(), m.end());
 			set.add(str);
 		}
@@ -828,7 +833,7 @@ public class StringHelper {
 		p = Pattern.compile("1[3,5][4,5,6,7,8,9]\\d{8}|15[8,9]\\d{8}");// 匹配移动手机号码
 		m = p.matcher(strMail);
 		while (m.find()) {
-			// System.out.println(strMail.substring(m.start(),m.end()));
+			// log.debug(strMail.substring(m.start(),m.end()));
 			String str = strMail.substring(m.start(), m.end());
 			set.add(str);
 		}
@@ -849,7 +854,7 @@ public class StringHelper {
 				.compile("(?i)(?<=\\b)[a-z0-9][-a-z0-9_.]+[a-z0-9]@([a-z0-9][-a-z0-9]+\\.)+[a-z]{2,4}(?=\\b)");// 匹配移动手机号码
 		m = p.matcher(content);
 		while (m.find()) {
-			// System.out.println(strMail.substring(m.start(),m.end()));
+			// log.debug(strMail.substring(m.start(),m.end()));
 			String str = content.substring(m.start(), m.end());
 			set.add(str);
 		}
@@ -1709,30 +1714,30 @@ public class StringHelper {
 		Date s = datef.parse("2012-10-15");
 		Date e = datef.parse("2012-12-15");
 		// datef.parse("2012-10-15");
-		System.out.println("------------------------");
-		System.out.println(getFirstDay(s.getTime()));
-		System.out.println(getEndDay(e.getTime()));
-		System.out.println("------------------------");
-		System.out.println(getBeforeTimeStr(2, 3, System.currentTimeMillis()));
-		System.out.println(getSystime("yyyy_MM-dd",
+		log.debug("------------------------");
+		log.debug(getFirstDay(s.getTime()));
+		log.debug(getEndDay(e.getTime()));
+		log.debug("------------------------");
+		log.debug(getBeforeTimeStr(2, 3, System.currentTimeMillis()));
+		log.debug(getSystime("yyyy_MM-dd",
 				getBeforeTimeLong(2, 3, System.currentTimeMillis())));
-		System.out.println("------------------------");
-		System.out.println(formartDecimalToStr(new Double(1.34567)));
-		System.out.println(getPreMonth());
+		log.debug("------------------------");
+		log.debug(formartDecimalToStr(new Double(1.34567)));
+		log.debug(getPreMonth());
 		List<String> timeList = getTimeDistance("yyyy-MM", 12);
 		for (int i = 0; i < timeList.size(); i++) {
 
-			System.out.println(timeList.get(i));
+			log.debug(timeList.get(i));
 		}
 		String time = "2014-03-22 17:04:32";
 		SimpleDateFormat dateff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		Date td1 = dateff.parse(time);
 		Date td2 = new Date(System.currentTimeMillis());
-		System.out.println(getDiffMinute(td1, td2));
+		log.debug(getDiffMinute(td1, td2));
 
-		System.out.println(getNextTimeStr(1, 1, System.currentTimeMillis()));
-		System.out.println(getNextTimeStr(1, 1, System.currentTimeMillis()));
+		log.debug(getNextTimeStr(1, 1, System.currentTimeMillis()));
+		log.debug(getNextTimeStr(1, 1, System.currentTimeMillis()));
 
 		String[] a = new String[] { "2", "4", "6" };
 		System.out.print(arrayToString(a));

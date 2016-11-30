@@ -5,6 +5,8 @@ package com.xnradmin.core.test;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.FileHelper;
 import com.cntinker.util.ZipHelper;
 
@@ -13,7 +15,7 @@ import com.cntinker.util.ZipHelper;
  *
  */
 public class TestZip {
-
+	private static Logger log = Logger.getLogger(TestZip.class);
 	private static void comDir() throws IOException {
 		String srcDir = "/Users/liubin/temp/temp2/";
 		FileHelper.mkdir(srcDir);
@@ -23,7 +25,7 @@ public class TestZip {
 
 	public static void main(String[] args) throws Exception {
 		comDir();
-		System.out.println("finish");
+		log.debug("finish");
 
 	}
 }

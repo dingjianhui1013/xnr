@@ -490,7 +490,7 @@ public class DishAction extends ParentAction {
 		} else if (rawMaterialList == null) {
 			super.error("未填写原料");
 		} else {
-			System.out.println("start:::");
+			log.debug("start:::");
 			// 增加新菜品
 			Dish dish = new Dish();
 			dish.setDishName(dishName);
@@ -523,7 +523,7 @@ public class DishAction extends ParentAction {
 				ct.setWeightId(weightId.getId());
 				collocationService.save(ct);
 			}
-			System.out.println("end:::");
+			log.debug("end:::");
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "dish",
 				null);
@@ -587,9 +587,9 @@ public class DishAction extends ParentAction {
 		} else if (rawMaterialList == null) {
 			super.error("未填写原料");
 		} else {
-			System.out.println("start:::");
+			log.debug("start:::");
 			// 修改菜品
-			System.out.println(dishType.getId());
+			log.debug(dishType.getId());
 			Dish tempDish = new Dish();
 			tempDish.setId(Integer.parseInt(dishId));
 			tempDish.setDishName(dish.getDishName());
@@ -624,7 +624,7 @@ public class DishAction extends ParentAction {
 				ct.setWeightId(weightId.getId());
 				collocationService.save(ct);
 			}
-			System.out.println("end:::");
+			log.debug("end:::");
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "dish",
 				null);

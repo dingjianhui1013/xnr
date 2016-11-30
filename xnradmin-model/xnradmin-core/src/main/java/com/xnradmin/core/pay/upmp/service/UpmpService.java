@@ -3,7 +3,10 @@ package com.xnradmin.core.pay.upmp.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.xnradmin.core.pay.upmp.conf.UpmpConfig;
+import com.xnradmin.core.pay.upmp.examples.testPurchase;
 import com.xnradmin.core.pay.upmp.util.HttpUtil;
 import com.xnradmin.core.pay.upmp.util.UpmpCore;
 
@@ -25,6 +28,7 @@ public class UpmpService{
 	 * @param resp 应答要素
 	 * @return 是否成功
 	 */
+	private static Logger log = Logger.getLogger(UpmpService.class);
 	public static Map<?, ?> trade(Map<String, String> req, Map<String, String> resp) {
 		String nvp = buildReq(req);
 		String respString = HttpUtil.post(UpmpConfig.TRADE_URL, nvp);
@@ -104,7 +108,7 @@ public class UpmpService{
 			// 请求要素
 			try {
 				para = UpmpCore.parseQString(respString);
-				System.out.println("para:::"+para);
+				log.debug("para:::"+para);
 			} catch (Exception e) {
 				e.printStackTrace();
 				flag = "0";

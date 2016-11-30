@@ -3,14 +3,18 @@ package com.xnradmin.core.sms136;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.xnradmin.core.service.CustomerService;
 import com.xnradmin.core.service.SmsRecordService;
+import com.xnradmin.core.sms.examples.StatusListener;
 import com.xnradmin.core.sms136.sdk.ClientSDK;
 import com.xnradmin.core.util.SpringBase;
 import com.xnradmin.po.CommonCustomer;
 import com.xnradmin.po.sms.SmsRecord;
 
 public class ClientSmsSend {
+	private static Logger log = Logger.getLogger(ClientSmsSend.class);
 	ClientSDK sdk = new ClientSDK();
 
 	private String username = "376068867";
@@ -38,7 +42,7 @@ public class ClientSmsSend {
 	public boolean sendSms(int uid,String phone, String content) throws Exception {
 //		content = content + "  【嗒嗒洗车】";
 		String ret = sdk.sendSms(username, password, phone, content);
-		System.out.println("send sms result:"+ret);
+		log.debug("send sms result:"+ret);
 		if (!ret.trim().equals("0")) {
 			return false;
 		}

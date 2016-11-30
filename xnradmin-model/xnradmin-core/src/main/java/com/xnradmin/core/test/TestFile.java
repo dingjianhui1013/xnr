@@ -5,6 +5,8 @@ package com.xnradmin.core.test;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.ConfigHelper;
 
 /**
@@ -12,13 +14,13 @@ import com.cntinker.util.ConfigHelper;
  *
  */
 public class TestFile {
-	
+	private static Logger log = Logger.getLogger(TestFile.class);
 	private static void testFile(){
 		File f = new File("/Users/liubin/temp/菜品图片定版/荤菜/temp/番茄鱼片.JPG.new.jpg.sy.jpg");
 		String savePath = "/Users/liubin/source/xnradmin/xnradmin-web/target/xnradmin-web/data/2014/09/03/";
 		String fileNewName = "番茄鱼片.JPG.new.jpg.sy";
 		boolean success = f.renameTo(new File(savePath + fileNewName + ".jpg"));
-		System.out.println(success);
+		log.debug(success);
 	}
 	
 	
@@ -27,13 +29,13 @@ public class TestFile {
 		String savePath = "/Users/liubin/source/xnradmin/xnradmin-web/target/xnradmin-web/data/2014/09/03/";
 		String fileNewName = "temp.JPG.new.jpg.sy";
 		boolean success = f.renameTo(new File(savePath + fileNewName + ".jpg"));
-		System.out.println(success);
+		log.debug(success);
 	}
 	
 	private static void testConfig(){
 		ConfigHelper c = new ConfigHelper(new Test());
-		System.out.println(c);
-		System.out.println(c.getCfgPath());
+		log.debug(c);
+		log.debug(c.getCfgPath());
 	}
 
 	public static void main(String[] args) throws Exception {

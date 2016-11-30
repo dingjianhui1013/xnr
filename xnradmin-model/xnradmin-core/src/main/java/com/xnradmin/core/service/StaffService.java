@@ -770,7 +770,7 @@ public class StaffService {
 	}
 
 	public static void main(String[] args) {
-		// System.out.println(new StaffService().getByLoginInfo("xcga",
+		// log.debug(new StaffService().getByLoginInfo("xcga",
 		// "d897704222ac7c3f80746e4edd5eeec8", "washer"));
 	}
 
@@ -845,7 +845,7 @@ public class StaffService {
 				&& !StringHelper.isNull(orderDirection)) {
 			sb.append(" order by " + orderField + " " + orderDirection);
 		}
-		System.out.println(sb.toString());
+		log.debug(sb.toString());
 		return sb.toString();
 	}
 

@@ -10,12 +10,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author: liubin
  * 
  */
 public class CookieHelper {
-
+	private static Logger log = Logger.getLogger(CookieHelper.class);
 	public static void addCookie(HttpServletResponse response, String name,
 			String value, int maxAge) {
 		Cookie cookie = new Cookie(name, value);
@@ -38,7 +40,7 @@ public class CookieHelper {
 		Cookie[] cookies = request.getCookies();
 		if (null != cookies) {
 			for (Cookie cookie : cookies) {
-				System.out.println("cookie.getName(): "+cookie);
+				log.debug("cookie.getName(): "+cookie);
 				cookieMap.put(cookie.getName(), cookie);
 			}
 		}

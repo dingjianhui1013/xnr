@@ -1401,7 +1401,6 @@ public class OrderRecordClientAction extends ParentAction {
 						.getUserRealName());
 				orderRecord.setUserRealPostcode(clientUserRegionInfo
 						.getUserRealPostcode());
-				System.out.println("userRealTime++"+userRealTime);
 				if (!StringHelper.isNull(userRealTime)) {
 					userRealTime = userRealTime+" 16:00:00";
 					orderRecord

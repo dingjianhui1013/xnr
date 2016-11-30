@@ -240,9 +240,9 @@ public class ReflectHelper{
         // g.setGatewayApiName("测试API");
         // Field[] f = g.getClass().getDeclaredFields();
         // for(Field e : f){
-        // System.out.println(e.getName());
+        // log.debug(e.getName());
         // }
         //
-        // System.out.println(makeToString(g));
+        // log.debug(makeToString(g));
     }
 }

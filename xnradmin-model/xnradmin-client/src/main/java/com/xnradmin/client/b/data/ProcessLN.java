@@ -21,6 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,9 +35,9 @@ import com.cntinker.util.StringHelper;
  */
 public class ProcessLN {
 
+	private static Logger log = Logger.getLogger(ProcessLN.class);
 	private static String goodsListUrl = "http://m.blueface.cn/api/goods/list";// "http://123.56.45.136/api/goods/list";//
 																				// "http://m.blueface.cn/api/goods/list";
-
 	private static String categoryList = "http://123.57.42.5/ecmobile/?url=/category";
 
 	private static String loginUrl = "http://m.blueface.cn/api/user/login";
@@ -68,12 +69,12 @@ public class ProcessLN {
 			IOException {
 
 		/**
-		 * System.out.println(System.getProperty(EnvConstant.XICHEADMIN_HOME));
+		 * log.debug(System.getProperty(EnvConstant.XICHEADMIN_HOME));
 		 * 
-		 * System.out.println(SpringBase.getCfg().getCfgPath());
-		 * System.out.println("-----------------"); String cookiedir =
+		 * log.debug(SpringBase.getCfg().getCfgPath());
+		 * log.debug("-----------------"); String cookiedir =
 		 * System.getProperty(EnvConstant.XICHEADMIN_HOME) + "/data/cookie/";
-		 * System.out.println(cookiedir); if (!StringHelper.isNull(System
+		 * log.debug(cookiedir); if (!StringHelper.isNull(System
 		 * .getProperty(EnvConstant.XICHEADMIN_HOME)) && !new
 		 * File(cookiedir).exists()) { FileHelper.mkdir(cookiedir); }
 		 */
@@ -105,12 +106,12 @@ public class ProcessLN {
 		cookie = h.getValue();
 		// cookie = cookie.substring(0, cookie.indexOf(";"));
 
-		System.out.println("----------- cookie start ------------------");
+		log.debug("----------- cookie start ------------------");
 
 		for (Header e : hList) {
-			System.out.println(e.getName() + " | " + e.getValue());
+			log.debug(e.getName() + " | " + e.getValue());
 		}
-		System.out.println("----------- cookie end ------------------");
+		log.debug("----------- cookie end ------------------");
 		HttpPost indexPost = new HttpPost(indexUrl);
 
 	}
@@ -148,18 +149,18 @@ public class ProcessLN {
 
 		// cookie = cookie.substring(0, cookie.indexOf(";"));
 
-		System.out.println("----------- cookie start ------------------");
+		log.debug("----------- cookie start ------------------");
 
 		for (Header e : hList) {
-			System.out.println(e.getName() + " | " + e.getValue());
+			log.debug(e.getName() + " | " + e.getValue());
 		}
-		System.out.println("----------- cookie end ------------------");
+		log.debug("----------- cookie end ------------------");
 		HttpEntity entity = response.getEntity();
 		// 判断响应实体是否为空
 		if (entity != null) {
 			String responseString = EntityUtils.toString(entity);
-			System.out.println("response length:" + responseString.length());
-			System.out.println("response content:"
+			log.debug("response length:" + responseString.length());
+			log.debug("response content:"
 					+ responseString.replace("\r\n", ""));
 		}
 	}
@@ -172,7 +173,7 @@ public class ProcessLN {
 		res = StringHelper.convertUnicode(res);
 		JSONObject jo = new JSONObject(res);
 
-		System.out.println(jo.get("result"));
+		log.debug(jo.get("result"));
 
 		JSONArray data = new JSONArray(jo.get("info").toString());
 		for (int i = 0; i < data.length(); i++) {
@@ -191,15 +192,15 @@ public class ProcessLN {
 		JSONArray data = new JSONArray(jo.get("data").toString());
 		for (int i = 0; i < data.length(); i++) {
 			JSONObject temp = (JSONObject) data.get(i);
-			System.out.println(temp.get("id") + " | " + temp.get("name"));
+			log.debug(temp.get("id") + " | " + temp.get("name"));
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(1);
+		log.debug(1);
 		// processLogin();
 		testMain();
 		//
-		//System.out.println(StringHelper.convertUnicode("\u7f3a\u5c11\u53c2\u6570"));
+		//log.debug(StringHelper.convertUnicode("\u7f3a\u5c11\u53c2\u6570"));
 	}
 }

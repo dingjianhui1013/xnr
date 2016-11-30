@@ -3,15 +3,18 @@
  */
 package com.xnradmin.core.test;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author: bin_liu
  * 
  */
 public class Test {
 
+	private static Logger log = Logger.getLogger(Test.class);
 	public static void main(String[] args) throws Exception {
-		System.out.println("123123");
-		System.out.println(new Test().updateStaffStatus("40", "leave"));
+		log.debug("123123");
+		log.debug(new Test().updateStaffStatus("40", "leave"));
 	}
 
 	public String updateStaffStatus(String washId, String handleType) {

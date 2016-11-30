@@ -5,6 +5,7 @@ package com.xnradmin.script.business.test;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.codehaus.commons.compiler.CompileException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +19,7 @@ import com.xnradmin.dto.ScriptDTO;
  *
  */
 public class TestWXScript {
-
+	private static Logger log = Logger.getLogger(TestWXScript.class);
 	private static void testWxUserMessage() throws JSONException,
 			CompileException, ClassNotFoundException, IOException {
 		String content = "<xml><ToUserName><![CDATA[gh_7f42da2a2dc4]]></ToUserName><FromUserName><![CDATA[ohmUCj1104_W4N7h3c1EcJ3Qlsf0]]></FromUserName><CreateTime>1410332842</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[2]]></Content><MsgId>6057333433065760271</MsgId>webwx_msg_cli_ver_0x1</xml>";
@@ -35,7 +36,7 @@ public class TestWXScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testWXUserEvent() throws CompileException,
@@ -53,14 +54,14 @@ public class TestWXScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 	
 	
 	private static void testUrl (){
 		String url = "http://www.17xnr.com/index.jsp?test=temp";
 		String u = getUrl(url,"uid=123");
-		System.out.println(u);
+		log.debug(u);
 	}
 	
 	private static String getUrl(String sourceUrl, String parameter) {

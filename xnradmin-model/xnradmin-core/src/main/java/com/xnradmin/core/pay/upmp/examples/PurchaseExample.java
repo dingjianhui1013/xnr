@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
+import com.xnradmin.core.dao.MongodbClient;
 import com.xnradmin.core.pay.upmp.conf.UpmpConfig;
 import com.xnradmin.core.pay.upmp.service.UpmpService;
 
@@ -20,10 +23,10 @@ import com.xnradmin.core.pay.upmp.service.UpmpService;
  * 说明：以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己的需要，按照技术文档编写,并非一定要使用该代码。该代码仅供参考。
  * */
 public class PurchaseExample{
-	
+	private static Logger log = Logger.getLogger(PurchaseExample.class);
 	public static Map postPE(String orderId, String price, String moneyType){
         // 请求要素
-		System.out.println("price======="+price);
+		log.debug("price======="+price);
 		Map<String, String> req = new HashMap<String, String>();
 		req.put("version", UpmpConfig.VERSION);// 版本号
 		req.put("charset", UpmpConfig.CHARSET);// 字符编码

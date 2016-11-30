@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cntinker.util.StringHelper;
@@ -13,6 +14,7 @@ import com.xnradmin.core.cache.MemCachedBase;
 import com.xnradmin.core.dao.CommonCustomerDAO;
 import com.xnradmin.core.service.CustomerService;
 import com.xnradmin.core.service.SmsRecordService;
+import com.xnradmin.core.service.templates.TemplatesClassService;
 import com.xnradmin.core.sms.service.SmsService;
 import com.xnradmin.core.util.SpringBase;
 import com.xnradmin.constant.CacheKey;
@@ -20,7 +22,7 @@ import com.xnradmin.po.CommonCustomer;
 import com.xnradmin.po.sms.SmsRecord;
 
 public class SmsExample {
-	
+	private static Logger log = Logger.getLogger(SmsExample.class);
 	private SmsRecordService service;
 
 	private MemCachedBase cache;
@@ -58,7 +60,7 @@ public class SmsExample {
 		if (resList != null && resList.size() >= 1) {
 			Map<String, String> resMap = resList.get(0);
 			if (resMap != null) {
-				System.out.println("map is not null");
+				log.debug("map is not null");
 				String p = resMap.get("phone");
 				String msgID = resMap.get("msgID");
 
@@ -75,14 +77,14 @@ public class SmsExample {
 				}
 				
 				// 入库
-				System.out.println("map is not null");
+				log.debug("map is not null");
 				service.save(smsRecord);
 
 				// 判断号码是否提交成功
 				if (!StringHelper.isNull(msgID) && !msgID.equals("0")) {
 					// 加入缓存
 					cache.add(CacheKey.SMS_INFO_KEY + msgID, smsRecord);
-					System.out.println("获取缓存值："+cache.get(CacheKey.SMS_INFO_KEY + msgID));
+					log.debug("获取缓存值："+cache.get(CacheKey.SMS_INFO_KEY + msgID));
 				}
 			}
 		} else {

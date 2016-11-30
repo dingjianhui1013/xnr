@@ -3,6 +3,8 @@
  */
 package com.xnradmin.core.test;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.StringHelper;
 
 /**
@@ -10,10 +12,10 @@ import com.cntinker.util.StringHelper;
  *
  */
 public class TestString {
-
+	private static Logger log = Logger.getLogger(TestString.class);
 	private static void testSplit() {
 		String str = "<p><span style=\"font-size:12px;\">的简历附件里的世界覅覅</span></p><p><span style=\"font-size:12px;\">法式风味和<br /></span></p>";
-		System.out.println(StringHelper.spiltStr(str, "<span style=", "\">"));
+		log.debug(StringHelper.spiltStr(str, "<span style=", "\">"));
 
 		int start = 0;
 		int end = 0;
@@ -29,21 +31,21 @@ public class TestString {
 			if (flag >= str.length())
 				break;
 
-			System.out.println("in : " + temp);
+			log.debug("in : " + temp);
 			temp = getContent(temp);
 			sb.append(temp);
-			System.out.println(temp.length());
-			System.out.println("getContent : " + temp);
+			log.debug(temp.length());
+			log.debug("getContent : " + temp);
 			temp = str.substring(temp.length() + 7);
 
 			flag += temp.length() + 7;
-			System.out.println("flag : " + flag + " | len : " + str.length());
+			log.debug("flag : " + flag + " | len : " + str.length());
 
-			System.out.println("2:" + str.substring(temp.length()));
+			log.debug("2:" + str.substring(temp.length()));
 		}
 
-		System.out.println(StringHelper.removeSpace("<br /  >"));
-		System.out.println("final content : "
+		log.debug(StringHelper.removeSpace("<br /  >"));
+		log.debug("final content : "
 				+ StringHelper.removeSpace(sb.toString()).replaceAll("<br/>",
 						""));
 
@@ -62,7 +64,7 @@ public class TestString {
 	public static void main(String[] args) throws Exception {
 		String total = "0.01".trim().replaceAll("\\.", "");
 		Integer t = new Integer(total);
-		System.out.println(t);
+		log.debug(t);
 		testSplit();
 	}
 }

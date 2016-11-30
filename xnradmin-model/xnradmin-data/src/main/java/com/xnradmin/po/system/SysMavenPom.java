@@ -3,13 +3,18 @@
 */
 package com.xnradmin.po.system;
 
+import org.apache.log4j.Logger;
+
+import com.xnradmin.dto.client.WeatherCityDTO;
+
 /**
  * @autohr: bin_liu
  *
  */
 public class SysMavenPom{
+	private static Logger log = Logger.getLogger(SysMavenPom.class);
 
     public static void main(String[] args) throws Exception{
-        System.out.println("");
+        log.debug("");
     }
 }
