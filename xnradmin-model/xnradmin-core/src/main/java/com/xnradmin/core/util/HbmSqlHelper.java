@@ -91,7 +91,7 @@ public class HbmSqlHelper{
         // String s1 = "from phoneno a,phone_local b,mobile d where a.id=b.id";
         // String s2 = "from phone a";
         //
-        // System.out.println(Arrays.deepToString(getTableName(s2)));
-        // System.out.println(addParaToTable(s1,new String[]{"1","2","3"}));
+        // log.debug(Arrays.deepToString(getTableName(s2)));
+        // log.debug(addParaToTable(s1,new String[]{"1","2","3"}));
     }
 }

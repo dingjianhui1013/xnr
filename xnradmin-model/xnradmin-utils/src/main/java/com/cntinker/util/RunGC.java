@@ -8,12 +8,15 @@ package com.cntinker.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author peng_wei TODO To change the template for this generated type comment
  *         go to Window - Preferences - Java - Code Style - Code Templates
  */
 public class RunGC extends Thread{
 
+	private static Logger log = Logger.getLogger(RunGC.class);
     public final static int CYCTIME = 15 * 60;
 
     public static SimpleDateFormat formatter = new SimpleDateFormat(
@@ -42,7 +45,7 @@ public class RunGC extends Thread{
 
             Runtime.getRuntime().gc();
 
-            System.out.println(formatter.format(new Date()) + " ---- Run GC!");
+            log.debug(formatter.format(new Date()) + " ---- Run GC!");
         }
     }
 

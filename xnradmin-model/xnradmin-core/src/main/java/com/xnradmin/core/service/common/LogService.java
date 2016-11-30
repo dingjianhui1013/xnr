@@ -7,12 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.FileHelper;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.dao.CommonDAO;
+import com.xnradmin.core.service.business.data.ProcessYsmcExcel;
 import com.xnradmin.core.util.SpringBase;
 import com.xnradmin.po.common.Log;
 import com.xnradmin.po.common.status.Status;
@@ -24,6 +26,7 @@ import com.xnradmin.po.common.status.Status;
 @Service("LogService")
 public class LogService {
 
+	private static Logger log = Logger.getLogger(LogService.class);
 	@Autowired
 	private CommonDAO commonDao;
 
@@ -126,12 +129,12 @@ public class LogService {
 		System.out
 				.println(f.substring(0, f.lastIndexOf("/") - 4) + "log4j.xml");
 
-		System.out.println(getLog4jContent());
+		log.debug(getLog4jContent());
 	}
 
 	public static void main(String[] args) throws Exception {
 		test();
-		System.out.println(getLog4j());
-		System.out.println(getLog4jContent());
+		log.debug(getLog4j());
+		log.debug(getLog4jContent());
 	}
 }

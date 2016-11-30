@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.xnradmin.core.pay.upmp.conf.UpmpConfig;
 import com.xnradmin.core.pay.upmp.service.UpmpService;
 
@@ -19,7 +21,7 @@ import com.xnradmin.core.pay.upmp.service.UpmpService;
  * 说明：以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己的需要，按照技术文档编写,并非一定要使用该代码。该代码仅供参考。
  * */
 public class QueryExample{
-
+	private static Logger log = Logger.getLogger(QueryExample.class);
 	public static String postQE(String orderNumber){
         // 请求要素
 		Map<String, String> req = new HashMap<String, String>();
@@ -48,7 +50,7 @@ public class QueryExample{
 	            
 	        }
 		}
-		System.out.println(validResp);
+		log.debug(validResp);
        return "";
 	}
 	

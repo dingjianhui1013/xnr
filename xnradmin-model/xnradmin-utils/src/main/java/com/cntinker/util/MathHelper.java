@@ -3,12 +3,15 @@
  */
 package com.cntinker.util;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * @author : bin_liu
  */
 public class MathHelper{
 
+	private static Logger log = Logger.getLogger(MathHelper.class);
     /**
      * 冒泡排序
      */
@@ -413,15 +416,14 @@ public class MathHelper{
         for(int i = 0;i < a.length;i ++ )
             System.out.print(a[i] + ",");
 
-        System.out.println("\n==============");
+        log.debug("\n==============");
 
-        System.out.println(getMaxNumber(nums));
-        System.out.println(getMinNumber(nums));
+        log.debug(getMaxNumber(nums));
+        log.debug(getMinNumber(nums));
 
-        System.out.println("\n==============");
+        log.debug("\n==============");
         int[] b = selectSort(nums,false);
         for(int i = 0;i < b.length;i ++ )
-            System.out.print(b[i] + ",");
-        System.out.println();
+        	 log.debug(b[i] + ",");
     }
 }

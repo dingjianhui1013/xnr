@@ -153,7 +153,7 @@ public class CollocationDAO{
             if(!StringHelper.isNull(collocationId)){
             	queryString = queryString + " and id!="+collocationId;
             }
-            System.out.println(queryString);
+            log.debug(queryString);
             return commonDao.getEntitiesByPropertiesWithHql(queryString,0,0);
         }catch(RuntimeException re){
             log.error("find by property name failed",re);

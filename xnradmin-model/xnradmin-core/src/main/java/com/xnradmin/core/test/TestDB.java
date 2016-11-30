@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.codehaus.commons.compiler.CompileException;
 
 import com.xnradmin.core.cache.ScriptCacheManager;
@@ -27,14 +28,14 @@ import com.xnradmin.vo.client.ClientUserVO;
  * @author: bin_liu
  */
 public class TestDB {
-
+	private static Logger log = Logger.getLogger(TestDB.class);
 	private static void testDB1() {
 		CommonDAO dao = (CommonDAO) SpringBase.getCtx().getBean("CommonDAO");
 //		String hql = "from CommonStaff";
 //		List l = dao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		FarmerImage p = new FarmerImage();
 		p.setUserName("123");
-//		System.out.println(l);
+//		log.debug(l);
 		dao.save(p);
 	}
 
@@ -46,17 +47,17 @@ public class TestDB {
 		ScriptHelper service = (ScriptHelper) SpringBase.getCtx().getBean(
 				"ScriptHelper");
 		List<String> l = ScriptCacheManager.getKeyIndex();
-		System.out.println(l);
+		log.debug(l);
 
 		service.loadByLocal(test);
 		service.loadByLocal(test2);
 
 		ScriptDTO dto = service.find(test);
-		System.out.println("dto: " + dto);
+		log.debug("dto: " + dto);
 		service.del(test);
 
 		ScriptDTO dto2 = service.find(test2);
-		System.out.println(dto2);
+		log.debug(dto2);
 	}
 
 	private static void testDB3() throws CompileException,
@@ -73,11 +74,11 @@ public class TestDB {
 		classMap.put(test, d1);
 		classMap.put(test2, d2);
 
-		System.out.println("classMap: " + classMap);
+		log.debug("classMap: " + classMap);
 		classMap.remove(test2);
 
 		classMap.get(test);
-		System.out.println("classMap: " + classMap);
+		log.debug("classMap: " + classMap);
 
 	}
 
@@ -90,23 +91,23 @@ public class TestDB {
 	// "DynamicTable");
 	//
 	// String[] tables = t.getTables();
-	// System.out.println("tables: " + tables);
+	// log.debug("tables: " + tables);
 	// List<String> l =
 	// dao.findAllTableNames("xnradmin","client_user_reg_",1);
-	// System.out.println("res size: " + l.size());
+	// log.debug("res size: " + l.size());
 	// for(String e : l){
-	// System.out.println("table: " + e);
+	// log.debug("table: " + e);
 	//
 	// String sql = "select a.* from " + e + " a";
 	// ClientUserReg type = new ClientUserReg();
 	// List<Object[]> rl = dao.findBySQL(type,sql,0,0);
 	//
-	// System.out.println("rl: " + rl);
+	// log.debug("rl: " + rl);
 	// for(Object o : rl){
 	// System.out.print("[ o cls: " + o.getClass().getName()
 	// + " | value: " + o.toString() + " ]");
 	// }
-	// System.out.println(" | ");
+	// log.debug(" | ");
 	// }
 	//
 	// }
@@ -128,14 +129,14 @@ public class TestDB {
 		String sql = "select count(*)"
 				+ " from client_user_info a left outer join description b on a.region_description_id=b.id";
 
-		System.out.println("res : " + dao.getNumberOfEntitiesWithSql(sql));
+		log.debug("res : " + dao.getNumberOfEntitiesWithSql(sql));
 	}
 
 	private static void testCommonJDBCDao() {
 		CommonJDBCDAO dao = (CommonJDBCDAO) SpringBase.getCtx().getBean(
 				"CommonJDBCDAO");
 		String sql = "select count(*) from client_user_info";
-		System.out.println(dao.getNumberOfEntitiesWithSql(sql));
+		log.debug(dao.getNumberOfEntitiesWithSql(sql));
 	}
 
 	private static void testJDBC() {
@@ -172,18 +173,18 @@ public class TestDB {
 
 		for (int i = 0; i < resList.size(); i++) {
 			Map m = (Map) resList.get(i);
-			System.out.println(m);
-			// System.out.println(resList.get(i));
+			log.debug(m);
+			// log.debug(resList.get(i));
 		}
 
-		System.out.println(resList);
+		log.debug(resList);
 	}
 
 	private static void testDB4() {
 		CommonDAO dao = (CommonDAO) SpringBase.getCtx().getBean("CommonDAO");
 		String hqlAppid = "select count(*) from WXUser where appid=2222";
 		int countAppid = dao.getNumberOfEntitiesWithHql(hqlAppid);
-		System.out.println(countAppid);
+		log.debug(countAppid);
 	}
 	
 	private static void testDB5() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, InstantiationException {

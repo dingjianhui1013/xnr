@@ -11,12 +11,14 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.util.crypt.Base64UrlSafe;
 
 /**
  * @author: bin_liu
  */
 public class TestSec{
+	private static Logger log = Logger.getLogger(TestSec.class);
     private static final String HMAC_SHA1 = "HmacSHA1";
 
     /**
@@ -75,7 +77,7 @@ public class TestSec{
 
         // Convert raw bytes to Hex
         String hexBytes = byte2hex(rawHmac);
-        System.out.println("hexBytes:" + hexBytes);
+        log.debug("hexBytes:" + hexBytes);
 
         String signature;
         signature = new String(Base64UrlSafe.encodeBase64(hexBytes.getBytes()),

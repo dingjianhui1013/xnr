@@ -3,6 +3,8 @@
  */
 package com.xnradmin.core.test;
 
+import org.apache.log4j.Logger;
+
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.order.PurchaseService;
 import com.xnradmin.core.util.SpringBase;
@@ -15,19 +17,19 @@ import com.xnradmin.po.mall.order.Purchase;
  * 
  */
 public class TestService {
-
+	private static Logger log = Logger.getLogger(TestService.class);
 	private static void testStatus() {
 		StatusService statusService = (StatusService) SpringBase.getCtx()
 				.getBean("StatusService");
 		Status status = statusService.find(SyncDTOAck.class, "status", "WX接口IO异常");
-		System.out.println(status);
+		log.debug(status);
 	}
 
 	private static void testPurchase() {
 		PurchaseService purchaseService = (PurchaseService) SpringBase.getCtx()
 				.getBean("PurchaseService");
 		int purchase = purchaseService.save("100000000000000079");
-		System.out.println(purchase);
+		log.debug(purchase);
 	}
 	
 	public static void main(String[] args) throws Exception {

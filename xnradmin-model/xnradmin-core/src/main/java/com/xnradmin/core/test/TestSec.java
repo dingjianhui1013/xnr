@@ -7,6 +7,8 @@ package com.xnradmin.core.test;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.log4j.Logger;
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -19,7 +21,7 @@ import com.xnradmin.po.CommonStaff;
  * @autohr: bin_liu
  */
 public class TestSec{
-
+	private static Logger log = Logger.getLogger(TestSec.class);
     private static boolean isValid(String key,String id) throws IOException{
 
         String udid = "18878fefsdf8aadfcfe";
@@ -28,9 +30,9 @@ public class TestSec{
         BASE64Encoder encode = new BASE64Encoder();
         String encodedPassword = encode.encode(str.getBytes());
 
-        System.out.println("encodedPassword: " + encodedPassword);
+        log.debug("encodedPassword: " + encodedPassword);
 
-        System.out.println(MD5Encoder.encode32(encodedPassword));
+        log.debug(MD5Encoder.encode32(encodedPassword));
         if(id.equals("1")){
             if(MD5Encoder.encode16(encodedPassword).equals(key))
                 return true;
@@ -46,10 +48,10 @@ public class TestSec{
         CommonStaff staff = new CommonStaff();
         staff.setLoginId("admin");
         staff.setPassword("1234");
-        System.out.println(SecureUtil.getEncodePswd(staff));
+        log.debug(SecureUtil.getEncodePswd(staff));
         
       
-        System.out.println(StringHelper.getFirstDay().substring(0,
+        log.debug(StringHelper.getFirstDay().substring(0,
                 StringHelper.getFirstDay().indexOf(" ")));
     }
 
@@ -87,11 +89,11 @@ public class TestSec{
         // c += "</cpid> ";
         // c += "</ack>";
         //
-        // System.out.println(encode(c));
+        // log.debug(encode(c));
         //
         // String dstr =
         // "UEQ5NGJXd2dkbVZ5YzJsdmJqMGlNUzR3SWlCbGJtTnZaR2x1WnowaVZWUkdMVGdpUHo0OFlXTnJQanhoWTNScGIyNCtSMFZVWDBaRg0KUlR3dllXTjBhVzl1UGp4elpYSjJhV05sYVdRK056YzRPRGs1TURBOEwzTmxjblpwWTJWcFpENDhabVZsWDNObGNuWnBZMlZwWkQ0Mg0KTmpjM09EZzVPVHd2Wm1WbFgzTmxjblpwWTJWcFpENDhjM0JwWkQ0NU56QXhNend2YzNCcFpENDhZM0JwWkQ0eE5Ud3ZZM0JwWkQ0Zw0KUEM5aFkycys=";
-        // System.out.println(decode(dstr));
+        // log.debug(decode(dstr));
 
         testLogin();
     }

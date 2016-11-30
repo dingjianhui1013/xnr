@@ -76,7 +76,7 @@ public class ProcessLNExcel {
 				"vm/3.59.0 Webkit/1.0(Android 4.4.4; Sony/L39h)", true);
 
 		WebResponse r = wc.getResponse(url);
-		// System.out.println(r.getText());
+		// log.debug(r.getText());
 
 		String content = r.getText();
 

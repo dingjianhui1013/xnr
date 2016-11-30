@@ -13,11 +13,13 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.cntinker.util.HttpHelper;
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.util.SpringBase;
@@ -29,7 +31,7 @@ import com.xnradmin.vo.business.BusinessGoodsVO;
  * 
  */
 public class TestBusiness {
-
+	private static Logger log = Logger.getLogger(TestBusiness.class);
 	private static void testBusinessListJson() throws JSONException {
 		BusinessCategoryService categoryService = (BusinessCategoryService) SpringBase
 				.getCtx().getBean("BusinessCategoryService");
@@ -123,7 +125,7 @@ public class TestBusiness {
 			}
 		}
 
-		System.out.println("process success : " + parentCategory.toString());
+		log.debug("process success : " + parentCategory.toString());
 	}
 
 	private static void testBusinessGwcJson() throws JSONException {
@@ -201,7 +203,7 @@ public class TestBusiness {
 				goodsArray.put(goods);
 			}
 		}
-		System.out.println("process success : " + goodsArray.toString());
+		log.debug("process success : " + goodsArray.toString());
 	}
 
 	private static void putOrder() throws JSONException, MalformedURLException, IOException {
@@ -238,10 +240,10 @@ public class TestBusiness {
 		data.put("userReal",userRealArray);
 		String data2 = "{\"goods\":[{\"goodsId\":\"5960\",\"goodsCount\":\"1\"}],\"userReal\":[{\"userid\":\"1\",\"userRealName\":\"12qq\",\"userRealMobile\":\"13245678911\",\"userRealAddress\":\"u798fu7199u5927u9053\",\"requiredDeliveryTime\":\"2015-03-06\",\"coopid\":\"192\",\"payType\":\"197\"}]}";
 		
-//		System.out.println("http://localhost/page/wx/client/web/business/orderrecord/putOrder.action");
-//		System.out.println(data.toString());
+//		log.debug("http://localhost/page/wx/client/web/business/orderrecord/putOrder.action");
+//		log.debug(data.toString());
 		//HttpHelper.postHttpRquest("http://localhost/page/wx/client/web/business/orderrecord/putOrder.action","data="+data2.toString());
-		System.out.println(HttpHelper.postXml("http://localhost/page/wx/client/web/business/orderrecord/putOrder.action", data2.toString()));
+		log.debug(HttpHelper.postXml("http://localhost/page/wx/client/web/business/orderrecord/putOrder.action", data2.toString()));
 	}
 	public static void main(String[] args) throws Exception {
 //		testBusinessListJson();

@@ -6,6 +6,7 @@ package com.xnradmin.core.test;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.codehaus.commons.compiler.CompileException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +19,7 @@ import com.xnradmin.dto.ScriptDTO;
  * @author: bin_liu
  */
 public class TestScriptV3{
-
+	private static Logger log = Logger.getLogger(TestScriptV3.class);
     private static void testUserReg() throws JSONException,CompileException,
             ClassNotFoundException,IOException{
         
@@ -35,11 +36,11 @@ public class TestScriptV3{
         // ----------templates类运行测试
         // ScriptUserReg u = new ScriptUserReg();
         // Object out =u.execute(o);
-        System.out.println("out: " + out);
+        log.debug("out: " + out);
     }
 
     public static void main(String[] args) throws Exception{
         testUserReg();
-        System.out.println("");
+        log.debug("");
     }
 }

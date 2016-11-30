@@ -69,12 +69,10 @@ public class MessageUtil
     Map map = new HashMap();
 
     InputStream inputStream = request.getInputStream();
-    System.out.println(inputStream.toString() + ": inputString");
 
     SAXReader reader = new SAXReader();
     Document document = reader.read(inputStream);
 
-    System.out.println(document + ": document");
     Element root = document.getRootElement();
 
     List<Element> elementList = root.elements();

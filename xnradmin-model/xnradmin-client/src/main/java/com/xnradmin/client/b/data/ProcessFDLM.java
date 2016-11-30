@@ -122,13 +122,11 @@ public class ProcessFDLM implements Runnable {
 	private void process(String url) throws IOException, SAXException,
 			JSONException {
 
-		System.out.println(url);
 		HttpunitHelper webLogin = new HttpunitHelper();
 		WebConversation wc = webLogin.init(
 				"vm/3.59.0 Webkit/1.0(Android 4.4.4; Sony/L39h)", true);
 
 		WebResponse r = wc.getResponse(url);
-		// System.out.println(r.getText());
 
 		String content = r.getText();
 
@@ -153,7 +151,6 @@ public class ProcessFDLM implements Runnable {
 			sb.append(" | 单位：").append(temp.get("unit"));
 			sb.append(" | ID：").append(temp.get("iD"));
 			sb.append(" | 类型ID：").append(temp.get("typeId"));
-			System.out.println(sb.toString());
 
 			BusinessData po = new BusinessData();
 			po.setSourceId(fdlm.getId().toString());
@@ -185,7 +182,7 @@ public class ProcessFDLM implements Runnable {
 	private BusinessWeight processWeight(BusinessData data) {
 		BusinessWeight weight = findWeightByName(data.getUnit());
 		if (weight != null) {
-			System.out.println("单位已存在：" + data.getUnit());
+			log.debug("单位已存在：" + data.getUnit());
 			return weight;
 		}
 		weight = new BusinessWeight();
@@ -329,15 +326,14 @@ public class ProcessFDLM implements Runnable {
 		Thread t = new Thread(new ProcessFDLM());
 		t.start();
 
-		// System.out.println(processGoodsName("乌江鱼(活,2斤-3斤左右)"));
 
 		/**
-		 * System.out.println(getCountFormGoodsname("乌江鱼(活,2斤-3斤左右)"));
-		 * System.out.println(getCountFormGoodsname("美极鲜(1.2斤)"));
-		 * System.out.println(getCountFormGoodsname("黄柠檬(8斤箱装)"));
-		 * System.out.println(getCountFormGoodsname("桔子(大,5斤袋装)"));
-		 * System.out.println(getCountFormGoodsname("鳕鱼(44斤)"));
-		 * System.out.println(getCountFormGoodsname("红豆(48.5斤)"));
+		 * log.debug(getCountFormGoodsname("乌江鱼(活,2斤-3斤左右)"));
+		 * log.debug(getCountFormGoodsname("美极鲜(1.2斤)"));
+		 * log.debug(getCountFormGoodsname("黄柠檬(8斤箱装)"));
+		 * log.debug(getCountFormGoodsname("桔子(大,5斤袋装)"));
+		 * log.debug(getCountFormGoodsname("鳕鱼(44斤)"));
+		 * log.debug(getCountFormGoodsname("红豆(48.5斤)"));
 		 */
 	}
 

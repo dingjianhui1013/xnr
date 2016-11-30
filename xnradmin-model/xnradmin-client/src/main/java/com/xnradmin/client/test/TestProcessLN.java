@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.cntinker.data.HttpReturnData;
@@ -17,13 +18,14 @@ import com.cntinker.util.HttpunitHelper;
 import com.cntinker.util.StringHelper;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
+import com.xnradmin.client.action.wx.WXConnectAction;
 
 /**
  * @author: liubin
  *
  */
 public class TestProcessLN {
-
+	private static Logger log = Logger.getLogger(TestProcessLN.class);
 	private static String site = "http://123.57.42.5";// "http://m.blueface.cn";
 	// //http://123.57.42.5
 
@@ -55,10 +57,10 @@ public class TestProcessLN {
 				"vm/3.59.0 Webkit/1.0(Android 4.4.4; Sony/L39h)", true);
 
 		WebResponse r = webLogin.getWebResponse(wc, u, param);// wc.getResponse(u);
-		// System.out.println(r.getText());
+		// log.debug(r.getText());
 
 		String content = r.getText();
-		System.out.println("" + StringHelper.convertUnicode(content));
+		log.debug("" + StringHelper.convertUnicode(content));
 	}
 
 	private static void testGoodsList() throws IOException {
@@ -68,13 +70,13 @@ public class TestProcessLN {
 		header.put("Connection", "Keep-Alive\r\n");
 		header.put("Accept-Encoding", "gzip\r\n");
 
-		System.out.println(loginContent.length());
+		log.debug(loginContent.length());
 		String u = site + goodsList;
 
 		HttpReturnData r = HttpHelper.postXmlData(u, goodsListContent);
 
-		System.out.println(r.getHeader());
-		System.out.println(StringHelper.convertUnicode(r.getContent()));
+		log.debug(r.getHeader());
+		log.debug(StringHelper.convertUnicode(r.getContent()));
 
 	}
 
@@ -85,13 +87,13 @@ public class TestProcessLN {
 		header.put("Connection", "Keep-Alive\r\n");
 		header.put("Accept-Encoding", "gzip\r\n");
 
-		System.out.println(loginContent.length());
+		log.debug(loginContent.length());
 		String u = site + login;
 
 		String r = HttpHelper.postHttpRquest(u,
 				"password=123456&user_name=18610914994");
 
-		System.out.println(StringHelper.convertUnicode(r));
+		log.debug(StringHelper.convertUnicode(r));
 
 	}
 
@@ -102,11 +104,11 @@ public class TestProcessLN {
 		header.put("Connection", "Keep-Alive\r\n");
 		header.put("Accept-Encoding", "gzip\r\n");
 
-		System.out.println(content2.length());
+		log.debug(content2.length());
 		String u = site + configUrl;
 		String r = HttpHelper.sendGet(u);
 
-		System.out.println(StringHelper.convertUnicode(r));
+		log.debug(StringHelper.convertUnicode(r));
 	}
 
 	private static void testCate() throws MalformedURLException, IOException {
@@ -116,11 +118,11 @@ public class TestProcessLN {
 		header.put("Connection", "Keep-Alive\r\n");
 		header.put("Accept-Encoding", "gzip\r\n");
 
-		System.out.println(content2.length());
+		log.debug(content2.length());
 		String u = site + categoryUrl;
 		String r = HttpHelper.sendGet(u);
 
-		System.out.println(StringHelper.convertUnicode(r));
+		log.debug(StringHelper.convertUnicode(r));
 	}
 
 	private static void testHttpHelper() throws IOException {
@@ -131,11 +133,11 @@ public class TestProcessLN {
 		header.put("Connection", "Keep-Alive\r\n");
 		header.put("Accept-Encoding", "gzip\r\n");
 
-		System.out.println(content2.length());
+		log.debug(content2.length());
 		String u = site + searchUrl;
 
-		System.out.println(u);
-		System.out.println(content2);
+		log.debug(u);
+		log.debug(content2);
 
 		HttpReturnData r = HttpHelper.postXmlData(u, content2);
 
@@ -144,9 +146,9 @@ public class TestProcessLN {
 		while (it.hasNext()) {
 			String k = it.next();
 			String v = returnHeader.get(k);
-			System.out.println("header key:" + k + " | value:" + v);
+			log.debug("header key:" + k + " | value:" + v);
 		}
-		System.out.println(StringHelper.convertUnicode(r.getContent()));
+		log.debug(StringHelper.convertUnicode(r.getContent()));
 
 	}
 
@@ -155,7 +157,7 @@ public class TestProcessLN {
 
 		String r = HttpHelper.postHttpRquest(url, "username=123&password=123");
 
-		System.out.println(r);
+		log.debug(r);
 	}
 
 	public static void main(String[] args) throws Exception {

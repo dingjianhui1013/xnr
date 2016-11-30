@@ -11,7 +11,7 @@ import org.apache.log4j.PropertyConfigurator;
  * @autohr: bin_liu
  */
 public class LogHelper{
-
+	private static Logger log = Logger.getLogger(LogHelper.class);
     static{
         PropertyConfigurator.configureAndWatch("log4j.xml",60000);
     }
@@ -38,8 +38,8 @@ public class LogHelper{
 
     public static void main(String[] args) throws Exception{
         ConfigHelper c = new ConfigHelper(new HttpHelper());
-        System.out.println(c.getCfgPath());
+        log.debug(c.getCfgPath());
         
-        System.out.println(c.getWorklassPath());
+        log.debug(c.getWorklassPath());
     }
 }

@@ -413,7 +413,7 @@ function modefyToCart(id){
 			 		<!-- <li class="checkCol"><input type="checkbox" />全选</li> -->
 			 		<li class="totalCol">
 			 		
-			 		    <form action="/front/orderrecord/businessConfirm.action">
+			 		    <form method="post" action="/front/orderrecord/businessConfirm.action">
 			 		    	<input type="hidden" id="cartids" name="cartids"/>
 			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/>
 			 		    

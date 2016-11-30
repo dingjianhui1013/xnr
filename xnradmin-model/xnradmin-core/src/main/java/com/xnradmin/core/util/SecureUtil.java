@@ -48,7 +48,7 @@ public class SecureUtil{
     
     // 应用方式测试
     public static void main(String[] args) throws Exception{
-        // System.out.println(MD5Encoder.encode32( "1234"+"{"+"test"+"}"));
-        // System.out.println(MD5Encoder.encode32( "1234"+"{"+"1004"+"}"));
+        // log.debug(MD5Encoder.encode32( "1234"+"{"+"test"+"}"));
+        // log.debug(MD5Encoder.encode32( "1234"+"{"+"1004"+"}"));
     }
 }

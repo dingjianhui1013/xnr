@@ -3,6 +3,8 @@
 */
 package com.xnradmin.core.test;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.ConfigHelper;
 import com.xnradmin.core.util.SpringBase;
 
@@ -11,13 +13,13 @@ import com.xnradmin.core.util.SpringBase;
  *
  */
 public class TestConfig{
-
+	private static Logger log = Logger.getLogger(TestConfig.class);
     public static void main(String[] args) throws Exception{
         //ConfigHelper c = new ConfigHelper(Test.class);
         String s = SpringBase.getCfg().getValueByName("server.properties","http.disable.dir");
-        System.out.println("s: "+s);
+        log.debug("s: "+s);
         
         String db = SpringBase.getCfg().getValueByName("server.properties","mysql.master.jdbc.driverClassName");
-        System.out.println("db: "+db);
+        log.debug("db: "+db);
     }
 }

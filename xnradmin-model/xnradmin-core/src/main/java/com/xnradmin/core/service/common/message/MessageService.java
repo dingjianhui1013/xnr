@@ -275,7 +275,7 @@ public class MessageService{
 //        String smsSendLog = "SMS SEND[" + " | content: " + content
 //                + " | mobile: " + mobile + "]";
 //        log.debug(smsSendLog);
-//        System.out.println("smsSendLog: " + smsSendLog);
+//        log.debug("smsSendLog: " + smsSendLog);
         return 0;
     }
 

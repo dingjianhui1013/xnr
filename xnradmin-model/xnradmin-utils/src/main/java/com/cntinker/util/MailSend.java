@@ -150,6 +150,6 @@ public class MailSend{
     // ms.sendHtmlMail("smtp.126.com","liubin0821","gamebb","时尚包包",
     // "liubin0821@126.com",to,"2011最新时尚包包",html);
     //
-    // System.out.println(" 邮件发送成功.. ");
+    // log.debug(" 邮件发送成功.. ");
     // }
 }

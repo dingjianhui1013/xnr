@@ -5,6 +5,10 @@ import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+
+import com.cntinker.util.XmlHelper;
+
 /**
  * <pre>
  * private static UIDFactory uuid = null;
@@ -19,6 +23,7 @@ import java.util.Random;
  * </pre>
  */
 public abstract class UIDFactory{
+	private static Logger log = Logger.getLogger(UIDFactory.class);
     // ~ Static fields/initializers
     // /////////////////////////////////////////////
     /** Global Unified Identifier */
@@ -48,7 +53,7 @@ public abstract class UIDFactory{
         try{
             md5 = MessageDigest.getInstance("MD5");
         }catch(java.security.NoSuchAlgorithmException ex){
-            System.out.println("->" + ex);
+            log.debug("->" + ex);
         }
     }
 

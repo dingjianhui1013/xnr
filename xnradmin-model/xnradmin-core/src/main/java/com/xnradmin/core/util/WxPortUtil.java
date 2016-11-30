@@ -7,6 +7,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.CookieHelper;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.dto.wx.WxUserCookie;
@@ -17,7 +19,7 @@ import com.xnradmin.po.common.status.Status;
  * 
  */
 public class WxPortUtil {
-
+	private static Logger log = Logger.getLogger(WxPortUtil.class);
 	/**
 	 * 微信发送被动消息
 	 * 
@@ -68,6 +70,6 @@ public class WxPortUtil {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("");
+		log.debug("");
 	}
 }

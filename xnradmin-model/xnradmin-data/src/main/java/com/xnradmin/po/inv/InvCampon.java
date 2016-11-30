@@ -52,7 +52,7 @@ public class InvCampon implements java.io.Serializable {
 	 * 
 	 * lst.put(o1); <br>
 	 * lst.put(o2);<br>
-	 * System.out.println(lst.toString());<br>
+	 * log.debug(lst.toString());<br>
 	 */
 	@Column(name = "campon_detail", columnDefinition = "longtext", length = 4096)
 	private String camponDetail;

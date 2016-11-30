@@ -8,15 +8,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.MathHelper;
 import com.cntinker.util.StringHelper;
+import com.xnradmin.core.sms136.SmsBatchSendTest;
 
 /**
  * @author: liubin
  *
  */
 public class T {
-
+	private static Logger log = Logger.getLogger(T.class);
 	private static void test() {
 
 		int errorNum = 0;
@@ -38,11 +41,11 @@ public class T {
 			}
 		}
 		countB = count - set.size();
-		System.out.println(countA + "A" + countB + "B");
+		log.debug(countA + "A" + countB + "B");
 		if (countA == 0 && countB == 0) {
-			System.out.println("错误数字");
+			log.debug("错误数字");
 			if (++errorNum == 6) {
-				System.out.println("游戏结束");
+				log.debug("游戏结束");
 			}
 		}
 
@@ -55,18 +58,18 @@ public class T {
 	private static void test2() {
 		String v = "a";
 		say(v);
-		System.out.println(v);
+		log.debug(v);
 	}
 
 	private static void test3() {
 		int[] a = { 1, 3, 5, 7 };
 		// StringHelper.splitStr(content, split)
-		System.out.println(MathHelper.sort(a,
+		log.debug(MathHelper.sort(a,
 				MathHelper.TYPE_INSERTSORT, true));
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("\u6ce8\u518c\u5931\u8d25\uff0c\u8bf7\u8f93\u5165\u6240\u6709\u5fc5\u586b\u9879\u3002");
+		log.debug("\u6ce8\u518c\u5931\u8d25\uff0c\u8bf7\u8f93\u5165\u6240\u6709\u5fc5\u586b\u9879\u3002");
 		test3();
 	}
 }

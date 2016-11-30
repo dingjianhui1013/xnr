@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -31,23 +32,23 @@ import com.xnradmin.po.CommonStaff;
  * @author: bin_liu
  */
 public class TestJson {
-
+	private static Logger log = Logger.getLogger(TestJson.class);
 	private static void test() throws JSONException, org.json.JSONException {
 		String in = " {\"userMobile\":\"18612597550\",\"action\":\"userAccount\",\"userOrder\":[{\"carWashOrderRecordId\":\"100000000000000229\",\"userProduct\":[{\"returnUrl\":\"127.0.0.1\",\"ruleTypeName\":\"区间\",\"productBusinessTypeName\":\"按次计费\",\"sellerMoney\":\"10.0\",\"sellerName\":\"张三\",\"cusId\":\"1\",\"productMoney\":\"15.0\",\"productType\":\"19\",\"productId\":\"3\",\"washCount\":\"1\",\"ruleType\":\"24\",\"productBusinessType\":\"11\",\"productTypeName\":\"洗车类\",\"sellerId\":\"48\",\"ruleName\":\"自营小型车按次\",\"ruleId\":\"7\",\"cusName\":\"cusa\",\"productName\":\"小型车按次\",\"sellerMobile\":\"18911810974\"},{\"returnUrl\":\"127.0.0.1\",\"ruleTypeName\":\"区间\",\"productBusinessTypeName\":\"包卡计次\",\"sellerMoney\":\"10.0\",\"sellerName\":\"代理商A\",\"cusId\":\"1\",\"productMoney\":\"100.0\",\"productType\":\"19\",\"productId\":\"6\",\"washCount\":\"8\",\"ruleType\":\"24\",\"productBusinessType\":\"12\",\"productTypeName\":\"洗车类\",\"sellerId\":\"39\",\"ruleName\":\"自营小型车包次卡\",\"ruleId\":\"9\",\"cusName\":\"cusa\",\"productName\":\"小型车包次卡\",\"sellerMobile\":\"13811968624\"}]}],\"userCar\":[{\"licensePlateNumber\":\"88888\",\"carBrandName\":\"奥迪\",\"carTypeId\":\"3\",\"carTypeName\":\"小型车\",\"carBrandModelsId\":\"3\",\"carBrandModelsName\":\"A6L\",\"carBrandId\":\"3\"}],\"userRechargeCount\":\"27\",\"userId\":\"193\"}";
 		JSONObject o = new JSONObject(in);
 
-		System.out.println(o.get("userMobile"));
+		log.debug(o.get("userMobile"));
 
 		Object obj = o.get("userCar");
-		System.out.println(obj.toString());
+		log.debug(obj.toString());
 
 		JSONArray a = new JSONArray(obj.toString());
-		System.out.println(a);
+		log.debug(a);
 
 		JSONObject usercar = (JSONObject) a.get(0);
-		System.out.println(usercar.get("carBrandName"));
-		System.out.println(usercar.get("licensePlateNumber"));
-		System.out.println(usercar.get("carBrandModelsId"));
+		log.debug(usercar.get("carBrandName"));
+		log.debug(usercar.get("licensePlateNumber"));
+		log.debug(usercar.get("carBrandModelsId"));
 	}
 
 	private static void test2() throws JSONException {
@@ -65,8 +66,8 @@ public class TestJson {
 		all.append("staff", obj);
 		all.append("menu", obj2);
 
-		System.out.println(obj);
-		System.out.println(all);
+		log.debug(obj);
+		log.debug(all);
 	}
 
 	private static void testJson3() throws JSONException, org.json.JSONException {
@@ -99,7 +100,7 @@ public class TestJson {
 		temp.put("name", "testbusiness");
 
 		obj.put("loginid", temp);
-		System.out.println(obj.toString());
+		log.debug(obj.toString());
 	}
 
 	private static void testJson1() throws FileNotFoundException, IOException,
@@ -117,10 +118,10 @@ public class TestJson {
 			sb.append(" | 价格：").append(temp.get("price"));
 			sb.append(" | 单位：").append(temp.get("unit"));
 			sb.append(" | 分类ID：").append(temp.get("typeId"));
-			System.out.println(sb.toString());
+			log.debug(sb.toString());
 		}
 
-		System.out.println(data.length());
+		log.debug(data.length());
 	}
 
 	private static void testFdlmType() throws IOException, SAXException,
@@ -132,7 +133,7 @@ public class TestJson {
 				"vm/3.59.0 Webkit/1.0(Android 4.4.4; Sony/L39h)", true);
 
 		WebResponse r = wc.getResponse(u);
-		System.out.println(r.getText());
+		log.debug(r.getText());
 		String content = r.getText();
 		JSONObject jo = new JSONObject(content);
 		JSONArray data = (JSONArray) jo.get("data");
@@ -143,7 +144,7 @@ public class TestJson {
 			sb.append(" | ID：").append(temp.get("iD"));
 			sb.append(" | 父类：").append(temp.get("parentId"));
 			sb.append(" | url：").append(temp.get("url"));
-			System.out.println(sb.toString());
+			log.debug(sb.toString());
 		}
 	}
 
@@ -156,13 +157,13 @@ public class TestJson {
 				"vm/3.59.0 Webkit/1.0(Android 4.4.4; Sony/L39h)", true);
 
 		WebResponse r = wc.getResponse(u);
-		// System.out.println(r.getText());
+		// log.debug(r.getText());
 
-		System.out.println("----------------");
+		log.debug("----------------");
 
 		String temp = StringHelper.spiltStr(r.getText(), "window.data",
 				"console.log(data)");
-		// System.out.println(temp);
+		// log.debug(temp);
 
 		String temp2 = StringHelper.spiltStr(temp, "=", "};");
 
@@ -170,7 +171,7 @@ public class TestJson {
 		
 
 		res = StringHelper.convertUnicode(res);
-		System.out.println(res);
+		log.debug(res);
 		processYsmcExcel(res);
 
 	}
@@ -234,7 +235,7 @@ public class TestJson {
 
 		while (it.hasNext()) {
 			String k = it.next().toString();
-			// System.out.println(jo.get(k));
+			// log.debug(jo.get(k));
 			flag = processYsmcSubLevel1(k,jo.get(k).toString(), wb, sheet, row,
 					flag);
 		}
@@ -268,7 +269,7 @@ public class TestJson {
 
 		while (it.hasNext()) {
 			String k = it.next().toString();
-			// System.out.println(jo.get(k));
+			// log.debug(jo.get(k));
 
 			flag = processYsmcSubLevel2(type1,k,jo.get(k).toString(), wb, sheet, row,
 					flag);
@@ -289,7 +290,7 @@ public class TestJson {
 
 			JSONObject temp = (JSONObject) data.get(i);
 
-			System.out.println(temp);
+			log.debug(temp);
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("名称：").append(temp.get("name"));
@@ -303,11 +304,11 @@ public class TestJson {
 			sb.append(" | 子分类：").append(type2);
 			sb.append(" | 单价：").append(temp.get("price"));
 			sb.append(" | 总价：").append(temp.get("commodity_total_price"));
-			System.out.println(sb.toString());
+			log.debug(sb.toString());
 
 			int f = flag + 1;
 			row = sheet.createRow(f);
-			System.out.println("row: " + f);
+			log.debug("row: " + f);
 
 			HSSFCell cell0 = row.createCell(0);
 			cell0.setCellStyle(style);
@@ -375,8 +376,8 @@ public class TestJson {
 		o.put("bb", b);
 		o.put("cc", b);
 		o.put("dd", b);
-		System.out.println(o.isNull("1"));
-		System.out.println(o.toString());
+		log.debug(o.isNull("1"));
+		log.debug(o.toString());
 		
 	}
 	

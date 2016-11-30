@@ -7,6 +7,7 @@ package com.xnradmin.core.util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,19 +16,20 @@ import com.cntinker.util.ConfigHelper;
 import com.cntinker.util.FileHelper;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.test.Test;
+import com.xnradmin.core.test.TestZip;
 
 /**
  * @autohr: bin_liu
  */
 public class AjaxUtil{
-
+	private static Logger log = Logger.getLogger(AjaxUtil.class);
     private static String resultDIR;
 
     static{
         ConfigHelper c = new ConfigHelper(new Test());
-        // System.out.println("cfgPath:" + c.getCfgPath());
+        // log.debug("cfgPath:" + c.getCfgPath());
         resultDIR = c.getCfgPath() + "ajaxresult/";
-        // System.out.println(resultDIR);
+        // log.debug(resultDIR);
     }
 
     public static String getTimeout(String msg) throws FileNotFoundException,
@@ -122,12 +124,12 @@ public class AjaxUtil{
     }
 
     public static void main(String[] args) throws Exception{
-        System.out.println(AjaxUtil.getSuccess(null,"closeCurrent",null,null));
+        log.debug(AjaxUtil.getSuccess(null,"closeCurrent",null,null));
 
-        System.out.println(AjaxUtil.getError(null));
+        log.debug(AjaxUtil.getError(null));
         String jsonString = "[{\"name\":\"depname\",\"value\":\"高级管理部门\"},{\"name\":\"org1.pdid\",\"value\":\"\"},{\"name\":\"org1.pdname\",\"value\":\"\"},{\"name\":\"level\",\"value\":\"0\"}]";
 
-        System.out.println(AjaxUtil.getValueByJsonArrayAjaxRequest(jsonString,
+        log.debug(AjaxUtil.getValueByJsonArrayAjaxRequest(jsonString,
                 "depname"));
     }
 }

@@ -411,7 +411,6 @@ public class WXConnectAction {
 //		}
 //		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
 //		List<OutPlanVO> outplans = outPlanService.getListByUserId("dingjinghui",0,0);
-//		System.out.println(outplans);
 		return StrutsResMSG.SUCCESS;
 	}
 

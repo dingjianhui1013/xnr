@@ -2283,7 +2283,7 @@ public class OrderRecordService {
 		} else {
 			hql += " order by b.id";
 		}
-		System.out.println(hql);
+		log.debug(hql);
 		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,
 				curPage, pageSize);
 		return l;

@@ -6,6 +6,9 @@ package com.xnradmin.client.test;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.clientUser.ClientUserInfoService;
 import com.xnradmin.core.service.mall.clientUser.ClientUserRegionInfoService;
@@ -30,7 +33,7 @@ import com.xnradmin.vo.mall.OrderVO;
  *
  */
 public class TestProvince {
-
+	private static Logger log = Logger.getLogger(TestProvince.class);
 	private static void testProvinceService() {
 
 		ProvinceService provinceService = (ProvinceService) SpringBase.getCtx()
@@ -47,12 +50,12 @@ public class TestProvince {
 				"asc");
 		List<Area> areaList = areaService.listPO(null, null, "1", null, 0, 0,
 				"id", "asc");
-		System.out.println("provinceList : " + provinceList.size());
-		System.out.println("cityList : " + cityList.size());
-		System.out.println("areaList : " + areaList.size());
+		log.debug("provinceList : " + provinceList.size());
+		log.debug("cityList : " + cityList.size());
+		log.debug("areaList : " + areaList.size());
 		long b = System.currentTimeMillis();
 		long res = (b - a);
-		System.out.println(res + "ms");
+		log.debug(res + "ms");
 	}
 
 	private static void testWebList() {
@@ -73,7 +76,7 @@ public class TestProvince {
 		ClientUserInfo clientUserInfo = clientUserInfoService
 				.findByWxOpenid(uid);
 		long clientUserInfoE = System.currentTimeMillis();
-		System.out.println("clientUserInfo time : "
+		log.debug("clientUserInfo time : "
 				+ (clientUserInfoE - clientUserInfoS) + "ms");
 
 		if (clientUserInfo != null && clientUserInfo.getId() != null) {
@@ -89,34 +92,34 @@ public class TestProvince {
 				totalPrice = a1.add(a2).floatValue();
 			}
 			long forE = System.currentTimeMillis();
-			System.out.println("for loop time : " + (forE - forS) + "ms");
+			log.debug("for loop time : " + (forE - forS) + "ms");
 			// 取得用户所有派送地址
 			long regionInfoListS = System.currentTimeMillis();
 			List<ClientUserRegionInfo> clientUserRegionInfoList = clientUserRegionInfoService
 					.findByProperty("clientUserInfoId", clientUserInfo.getId());
 			long regionInfoListE = System.currentTimeMillis();
-			System.out.println("regionInfoList time : "
+			log.debug("regionInfoList time : "
 					+ (regionInfoListE - regionInfoListS) + "ms");
 
 			long paymentProviderListS = System.currentTimeMillis();
 			List<Status> paymentProviderList = statusService.find(
 					OrderRecord.class, "paymentProvider");
 			long paymentProviderListE = System.currentTimeMillis();
-			System.out.println("paymentProviderList time : "
+			log.debug("paymentProviderList time : "
 					+ (paymentProviderListE - paymentProviderListS) + "ms");
 
 			long logisticsCompanyListS = System.currentTimeMillis();
 			List<LogisticsCompany> logisticsCompanyList = logisticsCompanyService
 					.listAll();
 			long logisticsCompanyListE = System.currentTimeMillis();
-			System.out.println("logisticsCompanyList time : "
+			log.debug("logisticsCompanyList time : "
 					+ (logisticsCompanyListE - logisticsCompanyListS) + "ms");
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("----- start ------");
+		log.debug("----- start ------");
 		testWebList();
-		System.out.println("----- end ------");
+		log.debug("----- end ------");
 	}
 }

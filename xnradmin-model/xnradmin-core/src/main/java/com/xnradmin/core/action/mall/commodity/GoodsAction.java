@@ -894,7 +894,7 @@ public class GoodsAction extends ParentAction {
 		if (dishList == null) {
 			super.error("未填写菜品");
 		} else {
-			System.out.println("start:::");
+			log.debug("start:::");
 			// 增加新商品
 			Goods goods = new Goods();
 			goods.setGoodsName(goodsName);
@@ -975,7 +975,7 @@ public class GoodsAction extends ParentAction {
 				cdr.setModifyTime(new Timestamp(System.currentTimeMillis()));
 				goodsDishRelationService.save(cdr);
 			}
-			System.out.println("end:::");
+			log.debug("end:::");
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "goods",
 				null);
@@ -1122,7 +1122,7 @@ public class GoodsAction extends ParentAction {
 		if (dishList == null) {
 			super.error("未填写菜品");
 		} else {
-			System.out.println("start:::");
+			log.debug("start:::");
 			// 修改商品
 			Goods tempGoods = new Goods();
 			Goods oldGoods = new Goods();
@@ -1252,7 +1252,7 @@ public class GoodsAction extends ParentAction {
 				cdr.setModifyTime(new Timestamp(System.currentTimeMillis()));
 				goodsDishRelationService.save(cdr);
 			}
-			System.out.println("end:::");
+			log.debug("end:::");
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "goods",
 				null);

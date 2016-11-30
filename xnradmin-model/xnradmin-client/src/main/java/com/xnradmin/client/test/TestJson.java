@@ -3,30 +3,32 @@
  */
 package com.xnradmin.client.test;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.cntinker.util.JsonUtil;
 import com.cntinker.uuid.UUIDGener;
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.po.CommonAttach;
 
 /**
  * @author: bin_liu
  */
 public class TestJson {
-
+	private static Logger log = Logger.getLogger(TestJson.class);
 	private static void testUserReg() throws JSONException {
 		String content = "{\"clientUserInfo\":[{\"userUdid\":\"11111111\"},{\"userMobile\":\"13999999999\"}],\"action\":\"userReg\"}";
 		JSONObject obj = new JSONObject(content);
 		JSONArray array = (JSONArray) obj.get("clientUserInfo");
 		for (int i = 0; i < array.length(); i++) {
-			System.out.println(array.get(i));
+			log.debug(array.get(i));
 		}
-		System.out.println(array);
+		log.debug(array);
 
-		System.out.println(JsonUtil.getJsonObjectByArray(array, "userUdid"));
-		System.out.println(JsonUtil.getValueByArray(array, "userUdid"));
+		log.debug(JsonUtil.getJsonObjectByArray(array, "userUdid"));
+		log.debug(JsonUtil.getValueByArray(array, "userUdid"));
 	}
 
 	private static void test() throws JSONException {
@@ -47,7 +49,7 @@ public class TestJson {
 		out.put("clientUserInfo", clientUserInfo);
 		out.put("linkid", UUIDGener.getUUID());
 		out.put("valCode", "1234");
-		System.out.println(out.toString());
+		log.debug(out.toString());
 	}
 
 	private static void testPost() throws JSONException {
@@ -67,7 +69,7 @@ public class TestJson {
 
 		out.put("clientUserInfo", clientUserInfo);
 
-		System.out.println(out.toString());
+		log.debug(out.toString());
 	}
 
 	private static void testIds() throws JSONException {
@@ -82,7 +84,7 @@ public class TestJson {
 		out.put(msg1);
 		out.put(msg2);
 		
-		System.out.println(out.toString());
+		log.debug(out.toString());
 	}
 
 	private static void testGoods() throws JSONException {
@@ -140,7 +142,7 @@ public class TestJson {
 		JSONObject parentCategory = new JSONObject();
 		parentCategory.put("蔬菜", category);
 
-		System.out.println(parentCategory.toString());
+		log.debug(parentCategory.toString());
 	}
 	
 	public static void main(String[] args) throws Exception {

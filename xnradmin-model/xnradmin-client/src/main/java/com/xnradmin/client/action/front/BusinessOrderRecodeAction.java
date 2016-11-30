@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -521,14 +522,11 @@ public class BusinessOrderRecodeAction extends ParentAction {
 					.setOperateTime(new Timestamp(System.currentTimeMillis()));
 			orderRecord
 					.setCreateTime(new Timestamp(System.currentTimeMillis()));
-			// 累积订单价格
-			Float tempOriginalPrice = 0f;
-			Float tempTotalPrice = 0f;
-			Float tempPurchasePrice = 0f;
 			
-			orderRecord.setOriginalPrice(tempOriginalPrice);
-			orderRecord.setTotalPrice(tempTotalPrice);
-			orderRecord.setPurchasePrice(tempPurchasePrice);
+			
+			orderRecord.setOriginalPrice(Float.parseFloat(totalMoney));
+			orderRecord.setTotalPrice(Float.parseFloat(totalMoney));
+			orderRecord.setPurchasePrice(Float.parseFloat(totalMoney));
 			orderRecord.setDeliveryStatus(207);
 			statusCode = statusService.findByid(orderRecord.getDeliveryStatus()
 					.toString());
@@ -541,6 +539,69 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			orderRecord.setUserRealDescription(userDesc);
 			Long newOrderRecordId = orderRecordService.save(orderRecord);
 			orderRecordId = String.valueOf(newOrderRecordId);
+			
+			
+			
+			
+			
+			 if(cartids=="all"){
+	        	 
+				 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
+				 
+				 for(BusinessGoodsCartVo vo:cartVoList){
+					 ShoppingCart cart = vo.getCart();
+	        		 BusinessGoods goods = vo.getGoods();
+	        		 
+	        		 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
+	        		 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
+	        		 relation.setCurrentPrice(cart.getCurrentPrice());
+	        		 relation.setCurrentPriceType(cart.getCurrentPriceType());
+	        		 relation.setGoodsCount(cart.getGoodsCount());
+	        		 relation.setGoodsId(cart.getGoodsId());
+	        		 relation.setGoodsWeightId(goods.getGoodsWeightId());
+	        		 relation.setOrderGoodsRelationTime(new Timestamp(new Date().getTime()));
+	        		 relation.setOrderRecordId(orderRecord.getId());
+	        		 relation.setOriginalPrice(Float.parseFloat(totalMoney));
+	        		 relation.setPurchasePrice(Float.parseFloat(totalMoney));
+	        		 
+	        		 orderGoodsRelationService.save(relation);
+	        		 
+	        		 
+				 }
+				 
+				 
+	         }else{
+	        	 
+	        	 cartVoList = new ArrayList<BusinessGoodsCartVo>();
+	        	 
+	        	 String[] cartIdArray = cartids.split(",");
+	        	 
+	        	 for(int i=0;i<cartIdArray.length;i++){
+	        		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
+	        		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
+	        		 
+	        		
+	        		 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
+	        		 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
+	        		 relation.setCurrentPrice(cart.getCurrentPrice());
+	        		 relation.setCurrentPriceType(cart.getCurrentPriceType());
+	        		 relation.setGoodsCount(cart.getGoodsCount());
+	        		 relation.setGoodsId(cart.getGoodsId());
+	        		 relation.setGoodsWeightId(goods.getGoodsWeightId());
+	        		 relation.setOrderGoodsRelationTime(new Timestamp(new Date().getTime()));
+	        		 relation.setOrderRecordId(orderRecord.getId());
+	        		 relation.setOriginalPrice(Float.parseFloat(totalMoney));
+	        		 relation.setPurchasePrice(Float.parseFloat(totalMoney));
+	        		 
+	        		 orderGoodsRelationService.save(relation);
+	        		 
+	        	 }
+	         }
+			
+			 
+			 
+			 
+			 
 			
 
 		return StrutsResMSG.SUCCESS;
@@ -807,7 +868,6 @@ public class BusinessOrderRecodeAction extends ParentAction {
 				DecimalFormat df = new DecimalFormat("#.00");
 				endJson.put("price", df.format(tempTotalPrice));
 				response.getWriter().println(endJson.toString());
-				System.out.println("end:::");
 			} else {
 				response.getWriter().println(
 						"Error: not found coop or parameter error");
@@ -828,49 +888,6 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		this.userDesc = userDesc;
 	}
 	
-	
-	
-	
-	
-	
-	
-	/**
-	 * 保存对象接口
-	 * 
-	 * @return String
-	 * @throws Exception
-	 */
-	@Action(value = "saveNewReceiptAddress", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json",params = {
-			"enableGZIP", "true" }) })
-	public String saveNewAddress() throws Exception {
-		
-		
-		
-		
-		user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
-		
-		JSONObject json = new JSONObject();
-		json.put("result", 0);
-		try {
-			ReceiptAddress address = new ReceiptAddress();
-			
-			address.setDetailedAddress(detailedAddress);
-			address.setFrontUserId(user.getId());
-			address.setReceiptName(receiptName);
-			address.setTel(telAddress);
-			
-			addressService.save(address);
-			json.put("result", 1);
-		} catch (Exception e) {
-			
-		}
-		
-		
-		listJson = json.toString();
-		
-		
-		return StrutsResMSG.SUCCESS;
-	}
 	
 	
 	

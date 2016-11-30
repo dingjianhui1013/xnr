@@ -22,11 +22,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author bin_liu
  */
 public class FileHelper {
-
+	private static Logger log = Logger.getLogger(FileHelper.class);
 	public static void copyFile(File inFile, File outFile) throws IOException {
 
 		FileInputStream fi = null;
@@ -158,12 +160,12 @@ public class FileHelper {
 		if (c % cSize > 0) {
 			count++;
 		}
-		// System.out.println("原文件大小：" + c + " | mb: " + ( c / 1024 / 1024 ));
-		// System.out.println("指定分割的文件大小：" + cSize + " | mb: "
+		// log.debug("原文件大小：" + c + " | mb: " + ( c / 1024 / 1024 ));
+		// log.debug("指定分割的文件大小：" + cSize + " | mb: "
 		// + ( cSize / 1024 / 1024 ));
 		long splitSize = c / count;
-		// System.out.println("切割多少个文件: " + count);
-		// System.out.println("每个文件大小：" + splitSize);
+		// log.debug("切割多少个文件: " + count);
+		// log.debug("每个文件大小：" + splitSize);
 
 		splitFileByCount(sourceFile, count);
 
@@ -193,7 +195,7 @@ public class FileHelper {
 		{
 			long fbegin = offset;
 			long fend = (i + 1) * theadMaxSize;
-			System.out.println("offset:" + offset + " | i:" + i + " | fbegin:"
+			log.debug("offset:" + offset + " | i:" + i + " | fbegin:"
 					+ fbegin + " | fend:" + fend);
 			offset = write(sourceFile, i, fbegin, fend);
 		}
@@ -452,11 +454,11 @@ public class FileHelper {
 			bw.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			System.out.println("不能写入文件,错误原因: " + ex.getMessage());
+			log.debug("不能写入文件,错误原因: " + ex.getMessage());
 			return 2;
 		} catch (Throwable ex) {
 			ex.printStackTrace();
-			System.out.println("不能写入文件,错误原因: " + ex.getMessage());
+			log.debug("不能写入文件,错误原因: " + ex.getMessage());
 			return 9;
 		}
 		return 0;
@@ -483,11 +485,11 @@ public class FileHelper {
 			bw.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			System.out.println("不能写入文件,错误原因: " + ex.getMessage());
+			log.debug("不能写入文件,错误原因: " + ex.getMessage());
 			return 2;
 		} catch (Throwable ex) {
 			ex.printStackTrace();
-			System.out.println("不能写入文件,错误原因: " + ex.getMessage());
+			log.debug("不能写入文件,错误原因: " + ex.getMessage());
 			return 9;
 		}
 		return 0;
@@ -517,11 +519,11 @@ public class FileHelper {
 			bw.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			System.out.println("不能写入文件,错误原因: " + ex.getMessage());
+			log.debug("不能写入文件,错误原因: " + ex.getMessage());
 			return 2;
 		} catch (Throwable ex) {
 			ex.printStackTrace();
-			System.out.println("不能写入文件,错误原因: " + ex.getMessage());
+			log.debug("不能写入文件,错误原因: " + ex.getMessage());
 			return 9;
 		} finally {
 			try {
@@ -530,7 +532,7 @@ public class FileHelper {
 				if (bw != null)
 					bw.close();
 			} catch (IOException e) {
-				System.out.println(StringHelper.getStackInfo(e));
+				log.debug(StringHelper.getStackInfo(e));
 			}
 		}
 		return 0;
@@ -649,29 +651,29 @@ public class FileHelper {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// System.out.println(getFileSize("D:/temp/mobile/blackuser/black.txt",1));
+		// log.debug(getFileSize("D:/temp/mobile/blackuser/black.txt",1));
 
-		// System.out.println(new File("D:/temp/mobile/blackuser/black.txt")
+		// log.debug(new File("D:/temp/mobile/blackuser/black.txt")
 		// .length() / 1000 / 1000);
 		//
-		// System.out.println(getSuffix("D:/temp/mobile/blackuser/black.txt"));
+		// log.debug(getSuffix("D:/temp/mobile/blackuser/black.txt"));
 		//
 		// splitFile("D:/temp/mobile/blackuser/black.txt",100);
 
 		// merge("D:/temp/mobile/blackuser/black_1.txt","D:/temp/mobile/blackuser/black.txt",5);
-		System.out.println("finish-----");
+		log.debug("finish-----");
 		// mkdir("d:/Temp/wenming/20010203");
 		// File[] f1 = getSubdirName("e:/log");
 		//
 		// for(int i = 0;i < f1.length;i ++ ){
-		// System.out.println(f1[i]);
+		// log.debug(f1[i]);
 		// }
 		//
 		// File[] f2 = getFilelist("e:/log");
 		//
 		// for(int i = 0;i < f2.length;i ++ ){
-		// System.out.println(f2[i]);
-		// System.out.println(getFiletype(f2[i].getName()));
+		// log.debug(f2[i]);
+		// log.debug(getFiletype(f2[i].getName()));
 		// }
 
 		recordLineToFile("d:/temp_001.txt", "sdjkd", "UTF-8");

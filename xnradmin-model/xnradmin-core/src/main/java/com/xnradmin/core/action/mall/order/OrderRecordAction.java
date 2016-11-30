@@ -1511,7 +1511,7 @@ public class OrderRecordAction extends ParentAction {
 		if (goodsList == null) {
 			super.error("未填写商品");
 		} else {
-			System.out.println("start:::");
+			log.debug("start:::");
 			// 判定用户是否为新用户，新用户自动添加
 			// if (StringHelper.isNull(clientUserId)) {
 			// if (countryPO != null && provincePO != null && cityPO != null
@@ -1805,7 +1805,7 @@ public class OrderRecordAction extends ParentAction {
 				purchaseService.save(orderRecordId);
 			}
 			
-			System.out.println("end:::");
+			log.debug("end:::");
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
 				"orderRecrod", null);
@@ -1975,7 +1975,7 @@ public class OrderRecordAction extends ParentAction {
 		if (goodsList == null) {
 			super.error("未填写商品");
 		} else {
-			System.out.println("start:::");
+			log.debug("start:::");
 			// 判定用户是否为新用户，新用户自动添加
 //			if (StringHelper.isNull(clientUserId)) {
 //				if (provincePO != null && cityPO != null
@@ -2307,7 +2307,7 @@ public class OrderRecordAction extends ParentAction {
 					purchaseService.save(orderRecordId);
 				}
 			}
-			System.out.println("end:::");
+			log.debug("end:::");
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
 				"orderRecord", null);

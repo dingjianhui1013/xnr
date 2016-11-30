@@ -158,7 +158,6 @@ public class WXPayInfoService {
 
 			for (int i = 0; i < infoIds.size(); i++) {
 				Map.Entry<String, String> item = infoIds.get(i);
-				// System.out.println(item.getKey());
 				if (item.getKey() != "") {
 
 					String key = item.getKey();
@@ -240,11 +239,10 @@ public class WXPayInfoService {
 		m.put("body", "测试商品");
 
 		String res = formatBizQueryParaMap(m, true);
-		// System.out.println(res);
-		System.out.println(StringHelper.getRandomChar(32));
+		log.debug(StringHelper.getRandomChar(32));
 
 		String content = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		System.out.println(StringHelper.getRandomCharForInput(content, 16));
+		log.debug(StringHelper.getRandomCharForInput(content, 16));
 		WXPayInfoService payService = (WXPayInfoService) SpringBase.getCtx()
 				.getBean("WXPayInfoService");
 		WXPayInfoVO v = payService.findByWxUserid(1l);
@@ -253,7 +251,6 @@ public class WXPayInfoService {
 		v.setClientIp("106.120.21.62");
 		String rr = payService.getSignOut(v);
 
-		System.out.println(rr);
 	}
 
 }

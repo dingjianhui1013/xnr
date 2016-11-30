@@ -16,8 +16,10 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.log4j.Logger;
 
 public class HttpClientUtil {
+	private static Logger log = Logger.getLogger(HttpClientUtil.class);
 	private static MultiThreadedHttpConnectionManager conmgr = null;
 	private static HttpClient client = null;
 
@@ -48,13 +50,13 @@ public class HttpClientUtil {
 			if (status == HttpStatus.SC_OK) {
 				result = postMethod.getResponseBodyAsString();
 			} else {
-				System.out.println(url + ",POST," + status + ","
+				log.debug(url + ",POST," + status + ","
 						+ postMethod.getStatusLine().getReasonPhrase());
 			}
 		} catch (HttpException e) {
-			System.out.println(url + ",POST " + e);
+			log.debug(url + ",POST " + e);
 		} catch (IOException e) {
-			System.out.println(url + ",POST " + e);
+			log.debug(url + ",POST " + e);
 		} finally {
 			postMethod.releaseConnection();
 		}
@@ -97,13 +99,13 @@ public class HttpClientUtil {
 				}
 
 			} else {
-				System.out.println(url + ",POST," + status + ","
+				log.debug(url + ",POST," + status + ","
 						+ postMethod.getStatusLine().getReasonPhrase());
 			}
 		} catch (HttpException e) {
-			System.out.println(url + ",POST " + e);
+			log.debug(url + ",POST " + e);
 		} catch (IOException e) {
-			System.out.println(url + ",POST " + e);
+			log.debug(url + ",POST " + e);
 		} finally {
 			postMethod.releaseConnection();
 		}
@@ -134,13 +136,13 @@ public class HttpClientUtil {
 				}
 				
 			} else {
-				System.out.println(url + ",GET," + status + ","
+				log.debug(url + ",GET," + status + ","
 						+ getMethod.getStatusLine().getReasonPhrase());
 			}
 		} catch (HttpException e) {
-			System.out.println(url + ",GET " + e);
+			log.debug(url + ",GET " + e);
 		} catch (IOException e) {
-			System.out.println(url + ",GET " + e);
+			log.debug(url + ",GET " + e);
 		} finally {
 			getMethod.releaseConnection();
 		}
