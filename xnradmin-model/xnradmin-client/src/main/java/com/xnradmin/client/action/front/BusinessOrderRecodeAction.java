@@ -146,7 +146,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	
 	private String cartids;
 	private String totalMoney;
-	
+	private Integer paymethod;
 	
 	
 	
@@ -355,6 +355,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	
 	
 
+	public Integer getPaymethod() {
+		return paymethod;
+	}
+
+	public void setPaymethod(Integer paymethod) {
+		this.paymethod = paymethod;
+	}
+
 	public List<ReceiptAddress> getAddrs() {
 		return addrs;
 	}
@@ -474,6 +482,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			BusinessOrderRecord orderRecord = new BusinessOrderRecord();
 			if (user != null) {
 				orderRecord.setClientUserId(Integer.parseInt(user.getId().toString()));
+				
+				
+				/**
+				 * 现在不太清楚为什么要设置这个字段
+				 * 
+				 * */
+				
+				orderRecord.setStaffId(user.getId().toString());
 			}
 			String outTradeNo = StringHelper.getSystime("yyyyMMddHHmmss")
 					+ StringHelper.getRandom(5);
@@ -499,11 +515,18 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			orderRecord.setTheLatestTime(null);
 			orderRecord.setBillTime(null);
 			orderRecord.setBillTimeName(null);
-			//orderRecord.setRequiredDeliveryTime(Timestamp
-					//.valueOf(requiredDeliveryTime + " 00:00:00"));
-			orderRecord.setPaymentProvider(197);
-			Status statusCode = statusService.findByid("197");
-			orderRecord.setPaymentProviderName(statusCode.getStatusName());
+			
+			Status statusCode = new Status();
+			if(paymethod==0){
+				statusCode = statusService.findByStatusNameAndReadme("微信支付","商户订单支付方式");
+				orderRecord.setPaymentProvider(statusCode.getId());
+				orderRecord.setPaymentProviderName(statusCode.getStatusName());
+			}else if(paymethod==1){
+				statusCode = statusService.findByStatusNameAndReadme("支付宝支付","商户订单支付方式");
+				orderRecord.setPaymentProvider(statusCode.getId());	
+				orderRecord.setPaymentProviderName(statusCode.getStatusName());
+			}
+			
 			// 状态为处理中
 			orderRecord.setOperateStatus(204);
 			statusCode = statusService.findByid(orderRecord.getOperateStatus()
@@ -567,6 +590,9 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 orderGoodsRelationService.save(relation);
 	        		 
 	        		 
+	        		 
+	        		 shoppingCartService.del(cart.getId().toString());
+	        		 
 				 }
 				 
 				 
@@ -594,7 +620,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 relation.setPurchasePrice(Float.parseFloat(totalMoney));
 	        		 
 	        		 orderGoodsRelationService.save(relation);
-	        		 
+	        		 shoppingCartService.del(cart.getId().toString());
 	        	 }
 	         }
 			

@@ -225,4 +225,18 @@ public class StatusService {
 		return commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 	}
 
+	
+	public Status findByStatusNameAndReadme(String statusName,String readme){
+		String hql = "from Status where statusName='" + statusName +"' and readme='"+readme+"'";
+		
+		List<Status> list = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		
+		if(list.size()==1){
+			return list.get(0);
+		}
+		return null;
+	}
+	
+	
+	
 }
