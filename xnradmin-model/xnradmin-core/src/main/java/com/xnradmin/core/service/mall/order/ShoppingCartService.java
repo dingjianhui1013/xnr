@@ -90,11 +90,15 @@ public class ShoppingCartService {
 					po.setCookieCartId(job.get("cookieId").toString());
 					
 					po.setCurrentPrice(Float.valueOf(job.get("price").toString()));
-					po.setTotalPrice(Float.valueOf(job.get("price").toString())*Integer.parseInt(job.get("goodsCount").toString()));
+					BigDecimal price = new BigDecimal(job.get("price").toString());
+				    BigDecimal totalprice = price.multiply(new BigDecimal(job.get("goodsCount").toString()));
+//					po.setTotalPrice(Float.valueOf(job.get("price").toString())*Integer.parseInt(job.get("goodsCount").toString()));
+				    po.setTotalPrice(totalprice.floatValue());
 					po.setCurrentPriceType(121);
 					
 					po.setOriginalPrice(Float.valueOf(job.get("price").toString()));
-					po.setOriginalTotalPrice(Float.valueOf(job.get("price").toString())*Integer.parseInt(job.get("goodsCount").toString()));
+//					po.setOriginalTotalPrice(Float.valueOf(job.get("price").toString())*Integer.parseInt(job.get("goodsCount").toString()));
+					po.setOriginalTotalPrice(totalprice.floatValue());
 					po.setPrimaryConfigurationId(1);
 					po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
 					
@@ -146,7 +150,10 @@ public class ShoppingCartService {
 		    String hql = "from BusinessGoods good  where id= "+job.get("goodsId");
 		    List<BusinessGoods> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		    BusinessGoods businessGoods = list.get(0);
-		    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+		    BigDecimal price = new BigDecimal(businessGoods.getGoodsOriginalPrice().toString());
+		    BigDecimal totalprice = price.multiply(new BigDecimal(job.get("goodsCount").toString()));
+//		    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+		    shoppingCart.setTotalPrice(totalprice.floatValue());
 		    businessGoodsCartVo.setCart(shoppingCart);
 		    businessGoodsCartVo.setGoods(businessGoods);
 		    resList.add(businessGoodsCartVo);
