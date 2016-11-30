@@ -319,7 +319,7 @@ public class CommonJDBCSlave01DAO<T> extends BaseHibernateSlave01DAO{
                 ResultSet rst = m.getCatalogs();
                 String dbname = "";
                 while(rst.next()){
-                    System.out.println("db name-" + rst.getString("TABLE_CAT")
+                    log.debug("db name-" + rst.getString("TABLE_CAT")
                             + " | ");
                     dbname = rst.getString("TABLE_CAT");
                 }
@@ -329,11 +329,11 @@ public class CommonJDBCSlave01DAO<T> extends BaseHibernateSlave01DAO{
                 findPro(rst);
                 List<String> tnames = new ArrayList<String>();
                 while(rst.next()){
-                    System.out.println("");
+                    log.debug("");
                     String temp = rst.getString("TABLE_NAME");
                     tnames.add(temp);
                     ResultSet columnSet = m.getColumns(null,"%",temp,"%");
-                    System.out.println("-----------");
+                    log.debug("-----------");
                     findPro(columnSet);
                     while(columnSet.next()){
                         System.out.print("|"

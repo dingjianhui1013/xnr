@@ -415,7 +415,6 @@ public class billAction extends ParentAction {
 	@Action(value = "checkGoods", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
 	public String checkGoods() {
 		if(!StringHelper.isNull(uid)){
-			System.out.println("uid:::"+uid);
 			ClientUserInfo clientUserInfo = clientUserInfoService.findByProperty("wxopenuid",uid);
 			if(clientUserInfo!=null && clientUserInfo.getId()!=null){
 				this.voList = shoppingCartService.listVO(clientUserInfo.getId().toString(), goodsId, 
@@ -424,7 +423,6 @@ public class billAction extends ParentAction {
 				isSubGoods = "1";
 				subGoodsList = new ArrayList<Goods>();
 				for(int i = 0 ; voList.size() > i ; i++){
-					System.out.println("voList.size:::"+voList.size());
 					if(voList.get(i)!=null){
 						Goods goods = voList.get(i).getGoods();
 						//判定如果有附属商品的话，购物车中是否有主商品
@@ -434,9 +432,7 @@ public class billAction extends ParentAction {
 							isSubGoods = "0";
 							String tempParentId = goods.getGoodsParentId();
 							for(int j = 0 ; voList.size() > j ; j++){
-								System.out.println("voList.size.parent:::"+voList.size());
 								Goods ParenGoods = voList.get(j).getGoods();
-								System.out.println(ParenGoods.getId()+":::"+tempParentId);
 								if(ParenGoods.getId()==Integer.parseInt(tempParentId)){
 									isSubGoods = "1";
 								}

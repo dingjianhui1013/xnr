@@ -7,6 +7,7 @@ package com.cntinker.util;
 import java.io.StringReader;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -16,7 +17,7 @@ import org.dom4j.io.SAXReader;
  * @author : bin_liu
  */
 public class XmlHelper{
-
+	private static Logger log = Logger.getLogger(XmlHelper.class);
     /**
      * 得到输入XML内容的所有节点
      * 
@@ -28,7 +29,7 @@ public class XmlHelper{
     public static Element getRoot(String xmlContent)
             throws IllegalAccessException,DocumentException{
         SAXReader reader = new SAXReader();
-        // System.out.println(this.om.getXml());
+        // log.debug(this.om.getXml());
         Document doc = null;
         if(xmlContent != null && xmlContent.trim().length() != 0){
             doc = reader.read(new StringReader(xmlContent));
@@ -122,17 +123,17 @@ public class XmlHelper{
         for(String e : c){
             sb.append(e);
         }
-        System.out.println(sb.toString());
-        System.out.println("--------------------------------");
+        log.debug(sb.toString());
+        log.debug("--------------------------------");
         Element root = XmlHelper.getRoot(sb.toString());
         Iterator<Element> eList = root.elementIterator();
         while(eList.hasNext()){
             Element e = eList.next();
-            System.out.println("flag: " + e.getName());
+            log.debug("flag: " + e.getName());
 
         }
-        System.out.println(XmlHelper.getElementInfoSec(root,"head","sub"));
-        System.out.println(XmlHelper.getElementInfo(root,"foot"));
-        System.out.println(XmlHelper.getElementInfoSec(root,"body","subSec"));
+        log.debug(XmlHelper.getElementInfoSec(root,"head","sub"));
+        log.debug(XmlHelper.getElementInfo(root,"foot"));
+        log.debug(XmlHelper.getElementInfoSec(root,"body","subSec"));
     }
 }

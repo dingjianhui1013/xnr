@@ -150,13 +150,11 @@ public class BusinessRegAction extends ParentAction {
 
 	@Action(value = "regAdd", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
 	public String add() throws JSONException {
-		System.out.println(addres);
 //		String serverVcode = ServletActionContext.getRequest().getSession()
 //				.getAttribute(SessionConstant.SESSION_VALIDCODE) == null ? ""
 //				: ServletActionContext.getRequest().getSession()
 //						.getAttribute(SessionConstant.SESSION_VALIDCODE)
 //						.toString();
-//		System.out.println("serverVcode:::::"+serverVcode);
 //		if (StringHelper.isNull(serverVcode)
 //				|| StringHelper.isNull(validateCode)) {
 //			errorMsg = "登录错误";// 登录错误

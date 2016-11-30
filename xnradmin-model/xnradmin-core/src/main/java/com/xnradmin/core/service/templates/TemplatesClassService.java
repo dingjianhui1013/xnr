@@ -9,9 +9,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.FileHelper;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.constant.templates.SysClassKeyword;
+import com.xnradmin.core.service.common.LogService;
 import com.xnradmin.dto.TemplateClass;
 import com.xnradmin.po.system.SysClass;
 
@@ -19,7 +22,7 @@ import com.xnradmin.po.system.SysClass;
  * @autohr: bin_liu
  */
 public class TemplatesClassService{
-
+	private static Logger log = Logger.getLogger(TemplatesClassService.class);
     private String[] tempContent;
 
     private TemplateClass sysClass;
@@ -67,7 +70,7 @@ public class TemplatesClassService{
     }
 
     public String processCommand(String line){
-        System.out.println(getTempCommand(line));
+        log.debug(getTempCommand(line));
         String command = getTempCommand(line);
         if(command.equals(SysClassKeyword.GEN)){
             TemplatesGen gen = new TemplatesGen(this,command);

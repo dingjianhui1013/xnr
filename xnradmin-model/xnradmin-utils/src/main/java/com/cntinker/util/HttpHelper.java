@@ -19,17 +19,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.data.HttpReturnData;
 
 /**
  * @author: bin_liu
  */
 public class HttpHelper {
-
+	private static Logger log = Logger.getLogger(HttpHelper.class);
 	public static void main(String[] args) throws IOException {
 		String url = "http://itunes.apple.com/lookup?id=284910350";
-		System.out.println(postHttpRquest(url, "", "UTF-8"));
-		System.out.println("----------- sending -------------");
+		log.debug(postHttpRquest(url, "", "UTF-8"));
+		log.debug("----------- sending -------------");
 
 	}
 
@@ -443,7 +445,7 @@ public class HttpHelper {
 			Iterator it = m.entrySet().iterator();
 
 			while (it.hasNext()) {
-				// System.out.println(it.next());
+				// log.debug(it.next());
 				tempStr.append(it.next()).append("\n");
 			}
 		} catch (IOException e) {

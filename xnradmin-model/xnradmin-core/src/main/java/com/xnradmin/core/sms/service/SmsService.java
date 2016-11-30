@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -12,6 +13,7 @@ import org.dom4j.Element;
 
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.sms.conf.SmsConfig;
+import com.xnradmin.core.sms.examples.SmsExample;
 import com.xnradmin.core.util.HttpClientUtil;
 
 public class SmsService {
@@ -21,6 +23,7 @@ public class SmsService {
 	 * @param sendInfoMap
 	 * @return
 	 */
+	private static Logger log = Logger.getLogger(SmsService.class);
 	public static boolean sendSmsGet(Map<String, String> sendInfoMap) {
 		if (sendInfoMap == null || sendInfoMap.size() <= 0) {
 			return false;
@@ -83,11 +86,11 @@ public class SmsService {
 		sb.append("<Mobile>" + sendInfoMap.get("Mobile") + "</Mobile>");
 		sb.append("<Message>" + sendInfoMap.get("Message") + "</Message>");
 		sb.append("</Note>");
-		System.out.println(url);
-		System.out.println(sb.toString());
+		log.debug(url);
+		log.debug(sb.toString());
 
 		String result = HttpClientUtil.postXml(url, sb.toString(), true);
-		System.out.println(result);
+		log.debug(result);
 
 		List<Map<String, String>> sendlist = null;
 		if (result != "" && !result.equals("")) {
@@ -108,8 +111,8 @@ public class SmsService {
 						sendResMap = new HashMap<String, String>();
 						String msgID = element.element("MsgID").getText();
 						String phone = element.element("Mobile").getText();
-						System.out.println(msgID);
-						System.out.println(phone);
+						log.debug(msgID);
+						log.debug(phone);
 						if (msgID != null && !msgID.equals("")) {
 							sendResMap.put("msgID", msgID);
 							sendResMap.put("phone", phone);
@@ -119,7 +122,7 @@ public class SmsService {
 				}
 
 			} catch (DocumentException e) {
-				System.out.println(e);
+				log.debug(e);
 			}
 		}
 		return sendlist;
@@ -138,10 +141,10 @@ public class SmsService {
 		sb.append("?");
 		sb.append("UserName=" + SmsConfig.USER_NAME);
 		sb.append("&UserPwd=" + SmsConfig.USER_PWD);
-		System.out.println(url);
+		log.debug(url);
 
 		String result = HttpClientUtil.get(sb.toString(), true);
-		System.out.println(result);
+		log.debug(result);
 
 		List<Map<String, String>> reportReslist = null;
 		if (result != "" && !result.equals("")) {
@@ -162,9 +165,9 @@ public class SmsService {
 						String phone = element.element("Mobile").getText();
 						String statusTime = element.element("StatusTime").getText();
 						String status=element.element("Status").getText();
-						System.out.println(msgID);
-						System.out.println(phone);
-						System.out.println(statusTime);
+						log.debug(msgID);
+						log.debug(phone);
+						log.debug(statusTime);
 						if (!StringHelper.isNull(status)) {
 							reportResMap.put("msgID", msgID);
 							reportResMap.put("phone", phone);
@@ -176,7 +179,7 @@ public class SmsService {
 				}
 
 			} catch (DocumentException e) {
-				System.out.println(e);
+				log.debug(e);
 			}
 		}
 

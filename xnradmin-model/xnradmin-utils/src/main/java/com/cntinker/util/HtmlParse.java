@@ -6,6 +6,7 @@ package com.cntinker.util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.AndFilter;
@@ -20,7 +21,7 @@ import org.htmlparser.util.ParserException;
  *
  */
 public class HtmlParse{
-
+	private static Logger log = Logger.getLogger(HtmlParse.class);
     private String url;
 
     private Parser parser;
@@ -77,11 +78,11 @@ public class HtmlParse{
 
         for(int i = 0;i < nList.size();i ++ ){
             Div div = (Div) nList.elementAt(i);
-            System.out.println(div.toHtml());
-            // System.out.println(div.getChildrenHTML());
+            log.debug(div.toHtml());
+            // log.debug(div.getChildrenHTML());
         }
 
-        System.out.println("======================");
+        log.debug("======================");
 
     }
 }

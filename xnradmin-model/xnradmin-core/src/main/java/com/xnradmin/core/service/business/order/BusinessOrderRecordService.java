@@ -1701,7 +1701,7 @@ public class BusinessOrderRecordService {
 			if (goods != null) {
 				staff = staffService.findByid(po.getStaffId());
 			} else {
-				System.out.println("goods is null! --> " + vo + " | -->" + hql);
+				log.debug("goods is null! --> " + vo + " | -->" + hql);
 			}
 
 			businessOrderVO.setStaff(staff);

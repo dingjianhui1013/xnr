@@ -6,6 +6,7 @@ package com.xnradmin.core.test;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.apache.log4j.Logger;
 import org.codehaus.commons.compiler.CompileException;
 import org.json.JSONException;
 import org.xml.sax.SAXException;
@@ -22,10 +23,10 @@ import com.xnradmin.core.util.EncodeDecodeUtil;
  * @author: bin_liu
  */
 public class TestHttp {
-
+	private static Logger log = Logger.getLogger(TestHttp.class);
 	private static void test() throws MalformedURLException, IOException {
 		String url = "http://admin.didaxiche.com";
-		System.out.println(HttpHelper.sendGet(url));
+		log.debug(HttpHelper.sendGet(url));
 	}
 
 	private static void testPost() throws IOException {
@@ -33,7 +34,7 @@ public class TestHttp {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"clientUserInfo\":[{\"userUdid\":\"11111111\"},{\"userMobile\":\"13800000007\"}],\"valCode\":\"1231\",\"action\":\"userReg\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testPostLogin() throws IOException {
@@ -45,7 +46,7 @@ public class TestHttp {
 		// "{\"clientUserInfo\":[{\"userUdid\":\"11111111\"},{\"userMobile\":\"13800000001\"}],\"action\":\"userLogin\"}";
 		String content = "{\"clientUserInfo\":[{\"userUdid\":\"2c41fb53ac0501ca2a5eaa9d714c4bc45ee0051d\"},{\"userMobile\":\"13811968624\"}],\"valCode\":\"\",\"action\":\"userReg\",\"type\":\"userValCodeLogin\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
 				content)));
 	}
 
@@ -54,7 +55,7 @@ public class TestHttp {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"action\":\"carDamage\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testUserCarBrand() throws JSONException,
@@ -62,7 +63,7 @@ public class TestHttp {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"carBrand\":[{\"carBrandId\":\"3\"},{\"carTypeId\":\"\"}],\"flag\":\"brand\",\"action\":\"userCar\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testUserRegion() throws JSONException,
@@ -70,7 +71,7 @@ public class TestHttp {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"description\":[{\"provinceId\":\"\"},{\"cityId\":\"\"},{\"areaId\":\"\"},{\"roadId\":\"\"},{\"communityId\":\"\"},{\"descriptionId\":\"\"}],\"carTypeId\":\"\",\"action\":\"userRegion\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
 				content)));
 	}
 
@@ -81,7 +82,7 @@ public class TestHttp {
 				+ "{\"carBrandModelsId\":\"412\"},{\"carTypeId\":\"3\"},{\"carBrandName\":\"奥迪\"},{\"carBrandModelsName\":\"奥迪A4\"},"
 				+ "{\"licensePlateNumber\":\"京z123456\"}],\"type\":\"clientUserCarAdd\",\"action\":\"userInfoSet\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testStaffLoginInfo() throws IOException {
@@ -89,7 +90,7 @@ public class TestHttp {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"staffInfo\":[{\"loginID\":\"1\"},{\"pwd\":\"18612599999\"}],\"action\":\"staffLogin\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testUserOrder() throws IOException {
@@ -99,7 +100,7 @@ public class TestHttp {
 		// "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrderRegion\",\"description\":[{\"provinceId\":\"\"},{\"cityId\":\"\"},{\"areaId\":\"\"},{\"roadId\":\"\"},{\"communityId\":\"\"},{\"descriptionId\":\"\"}]}";
 		String content = "{\"action\":\"UserOrder\",\"type\":\"getOrderCar\",\"userMobile\":\"18612597552\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
 				content)));
 	}
 
@@ -109,8 +110,8 @@ public class TestHttp {
 		String content = "{\"action\":\"weather\",\"city\":\"北京\",\"day\":\"0\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 
 	private static void testUserOrderInfo() throws JSONException,
@@ -181,7 +182,7 @@ public class TestHttp {
 		// "\"carBrandModelsName\":\"allroad\",\"buildingNumber\":\"1\",\"carBrandId\":\"1\"}";
 
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
 				content)));
 	}
 
@@ -195,8 +196,8 @@ public class TestHttp {
 				+ ",\"exchangeDate\":\"\",\"merReserved\":\"\",\"reqReserved\":\"\",\"sysReserved\":\"{traceTime=0310175945&acqCode=00215800&traceNumber=000949}\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 
 	private static void testPaya() throws IOException {
@@ -204,8 +205,8 @@ public class TestHttp {
 		String content = "{\"action\":\"userOrderInfo\",\"type\":\"orderModifyPayStatus\",\"carWashOrderRecordId\":\"100000000000000204\",\"serNo\":\"0\",\"status\":\"success\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 
 	private static void testSoftware() throws IOException {
@@ -213,8 +214,8 @@ public class TestHttp {
 		String content = "{\"action\":\"software\",\"softwareType\":\"532\",\"osType\":\"531\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 
 	private static void testUserAccount() throws IOException {
@@ -222,8 +223,8 @@ public class TestHttp {
 		String content = "{\"action\":\"userAccount\",\"type\":\"userOrderDetail\",\"carWashOrderRecordId\":\"100000000000000803\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 
 	private static void testSend() throws IOException, SAXException {
@@ -233,7 +234,7 @@ public class TestHttp {
 				"vm/3.59.0 Webkit/1.0(Android 4.4.4; Sony/L39h)", true);
 
 		WebResponse r = wc.getResponse("http://admin.51xnr.com/test/test.jsp");
-		System.out.println(r.getText());
+		log.debug(r.getText());
 	}
 
 	private static void t() throws IOException, SAXException {
@@ -244,8 +245,8 @@ public class TestHttp {
 		String content = "{\"password\":\"111111\",\"username\":\"lin11\"}";
 		//String content = "{\"username\":\"zhao\",\"code\":\"469425\",\"password\":\"123456\",\"email\":\"84771176@qq.com\",\"mobile\":\"15822789694\"}";
 		HttpReturnData data = HttpHelper.postXmlData(url, content);
-		System.out.println(data.getHeader().toString());
-		System.out.println(StringHelper.convertUnicode(data.getContent()));
+		log.debug(data.getHeader().toString());
+		log.debug(StringHelper.convertUnicode(data.getContent()));
 		
 	}
 

@@ -15,6 +15,8 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import com.sun.management.OperatingSystemMXBean;
 
 /**
@@ -25,7 +27,7 @@ import com.sun.management.OperatingSystemMXBean;
  */
 @SuppressWarnings("unchecked")
 public class SystemHelper{
-
+	private static Logger log = Logger.getLogger(SystemHelper.class);
     /**
      * system name
      * 
@@ -218,36 +220,36 @@ public class SystemHelper{
     public static void main(String[] args) throws Exception{
         OperatingSystemMXBean osmb = (OperatingSystemMXBean) ManagementFactory
                 .getOperatingSystemMXBean();
-        System.out.println("系统物理内存总计：" + osmb.getTotalPhysicalMemorySize()
+        log.debug("系统物理内存总计：" + osmb.getTotalPhysicalMemorySize()
                 / 1024 / 1024 + "MB");
-        System.out.println("系统物理可用内存总计：" + osmb.getFreePhysicalMemorySize()
+        log.debug("系统物理可用内存总计：" + osmb.getFreePhysicalMemorySize()
                 / 1024 / 1024 + "MB");
 
-        System.out.println("JVM内存总计：" + osmb.getCommittedVirtualMemorySize()
+        log.debug("JVM内存总计：" + osmb.getCommittedVirtualMemorySize()
                 / 1024 / 1024 + "MB");
-        System.out.println("os Name:" + osmb.getName());
-        System.out.println("getAvailableProcessors:"
+        log.debug("os Name:" + osmb.getName());
+        log.debug("getAvailableProcessors:"
                 + osmb.getAvailableProcessors());
-        System.out.println("getFreeSwapSpaceSize:"
+        log.debug("getFreeSwapSpaceSize:"
                 + osmb.getFreeSwapSpaceSize() / 1024 / 1024 + "MB");
 
-        System.out.println("getTotalSwapSpaceSize:"
+        log.debug("getTotalSwapSpaceSize:"
                 + osmb.getTotalSwapSpaceSize() / 1024 / 1024 + "MB");
 
         long totalMemory = Runtime.getRuntime().totalMemory() / 1024 / 1024;
         long freeMemory = Runtime.getRuntime().freeMemory() / 1024 / 1024;
         long maxMemory = Runtime.getRuntime().maxMemory() / 1024 / 1024;
-        System.out.println("totalMemory:: " + totalMemory);
-        System.out.println("freeMemory:: " + freeMemory);
-        System.out.println("maxMemory:: " + maxMemory);
+        log.debug("totalMemory:: " + totalMemory);
+        log.debug("freeMemory:: " + freeMemory);
+        log.debug("maxMemory:: " + maxMemory);
 
         String[] s = runOSCmd("dir/w","gbk");
         for(String e : s){
-            System.out.println(" : " + e);
+            log.debug(" : " + e);
         }
 
         String[] te = runOSCmd("dir/w","gbk");
-        System.out.println(getMacAddress());
+        log.debug(getMacAddress());
 
     }
 }

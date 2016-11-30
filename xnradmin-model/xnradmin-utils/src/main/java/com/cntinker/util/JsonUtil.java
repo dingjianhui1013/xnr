@@ -6,6 +6,7 @@ package com.cntinker.util;
 
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +15,7 @@ import org.json.JSONObject;
  * @author: bin_liu
  */
 public class JsonUtil{
-
+	private static Logger log = Logger.getLogger(JsonUtil.class);
     public static String getValueByArray(JSONArray array,String key)
             throws JSONException{
         JSONObject o = getJsonObjectByArray(array,key);
@@ -42,6 +43,6 @@ public class JsonUtil{
     }
 
     public static void main(String[] args) throws Exception{
-        System.out.println("");
+        log.debug("");
     }
 }

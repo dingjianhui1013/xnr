@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.json.JSONException;
 import com.cntinker.json.JSONObject;
 import com.cntinker.util.StringHelper;
@@ -16,7 +18,7 @@ import com.cntinker.util.StringHelper;
  *
  */
 public class TestJson2 {
-
+	private static Logger log = Logger.getLogger(TestJson2.class);
 	private static void testJsonSort() throws JSONException {
 		JSONObject o = new JSONObject();
 		JSONObject b = new JSONObject();
@@ -26,8 +28,8 @@ public class TestJson2 {
 		o.put("bb", b);
 		o.put("cc", b);
 		o.put("dd", b);
-		System.out.println(o.isNull("1"));
-		System.out.println(o.toString());
+		log.debug(o.isNull("1"));
+		log.debug(o.toString());
 	}
 
 	private static void testList() {
@@ -37,7 +39,7 @@ public class TestJson2 {
 		arrayList.add("3");
 
 		for (int i = 0; i < arrayList.size(); i++) {
-			System.out.println(arrayList.get(i));
+			log.debug(arrayList.get(i));
 		}
 
 		List linkedList = new LinkedList();
@@ -46,7 +48,7 @@ public class TestJson2 {
 		linkedList.add("3");
 
 		for (int i = 0; i < linkedList.size(); i++) {
-			System.out.println(linkedList.get(i));
+			log.debug(linkedList.get(i));
 		}
 	}
 	

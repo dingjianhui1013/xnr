@@ -5,6 +5,7 @@ package com.xnradmin.core.test;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.codehaus.commons.compiler.CompileException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,11 +18,11 @@ import com.xnradmin.dto.ScriptDTO;
  * @autohr: bin_liu
  */
 public class TestScript {
-
+	private static Logger log = Logger.getLogger(TestScript.class);
 	private static void testScript() throws Exception {
 		ScriptHelper scriptHelper = (ScriptHelper) SpringBase.getCtx().getBean(
 				"ScriptHelper");
-		System.out.println(scriptHelper
+		log.debug(scriptHelper
 				.findScriptFileByName("com.xnradmin.script.ScriptUserReg"));
 
 		int flag = 0;
@@ -32,9 +33,9 @@ public class TestScript {
 				scriptHelper.reload();
 			ScriptDTO dto = scriptHelper
 					.find("com.xnradmin.script.ScriptUserReg");
-			System.out.println("dto:" + dto);
+			log.debug("dto:" + dto);
 			Object o = scriptHelper.executeMethod("exe", dto, null);
-			System.out.println("flag: " + flag + " | " + o);
+			log.debug("flag: " + flag + " | " + o);
 			flag++;
 		}
 
@@ -52,9 +53,9 @@ public class TestScript {
 				scriptHelper.reload();
 			ScriptDTO dto = scriptHelper
 					.find("com.xnradmin.script.business.TestPO");
-			System.out.println("dto:" + dto);
+			log.debug("dto:" + dto);
 			Object o = scriptHelper.executeMethod("test2", dto, "a", 2);
-			System.out.println("flag: " + flag + " | " + o);
+			log.debug("flag: " + flag + " | " + o);
 			flag++;
 		}
 	}
@@ -84,7 +85,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testUserLogin() throws JSONException, CompileException,
@@ -102,7 +103,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testUserRegion() throws JSONException,
@@ -120,7 +121,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testUserCarBrand() throws JSONException,
@@ -138,7 +139,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testUserCarDamage() throws JSONException,
@@ -156,7 +157,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testPostUserSetInfo() throws JSONException,
@@ -185,7 +186,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testUserOrder() throws JSONException, CompileException,
@@ -210,7 +211,7 @@ public class TestScript {
 		ScriptDTO dto = scriptHelper
 				.find("com.xnradmin.script.business.order.ScriptUserOrder");
 		Object out = scriptHelper.executeMethod("execute", dto, o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testUserOrderInfo() throws JSONException,
@@ -289,7 +290,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testUserRecharge() throws JSONException,
@@ -326,7 +327,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testStaffLogin() throws JSONException,
@@ -344,7 +345,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScripDetailOrder() throws JSONException,
@@ -362,7 +363,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptWashAccountInfo() throws JSONException,
@@ -380,7 +381,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptWashCompletedOrder() throws JSONException,
@@ -398,7 +399,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptWashHandleOrder() throws JSONException,
@@ -416,7 +417,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptWashLeaveHandle() throws JSONException,
@@ -434,7 +435,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptUserAccount() throws JSONException,
@@ -453,7 +454,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testOrderUpdatePay() throws JSONException,
@@ -471,7 +472,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptWashAcceptedOrder() throws JSONException,
@@ -489,7 +490,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptPayUpmp() throws JSONException,
@@ -506,7 +507,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	private static void testScriptWashFinishRemind() throws JSONException,
@@ -523,7 +524,7 @@ public class TestScript {
 		// ----------templates类运行测试
 		// ScriptUserReg u = new ScriptUserReg();
 		// Object out =u.execute(o);
-		System.out.println("out: " + out);
+		log.debug("out: " + out);
 	}
 
 	public static void main(String[] args) throws Exception {

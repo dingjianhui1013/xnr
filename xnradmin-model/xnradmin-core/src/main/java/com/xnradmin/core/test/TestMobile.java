@@ -3,17 +3,20 @@
 */
 package com.xnradmin.core.test;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.StringHelper;
+import com.xnradmin.core.util.SpringBase;
 
 /**
  * @author: liubin
  *
  */
 public class TestMobile {
-
+	private static Logger log = Logger.getLogger(TestMobile.class);
 	public static void main(String[] args) throws Exception {
-		System.out.println(StringHelper.isPhone("13811968624"));
-		System.out.println(StringHelper.isPhone("18688784906"));
-		System.out.println(StringHelper.isPhone("18910639965"));
+		log.debug(StringHelper.isPhone("13811968624"));
+		log.debug(StringHelper.isPhone("18688784906"));
+		log.debug(StringHelper.isPhone("18910639965"));
 	}
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import com.cntinker.util.FileHelper;
@@ -19,7 +20,7 @@ import com.xnradmin.constant.EnvConstant;
  * @autohr: bin_liu
  */
 public class Log4jUtil{
-
+	private static Logger log = Logger.getLogger(Log4jUtil.class);
     private static String log4jFile;
 
     static{
@@ -45,7 +46,7 @@ public class Log4jUtil{
             log4jFile = SpringBase.getCfg().getWorklassPath() + "log4j.xml";
 
         }
-        // System.out.println("logpath: "
+        // log.debug("logpath: "
         // + System.getProperty("smsplatform_logpath"));
         DOMConfigurator.configureAndWatch(log4jFile,60 * 1000);
     }
@@ -66,12 +67,12 @@ public class Log4jUtil{
             IOException{
         String[] lines = FileHelper.getLine(log4jFile);
         for(String e : lines){
-            System.out.println(e);
+            log.debug(e);
         }
     }
 
     public static void main(String[] args) throws Exception{
-        System.out.println(" :::::::::: "
+        log.debug(" :::::::::: "
                 + System.getProperty(EnvConstant.XICHEADMIN_HOME));
 
         loadLog4jContent();

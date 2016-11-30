@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -24,6 +25,7 @@ import com.cntinker.util.HttpunitHelper;
 import com.cntinker.util.StringHelper;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
+import com.xnradmin.core.pay.wxpay.RequestHandler;
 import com.xnradmin.core.util.SpringBase;
 
 /**
@@ -33,6 +35,7 @@ import com.xnradmin.core.util.SpringBase;
 @Service("ProcessYsmcExcel")
 public class ProcessYsmcExcel {
 
+	private static Logger log = Logger.getLogger(ProcessYsmcExcel.class);
 	/**
 	 * @param response
 	 * @throws IOException
@@ -50,7 +53,7 @@ public class ProcessYsmcExcel {
 				"vm/3.59.0 Webkit/1.0(Android 4.4.4; Sony/L39h)", true);
 
 		WebResponse r = wc.getResponse(u);
-		//System.out.println(r.getText());
+		//log.debug(r.getText());
 
 		String temp = StringHelper.spiltStr(r.getText(), "window.data",
 				"var navHtml");
@@ -126,7 +129,7 @@ public class ProcessYsmcExcel {
 
 		while (it.hasNext()) {
 			String k = it.next().toString();
-			// System.out.println(jo.get(k));
+			// log.debug(jo.get(k));
 			flag = processYsmcSubLevel1(k, jo.get(k).toString(), wb, sheet,
 					row, flag);
 		}
@@ -162,7 +165,7 @@ public class ProcessYsmcExcel {
 
 		while (it.hasNext()) {
 			String k = it.next().toString();
-			// System.out.println(jo.get(k));
+			// log.debug(jo.get(k));
 
 			flag = processYsmcSubLevel2(type1, k, jo.get(k).toString(), wb,
 					sheet, row, flag);
@@ -184,7 +187,7 @@ public class ProcessYsmcExcel {
 
 			JSONObject temp = (JSONObject) data.get(i);
 
-			System.out.println(temp);
+			log.debug(temp);
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("名称：").append(temp.get("name"));

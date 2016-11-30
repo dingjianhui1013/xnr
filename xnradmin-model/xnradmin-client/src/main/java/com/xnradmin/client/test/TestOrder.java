@@ -27,7 +27,6 @@ public class TestOrder {
 		order.setPaymentTime(new Timestamp(System.currentTimeMillis()));
 		order.setOperateTime(new Timestamp(System.currentTimeMillis()));
 		orderService.modify(order);
-		System.out.println("process success : "+out_trade_no);
 	}
 
 	public static void main(String[] args) throws Exception {

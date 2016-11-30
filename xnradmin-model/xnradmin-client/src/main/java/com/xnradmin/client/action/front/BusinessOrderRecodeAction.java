@@ -723,7 +723,6 @@ public class BusinessOrderRecodeAction extends ParentAction {
 				DecimalFormat df = new DecimalFormat("#.00");
 				endJson.put("price", df.format(tempTotalPrice));
 				response.getWriter().println(endJson.toString());
-				System.out.println("end:::");
 			} else {
 				response.getWriter().println(
 						"Error: not found coop or parameter error");

@@ -4,6 +4,7 @@
 package com.xnradmin.core.service.templates;
 
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.FileHelper;
@@ -13,6 +14,7 @@ import com.cntinker.util.FileHelper;
  */
 public class TemplatesCore{
 
+	private static Logger log = Logger.getLogger(TemplatesCore.class);
     private String tempFile;
 
     private String[] tempContent;
@@ -25,9 +27,8 @@ public class TemplatesCore{
         TemplatesCore t = new TemplatesCore("d:/PO.java.templates");
         String[] c = FileHelper.getLine(t.getTempFile());
         for(String e : c){
-            System.out.println(e);
+            log.debug(e);
         }
-        System.out.println("");
     }
 
     public String getTempFile(){

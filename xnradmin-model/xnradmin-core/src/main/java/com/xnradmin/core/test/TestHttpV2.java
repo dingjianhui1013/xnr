@@ -6,6 +6,7 @@ package com.xnradmin.core.test;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.apache.log4j.Logger;
 import org.codehaus.commons.compiler.CompileException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,10 +21,10 @@ import com.xnradmin.dto.ScriptDTO;
  * @author: bin_liu
  */
 public class TestHttpV2 {
-
+	private static Logger log = Logger.getLogger(TestHttpV2.class);
 	private static void test() throws MalformedURLException, IOException {
 		String url = "http://admin.didaxiche.com";
-		System.out.println(HttpHelper.sendGet(url));
+		log.debug(HttpHelper.sendGet(url));
 	}
 
 	private static void testPost() throws IOException {
@@ -31,7 +32,7 @@ public class TestHttpV2 {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"clientUserInfo\":[{\"userUdid\":\"11111111\"},{\"userMobile\":\"13800000007\"}],\"valCode\":\"1231\",\"action\":\"userReg\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testPostLogin() throws IOException {
@@ -42,7 +43,7 @@ public class TestHttpV2 {
 		//String content = "{\"clientUserInfo\":[{\"userUdid\":\"11111111\"},{\"userMobile\":\"13800000001\"}],\"action\":\"userLogin\"}";
 		String content = "{\"clientUserInfo\":[{\"userUdid\":\"2c41fb53ac0501ca2a5eaa9d714c4bc45ee0051d\"},{\"userMobile\":\"13811968624\"}],\"valCode\":\"\",\"action\":\"userReg\",\"type\":\"userValCodeLogin\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url, content)));
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url, content)));
 	}
 
 	private static void testPostCarDamage() throws IOException {
@@ -50,7 +51,7 @@ public class TestHttpV2 {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"action\":\"carDamage\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testUserCarBrand() throws JSONException,
@@ -58,7 +59,7 @@ public class TestHttpV2 {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"carBrand\":[{\"carBrandId\":\"3\"},{\"carTypeId\":\"\"}],\"flag\":\"brand\",\"action\":\"userCar\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testUserRegion() throws JSONException,
@@ -66,7 +67,7 @@ public class TestHttpV2 {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"description\":[{\"provinceId\":\"\"},{\"cityId\":\"\"},{\"areaId\":\"\"},{\"roadId\":\"\"},{\"communityId\":\"\"},{\"descriptionId\":\"\"}],\"carTypeId\":\"\",\"action\":\"userRegion\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
 				content)));
 	}
 
@@ -77,7 +78,7 @@ public class TestHttpV2 {
 				+ "{\"carBrandModelsId\":\"412\"},{\"carTypeId\":\"3\"},{\"carBrandName\":\"奥迪\"},{\"carBrandModelsName\":\"奥迪A4\"},"
 				+ "{\"licensePlateNumber\":\"京z123456\"}],\"type\":\"clientUserCarAdd\",\"action\":\"userInfoSet\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testStaffLoginInfo() throws IOException {
@@ -85,7 +86,7 @@ public class TestHttpV2 {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"staffInfo\":[{\"loginID\":\"1\"},{\"pwd\":\"18612599999\"}],\"action\":\"staffLogin\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(HttpHelper.postXml(url, content));
+		log.debug(HttpHelper.postXml(url, content));
 	}
 
 	private static void testUserOrder() throws IOException {
@@ -96,7 +97,7 @@ String content = "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrd
 		// {"total":2,"pageCount":"0","page":"0","description":[{"provinceId":""},{"cityId":""},{"areaId":""},{"roadId":""},{"communityId":""},{"descriptionId":""},{"communityName":"管"}],"action":"UserOrder","type":"getOrderRegion","userRegionDescription":[{"description":"北京市北京市朝阳区管庄路管庄西里小区全区","descriptionId":"8"},{"description":"北京市北京市朝阳区管庄路管庄东里小区全区","descriptionId":"10"}]}
 //		 String content = "{\"action\":\"UserOrder\",\"type\":\"getOrderCar\",\"userMobile\":\"18612597552\"}";
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url, content)));
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url, content)));
 	}
 
 	private static void testWeather() throws IOException {
@@ -105,8 +106,8 @@ String content = "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrd
 		String content = "{\"action\":\"weather\",\"city\":\"北京\",\"day\":\"0\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 
 	private static void testUserOrderInfo() throws JSONException,
@@ -151,7 +152,7 @@ String content = "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrd
 				+ "\"carBrandModelsName\":\"allroad\",\"buildingNumber\":\"1\",\"carBrandId\":\"1\"}";
 		
 		content = EncodeDecodeUtil.encode(content);
-		System.out.println(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
+		log.debug(EncodeDecodeUtil.decode(HttpHelper.postXml(url,
 				content)));
 	}
 
@@ -165,16 +166,16 @@ String content = "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrd
         		",\"exchangeDate\":\"\",\"merReserved\":\"\",\"reqReserved\":\"\",\"sysReserved\":\"{traceTime=0310175945&acqCode=00215800&traceNumber=000949}\"}";
         content = EncodeDecodeUtil.encode(content);
         String res = HttpHelper.postXml(url, content);
-        System.out.println(res);
-        System.out.println(EncodeDecodeUtil.decode(res));
+        log.debug(res);
+        log.debug(EncodeDecodeUtil.decode(res));
     }
 	private static void testPaya() throws IOException {
 		String url = "http://115.28.9.26:8080/interface/sync.jsp";
 		String content = "{\"action\":\"userOrderInfo\",\"type\":\"orderModifyPayStatus\",\"carWashOrderRecordId\":\"100000000000000204\",\"serNo\":\"0\",\"status\":\"success\"}";
 		content = EncodeDecodeUtil.encode(content);
         String res = HttpHelper.postXml(url, content);
-        System.out.println(res);
-        System.out.println(EncodeDecodeUtil.decode(res));
+        log.debug(res);
+        log.debug(EncodeDecodeUtil.decode(res));
 	}
 	
 	private static void testSoftware() throws IOException {
@@ -182,8 +183,8 @@ String content = "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrd
 		String content = "{\"action\":\"software\",\"softwareType\":\"532\",\"osType\":\"531\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 	
 	private static void testUserAccount() throws IOException {
@@ -194,8 +195,8 @@ String content = "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrd
 		String content = "{\"action\":\"userAccount\",\"userMobile\":\"13911071322\",\"pageCount\":\"0\",\"paymentStatus\":\"509\",\"type\":\"userAccount\",\"page\":\"0\",\"operateStatus\":\"\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 
 	private static void testUserCustomerServicePhone() throws IOException {
@@ -205,8 +206,8 @@ String content = "{\"action\":\"UserOrder\",\"carTypeId\":\"\",\"type\":\"getOrd
 		String content = "{\"action\":\"customerServicePhone\"}";
 		content = EncodeDecodeUtil.encode(content);
 		String res = HttpHelper.postXml(url, content);
-		System.out.println(res);
-		System.out.println(EncodeDecodeUtil.decode(res));
+		log.debug(res);
+		log.debug(EncodeDecodeUtil.decode(res));
 	}
 	
 	public static void main(String[] args) throws Exception {

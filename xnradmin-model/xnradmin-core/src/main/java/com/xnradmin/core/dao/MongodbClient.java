@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoOptions;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.dto.MongoDBSource;
 
 /**
@@ -30,6 +32,7 @@ import com.xnradmin.dto.MongoDBSource;
 @Scope("singleton")
 public class MongodbClient{
 
+	private static Logger log = Logger.getLogger(MongodbClient.class);
     private static Mongo mongo;
 
     private static Datastore ds;
@@ -72,7 +75,7 @@ public class MongodbClient{
             ds = morphia.createDatastore(mongo,source.getDatabase());
 
         }catch(Exception e){
-            System.out.println("connection error:: ");
+            log.debug("connection error:: ");
             e.printStackTrace();
         }
     }

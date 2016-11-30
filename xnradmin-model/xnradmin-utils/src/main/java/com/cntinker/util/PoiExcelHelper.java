@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,7 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author : Huyvanpull
  */
 public class PoiExcelHelper {
-
+	private static Logger log = Logger.getLogger(PoiExcelHelper.class);
 	private static String sourceFile = "D:/work/phone/源文件/商城订单_20140711.xls";
 
 	private static String outFile = "D:/测试用.xls";
@@ -224,7 +225,7 @@ public class PoiExcelHelper {
 		FileWriter fw = new FileWriter("d:\\hello.csv");
 
 		for (int i = 0; i < 300000; i++) {
-			System.out.println(i);
+			log.debug(i);
 			fw.write("aaa,bbb,ccc\r\n");
 		}
 		fw.close();
@@ -233,7 +234,7 @@ public class PoiExcelHelper {
 	public static void main(String[] args) throws Exception {
 		List<ArrayList<String>> dataLst = new PoiExcelHelper().read(sourceFile,
 				0);
-		System.out.println("文件总行数：" + dataLst.size());
+		log.debug("文件总行数：" + dataLst.size());
 
 		for (int i = 0; i < dataLst.size(); i++) {
 			StringBuffer sb = new StringBuffer();
@@ -242,7 +243,7 @@ public class PoiExcelHelper {
 				sb.append(l.get(j)).append("\t");
 			}
 			if (!StringHelper.isNull(sb.toString())) {
-				System.out.println(sb.toString());
+				log.debug(sb.toString());
 			}
 		}
 

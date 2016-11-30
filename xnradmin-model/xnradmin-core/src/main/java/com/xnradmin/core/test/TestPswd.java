@@ -3,6 +3,8 @@
  */
 package com.xnradmin.core.test;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.security.MD5Encoder;
 
 /**
@@ -10,11 +12,11 @@ import com.cntinker.security.MD5Encoder;
  *
  */
 public class TestPswd {
-
+	private static Logger log = Logger.getLogger(TestPswd.class);
 	public static void main(String[] args) throws Exception {
 		String pswd = "1234";
 		String login = "admin";
 		String s = MD5Encoder.encode32(pswd + "{" + login + "}");
-		System.out.println(s);
+		log.debug(s);
 	}
 }

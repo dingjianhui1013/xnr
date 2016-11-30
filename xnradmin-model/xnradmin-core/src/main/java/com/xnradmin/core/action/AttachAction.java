@@ -80,7 +80,7 @@ public class AttachAction extends ParentAction {
 		
 		try {
 			HttpServletRequest request = ServletActionContext.getRequest();
-			System.out.println("upload session id:"
+			log.debug("upload session id:"
 					+ request.getSession().getId());
 			// 设置保存信息
 			CommonAttach po = new CommonAttach();

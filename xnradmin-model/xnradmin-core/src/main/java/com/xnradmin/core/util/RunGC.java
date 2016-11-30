@@ -9,6 +9,8 @@ package com.xnradmin.core.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * @author peng_wei
@@ -17,7 +19,7 @@ import java.util.Date;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class RunGC extends Thread {
-	
+	private static Logger log = Logger.getLogger(RunGC.class);
 	public final static int CYCTIME = 15*60;
 	
     public static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -46,7 +48,7 @@ public class RunGC extends Thread {
 			
 			Runtime.getRuntime().gc();
 			
-			System.out.println(	formatter.format(new Date()) + " ---- Run GC!");
+			log.debug(	formatter.format(new Date()) + " ---- Run GC!");
 		}
 	}
 	

@@ -11,7 +11,10 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.xnradmin.core.pay.wxpay.util.MD5Util;
+import com.xnradmin.core.pay.wxpay.util.Sha1Util;
 import com.xnradmin.core.pay.wxpay.util.TenpayUtil;
 
 /*
@@ -32,6 +35,7 @@ import com.xnradmin.core.pay.wxpay.util.TenpayUtil;
  '============================================================================
  '*/
 public class RequestHandler {
+	private static Logger log = Logger.getLogger(RequestHandler.class);
 	/** Token获取网关地址地址 */
 	private String tokenUrl;
 	/** 预支付网关url地址 */
@@ -150,7 +154,7 @@ public class RequestHandler {
 
 		// 去掉最后一个&
 		String packageValue = sb.append("sign=" + sign).toString();
-		System.out.println("packageValue=" + packageValue);
+		log.debug("packageValue=" + packageValue);
 		return packageValue;
 	}
 
@@ -171,7 +175,7 @@ public class RequestHandler {
 			}
 		}
 		sb.append("key=" + this.getKey());
-		System.out.println("md5 sb:" + sb);
+		log.debug("md5 sb:" + sb);
 		String sign = MD5Util.MD5Encode(sb.toString(), this.charset)
 				.toUpperCase();
 

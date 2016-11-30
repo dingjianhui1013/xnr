@@ -109,7 +109,7 @@ public class CommonUtil {
 
 			for (int i = 0; i < infoIds.size(); i++) {
 				Map.Entry<String, String> item = infoIds.get(i);
-				//System.out.println(item.getKey());
+				//log.debug(item.getKey());
 				if (item.getKey() != "") {
 					
 					String key = item.getKey();

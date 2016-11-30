@@ -729,7 +729,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 	 */
 	@Action(value = "add", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
 	public String add() throws Exception {
-		System.out.println("staffId:::" + staffId);
+		log.debug("staffId:::" + staffId);
 		// 取得当前登录人信息
 		currentStaff = super.getCurrentStaff();
 		// ClientUserInfo clientUserInfo = clientUserInfoService
@@ -741,7 +741,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 		if (goodsList == null) {
 			super.error("未填写商品");
 		} else if (staff != null) {
-			System.out.println("start:::");
+			log.debug("start:::");
 			// 判定用户是否为新用户，新用户自动添加
 			if (clientUserInfo == null || clientUserInfo.getId() == null) {
 				ClientUserInfo po = new ClientUserInfo();
@@ -1007,7 +1007,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 				orderGoodsRelationService.save(ogr);
 			}
 
-			System.out.println("end:::");
+			log.debug("end:::");
 		} else {
 			super.error("用户不存在");
 		}
@@ -1089,7 +1089,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 		if (goodsList == null) {
 			super.error("未填写商品");
 		} else {
-			System.out.println("start:::");
+			log.debug("start:::");
 			ClientUserRegionInfo cri = new ClientUserRegionInfo();
 			if (!StringHelper.isNull(clientUserRegionInfoId)) {
 				if (clientUserRegionInfoId.equals("new") && provincePO != null
@@ -1369,7 +1369,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 				ogr.setGoodsWeightId(p.getGoodsWeightId());
 				orderGoodsRelationService.save(ogr);
 			}
-			System.out.println("end:::");
+			log.debug("end:::");
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
 				"businessOrderRecord", null);

@@ -7,11 +7,13 @@ package com.xnradmin.core.util;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
+
 /**
  * @autohr: bin_liu
  */
 public class EncodeDecodeUtil{
-
+	private static Logger log = Logger.getLogger(EncodeDecodeUtil.class);
     public static String encode(String content){
         byte[] bsrc = null;
         try{
@@ -65,7 +67,7 @@ public class EncodeDecodeUtil{
 
     public static void main(String[] args) throws Exception{
         String content = "{table:phone_guangdong,table:phone_beijing,table:phone_hebei}";
-        System.out.println(decode("7B7461626C653A70686F6E655F6775616E67646F6E677D"));
-        System.out.println(encode(content));
+        log.debug(decode("7B7461626C653A70686F6E655F6775616E67646F6E677D"));
+        log.debug(encode(content));
     }
 }

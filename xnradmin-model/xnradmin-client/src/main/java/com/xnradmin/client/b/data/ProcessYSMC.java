@@ -69,7 +69,6 @@ public class ProcessYSMC implements Runnable {
 		WebResponse r = wc.getResponse(url);
 		// log.debug(r.getText());
 
-		System.out.println("----------------");
 
 		String temp = StringHelper.spiltStr(r.getText(), "window.data",
 				"console.log(data)");
@@ -101,7 +100,6 @@ public class ProcessYSMC implements Runnable {
 
 		while (it.hasNext()) {
 			String k = it.next().toString();
-			// System.out.println(jo.get(k));
 			processYsmcSubLevel2(type1, k, jo.get(k).toString());
 		}
 
@@ -114,7 +112,6 @@ public class ProcessYSMC implements Runnable {
 			BusinessData d = new BusinessData();
 			JSONObject temp = (JSONObject) data.get(i);
 
-			System.out.println(temp);
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("名称：").append(temp.get("name"));
@@ -128,7 +125,6 @@ public class ProcessYSMC implements Runnable {
 			sb.append(" | 子分类：").append(type2);
 			sb.append(" | 单价：").append(temp.get("price"));
 			sb.append(" | 总价：").append(temp.get("commodity_total_price"));
-			System.out.println(sb.toString());
 
 			String class1 = temp.get("own_brand") == null ? "" : temp.get(
 					"own_brand").toString();
@@ -244,7 +240,7 @@ public class ProcessYSMC implements Runnable {
 		BusinessCategory c = findTypeByNameAndLevel(name, typeLevel);
 
 		if (c != null) {
-			System.out.println("分类已存在：" + c.getCategoryName());
+			log.debug("分类已存在：" + c.getCategoryName());
 			return c;
 		}
 
@@ -302,7 +298,7 @@ public class ProcessYSMC implements Runnable {
 	private BusinessWeight processWeight(BusinessData data) {
 		BusinessWeight weight = findWeightByName(data.getUnit());
 		if (weight != null) {
-			System.out.println("单位已存在：" + data.getUnit());
+			log.debug("单位已存在：" + data.getUnit());
 			return weight;
 		}
 		weight = new BusinessWeight();
@@ -333,6 +329,5 @@ public class ProcessYSMC implements Runnable {
 		ProcessYSMC ysmc = new ProcessYSMC();
 		Thread t = new Thread(ysmc);
 		t.start();
-		System.out.println("");
 	}
 }

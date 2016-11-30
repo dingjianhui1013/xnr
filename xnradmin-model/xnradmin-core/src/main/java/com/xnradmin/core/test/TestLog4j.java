@@ -4,6 +4,7 @@
 package com.xnradmin.core.test;
 
 import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.util.Log4jUtil;
@@ -13,12 +14,12 @@ import com.xnradmin.core.util.Log4jUtil;
  *
  */
 public class TestLog4j{
-    
+	private static Logger log = Logger.getLogger(TestLog4j.class);
     private static void testadd() throws InterruptedException{
         int flag = 0;
         while(true){
 
-            System.out.println(StringHelper.getSystime());
+            log.debug(StringHelper.getSystime());
             Thread.currentThread().sleep(1 * 1000);
 
             if(flag == 25){
@@ -26,7 +27,7 @@ public class TestLog4j{
             }
             Log log = Log4jUtil.getLog("other");
             log.error("测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试");
-            System.out.println(flag + " | test..." + Log4jUtil.getLog4jFile());
+            log.debug(flag + " | test..." + Log4jUtil.getLog4jFile());
             flag ++ ;
             
         }

@@ -157,7 +157,7 @@ public class DishDAO{
             if(!StringHelper.isNull(dishId)){
             	queryString = queryString + " and id!="+dishId;
             }
-            System.out.println(queryString);
+            log.debug(queryString);
             return commonDao.getEntitiesByPropertiesWithHql(queryString,0,0);
         }catch(RuntimeException re){
             log.error("find by property name failed",re);

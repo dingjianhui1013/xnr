@@ -69,9 +69,9 @@ public class ScriptHelper{
             ClassNotFoundException,IOException{
         ScriptDTO dto = find(scriptClassName);
         classMap.remove(scriptClassName);
-        System.out.println("classMap: " + classMap);
+        log.debug("classMap: " + classMap);
         ScriptCacheManager.remove(dto);
-        System.out.println("classMap: " + classMap);
+        log.debug("classMap: " + classMap);
     }
 
     /**
@@ -130,7 +130,7 @@ public class ScriptHelper{
      */
     public ScriptDTO find(String scriptClassName) throws CompileException,
             ClassNotFoundException,IOException{
-        System.out.println("classMap size : " + classMap.size());
+        log.debug("classMap size : " + classMap.size());
         ScriptDTO dto = classMap.get(scriptClassName);
         boolean isCompiler = false;
         if(ScriptCacheManager.isCached(scriptClassName)){
@@ -147,8 +147,8 @@ public class ScriptHelper{
             classMap.put(dto.getClassName(),dto);
             ScriptCacheManager.add(dto);
         }
-        // System.out.println(classMap);
-        // System.out.println("classMap size : " + classMap.size());
+        // log.debug(classMap);
+        // log.debug("classMap size : " + classMap.size());
         return dto;
     }
 

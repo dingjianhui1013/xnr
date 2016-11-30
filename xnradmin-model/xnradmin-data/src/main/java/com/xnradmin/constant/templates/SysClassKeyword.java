@@ -7,13 +7,16 @@ package com.xnradmin.constant.templates;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.StringHelper;
+import com.cntinker.uuid.UIDFactory;
 
 /**
  * @author: bin_liu
  */
 public class SysClassKeyword{
-
+	private static Logger log = Logger.getLogger(SysClassKeyword.class);
     public static final String JAVA = "java";
 
     public static final String GEN = "gen";
@@ -44,9 +47,9 @@ public class SysClassKeyword{
 
     public static void main(String[] args) throws Exception{
         String c = "$[for   BuiltInVar.SYS_ALL_PO_VAR var]";
-        System.out.println(c.substring(2));
+        log.debug(c.substring(2));
 
-        System.out.println(isKeywordStart(c));
+        log.debug(isKeywordStart(c));
 
     }
 }

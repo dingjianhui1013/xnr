@@ -10,7 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+import com.xnradmin.core.sms.service.SmsService;
+
 public class SmsBatchSendTest {
+	private static Logger log = Logger.getLogger(SmsBatchSendTest.class);
 	private static List<String> phoneList = null;
 	static {
 		phoneList = new ArrayList<String>();
@@ -20,7 +25,7 @@ public class SmsBatchSendTest {
 		File file = new File(fileName);
 		BufferedReader reader = null;
 		try {
-			System.out.println("以行为单位读取文件内容，一次读一整行：");
+			log.debug("以行为单位读取文件内容，一次读一整行：");
 			reader = new BufferedReader(new FileReader(file));
 			String tempString = null;
 			int line = 1;
@@ -28,7 +33,7 @@ public class SmsBatchSendTest {
 			while ((tempString = reader.readLine()) != null) {
 				// 显示行号
 				phoneList.add(tempString);
-				System.out.println("line " + line + ": " + tempString);
+				log.debug("line " + line + ": " + tempString);
 				line++;
 			}
 			reader.close();
@@ -57,9 +62,9 @@ public class SmsBatchSendTest {
 				 String phone=pi.next();
 				phones[size++] = phone;
 				send.sendSms(2,"18210113786", "验证码为123423"); 
-				System.out.println("s:"+phone);
+				log.debug("s:"+phone);
 			} else {
-				System.out.println("other");
+				log.debug("other");
 				size = 0;
 				if (!pi.hasNext()) {
 					break;
@@ -74,7 +79,7 @@ public class SmsBatchSendTest {
 		}
 
 //		for (String phone : phoneList) {
-//			System.out.println("phone:" + phone);
+//			log.debug("phone:" + phone);
 //		}
 	}
 

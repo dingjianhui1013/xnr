@@ -4,13 +4,15 @@
 package com.xnradmin.core.util;
 
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.StringHelper;
 
 /**
  * @autohr: bin_liu
  */
 public class SpeedLimiter{
-
+	private static Logger log = Logger.getLogger(SpeedLimiter.class);
     // 速度控制的检查周期，间隔x秒
     private int cycTime;
 
@@ -81,7 +83,7 @@ public class SpeedLimiter{
         SpeedLimiter sl1 = new SpeedLimiter(3,1);
         int i = 0;
         while(i <= 100){
-            System.out.println(i ++ + " time:" + StringHelper.getSystime());
+            log.debug(i ++ + " time:" + StringHelper.getSystime());
             sl1.checkLimit();
         }
 

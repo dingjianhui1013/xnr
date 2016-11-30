@@ -236,7 +236,7 @@ public class ZipHelper {
 
 		// 压缩文件
 		// compress(input,output);
-		// System.out.println(getPath("d:/temp/source/test/fuqi.txt"));
+		// log.debug(getPath("d:/temp/source/test/fuqi.txt"));
 
 		// 解压缩
 		unCompress(output, "d:/temp/source");

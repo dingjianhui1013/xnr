@@ -591,9 +591,9 @@ public class BusinessWareHouseStatAction extends ParentAction {
 			content[0] = a[0] == null ? "0" : a[0].toString();
 			content[1] = a[1] == null ? "0" : a[1].toString();
 			content[2] = a[2] == null ? "0" : a[2].toString();
-			System.out.println(content[0]);
-			System.out.println(content[1]);
-			System.out.println(content[2]);
+			log.debug(content[0]);
+			log.debug(content[1]);
+			log.debug(content[2]);
 			contentList.add(content);
 		}
 		return StrutsResMSG.SUCCESS;

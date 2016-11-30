@@ -18,6 +18,7 @@ import java.util.Vector;
 
 import javax.servlet.ServletException;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.ClientProperties;
@@ -32,7 +33,7 @@ import com.meterware.httpunit.WebResponse;
  * @author bin_liu
  */
 public class HttpunitHelper {
-
+	private static Logger log = Logger.getLogger(HttpunitHelper.class);
 	public Vector v1 = new Vector();// 保存COOkie的名称
 
 	public Vector v2 = new Vector();// 保存COOkie的值
@@ -119,16 +120,16 @@ public class HttpunitHelper {
 		WebForm w = getWebResponse(wc, url).getFormWithName(formName);
 
 		// SubmitButton[] sb = w.getSubmitButtons();
-		// System.out.println("submit count: "+sb.length);
+		// log.debug("submit count: "+sb.length);
 		// for(SubmitButton sb1 : sb){
-		// System.out.println("___ head ___");
-		// System.out.println(sb1.getName());
-		// System.out.println(sb1.getText());
-		// System.out.println(sb1.getID());
-		// System.out.println(sb1.getType());
-		// System.out.println(sb1.getValue());
-		// System.out.println(sb1.getNode());
-		// System.out.println("___ end ___");
+		// log.debug("___ head ___");
+		// log.debug(sb1.getName());
+		// log.debug(sb1.getText());
+		// log.debug(sb1.getID());
+		// log.debug(sb1.getType());
+		// log.debug(sb1.getValue());
+		// log.debug(sb1.getNode());
+		// log.debug("___ end ___");
 		// }
 		return w;
 	}
@@ -182,7 +183,7 @@ public class HttpunitHelper {
 	public void downloadBinary(WebResponse res, String file)
 			throws MalformedURLException, IOException, SAXException {
 
-		// System.out.println("File: "+res.getURL());
+		// log.debug("File: "+res.getURL());
 
 		File f = new File(file);
 		FileOutputStream fos = new FileOutputStream(f);
@@ -220,7 +221,7 @@ public class HttpunitHelper {
 			throws MalformedURLException, IOException, SAXException {
 		WebForm form = getWebForm(wc, loginUrl, loginForm);
 
-		// System.out.println("form is null: " + ( form == null ));
+		// log.debug("form is null: " + ( form == null ));
 
 		Iterator it = parameter.keySet().iterator();
 		while (it.hasNext()) {
@@ -228,7 +229,7 @@ public class HttpunitHelper {
 			String value = (String) parameter.get(key);
 			form.setParameter(key, value);
 
-			// System.out.println("key: " + key + " | value"+value);
+			// log.debug("key: " + key + " | value"+value);
 		}
 
 		// 登陆变为可判断有/无BUTTON提交FORM
@@ -239,10 +240,10 @@ public class HttpunitHelper {
 		else
 			rs = form.submitNoButton();
 
-		// System.out.println(rs.getCharacterSet());
-		// System.out.println(rs.getResponseMessage());
-		// System.out.println(Arrays.deepToString(rs.getNewCookieNames()));
-		// System.out.println("_________");
+		// log.debug(rs.getCharacterSet());
+		// log.debug(rs.getResponseMessage());
+		// log.debug(Arrays.deepToString(rs.getNewCookieNames()));
+		// log.debug("_________");
 
 		saveCookie(rs, wc);
 
@@ -260,7 +261,7 @@ public class HttpunitHelper {
 		 * 得到cookie,且保存
 		 */
 		String[] str = rs.getNewCookieNames();
-		// System.out.println("回写COOKIE长度： " + str.length);
+		// log.debug("回写COOKIE长度： " + str.length);
 		for (int i = 0; i < str.length; i++) {
 			v1.add(str[i]);
 			v2.add(rs.getNewCookieValue(str[i]));
@@ -279,7 +280,7 @@ public class HttpunitHelper {
 		 * 为模拟浏览器设置cookie
 		 */
 		for (int i = 0; i < v1.size(); i++) {
-			// System.out.println("key: " + (String) v1.get(i) + " | values: "
+			// log.debug("key: " + (String) v1.get(i) + " | values: "
 			// + (String) v2.get(i));
 			this.wc.putCookie((String) v1.get(i), (String) v2.get(i));
 		}
@@ -308,7 +309,7 @@ public class HttpunitHelper {
 	public boolean login(String loginSuccessTitle, WebResponse rs,
 			WebConversation wc) throws MalformedURLException, IOException,
 			SAXException {
-		System.out.println(rs.getText());
+		log.debug(rs.getText());
 		if (rs.getTitle().indexOf(loginSuccessTitle) > -1)
 			return true;
 		return false;
@@ -329,7 +330,7 @@ public class HttpunitHelper {
 		WebConversation wc = webLogin.init("", true);
 
 		WebResponse r = wc.getResponse("http://www.baidu.com");
-		System.out.println(r.getText());
-		// System.out.println(HttpHelper.postHttpRquest(login,"","UTF-8"));
+		log.debug(r.getText());
+		// log.debug(HttpHelper.postHttpRquest(login,"","UTF-8"));
 	}
 }

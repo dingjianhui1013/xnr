@@ -7,13 +7,15 @@ package com.xnradmin.constant.templates;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.cntinker.util.StringHelper;
 
 /**
  * @autohr: bin_liu
  */
 public class SysGenKeyword{
-
+	private static Logger log = Logger.getLogger(SysGenKeyword.class);
     public static final String SYSTIME = "systime";
 
     public static final String SETGET = "setget";
@@ -34,6 +36,6 @@ public class SysGenKeyword{
     }
 
     public static void main(String[] args) throws Exception{
-        System.out.println("");
+        log.debug("");
     }
 }
