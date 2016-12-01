@@ -282,16 +282,28 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	 * @param direction
 	 * @return List<GetOrgListVO>
 	 */
-	public List<BusinessGoodsVO> listVO(OutPlanVO vo, int curPage,
+	public List<OutPlanVO> listVO(OutPlanVO vo, int curPage,
 			int pageSize, String orderField, String direction) {
-		String hql = "from BusinessGoods where 1=1";
+		String hql = "from OutPlan plan,BusinessGoods goods,Farmer farmer where 1=1";
+		
+		hql += " and plan.goodsId = goods.id";
+		hql += " and plan.userId = farmer.userId";
+		
 		if (vo != null && vo.getBusinessGood() != null) {
 			if (!StringHelper.isNull(vo.getBusinessGood().getGoodsName())) {
-				hql = hql + " and goodsName like '%"
+				hql = hql + " and goods.goodsName like '%"
 						+ vo.getBusinessGood().getGoodsName() + "%'";
 			}
-						
 		}
+		
+		if (vo != null && vo.getFarmer() != null) {
+			if (!StringHelper.isNull(vo.getFarmer().getUserName())) {
+				hql = hql + " and framer.userName like '%"
+						+ vo.getFarmer().getUserName() + "%'";
+			}
+		}
+		
+		
 		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
 			hql = hql + " order by " + orderField + " " + direction;
 		} else {
@@ -299,12 +311,17 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,
 				pageSize);
-		List<BusinessGoodsVO> resList = new LinkedList<BusinessGoodsVO>();
+		List<OutPlanVO> resList = new LinkedList<OutPlanVO>();
 		for (int i = 0; i < l.size(); i++) {
-			BusinessGoods po = (BusinessGoods) l.get(i);
-			BusinessGoodsVO businessGoodsVO = new BusinessGoodsVO();
-			businessGoodsVO.setBusinessGoods(po);
-			resList.add(businessGoodsVO);
+			Object[] obj = (Object[]) l.get(i);
+			OutPlan outPlan = (OutPlan) obj[0];
+			BusinessGoods goods = (BusinessGoods) obj[1];
+			Farmer farmer = (Farmer) obj[2];
+			OutPlanVO outPlanVo = new OutPlanVO();
+			outPlanVo.setOutPlan(outPlan);
+			outPlanVo.setBusinessGood(goods);
+			outPlanVo.setFarmer(farmer);
+			resList.add(outPlanVo);
 		}
 		return resList;
 	}
