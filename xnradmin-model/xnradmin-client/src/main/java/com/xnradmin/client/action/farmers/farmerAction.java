@@ -147,7 +147,7 @@ public class farmerAction extends ParentAction{
 	@Action(value="farmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examine.jsp") })
 	public String farmerExamine()
 	{
-		this.farmerId = farmerId;
+		this.farmerId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value="saveFarmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examine.jsp") })

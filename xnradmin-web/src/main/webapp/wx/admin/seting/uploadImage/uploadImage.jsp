@@ -20,7 +20,7 @@ $(function(){
 		alert("请联系系统管理员，进行身份审核！");
 	}else
 		{
-				$.get("<%= path %>/page/wx/wxconnect/uploadF.action",{userName:$("#userName").val(),userId:$("#userId").val(),_:new Date().getTime()},function (data){
+				$.get("<%= path %>/page/wx/wxconnect/uploadF.action",{userName:$("#userName").val(),_:new Date().getTime()},function (data){
 					  window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImage.jsp";
 				  },"json");
 			}
@@ -30,7 +30,6 @@ $(function(){
 <body>
 	<form action="">
 		<input type="hidden" value="${userName}" id="userName"/>
-		<input type="hidden" value="${userId}" id="userId"/>
 		<input type="hidden" value="${status}" id="status">
 	</form>
 </body>

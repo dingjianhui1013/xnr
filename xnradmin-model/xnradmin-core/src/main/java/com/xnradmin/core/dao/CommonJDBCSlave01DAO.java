@@ -336,7 +336,7 @@ public class CommonJDBCSlave01DAO<T> extends BaseHibernateSlave01DAO{
                     log.debug("-----------");
                     findPro(columnSet);
                     while(columnSet.next()){
-                        System.out.print("|"
+                    	log.debug("|"
                                 + columnSet.getString("COLUMN_NAME"));
                     }
 

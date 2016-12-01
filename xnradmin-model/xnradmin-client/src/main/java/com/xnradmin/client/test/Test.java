@@ -10,6 +10,7 @@ import org.dom4j.DocumentException;
 
 import com.cntinker.util.StringHelper;
 import com.xnradmin.client.action.wx.WXConnectAction;
+import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.core.util.WxUtil;
 
 /**
@@ -41,7 +42,8 @@ public class Test {
 	}
 	public static void main(String[] args) throws Exception {
 		testPath();
-		;
+		OutPlanService outPlanService = new OutPlanService();
+		outPlanService.validationDate("jiaojianan", "2016-11-24", "2016-11-24");
 		log.debug(StringHelper.formartDecimalToStr(0.89f));
 	}
 }

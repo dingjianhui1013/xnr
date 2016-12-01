@@ -65,7 +65,7 @@ public class OutPlanAction extends ParentAction{
 	private boolean outplanStatus;//验证生产计划时间是否重复
 	private String startTime;//
 	private String endTime;
-	private String userId;
+	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
 	
 	public String getStartTime() {
 		return startTime;
@@ -145,12 +145,6 @@ public class OutPlanAction extends ParentAction{
 	}
 	
 	
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 	public List<BusinessCategory> getBusinesCategorys() {
 		return businesCategorys;
 	}
@@ -229,6 +223,7 @@ public class OutPlanAction extends ParentAction{
 		String types = farmerService.getFenleiByUserId(userId.getString("UserId"));
 		this.status  = farmerService.getStatus(userId.getString("UserId"));
         goodslist = businessGoodsService.getTypeNameById(types);
+        ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	/***
@@ -246,6 +241,7 @@ public class OutPlanAction extends ParentAction{
 		String types = farmerService.getFenleiByUserId(userId.getString("openid"));
 		this.status  = farmerService.getStatus(userId.getString("openid"));
         goodslist = businessGoodsService.getTypeNameById(types);
+        ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value="getGoods",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})

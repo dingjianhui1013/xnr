@@ -592,7 +592,7 @@ public class StringHelper {
 			}
 			return str;
 		} catch (Exception e) {
-			System.out.print(e.getMessage());
+			log.debug(e.getMessage());
 		}
 		return str;
 	}
@@ -1740,6 +1740,6 @@ public class StringHelper {
 		log.debug(getNextTimeStr(1, 1, System.currentTimeMillis()));
 
 		String[] a = new String[] { "2", "4", "6" };
-		System.out.print(arrayToString(a));
+		log.debug(arrayToString(a));
 	}
 }
