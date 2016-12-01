@@ -60,64 +60,18 @@
 		<tbody>
 			<c:if test="${voList!=null}">
 				<c:forEach items="${voList}" var="loop">
-					<tr target="sid_goodsId" rel="${loop.businessGoods.id}">						
+					<tr target="sid_goodsId" rel="${loop.outPlan.id}">						
 						<td>${loop.businessGoods.goodsName}</td>
-						<td>
-						<c:if test="${categoryList!=null}">
-							<c:forEach items="${categoryList}" var="category">
-								<c:if test="${category.id==loop.businessGoods.goodsCategoryId}">
-									${category.categoryName}
-   								</c:if>
-							</c:forEach>
-						</c:if>
-						</td>
-						<td>${loop.businessGoods.goodsDescription}</td>
-						<td>${loop.businessGoods.goodsOriginalPrice}</td>
-						<td>${loop.businessGoods.goodsPurchasePrice}</td>
-						<td>
-						<c:if test="${isDiscountList!=null}">
-							<c:forEach items="${isDiscountList}" var="discount">
-								<c:if test="${discount.id==loop.businessGoods.isDiscountGoods}">
-									${discount.statusName}
-   								</c:if>
-							</c:forEach>
-						</c:if>
-						</td>
-						<td>
-						<c:if test="${goodsList!=null}">
-							<c:forEach items="${goodsList}" var="goodsTemp">
-								<c:if test="${goodsTemp.id==loop.businessGoods.goodsParentId}">
-									${goodsTemp.goodsName}
-   								</c:if>
-							</c:forEach>
-						</c:if>
-						</td>	
-						<td>${loop.businessGoods.createTime}</td>
-						<td>
-						<c:if test="${staffList!=null}">
-							<c:forEach items="${staffList}" var="staffcreate">
-								<c:if test="${staffcreate.userid==loop.businessGoods.createStaffId}">
-									${staffcreate.staffName}
-   								</c:if>
-							</c:forEach>
-						</c:if>
-						</td>		
-						<td>${loop.businessGoods.modifyTime}</td>	
-						<td>
-						<c:if test="${staffList!=null}">
-							<c:forEach items="${staffList}" var="staffmodify">
-								<c:if test="${staffmodify.userid==loop.businessGoods.modifyStaffId}">
-									${staffmodify.staffName}
-   								</c:if>
-							</c:forEach>
-						</c:if>
-						</td>			
+						<td>${loop.farmer.userName}</td>
+						<td>${loop.outPlan.output}</td>
+						<td>${loop.outPlan.occupyAmount}</td>
+						<td>${loop.outPlan.validAmount}</td>
+						<td>${loop.outPlan.startTime}</td>
+						<td>${loop.outPlan.endTime}</td>	
 						<td>
 							<a class="btnSelect" href="javascript:$.bringBack({id:'${loop.businessGoods.id}',
-							 goodsName:'${loop.businessGoods.goodsName}', goodsCategoryId:'${loop.businessGoods.goodsCategoryId}',
-							 goodsOriginalPrice:'${loop.businessGoods.goodsOriginalPrice}', goodsPurchasePrice:'${loop.businessGoods.goodsPurchasePrice}',
-							 goodsStatus:'${loop.businessGoods.goodsStatus}', isDiscountGoods:'${loop.businessGoods.isDiscountGoods}', 
-							 goodsWeightId:'${loop.businessGoods.goodsWeightId}'})" title="查找带回">选择</a>
+							 goodsName:'${loop.businessGoods.goodsName}', userName:'${loop.farmer.userName}',
+							 validAmount:'${loop.outPlan.validAmount}'})" title="查找带回">选择</a>
 						</td>
 					</tr>				
 				</c:forEach>

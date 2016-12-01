@@ -401,7 +401,7 @@ public class OutPlanAction extends ParentAction{
 		}
 		
 		vo.setFarmer(farmer);
-		vo.setBusinessGood(goods);
+		vo.setBusinessGoods(goods);
 		
 
 		this.voList = outPlanService.listVO(vo, getPageNum(), getNumPerPage(),
