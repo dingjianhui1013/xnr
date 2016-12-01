@@ -211,7 +211,7 @@
 												  <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">类别</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span>${outplanVo.businessGood.goodsName}</span></p>
+												    	 <p class="form-control-static outputDate"><span>${outplanVo.businessGoods.goodsName}</span></p>
 												    </div>
 												  </div>
 												  <div class="form-group">

@@ -372,6 +372,10 @@ public class OutPlanAction extends ParentAction{
 	@Action(value = "validationDate",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
 	public String validationDate() {
 		this.outplanStatus = outPlanService.validationDate(this.userId,this.startTime,this.endTime);
+		log.debug("userId:"+this.userId);
+		log.debug("startTime:"+this.startTime);
+		log.debug("endTime:"+this.endTime);
+		log.debug("outplanStatus:"+this.outplanStatus);
 		 return  StrutsResMSG.SUCCESS;
 	}
 	/**

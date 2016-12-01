@@ -67,7 +67,7 @@ $(function(){
 			var userId = $("#userId").val();
 			var startTime = $("#dateStart").val();  
 			var endTime = $("#dateEnd").val();
-			var isok = false;
+			var isok = true;
 			$.ajax({
 				type:'POST',
 				url:'<%=path %>/page/wx/outplan/validationDate.action',
