@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
@@ -31,9 +32,11 @@ import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
@@ -80,6 +83,10 @@ public class OutPlanAction extends ParentAction{
 	public void setOutplanStatus(boolean outplanStatus) {
 		this.outplanStatus = outplanStatus;
 	}
+	
+	private String goodsName;
+	private String farmerName;
+	
 	public String getRemarks() {
 		return remarks;
 	}
@@ -180,6 +187,22 @@ public class OutPlanAction extends ParentAction{
 		this.businessWeight = businessWeight;
 	}
 	
+	
+	
+	
+	
+	public String getGoodsName() {
+		return goodsName;
+	}
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+	public String getFarmerName() {
+		return farmerName;
+	}
+	public void setFarmerName(String farmerName) {
+		this.farmerName = farmerName;
+	}
 	@Autowired
 	private OutPlanService outPlanService ;
 	@Autowired
@@ -377,6 +400,49 @@ public class OutPlanAction extends ParentAction{
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+	
+	
+	/**
+	 * 跳转到信息页。。
+	 * 
+	 * @return
+	 */
+	@Action(value = "lookup", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/outPlan/lookup.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/outPlan/lookup.jsp") })
+	public String lookup() {
+		setLookupPageInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	
+	
+	
+	private void setLookupPageInfo() {
+		// 设置排序
+		
+		OutPlanVO vo = new OutPlanVO();
+		Farmer farmer = new Farmer();
+		BusinessGoods goods = new BusinessGoods();
+		if (!StringHelper.isNull(goodsName)) {
+			goods.setGoodsName(goodsName);
+		}
+		if (!StringHelper.isNull(farmerName)) {
+			farmer.setUserName(farmerName);
+		}
+		
+		vo.setFarmer(farmer);
+		vo.setBusinessGood(goods);
+		
+
+//		this.voList = outPlanService.listVO(vo, getPageNum(), getNumPerPage(),
+//				orderField, orderDirection);
+//		this.totalCount = outPlanService.getCount(vo);
+
+	}
+	
+	
 	
 	
 }
