@@ -241,6 +241,11 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 			if(l.size()>0){
 				return false;
 			}
+			hql = "from OutPlan where userId='"+userId+ "' and startTime>='"+startTime+"' and endTime<='"+endTime+"'";
+			l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+			if(l.size()>0){
+				return false;
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
