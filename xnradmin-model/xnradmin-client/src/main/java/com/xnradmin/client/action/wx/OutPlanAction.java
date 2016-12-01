@@ -438,9 +438,9 @@ public class OutPlanAction extends ParentAction{
 		vo.setBusinessGoods(goods);
 		
 
-//		this.voList = outPlanService.listVO(vo, getPageNum(), getNumPerPage(),
-//				orderField, orderDirection);
-//		this.totalCount = outPlanService.getCount(vo);
+		this.voList = outPlanService.listVO(vo, getPageNum(), getNumPerPage(),
+				orderField, orderDirection);
+		this.totalCount = outPlanService.getCount(vo);
 
 	}
 	
