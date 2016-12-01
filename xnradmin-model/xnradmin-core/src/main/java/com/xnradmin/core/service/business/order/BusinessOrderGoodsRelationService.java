@@ -276,4 +276,15 @@ public class BusinessOrderGoodsRelationService {
 		return dao.findAll();
 	}
 
+	public List<BusinessGoods> findGoodsName(Long id) {
+		String hql = "from BusinessOrderGoodsRelation a ,BusinessGoods b where a.goodsId=b.id and a.orderRecordId='"+id+"'";
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<BusinessGoods> goods  = new ArrayList<BusinessGoods>();
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = (Object[]) l.get(i);
+			goods.add((BusinessGoods) obj[1]);
+		}
+		return goods;
+	}
+
 }

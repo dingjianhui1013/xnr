@@ -138,6 +138,7 @@ public class BusinessOrderRecord implements java.io.Serializable{
     private String serNo; 
     
     /** 自定义的订单流水号 - 生成规则，年月日小时分秒+5位随机数 */
+    
     @Index(name = "idx_business_order_record_orderNo")
     private String orderNo; 
     /** 代理商ID */

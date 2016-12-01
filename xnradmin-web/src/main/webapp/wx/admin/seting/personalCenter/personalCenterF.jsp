@@ -37,7 +37,8 @@
 	$(function(){
 		if("${status}"==null||"${status}"==""||"${status}"=="0")
 		{
-			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId=$('#userId').val()";
+			var farmerId = $('#userId').val();
+			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId="+farmerId;
 		}else if ("${status}"=="3")
 			{
 				alert("审核信息已经提交，请等待！")
