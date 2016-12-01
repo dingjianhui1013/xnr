@@ -30,17 +30,17 @@ public class WeixinUtil
 	  ViewButton btn3 = new ViewButton();
 	  btn3.setName("个人中心");
 	  btn3.setType("view");
-	  btn3.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+	  btn3.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri="+WXInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
 	  
 	  ViewButton btn2 = new ViewButton();
 	  btn2.setName("生产计划");
 	  btn2.setType("view");
-	  btn2.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2foutplan%2foutplan.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+	  btn2.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri="+WXInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2foutplan%2foutplan.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
 	  
 	  ViewButton btn1 = new ViewButton();
 	  btn1.setName("上传图片");
 	  btn1.setType("view");
-	  btn1.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fwxconnect%2foAuth.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
+	  btn1.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri="+WXInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fwxconnect%2foAuth.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect");
 	  Menu menu  = new Menu();
 	  menu.setButton(new Button[]{btn1,btn2,btn3});
 	  String jsonMenu = JSONObject.fromObject(menu).toString();
@@ -63,17 +63,17 @@ public class WeixinUtil
 	  ViewButton btn3 = new ViewButton();
 	  btn3.setName("个人中心");
 	  btn3.setType("view");
-	  btn3.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
+	  btn3.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI",WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
 	  
 	  ViewButton btn2 = new ViewButton();
 	  btn2.setName("生产计划");
 	  btn2.setType("view");
-	  btn2.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2foutplan%2foutplanF.action").replace("SCOPE", "snsapi_base"));
+	  btn2.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI",WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2foutplan%2foutplanF.action").replace("SCOPE", "snsapi_base"));
 	  
 	  ViewButton btn1 = new ViewButton();
 	  btn1.setName("上传图片");
 	  btn1.setType("view");
-	  btn1.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fwxconnect%2foAuthF.action").replace("SCOPE", "snsapi_base"));
+	  btn1.setUrl(WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI",WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fwxconnect%2foAuthF.action").replace("SCOPE", "snsapi_base"));
 	  Menu menu  = new Menu();
 	  menu.setButton(new Button[]{btn1,btn2,btn3});
 	  String jsonMenu = JSONObject.fromObject(menu).toString();

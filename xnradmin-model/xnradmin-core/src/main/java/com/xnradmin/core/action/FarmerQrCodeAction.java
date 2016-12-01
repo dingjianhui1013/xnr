@@ -25,6 +25,7 @@ import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.service.FarmerQrCodeService;
 import com.xnradmin.po.wx.connect.FarmerQrCode;
+import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.vo.FarmerQrCodeVo;
 
 @Controller
@@ -123,7 +124,7 @@ public class FarmerQrCodeAction extends ParentAction{
 				farmerQrCode.setGoodsId(string);
 				String url = "/farmerQrCodeImage"+File.separator+farmerId+File.separator+string;
 				String imageName = new Date().getTime()+"_"+farmerId+".png";
-				String skipUrl =  "http://weixin.robustsoft.cn/xnr/page/wx/farmer/showFarmerImage.action?farmerId="+farmerId+"&goodsId="+string;
+				String skipUrl =  WXfInit.SERVICEURLW+"/xnr/page/wx/farmer/showFarmerImage.action?farmerId="+farmerId+"&goodsId="+string;
 				farmerQrCode.setQrCodeUrl(url+File.separator+imageName);
 				farmerQrCode.setSkipUrl(skipUrl);
 				farmerService.generateCode(farmerId,string,imageName,skipUrl);

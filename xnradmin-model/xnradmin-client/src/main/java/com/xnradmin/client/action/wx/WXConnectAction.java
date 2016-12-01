@@ -342,7 +342,7 @@ public class WXConnectAction {
 				+ noncestr
 				+ "&timestamp="
 				+ timep
-				+ "&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImageF.jsp";
+				+ "&url="+WXfInit.SERVICEURLW+"/xnr/wx/admin/seting/uploadImage/obtainImageF.jsp";
 		String signature = new SHA1().getDigestOfStringX(s1.getBytes());
 		String types = farmerService.getFenleiByUserId(userId);
 		HttpSession session = request.getSession();
@@ -356,7 +356,7 @@ public class WXConnectAction {
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
-		session.setAttribute("skiptUrl", WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI","http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
+		session.setAttribute("skiptUrl", WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI",WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
 	}
 	
 	@Action(value = "uploadF")
@@ -374,7 +374,7 @@ public class WXConnectAction {
 				+ noncestr
 				+ "&timestamp="
 				+ timep
-				+ "&url=http://weixin.robustsoft.cn/xnr/wx/admin/seting/uploadImage/obtainImage.jsp";
+				+ "&url="+WXfInit.SERVICEURLW+"/xnr/wx/admin/seting/uploadImage/obtainImage.jsp";
 		String signature = DigestUtils.shaHex(s1);
 //		businesCategorys = outPlanService.getBusinessCategoryS();
 		String types = farmerService.getFenleiByUserId(userId);
