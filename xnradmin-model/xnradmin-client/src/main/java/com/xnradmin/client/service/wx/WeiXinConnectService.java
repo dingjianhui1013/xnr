@@ -35,6 +35,7 @@ import com.xnradmin.client.messag.resp.VoiceMessage;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
 
 
@@ -132,7 +133,7 @@ public class WeiXinConnectService {
   	        {
   	        	message ="点击上方文字进行填写信息";
   	        	String access_tokenF = WXFGetTokenService.accessTokenIsOvertime();
-  	        	String messages = "<a href=\"http://weixin.robustsoft.cn/xnr/page/wx/farmer/farmerExamine.action?farmerId="+FromUserName+"\">请前往页面填写审核信息。</a>";
+  	        	String messages = "<a href=\""+WXfInit.SERVICEURLW+"/xnr/page/wx/farmer/farmerExamine.action?farmerId="+FromUserName+"\">请前往页面填写审核信息。</a>";
   	        	Text text = new Text();
 	  	  		text.setContent(messages);
 	  	  		TextMessageF textMessageF =new TextMessageF();

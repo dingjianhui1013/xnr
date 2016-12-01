@@ -2,6 +2,8 @@ package com.xnradmin.client.action.wx;
 
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -217,7 +219,7 @@ public class OutPlanAction extends ParentAction{
 	 * 企业号保存生产计划
 	 * @return
 	 */
-	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
+	@Action(value = "save",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri="+WXInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
 	public String save(){
 		outplan.setCreateBy(outplan.getUserId());
 		outplan.setExamine(0);//待审核
@@ -228,7 +230,7 @@ public class OutPlanAction extends ParentAction{
 	 * 服务号保存生产计划
 	 * @return
 	 */
-	@Action(value = "saveF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
+	@Action(value = "saveF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri="+WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
 	public String saveF(){
 		outplan.setCreateBy(outplan.getUserId());
 		outplan.setExamine(0);//待审核
@@ -239,7 +241,7 @@ public class OutPlanAction extends ParentAction{
 	 * 企业号删除生产计划
 	 * @return
 	 */
-	@Action(value = "deletePlan",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
+	@Action(value = "deletePlan",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9eb4133bf836c7ae&redirect_uri="+WXInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect") })
 	public String delete(){
 		outPlanService.delete(deleteId);
 		return StrutsResMSG.SUCCESS;
@@ -248,7 +250,7 @@ public class OutPlanAction extends ParentAction{
 	 * 服务号 删除生产计划
 	 * @return
 	 */
-	@Action(value = "deletePlanF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
+	@Action(value = "deletePlanF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri="+WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
 	public String deleteF(){
 		outPlanService.delete(deleteId);
 		return StrutsResMSG.SUCCESS;
@@ -278,7 +280,7 @@ public class OutPlanAction extends ParentAction{
 		return StrutsResMSG.SUCCESS;
 	}
 	
-	@Action(value = "saveEdit",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect" ) })
+	@Action(value = "saveEdit",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location ="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXInit.CORPID+"&redirect_uri="+WXInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flist.action&response_type=code&scope=SCOPE&state=STATE#wechat_redirect" ) })
 	public String saveEdit(){
 		outPlanService.saveEdit(outplan);
 		return StrutsResMSG.SUCCESS;
@@ -287,7 +289,7 @@ public class OutPlanAction extends ParentAction{
 	 * 服务号保存修改的生产计划
 	 * @return
 	 */
-	@Action(value = "saveEditF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri=http%3a%2f%2fweixin.robustsoft.cn%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
+	@Action(value = "saveEditF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri="+WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
 	public String saveEditF(){
 		outPlanService.saveEdit(outplan);
 		return StrutsResMSG.SUCCESS;

@@ -1,5 +1,8 @@
 package com.xnradmin.po.wx.connect;
 
+import java.net.URL;
+import java.net.URLEncoder;
+
 public class WXurl {
 
 	//企业号url
@@ -25,5 +28,6 @@ public class WXurl {
 	public static final String WXF_DOWN_IMAGE = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
 	public static final String WXF_MESSARW_TO_FROMUSER = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=ACCESS_TOKEN";
 	public static final String WXF_MESSARW_TO_USER = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
+	
 	
 }
