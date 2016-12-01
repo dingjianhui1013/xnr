@@ -57,6 +57,29 @@ public class OutPlanAction extends ParentAction{
 	private String weightId;
 	private BusinessWeight businessWeight;
 	private String status;
+	private boolean outplanStatus;//验证生产计划时间是否重复
+	private String startTime;//
+	private String endTime;
+	private String userId;
+	
+	public String getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public boolean isOutplanStatus() {
+		return outplanStatus;
+	}
+	public void setOutplanStatus(boolean outplanStatus) {
+		this.outplanStatus = outplanStatus;
+	}
 	public String getRemarks() {
 		return remarks;
 	}
@@ -111,7 +134,7 @@ public class OutPlanAction extends ParentAction{
 	public void setOutplan(OutPlan outplan) {
 		this.outplan = outplan;
 	}
-	private String userId;
+	
 	
 	public String getUserId() {
 		return userId;
@@ -315,6 +338,15 @@ public class OutPlanAction extends ParentAction{
 		Integer personId = super.getCurrentStaff().getId();
 		this.examineStatus  = outPlanService.examine(examineId,personId.toString());
 		outPlanService.examineRelease(examineId);
+		 return  StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 生产计划时间验证
+	 * @return
+	 */
+	@Action(value = "validationDate",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
+	public String validationDate() {
+		this.outplanStatus = outPlanService.validationDate(this.userId,this.startTime,this.endTime);
 		 return  StrutsResMSG.SUCCESS;
 	}
 	/**

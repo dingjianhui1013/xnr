@@ -44,6 +44,11 @@ public class OutPlanService {
 		try{
 		outplan.setDelFlage(0);
 		outplan.setCreateDate(new Date());
+		Date endTime = outplan.getEndTime();
+		endTime.setHours(23);
+		endTime.setMinutes(59);
+		endTime.setSeconds(59);
+		outplan.setEndTime(endTime);
 		commonDao.save(outplan);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -209,6 +214,24 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		return isok;
 	}
+	public boolean validationDate(String userId,String startTime,String endTime){
+		String hql = "from OutPlan where userId='"+userId+ "' and startTime<='"+startTime+"' and endTime>='"+startTime+"'";
+		try {
+			List l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+			if(l.size()>0){
+				return false;
+			}
+			hql = "from OutPlan where userId='"+userId+ "' and startTime<='"+endTime+"' and endTime>='"+endTime+"'";
+			l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+			if(l.size()>0){
+				return false;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return true;
+	}
+	
 	public boolean examineNo(String id,String remarks,String personId){
 		boolean isok = false;
 		if(id!=null&&!"".equals(id)){
