@@ -240,48 +240,68 @@
 			<div class="divider"></div>
 			<h3 class="contentTitle">分配列表</h3>
 
+
+
+
 			<div class="tabs">
 				<div class="tabsHeader">
 					<div class="tabsHeaderContent">
 						<ul>
 							<li class="selected"><a href="javascript:void(0)"><span>分配管理</span></a></li>
-
 						</ul>
 					</div>
 				</div>
-
-				<table class="list nowrap itemDetail" addButton="添加分配条目" width="100%"
-					needCallback="1">
-					<thead>
-						<tr>
-							<th type="text" width="4%" name="items[#index#].serno"
-								id="items[#index#].serno" defaultVal="#index#" size="4"
-								readonly="readonly" fieldClass="required digits">序号</th>
-							<th type="text" width="15%" name="items[#index#].goodsName"
-								id="items[#index#].goodsName" size="20" readonly="readonly"
-								rows="3" cols="100">商品名称</th>
-							<th nowrap type="lookup" width="15%"
-								name="items[#index#].userName"
-								id="items[#index#].userName" size="20" readonly="readonly"
-								rows="3" cols="100" lookupPk="mesProductId"
-								lookupGroup="items[#index#]"
-								lookupUrl="${outplanLookup}" postField="keywords"
-								fieldClass="required">农户</th>
-							<th type="text" width="15%" name="items[#index#].amountValid"
-								id="items[#index#].validAmount" size="20" readonly="readonly"
-								rows="3" cols="100">可操作数量</th>
-							<th type="text" width="15%" name="items[#index#].count"
-								id="items[#index#].count" size="20" class="requird" rows="3"
-								cols="100" onchang="judgeAmount(this)">分配数量</th>
-							<th type="del" width="7%">操作</th>
-						</tr>
-					</thead>
-					<tbody id="tecBody">
-
-
-					</tbody>
-				</table>
+				<div class="tabsContent">
+					<div>
+						<table class="list nowrap itemDetail" addButton="添加分配条目" width="100%">
+							<thead>
+								<tr>
+								
+								    <th type="text" name="items[#index#].outPlanId" size="4" readonly="readonly" fieldClass="required digits">序号</th>
+									<th type="text" name="items[#index#].goodsName" size="20" readonly="readonly">商品名称</th>
+									<th type="lookup" name="items[#index#].userName" lookupGroup="items[#index#]" lookupUrl="${outplanLookup}" size="20" readonly="readonly">农户</th>
+									<th type="text" name="items[#index#].validAmount" size="20" readonly="readonly">可操作数量</th>
+									<th type="input" name="items[#index#].goodsCount" size="20" fieldClass="required number">分配数量</th>			 
+									<th type="del"  width="10%">操作</th>
+								</tr>
+							</thead>
+							<tbody>
+							<c:if test="${farmerOrderList!=null}">
+									<c:forEach items="${farmerOrderList}" var="loop">
+									<tr class="unitBox">
+									
+									        <td>
+									        <input type="text" value="${loop.farmerOrder.id}">
+									        </td>
+											<td>
+											    <input type="text" value="${loop.businessGoods.goodsName}" >
+											</td>
+											<td>
+												 <input type="text" value="${loop.farmer.userName}" >
+												<a class="btnLook" title="查找带回" lookupGroup="items[#index#]" href="${goodsLookup}">查找带回</a>
+											</td>
+											<td>
+											 	<input type="text" value="${loop.outPlan.validAmount}" >
+											</td>	
+											<td>
+												<input type="text" value="${loop.farmerOrder.goodsCount}" >
+											</td>	
+											
+											<td>
+												<a class="btnDel " href="javascript:void(0)">删除</a>
+											</td>
+										</tr> 
+									</c:forEach>
+							</c:if>
+							</tbody>
+						</table>
+					</div>							
+				</div>
+				<div class="tabsFooter">
+					<div class="tabsFooterContent"></div>
+				</div>
 			</div>
+
 			<br> <br> <br>
 
 			<div style="height: 15px;"></div>
@@ -298,7 +318,7 @@
 					</li>
 				</ul>
 			</div>
-		</div>
+		
 	</form>
 
 </div>

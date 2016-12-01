@@ -32,13 +32,13 @@ public class FarmerOrderRecord implements java.io.Serializable{
     
 	private Long outPlanId; //生成计划id
 	
-	private Long farmerId;    //农户id
+	private String farmerUserId;    //农户id
 	
 	private Integer goodsId; //商品Id
     
     private Integer goodsCount; //商品数量
       
-    private String staffId;	//分配订单id
+    private Integer staffId;	//分配订单id
     
     private Timestamp createTime; //生成时间 
     
@@ -87,20 +87,22 @@ public class FarmerOrderRecord implements java.io.Serializable{
 	}
 	
 	@Column(name = "STAFF_ID")
-	public String getStaffId() {
+	public Integer getStaffId() {
 		return staffId;
 	}
 
-	public void setStaffId(String staffId) {
+	public void setStaffId(Integer staffId) {
 		this.staffId = staffId;
 	}
 
-	public Long getFarmerId() {
-		return farmerId;
+	
+
+	public String getFarmerUserId() {
+		return farmerUserId;
 	}
 
-	public void setFarmerId(Long farmerId) {
-		this.farmerId = farmerId;
+	public void setFarmerUserId(String farmerUserId) {
+		this.farmerUserId = farmerUserId;
 	}
 
 	public Timestamp getCreateTime() {
