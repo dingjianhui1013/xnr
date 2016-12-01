@@ -97,7 +97,7 @@ public class OutPlanService {
 			OutPlanVO outPlanVO = new OutPlanVO();
 			outPlanVO.setOutPlan(outPlan);
 			outPlanVO.setFarmer(farmer);
-			outPlanVO.setBusinessGood(businessGood);
+			outPlanVO.setBusinessGoods(businessGood);
 			outPlanVO.setBusinessWeight(businessWeight);
 //			outPlanVO.setBusinessCategory(businessCategory);
 			resList.add(outPlanVO);
@@ -119,7 +119,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 			OutPlanVO outPlanVO = new OutPlanVO();
 			outPlanVO.setOutPlan(outPlan);
 			outPlanVO.setFarmer(farmer);
-			outPlanVO.setBusinessGood(businessGood);
+			outPlanVO.setBusinessGoods(businessGood);
 			outPlanVO.setBusinessWeight(businessWeight);
 			resList.add(outPlanVO);
 		}
@@ -139,7 +139,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		OutPlanVO outPlanVO = new OutPlanVO();
 		outPlanVO.setOutPlan(outPlan);
 		outPlanVO.setFarmer(farmer);
-		outPlanVO.setBusinessGood(businessGood);
+		outPlanVO.setBusinessGoods(businessGood);
 		outPlanVO.setBusinessWeight(businessWeight);
 		return outPlanVO;
 	}
@@ -152,26 +152,37 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		if (query == null){
 			return hql.append(" order by a.id desc").toString();
 		}
-		if(query.getOutPlan().getId()!=null){
-			hql.append(" and a.id like '%").append(query.getOutPlan().getId()).append("%'");
+		
+		if(query.getOutPlan()!=null){
+			if(query.getOutPlan().getId()!=null){
+				hql.append(" and a.id like '%").append(query.getOutPlan().getId()).append("%'");
+			}	
+			if(query.getOutPlan().getStartTime()!=null){
+				String format = simpleDateFormat.format(query.getOutPlan().getStartTime());
+				hql.append(" and a.startTime >= '").append(format).append("'");
+			}
+			if(query.getOutPlan().getEndTime()!=null){
+				String format = simpleDateFormat.format(query.getOutPlan().getEndTime());
+				hql.append(" and a.endTime <= '").append(format).append("'");
+			}
+			if(query.getOutPlan().getExamine()!=null){
+				hql.append(" and a.examine = '").append(query.getOutPlan().getExamine()).append("'");
+			}
 		}
-		if(query.getFarmer().getUserName()!=null&&!query.getFarmer().getUserName().equals("")){
-			hql.append(" and b.userName like '%").append(query.getFarmer().getUserName()).append("%'");
+		
+		if(query.getFarmer()!=null){
+			if(query.getFarmer().getUserName()!=null&&!query.getFarmer().getUserName().equals("")){
+				hql.append(" and b.userName like '%").append(query.getFarmer().getUserName()).append("%'");
+			}	
 		}
-		if(query.getBusinessGood().getGoodsName()!=null&&!query.getBusinessGood().getGoodsName().equals("")){
-			hql.append(" and c.goodsName like '%").append(query.getBusinessGood().getGoodsName()).append("%'");
+		
+		if(query.getBusinessGoods()!=null){
+			if(query.getBusinessGoods().getGoodsName()!=null&&!query.getBusinessGoods().getGoodsName().equals("")){
+				hql.append(" and c.goodsName like '%").append(query.getBusinessGoods().getGoodsName()).append("%'");
+			}
 		}
-		if(query.getOutPlan().getStartTime()!=null){
-			String format = simpleDateFormat.format(query.getOutPlan().getStartTime());
-			hql.append(" and a.startTime >= '").append(format).append("'");
-		}
-		if(query.getOutPlan().getEndTime()!=null){
-			String format = simpleDateFormat.format(query.getOutPlan().getEndTime());
-			hql.append(" and a.endTime <= '").append(format).append("'");
-		}
-		if(query.getOutPlan().getExamine()!=null){
-			hql.append(" and a.examine = '").append(query.getOutPlan().getExamine()).append("'");
-		}
+		
+		
 		hql.append(" order by a.id desc");
 		return hql.toString();
 	}
@@ -260,7 +271,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		if(outPlanVO.getOutPlan().getExamine()==1)
 		{
 			message="您提交的生产计划\n"
-					+ "商品类型："+outPlanVO.getBusinessGood().getGoodsName()+"\n"
+					+ "商品类型："+outPlanVO.getBusinessGoods().getGoodsName()+"\n"
 					+ "预计产出时间："+new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getStartTime())+"至"
 							+ new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getEndTime())+"\n"
 					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
@@ -269,7 +280,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		if(outPlanVO.getOutPlan().getExamine()==2)
 		{
 			message="您提交的生产计划\n"
-					+ "商品类型："+outPlanVO.getBusinessGood().getGoodsName()+"\n"
+					+ "商品类型："+outPlanVO.getBusinessGoods().getGoodsName()+"\n"
 					+ "预计产出时间："+new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getStartTime())+"至"
 							+ new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getEndTime())+"\n"
 					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
@@ -307,42 +318,21 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	 */
 	public List<OutPlanVO> listVO(OutPlanVO vo, int curPage,
 			int pageSize, String orderField, String direction) {
-		String hql = "from OutPlan plan,BusinessGoods goods,Farmer farmer where 1=1";
 		
-		hql += " and plan.goodsId = goods.id";
-		hql += " and plan.userId = farmer.userId";
+		String hql = getHql(vo);
 		
-		if (vo != null && vo.getBusinessGood() != null) {
-			if (!StringHelper.isNull(vo.getBusinessGood().getGoodsName())) {
-				hql = hql + " and goods.goodsName like '%"
-						+ vo.getBusinessGood().getGoodsName() + "%'";
-			}
-		}
-		
-		if (vo != null && vo.getFarmer() != null) {
-			if (!StringHelper.isNull(vo.getFarmer().getUserName())) {
-				hql = hql + " and framer.userName like '%"
-						+ vo.getFarmer().getUserName() + "%'";
-			}
-		}
-		
-		
-		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
-			hql = hql + " order by " + orderField + " " + direction;
-		} else {
-			hql += " order by id desc";
-		}
 		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,
 				pageSize);
 		List<OutPlanVO> resList = new LinkedList<OutPlanVO>();
 		for (int i = 0; i < l.size(); i++) {
 			Object[] obj = (Object[]) l.get(i);
 			OutPlan outPlan = (OutPlan) obj[0];
-			BusinessGoods goods = (BusinessGoods) obj[1];
-			Farmer farmer = (Farmer) obj[2];
+			Farmer farmer = (Farmer) obj[1];
+			BusinessGoods goods = (BusinessGoods) obj[2];
+			
 			OutPlanVO outPlanVo = new OutPlanVO();
 			outPlanVo.setOutPlan(outPlan);
-			outPlanVo.setBusinessGood(goods);
+			outPlanVo.setBusinessGoods(goods);
 			outPlanVo.setFarmer(farmer);
 			resList.add(outPlanVo);
 		}

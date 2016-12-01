@@ -257,18 +257,18 @@
 							<th type="text" width="4%" name="items[#index#].serno"
 								id="items[#index#].serno" defaultVal="#index#" size="4"
 								readonly="readonly" fieldClass="required digits">序号</th>
-							<th type="text" width="15%" name="items[#index#].productName"
-								id="items[#index#].productName" size="20" readonly="readonly"
+							<th type="text" width="15%" name="items[#index#].goodsName"
+								id="items[#index#].goodsName" size="20" readonly="readonly"
 								rows="3" cols="100">商品名称</th>
 							<th nowrap type="lookup" width="15%"
-								name="items[#index#].processFlowNo"
-								id="items[#index#].processFlowNo" size="20" readonly="readonly"
+								name="items[#index#].userName"
+								id="items[#index#].userName" size="20" readonly="readonly"
 								rows="3" cols="100" lookupPk="mesProductId"
 								lookupGroup="items[#index#]"
 								lookupUrl="${outplanLookup}" postField="keywords"
 								fieldClass="required">农户</th>
 							<th type="text" width="15%" name="items[#index#].amountValid"
-								id="items[#index#].amountValid" size="20" readonly="readonly"
+								id="items[#index#].validAmount" size="20" readonly="readonly"
 								rows="3" cols="100">可操作数量</th>
 							<th type="text" width="15%" name="items[#index#].count"
 								id="items[#index#].count" size="20" class="requird" rows="3"
