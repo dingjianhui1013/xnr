@@ -191,9 +191,7 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">
-			<!-- 
-			<li><a class="add" href="${mergeOrder}?userRealStartTime=${userRealStartTime}&userRealEndTime=${userRealEndTime}" target="ajaxTodo" title="确认合并商户订单？"><span>合并订单</span></a></li>
-			 -->
+			
 			 <li><a class="add" href="${syncPrice}?createStartTime=${createStartTime}&createEndTime=${createEndTime}" target="ajaxTodo" title="确认同步订单价格？"><span>同步订单价格</span></a></li>
 			<li><a class="edit" href="${modify}?orderRecordId={sid_orderRecordId}" target="navTab" warn="请选择一个订单"><span>修改</span></a></li>
 			<li class="line">line</li>			
@@ -239,9 +237,7 @@
 						<td>${loop.businessOrderRecord.purchasePrice}</td>
 						<td>					
 							<a title="编辑" target="navTab" href="${modify}?orderRecordId=${loop.businessOrderRecord.id}" class="btnEdit">编辑</a>
-							<!-- 
-							<a title="删除" target="ajaxTodo" href="${del}?orderRecordId=${loop.businessOrderRecord.id}&del=1" class="btnDel">删除</a>
-							 -->
+							
 						</td>	
 					</tr>				
 				</c:forEach>

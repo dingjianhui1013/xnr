@@ -9,11 +9,13 @@
 	        + path + "/";
 		
 	String action = basePath+"page/business/admin/orderrecord/modify.action";
+	String outplanLookup = basePath+"/page/wx/outplan/lookup.action";
 	String goodsLookup = basePath+"page/business/admin/commodity/goods/lookup.action";
 	String provinceLookup = basePath + "page/wx/admin/region/province/lookup.action";
 	String cityLookup = basePath + "page/wx/admin/region/city/lookup.action";
 	String areaLookup = basePath + "page/wx/admin/region/area/lookup.action";
 	request.setAttribute("action",action);
+	request.setAttribute("outplanLookup",outplanLookup);
 	request.setAttribute("goodsLookup",goodsLookup);
 	request.setAttribute("provinceLookup",provinceLookup);
 	request.setAttribute("cityLookup",cityLookup);
@@ -219,14 +221,7 @@
 												</c:otherwise>
 											</c:choose>
 											</td>	
-											<!--
-											<td>
-												<input id="" class="required number" type="text" maxlength="" onafterpaste="" onkeyup="" onkeydown=""
-													onkeypress="" onchange="" size="20"
-													class="required number"
-													value="${loop.businessGoodsVO.businessGoods.isDiscountGoods}" name="goodsList[${loop.businessGoodsVO.businessGoods.id}].businessGoodsVO.businessGoods.isDiscountGoods">
-											</td>
-											-->
+											
 											<td>
 												<a class="btnDel " href="javascript:void(0)">删除</a>
 											</td>
@@ -241,6 +236,60 @@
 					<div class="tabsFooterContent"></div>
 				</div>
 			</div>
+			
+			<div class="divider"></div>
+			<h3 class="contentTitle">分配列表</h3>
+
+			<div class="tabs">
+				<div class="tabsHeader">
+					<div class="tabsHeaderContent">
+						<ul>
+							<li class="selected"><a href="javascript:void(0)"><span>分配管理</span></a></li>
+
+						</ul>
+					</div>
+				</div>
+
+				<table class="list nowrap itemDetail" addButton="添加分配条目" width="100%"
+					needCallback="1">
+					<thead>
+						<tr>
+							<th type="text" width="4%" name="items[#index#].serno"
+								id="items[#index#].serno" defaultVal="#index#" size="4"
+								readonly="readonly" fieldClass="required digits">序号</th>
+							<th type="text" width="15%" name="items[#index#].productName"
+								id="items[#index#].productName" size="20" readonly="readonly"
+								rows="3" cols="100">商品名称</th>
+							<th nowrap type="lookup" width="15%"
+								name="items[#index#].processFlowNo"
+								id="items[#index#].processFlowNo" size="20" readonly="readonly"
+								rows="3" cols="100" lookupPk="mesProductId"
+								lookupGroup="items[#index#]"
+								lookupUrl="${outplanLookup}" postField="keywords"
+								fieldClass="required">农户</th>
+							<th type="text" width="15%" name="items[#index#].amountValid"
+								id="items[#index#].amountValid" size="20" readonly="readonly"
+								rows="3" cols="100">可操作数量</th>
+							<th type="text" width="15%" name="items[#index#].count"
+								id="items[#index#].count" size="20" class="requird" rows="3"
+								cols="100" onchang="judgeAmount(this)">分配数量</th>
+							<th type="del" width="7%">操作</th>
+						</tr>
+					</thead>
+					<tbody id="tecBody">
+
+
+					</tbody>
+				</table>
+			</div>
+			<br> <br> <br>
+
+			<div style="height: 15px;"></div>
+
+		</div>
+
+			
+			
 			<div class="formBar">
 				<ul>				
 					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">保存</button></div></div></li>

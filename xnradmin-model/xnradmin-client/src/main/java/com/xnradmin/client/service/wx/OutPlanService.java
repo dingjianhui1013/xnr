@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cntinker.util.StringHelper;
 import com.cntinker.util.wx.connect.Text;
 import com.cntinker.util.wx.connect.TextMessage;
 import com.xnradmin.core.dao.CommonDAO;
@@ -21,6 +22,7 @@ import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.OutPlanVO;
 
 @Service("OutPlanService")
@@ -265,4 +267,49 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	    WeixinUtil.httpRequest(WXurl.WX_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_token), "POST", outputStr);
 	    WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
 	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	 * @param firstletter
+	 * @param curPage
+	 * @param pageSize
+	 * @param orderField
+	 * @param direction
+	 * @return List<GetOrgListVO>
+	 */
+	public List<BusinessGoodsVO> listVO(OutPlanVO vo, int curPage,
+			int pageSize, String orderField, String direction) {
+		String hql = "from BusinessGoods where 1=1";
+		if (vo != null && vo.getBusinessGood() != null) {
+			if (!StringHelper.isNull(vo.getBusinessGood().getGoodsName())) {
+				hql = hql + " and goodsName like '%"
+						+ vo.getBusinessGood().getGoodsName() + "%'";
+			}
+						
+		}
+		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
+			hql = hql + " order by " + orderField + " " + direction;
+		} else {
+			hql += " order by id desc";
+		}
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,
+				pageSize);
+		List<BusinessGoodsVO> resList = new LinkedList<BusinessGoodsVO>();
+		for (int i = 0; i < l.size(); i++) {
+			BusinessGoods po = (BusinessGoods) l.get(i);
+			BusinessGoodsVO businessGoodsVO = new BusinessGoodsVO();
+			businessGoodsVO.setBusinessGoods(po);
+			resList.add(businessGoodsVO);
+		}
+		return resList;
+	}
+	
+	
+	
+	
 }
