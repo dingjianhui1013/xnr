@@ -12,6 +12,21 @@
 </head>
 <script type="text/javascript">
 
+function onSubmit(){
+	if($("#cartids").val()== ""){
+		layer.msg("请至少选择一种商品!");
+		return false;
+	}
+	
+	$("#inputForm").submit();
+	return true;
+			
+
+}
+
+
+
+
 function add(a, b) {
 	var  c=a+b;
 	var d=c.toFixed(1);	
@@ -68,7 +83,7 @@ function minusNum(id)
 				var xiaojiNew = sub(xiaoji,price);
 				$("#xiaoji"+id).html(xiaojiNew);
 				$("#count"+id).val(index);
-				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(2));
+				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(1));
 				$("#simpleCart_number").html((Number($("#simpleCart_number").html())-Number(1)));
 				if(userId!=null&&userId!=""){
 					modefyToCart(id);
@@ -413,11 +428,11 @@ function modefyToCart(id){
 			 		<!-- <li class="checkCol"><input type="checkbox" />全选</li> -->
 			 		<li class="totalCol">
 			 		
-			 		    <form action="/front/orderrecord/businessConfirm.action">
+			 		    <form method="post" action="/front/orderrecord/businessConfirm.action">
 			 		    	<input type="hidden" id="cartids" name="cartids"/>
 			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/>
 			 		    
-			 		    <input type="submit" class="pull-right cartSubmitBtn" value="去结算">
+			 		    <input type="submit" onclick="return onSubmit()" class="pull-right cartSubmitBtn" value="去结算">
 			 		    </form>
 			 		
 			 			

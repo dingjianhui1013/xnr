@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cntinker.util.StringHelper;
 import com.cntinker.util.wx.connect.Text;
 import com.cntinker.util.wx.connect.TextMessage;
 import com.xnradmin.core.dao.CommonDAO;
@@ -21,6 +22,7 @@ import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.OutPlanVO;
 
 @Service("OutPlanService")
@@ -44,6 +46,11 @@ public class OutPlanService {
 		try{
 		outplan.setDelFlage(0);
 		outplan.setCreateDate(new Date());
+		Date endTime = outplan.getEndTime();
+		endTime.setHours(23);
+		endTime.setMinutes(59);
+		endTime.setSeconds(59);
+		outplan.setEndTime(endTime);
 		commonDao.save(outplan);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -90,7 +97,7 @@ public class OutPlanService {
 			OutPlanVO outPlanVO = new OutPlanVO();
 			outPlanVO.setOutPlan(outPlan);
 			outPlanVO.setFarmer(farmer);
-			outPlanVO.setBusinessGood(businessGood);
+			outPlanVO.setBusinessGoods(businessGood);
 			outPlanVO.setBusinessWeight(businessWeight);
 //			outPlanVO.setBusinessCategory(businessCategory);
 			resList.add(outPlanVO);
@@ -112,7 +119,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 			OutPlanVO outPlanVO = new OutPlanVO();
 			outPlanVO.setOutPlan(outPlan);
 			outPlanVO.setFarmer(farmer);
-			outPlanVO.setBusinessGood(businessGood);
+			outPlanVO.setBusinessGoods(businessGood);
 			outPlanVO.setBusinessWeight(businessWeight);
 			resList.add(outPlanVO);
 		}
@@ -132,7 +139,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		OutPlanVO outPlanVO = new OutPlanVO();
 		outPlanVO.setOutPlan(outPlan);
 		outPlanVO.setFarmer(farmer);
-		outPlanVO.setBusinessGood(businessGood);
+		outPlanVO.setBusinessGoods(businessGood);
 		outPlanVO.setBusinessWeight(businessWeight);
 		return outPlanVO;
 	}
@@ -145,26 +152,37 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		if (query == null){
 			return hql.append(" order by a.id desc").toString();
 		}
-		if(query.getOutPlan().getId()!=null){
-			hql.append(" and a.id like '%").append(query.getOutPlan().getId()).append("%'");
+		
+		if(query.getOutPlan()!=null){
+			if(query.getOutPlan().getId()!=null){
+				hql.append(" and a.id like '%").append(query.getOutPlan().getId()).append("%'");
+			}	
+			if(query.getOutPlan().getStartTime()!=null){
+				String format = simpleDateFormat.format(query.getOutPlan().getStartTime());
+				hql.append(" and a.startTime >= '").append(format).append("'");
+			}
+			if(query.getOutPlan().getEndTime()!=null){
+				String format = simpleDateFormat.format(query.getOutPlan().getEndTime());
+				hql.append(" and a.endTime <= '").append(format).append("'");
+			}
+			if(query.getOutPlan().getExamine()!=null){
+				hql.append(" and a.examine = '").append(query.getOutPlan().getExamine()).append("'");
+			}
 		}
-		if(query.getFarmer().getUserName()!=null&&!query.getFarmer().getUserName().equals("")){
-			hql.append(" and b.userName like '%").append(query.getFarmer().getUserName()).append("%'");
+		
+		if(query.getFarmer()!=null){
+			if(query.getFarmer().getUserName()!=null&&!query.getFarmer().getUserName().equals("")){
+				hql.append(" and b.userName like '%").append(query.getFarmer().getUserName()).append("%'");
+			}	
 		}
-		if(query.getBusinessGood().getGoodsName()!=null&&!query.getBusinessGood().getGoodsName().equals("")){
-			hql.append(" and c.goodsName like '%").append(query.getBusinessGood().getGoodsName()).append("%'");
+		
+		if(query.getBusinessGoods()!=null){
+			if(query.getBusinessGoods().getGoodsName()!=null&&!query.getBusinessGoods().getGoodsName().equals("")){
+				hql.append(" and c.goodsName like '%").append(query.getBusinessGoods().getGoodsName()).append("%'");
+			}
 		}
-		if(query.getOutPlan().getStartTime()!=null){
-			String format = simpleDateFormat.format(query.getOutPlan().getStartTime());
-			hql.append(" and a.startTime >= '").append(format).append("'");
-		}
-		if(query.getOutPlan().getEndTime()!=null){
-			String format = simpleDateFormat.format(query.getOutPlan().getEndTime());
-			hql.append(" and a.endTime <= '").append(format).append("'");
-		}
-		if(query.getOutPlan().getExamine()!=null){
-			hql.append(" and a.examine = '").append(query.getOutPlan().getExamine()).append("'");
-		}
+		
+		
 		hql.append(" order by a.id desc");
 		return hql.toString();
 	}
@@ -209,6 +227,24 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		return isok;
 	}
+	public boolean validationDate(String userId,String startTime,String endTime){
+		String hql = "from OutPlan where userId='"+userId+ "' and startTime<='"+startTime+"' and endTime>='"+startTime+"'";
+		try {
+			List l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+			if(l.size()>0){
+				return false;
+			}
+			hql = "from OutPlan where userId='"+userId+ "' and startTime<='"+endTime+"' and endTime>='"+endTime+"'";
+			l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+			if(l.size()>0){
+				return false;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return true;
+	}
+	
 	public boolean examineNo(String id,String remarks,String personId){
 		boolean isok = false;
 		if(id!=null&&!"".equals(id)){
@@ -235,7 +271,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		if(outPlanVO.getOutPlan().getExamine()==1)
 		{
 			message="您提交的生产计划\n"
-					+ "商品类型："+outPlanVO.getBusinessGood().getGoodsName()+"\n"
+					+ "商品类型："+outPlanVO.getBusinessGoods().getGoodsName()+"\n"
 					+ "预计产出时间："+new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getStartTime())+"至"
 							+ new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getEndTime())+"\n"
 					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
@@ -244,7 +280,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		if(outPlanVO.getOutPlan().getExamine()==2)
 		{
 			message="您提交的生产计划\n"
-					+ "商品类型："+outPlanVO.getBusinessGood().getGoodsName()+"\n"
+					+ "商品类型："+outPlanVO.getBusinessGoods().getGoodsName()+"\n"
 					+ "预计产出时间："+new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getStartTime())+"至"
 							+ new SimpleDateFormat("yyyy-MM-dd").format(outPlanVO.getOutPlan().getEndTime())+"\n"
 					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
@@ -265,4 +301,45 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	    WeixinUtil.httpRequest(WXurl.WX_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_token), "POST", outputStr);
 	    WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
 	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	 * @param firstletter
+	 * @param curPage
+	 * @param pageSize
+	 * @param orderField
+	 * @param direction
+	 * @return List<GetOrgListVO>
+	 */
+	public List<OutPlanVO> listVO(OutPlanVO vo, int curPage,
+			int pageSize, String orderField, String direction) {
+		
+		String hql = getHql(vo);
+		
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,
+				pageSize);
+		List<OutPlanVO> resList = new LinkedList<OutPlanVO>();
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = (Object[]) l.get(i);
+			OutPlan outPlan = (OutPlan) obj[0];
+			Farmer farmer = (Farmer) obj[1];
+			BusinessGoods goods = (BusinessGoods) obj[2];
+			
+			OutPlanVO outPlanVo = new OutPlanVO();
+			outPlanVo.setOutPlan(outPlan);
+			outPlanVo.setBusinessGoods(goods);
+			outPlanVo.setFarmer(farmer);
+			resList.add(outPlanVo);
+		}
+		return resList;
+	}
+	
+	
+	
+	
 }

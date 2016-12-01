@@ -9,7 +9,7 @@ import com.xnradmin.po.wx.connect.Farmer;
 public class OutPlanVO {
 	private OutPlan outPlan;
 	private Farmer farmer;
-	private BusinessGoods businessGood;
+	private BusinessGoods businessGoods;
 	private BusinessWeight businessWeight;
 //	private BusinessCategory businessCategory;
 	
@@ -25,11 +25,11 @@ public class OutPlanVO {
 	public void setFarmer(Farmer farmer) {
 		this.farmer = farmer;
 	}
-	public BusinessGoods getBusinessGood() {
-		return businessGood;
+	public BusinessGoods getBusinessGoods() {
+		return businessGoods;
 	}
-	public void setBusinessGood(BusinessGoods businessGood) {
-		this.businessGood = businessGood;
+	public void setBusinessGoods(BusinessGoods businessGood) {
+		this.businessGoods = businessGood;
 	}
 	public BusinessWeight getBusinessWeight() {
 		return businessWeight;

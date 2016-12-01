@@ -30,7 +30,7 @@ function minusNum()
 function addToCart(id,money){
 	var userId = $("#userId").val()
 		var goodsNumber = $("#goodsNumber").val()
-		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(2));
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(1));
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
 	if(userId!=null&&userId!=""){
 		$.ajax({

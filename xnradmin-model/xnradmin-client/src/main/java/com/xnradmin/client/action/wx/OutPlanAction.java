@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.wx.FarmerService;
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
@@ -33,9 +34,11 @@ import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
@@ -59,6 +62,33 @@ public class OutPlanAction extends ParentAction{
 	private String weightId;
 	private BusinessWeight businessWeight;
 	private String status;
+	private boolean outplanStatus;//验证生产计划时间是否重复
+	private String startTime;//
+	private String endTime;
+	private String userId;
+	
+	public String getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public boolean isOutplanStatus() {
+		return outplanStatus;
+	}
+	public void setOutplanStatus(boolean outplanStatus) {
+		this.outplanStatus = outplanStatus;
+	}
+	
+	private String goodsName;
+	private String farmerName;
+	
 	public String getRemarks() {
 		return remarks;
 	}
@@ -113,7 +143,7 @@ public class OutPlanAction extends ParentAction{
 	public void setOutplan(OutPlan outplan) {
 		this.outplan = outplan;
 	}
-	private String userId;
+	
 	
 	public String getUserId() {
 		return userId;
@@ -159,6 +189,22 @@ public class OutPlanAction extends ParentAction{
 		this.businessWeight = businessWeight;
 	}
 	
+	
+	
+	
+	
+	public String getGoodsName() {
+		return goodsName;
+	}
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+	public String getFarmerName() {
+		return farmerName;
+	}
+	public void setFarmerName(String farmerName) {
+		this.farmerName = farmerName;
+	}
 	@Autowired
 	private OutPlanService outPlanService ;
 	@Autowired
@@ -320,6 +366,15 @@ public class OutPlanAction extends ParentAction{
 		 return  StrutsResMSG.SUCCESS;
 	}
 	/**
+	 * 生产计划时间验证
+	 * @return
+	 */
+	@Action(value = "validationDate",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
+	public String validationDate() {
+		this.outplanStatus = outPlanService.validationDate(this.userId,this.startTime,this.endTime);
+		 return  StrutsResMSG.SUCCESS;
+	}
+	/**
 	 * 带信息去拒绝页面
 	 * @return
 	 */
@@ -347,6 +402,49 @@ public class OutPlanAction extends ParentAction{
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+	
+	
+	/**
+	 * 跳转到信息页。。
+	 * 
+	 * @return
+	 */
+	@Action(value = "lookup", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/outPlan/lookup.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/outPlan/lookup.jsp") })
+	public String lookup() {
+		setLookupPageInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	
+	
+	
+	private void setLookupPageInfo() {
+		// 设置排序
+		
+		OutPlanVO vo = new OutPlanVO();
+		Farmer farmer = new Farmer();
+		BusinessGoods goods = new BusinessGoods();
+		if (!StringHelper.isNull(goodsName)) {
+			goods.setGoodsName(goodsName);
+		}
+		if (!StringHelper.isNull(farmerName)) {
+			farmer.setUserName(farmerName);
+		}
+		
+		vo.setFarmer(farmer);
+		vo.setBusinessGoods(goods);
+		
+
+//		this.voList = outPlanService.listVO(vo, getPageNum(), getNumPerPage(),
+//				orderField, orderDirection);
+//		this.totalCount = outPlanService.getCount(vo);
+
+	}
+	
+	
 	
 	
 }

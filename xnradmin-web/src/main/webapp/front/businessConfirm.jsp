@@ -17,6 +17,7 @@
 
 $(function(){
 	 radioBound();
+	
 });
 
 
@@ -26,7 +27,7 @@ function radioBound(){
 		   //$(this).val();
 		   
 		  $(this).parent().parent().css('background','#fff3e8');
-		  alert($(this).parent().parent().attr("id"));
+		
 		  $("#receiptAddressId").val($(this).parent().parent().attr("id").subString(5));
 		  
 		  
@@ -154,7 +155,7 @@ function changePaymentMethod(index){
 		$("#alipay").addClass("active");
 		$("#wechat").removeClass("active");
 		
-		$("#paymethod").val("0");
+		$("#paymethod").val("1");
 	}
 }
 
@@ -329,12 +330,12 @@ function changePaymentMethod(index){
 				 			
 			 			</div>
 			 			
-			 			<form action="/front/orderrecord/add.action">
+			 			<form id="inputForm" method="post" action="/front/orderrecord/add.action">
 			 			
-			 			<input type="hidden" id="paymethod" name="paymethod">
+			 			<input type="hidden" id="paymethod" name="paymethod" value="0">
 			 			<input type="hidden" id="receiptAddressId" name="receiptAddressId">
-						<input type="hidden" id="totalMoney" name="totalMoney">
-						<input type="hidden" value="${cartids}" name="certids">
+						<input type="hidden" id="totalMoney" name="totalMoney" value="${totalMoney}">
+						<input type="hidden" value="${cartids}" name="cartids">
 						
 									 			
 			 			<input type="submit"  class="cartSubmitBtn"  value="提交订单"  />
