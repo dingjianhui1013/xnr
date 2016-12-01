@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,10 @@ import org.springframework.stereotype.Controller;
 import com.cntinker.security.MD5Encoder;
 import com.cntinker.util.StringHelper;
 import com.cntinker.util.SystemHelper;
+
 import com.xnradmin.core.service.mall.clientUser.ClientUserInfoService;
 import com.xnradmin.core.service.mall.clientUser.ClientUserRegionInfoService;
+import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.constant.ViewConstant;
@@ -42,6 +45,7 @@ import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.commodity.BusinessWeightService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
+import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.region.AreaService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
@@ -51,6 +55,7 @@ import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.BusinessWeight;
+import com.xnradmin.po.business.FarmerOrderRecord;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.client.ClientUserRegionInfo;
 import com.xnradmin.po.common.status.Status;
@@ -60,8 +65,10 @@ import com.xnradmin.po.mall.region.Country;
 import com.xnradmin.po.mall.region.Province;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
+import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.vo.StaffVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.FarmerOrderVO;
 
 /**
  * @autohr: xiang_liu
@@ -76,6 +83,12 @@ public class BusinessOrderRecordAction extends ParentAction {
 	@Autowired
 	private BusinessOrderRecordService orderRecordService;
 
+	@Autowired
+	private OutPlanService planService;
+	
+	@Autowired
+	private FarmerOrderRecordService farmerOrderService;
+	
 	@Autowired
 	private BusinessOrderGoodsRelationService orderGoodsRelationService;
 
@@ -107,6 +120,10 @@ public class BusinessOrderRecordAction extends ParentAction {
 	private CommonStaff staff;
 
 	private CommonStaff leaderStaff;
+	
+	
+	private Map<String, FarmerOrderRecord> items;
+	
 
 	@Override
 	public boolean isPublic() {
@@ -1063,6 +1080,19 @@ public class BusinessOrderRecordAction extends ParentAction {
 				orderDirection);
 		// 加载该订单信息
 		orderRecord = orderRecordService.findByid(orderRecordId);
+		
+		
+		
+		FarmerOrderVO farmerOrderVO = new FarmerOrderVO();
+		
+		FarmerOrderRecord farmerOrder = new FarmerOrderRecord();
+		
+		farmerOrder.setOrderRecordId(Long.parseLong(orderRecordId));
+		
+		farmerOrderVO.setFarmerOrder(farmerOrder);
+		
+		farmerOrderList = farmerOrderService.listVO(farmerOrderVO,0,0,null,null);
+		
 		return StrutsResMSG.SUCCESS;
 	}
 
@@ -1371,6 +1401,36 @@ public class BusinessOrderRecordAction extends ParentAction {
 			}
 			log.debug("end:::");
 		}
+		
+		
+		
+		
+		Iterator<String> item = items.keySet().iterator();
+		item = items.keySet().iterator();
+		while (item.hasNext()) {
+			String key = item.next();
+			FarmerOrderRecord farmerOrder = items.get(key);
+			
+			OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+			
+			farmerOrder.setFarmerUserId(plan.getUserId());
+			farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
+			farmerOrder.setOrderRecordId(Long.parseLong(orderRecordId));
+			farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
+			farmerOrder.setStaffId(this.getCurrentStaff().getId());
+			
+			farmerOrderService.save(farmerOrder);
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
 				"businessOrderRecord", null);
 		return null;
@@ -1439,6 +1499,9 @@ public class BusinessOrderRecordAction extends ParentAction {
 	private List<ClientUserRegionInfo> clientUserRegionInfoList;
 	private Map<String, BusinessOrderVO> goodsList;
 	private List<BusinessOrderVO> dvList;
+	
+	private List<FarmerOrderVO> farmerOrderList;
+	
 	private List<LogisticsCompany> logisticsCompanyList;
 	private CommonStaff currentStaff;
 	private CommonStaff deliveryStaff;
@@ -2592,12 +2655,37 @@ public class BusinessOrderRecordAction extends ParentAction {
 		this.goodsList = goodsList;
 	}
 
+	
+	
+	
+	public Map<String, FarmerOrderRecord> getItems() {
+		return items;
+	}
+
+	public void setItems(Map<String, FarmerOrderRecord> items) {
+		this.items = items;
+	}
+
 	public List<BusinessOrderVO> getDvList() {
 		return dvList;
 	}
 
 	public void setDvList(List<BusinessOrderVO> dvList) {
 		this.dvList = dvList;
+	}
+
+	
+	
+	
+	
+	
+	
+	public List<FarmerOrderVO> getFarmerOrderList() {
+		return farmerOrderList;
+	}
+
+	public void setFarmerOrderList(List<FarmerOrderVO> farmerOrderList) {
+		this.farmerOrderList = farmerOrderList;
 	}
 
 	public List<LogisticsCompany> getLogisticsCompanyList() {

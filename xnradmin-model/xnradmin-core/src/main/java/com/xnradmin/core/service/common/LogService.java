@@ -125,9 +125,7 @@ public class LogService {
 
 	private static void test() throws FileNotFoundException, IOException {
 		String f = SpringBase.getCfg().getCfgPath();
-
-		System.out
-				.println(f.substring(0, f.lastIndexOf("/") - 4) + "log4j.xml");
+		log.debug(f.substring(0, f.lastIndexOf("/") - 4) + "log4j.xml");
 
 		log.debug(getLog4jContent());
 	}

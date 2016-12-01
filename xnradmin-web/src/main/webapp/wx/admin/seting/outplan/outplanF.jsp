@@ -56,9 +56,33 @@
 			}else if(goodsId==null||goodsId==""){
 				$("#Yz").html("请输入详细类型").show();
 			}else{
-				$("#Yz").html("").hide();
-				$("#form").submit();
+				validationDate();
 			}
+		}
+		
+		function validationDate(){
+			var userId = $("#userId").val();
+			var startTime = $("#dateStart").val();  
+			var endTime = $("#dateEnd").val();
+			
+			$.ajax({
+				type:'POST',
+				url:'<%=path %>/page/wx/outplan/validationDate.action',
+					data : {
+						userId : userId,
+						startTime : startTime,
+						endTime : endTime
+					},
+					dataType : 'JSON',
+					success : function(data) {
+						if(data.outplanStatus){
+							$("#Yz").html("").hide();
+							$("#form").submit();
+						}else{
+							$("#Yz").html("生产计划时间与已有生产计划重复").show();
+						}
+					}
+				});
 		}
 		function outputYz(){
 			var reg = new RegExp("^[0-9]*$"); 

@@ -3,12 +3,14 @@
  */
 package com.xnradmin.core.util;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * @autohr: bin_liu
  */
 public class StrTools{
-
+	private static Logger log = Logger.getLogger(StrTools.class);
     public static int getStrLength(String str){
         try{
             if(str == null || str.trim().length() == 0){
@@ -83,9 +85,9 @@ public class StrTools{
             java.math.BigDecimal bd1 = bd.setScale(scale,bd.ROUND_HALF_DOWN);
             return bd1.toString();
         }catch(Exception e){
-            System.out.print("e =============" + str + " " + scale);
+        	log.debug("e =============" + str + " " + scale);
             e.printStackTrace();
-            System.out.print("e =============" + e.getMessage());
+            log.debug("e =============" + e.getMessage());
             return "0";
         }
     }
@@ -158,9 +160,8 @@ public class StrTools{
             iLength -- ;
         }
         int iRan = iMax * 10 - 1;
-
-        System.out.print("" + iMax);
-        System.out.print("" + iRan);
+        log.debug("" + iMax);
+        log.debug("" + iRan);
 
         while(ran < iMax){
             ran = rd.nextInt(iRan);

@@ -97,8 +97,7 @@ public class ConfigHelper{
                 .getValueByName("client.properties","client.server"));
 
         String s = "file:/D:/source/hualu/smsplatform/smsplatform-web/target/smsplatform-web/WEB-INF/classes/com/cntinker/util/";
-        System.out
-                .println(s.substring(s.indexOf("/") + 1,s.indexOf("WEB-INF")));
+        log.debug(s.substring(s.indexOf("/") + 1,s.indexOf("WEB-INF")));
         log.debug(c.getCfgPath().substring(0,
                 c.getCfgPath().indexOf("WEB-INF")));
         log.debug(c.getCfgPath());

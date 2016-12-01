@@ -49,7 +49,7 @@ public class PersonalCenterAction {
 	private String imageUrl;
 	private String status;
 	private String imageid;
-	private String userId;
+	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
 	public String getImageid() {
 		return imageid;
 	}
@@ -67,12 +67,6 @@ public class PersonalCenterAction {
 	}
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
-	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 	/***
 	 * 企业号个人中心跳转
@@ -106,6 +100,7 @@ public class PersonalCenterAction {
 			date_type_images.add(date_type_image);
 		}
 		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
+		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	/***
@@ -140,6 +135,7 @@ public class PersonalCenterAction {
 			date_type_images.add(date_type_image);
 		}
 		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
+		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value = "test",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })

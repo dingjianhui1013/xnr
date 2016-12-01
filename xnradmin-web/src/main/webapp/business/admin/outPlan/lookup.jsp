@@ -69,8 +69,10 @@
 						<td>${loop.outPlan.startTime}</td>
 						<td>${loop.outPlan.endTime}</td>	
 						<td>
-							<a class="btnSelect" href="javascript:$.bringBack({id:'${loop.businessGoods.id}',
-							 goodsName:'${loop.businessGoods.goodsName}', userName:'${loop.farmer.userName}',
+							<a class="btnSelect" href="javascript:$.bringBack({id:'${loop.businessGoods.id}',farmerUserId:'${loop.farmer.userId}',
+							 
+							 goodsId:'${loop.businessGoods.id}',
+							 goodsName:'${loop.businessGoods.goodsName}', outPlanId:'${loop.outPlan.id}',userName:'${loop.farmer.userName}',
 							 validAmount:'${loop.outPlan.validAmount}'})" title="查找带回">选择</a>
 						</td>
 					</tr>				

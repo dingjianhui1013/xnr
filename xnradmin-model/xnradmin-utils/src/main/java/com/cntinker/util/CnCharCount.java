@@ -3,13 +3,17 @@
  */
 package com.cntinker.util;
 
+import org.apache.log4j.Logger;
+
+import com.xnradmin.core.util.StrTools;
+
 
 /**
  * @author bin_liu
  *
  */
 public class CnCharCount{
-
+	private static Logger log = Logger.getLogger(CnCharCount.class);
     /**
      * 测试
      * 
@@ -22,7 +26,7 @@ public class CnCharCount{
         char[] chars = cnStr.toCharArray();
 
         for(int i = 0;i < chars.length;i ++ ){
-            System.out.print(chars[i] + " : " + getStrokeCount(chars[i]));
+        	log.debug(chars[i] + " : " + getStrokeCount(chars[i]));
         }
 
     }
