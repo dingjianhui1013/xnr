@@ -51,6 +51,8 @@ public class OutPlanService {
 		endTime.setMinutes(59);
 		endTime.setSeconds(59);
 		outplan.setEndTime(endTime);
+		outplan.setOccupyAmount(0d);
+		outplan.setValidAmount(Double.valueOf(outplan.getOutput()));
 		commonDao.save(outplan);
 		}catch(Exception e){
 			e.printStackTrace();
