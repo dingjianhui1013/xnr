@@ -35,6 +35,7 @@ $(function(){
 	<form action="">
 		<input type="hidden" value="${userName}" id="userName"/>
 		<input type="hidden" value="${status}" id="status"/>
+		<input type="hidden" value="${userId}" id="userId">
 	</form>
 </body>
 </html>
