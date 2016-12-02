@@ -92,6 +92,9 @@ function useNewAddress(){
             	
             	radioBound();
             	
+            	
+            	layer.msg("保存成功！");
+            	
             }else{
                 
             }
@@ -239,7 +242,7 @@ function changePaymentMethod(index){
 								          <span>使用新地址</span>
 								        </label>
 										</div>
-										<div class="add-addItem">
+										<div id="" class="add-addItem">
 											<form id="newAddressForm"  class="form-horizontal" role="form">
 												  <div class="form-group">
 												    <label class="col-sm-2 control-label"><em>*</em>收货人：</label>
