@@ -1,3 +1,4 @@
+<%@page import="com.xnradmin.po.pay.Alipay"%>
 <%
 /* *
  *功能：即时到账交易接口接入页
@@ -31,16 +32,19 @@
 		////////////////////////////////////请求参数//////////////////////////////////////
 
         //商户订单号，商户网站订单系统中唯一订单号，必填
-        String out_trade_no = new String(request.getParameter("WIDout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+        
+        Alipay alipay = (Alipay)request.getAttribute("alipay");
+        String out_trade_no = new String(alipay.getOutTradeNo().getBytes("ISO-8859-1"),"UTF-8");
 
         //订单名称，必填
-        String subject = new String(request.getParameter("WIDsubject").getBytes("ISO-8859-1"),"UTF-8");
+//         String subject = new String(request.getParameter("WIDsubject").getBytes("ISO-8859-1"),"UTF-8");
+        String subject = new String(alipay.getSubject());
 
         //付款金额，必填
-        String total_fee = new String(request.getParameter("WIDtotal_fee").getBytes("ISO-8859-1"),"UTF-8");
+        String total_fee = new String(alipay.getTotalFee().getBytes("ISO-8859-1"),"UTF-8");
 
         //商品描述，可空
-        String body = new String(request.getParameter("WIDbody").getBytes("ISO-8859-1"),"UTF-8");
+//         String body = new String(request.getParameter("WIDbody").getBytes("ISO-8859-1"),"UTF-8");
 
 		//////////////////////////////////////////////////////////////////////////////////
 		
@@ -58,7 +62,7 @@
 		sParaTemp.put("out_trade_no", out_trade_no);
 		sParaTemp.put("subject", subject);
 		sParaTemp.put("total_fee", total_fee);
-		sParaTemp.put("body", body);
+// 		sParaTemp.put("body", body);
 		//其他业务参数根据在线开发文档，添加参数.文档地址:https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.O9yorI&treeId=62&articleId=103740&docType=1
         //如sParaTemp.put("参数名","参数值");
 		

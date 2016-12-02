@@ -318,7 +318,7 @@ public class CommonJDBCMasterDAO<T> extends BaseHibernateMasterDAO{
                     log.debug("-----------");
                     findPro(columnSet);
                     while(columnSet.next()){
-                        System.out.print("|"
+                    	log.debug("|"
                                 + columnSet.getString("COLUMN_NAME"));
                     }
 

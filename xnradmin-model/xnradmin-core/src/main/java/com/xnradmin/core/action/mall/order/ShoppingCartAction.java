@@ -88,7 +88,7 @@ public class ShoppingCartAction extends ParentAction {
 	private PrimaryConfiguration primaryConfiguration;
 	private Status status;
 	private Goods goods;
-	private String userId;
+	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
 	private Map<String,Integer> count_number;
 	public ShoppingCartService getShoppingCartService() {
 		return shoppingCartService;
@@ -316,13 +316,6 @@ public class ShoppingCartAction extends ParentAction {
 		this.goodsList = goodsList;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 
 	public Map<String, Integer> getCount_number() {
 		return count_number;

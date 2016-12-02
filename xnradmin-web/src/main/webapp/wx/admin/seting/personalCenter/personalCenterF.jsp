@@ -37,7 +37,7 @@
 	$(function(){
 		if("${status}"==null||"${status}"==""||"${status}"=="0")
 		{
-			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId=$('#userId').val()";
+			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action";
 		}else if ("${status}"=="3")
 			{
 				alert("审核信息已经提交，请等待！")
@@ -155,7 +155,6 @@
 					    	 <c:set var="i" value="1"/>
 					    	 <c:set var="ii" value="1"/>
 					    	 <c:set var="count" value="1" />
-					    	 <input type="hidden" value="${userId}" id="userId"/>
 					    	 	<c:forEach items="${date_type_images}" var="dtis">
 									<li id="datecount${count}"><span class="circleIcon"></span>
 									<c:forEach items="${dtis}" var="dti">
@@ -214,7 +213,7 @@
 												  <div class="form-group">
 												    <label for="" class="col-sm-2 control-label labelFont">类别</label>
 												    <div class="col-sm-10">
-												    	 <p class="form-control-static outputDate"><span>${outplanVo.businessGood.goodsName}</span></p>
+												    	 <p class="form-control-static outputDate"><span>${outplanVo.businessGoods.goodsName}</span></p>
 												    </div>
 												  </div>
 												  <div class="form-group">

@@ -53,7 +53,7 @@ public class WxUtil {
 		Iterator it = obj.keys();
 		while (it.hasNext()) {
 			String key = it.next().toString();
-			System.out.print("key:" + key);
+			log.debug("key:" + key);
 			log.debug(" - value:" + obj.get(key));
 		}
 		log.debug(obj);

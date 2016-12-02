@@ -67,7 +67,7 @@ import com.xnradmin.vo.business.OutPlanVO;
 public class WXConnectAction {
 
 	private static Logger log = Logger.getLogger(WXConnectAction.class);
-	private String userId;
+	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
 	private String userName;
 	private String serverId;
 	private String type;
@@ -83,13 +83,6 @@ public class WXConnectAction {
 		this.type = type;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 
 	public String getUserName() {
 		return userName;
@@ -266,6 +259,7 @@ public class WXConnectAction {
 			this.userName = userName;
 
 		}
+		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	/***
@@ -297,6 +291,7 @@ public class WXConnectAction {
 			this.userId = userId.getString("openid");
 			this.userName = userName;
 		}
+		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	

@@ -83,7 +83,7 @@ public class TestSec{
         signature = new String(Base64UrlSafe.encodeBase64(hexBytes.getBytes()),
                 "UTF-8");
         signature = appendEqualSign(signature);
-        System.out.print(signature);
+        log.debug(signature);
     }
 
     private static String byte2hex(final byte[] b){

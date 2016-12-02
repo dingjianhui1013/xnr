@@ -32,7 +32,8 @@
 		$(function(){
 			if("${status}"==null||"${status}"==""||"${status}"=="0")
 			{
-				window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId=$('#userId').val()";
+				var farmerId = $('#userId').val();
+				window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId="+farmerId;
 			}else if ("${status}"=="3")
 				{
 					alert("审核信息已经提交，请等待！")
@@ -55,9 +56,33 @@
 			}else if(goodsId==null||goodsId==""){
 				$("#Yz").html("请输入详细类型").show();
 			}else{
-				$("#Yz").html("").hide();
-				$("#form").submit();
+				validationDate();
 			}
+		}
+		
+		function validationDate(){
+			var userId = $("#userId").val();
+			var startTime = $("#dateStart").val();  
+			var endTime = $("#dateEnd").val();
+			
+			$.ajax({
+				type:'POST',
+				url:'<%=path %>/page/wx/outplan/validationDate.action',
+					data : {
+						userId : userId,
+						startTime : startTime,
+						endTime : endTime
+					},
+					dataType : 'JSON',
+					success : function(data) {
+						if(data.outplanStatus){
+							$("#Yz").html("").hide();
+							$("#form").submit();
+						}else{
+							$("#Yz").html("生产计划时间与已有生产计划重复").show();
+						}
+					}
+				});
 		}
 		function outputYz(){
 			var reg = new RegExp("^[0-9]*$"); 
@@ -144,7 +169,7 @@
 		</div>
 		<div class="contentBox">
 			<form id="form" role="form" action="saveF.action" method="post">
-				<input type="hidden" value="${userId }" name="outplan.userId">
+				<input type="hidden" value="${userId}" name="outplan.userId" id="userId">
 				<div class="form-group">
 <!-- 					<label for="" class="col-sm-2 control-label labelFont">选择分类</label> -->
 <!-- 					<div class="col-sm-10"> -->

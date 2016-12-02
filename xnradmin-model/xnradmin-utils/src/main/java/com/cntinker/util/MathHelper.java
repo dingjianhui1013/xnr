@@ -414,7 +414,7 @@ public class MathHelper{
 
         int[] a = bubble(nums,false);
         for(int i = 0;i < a.length;i ++ )
-            System.out.print(a[i] + ",");
+        	log.debug(a[i] + ",");
 
         log.debug("\n==============");
 

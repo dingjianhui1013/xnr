@@ -336,7 +336,7 @@ function changePaymentMethod(index){
 				 			
 			 			</div>
 			 			
-			 			<form id="inputForm" method="post" action="/front/orderrecord/add.action">
+			 			<form id="inputForm" method="post" action="${basePath }/front/orderrecord/add.action">
 			 			
 			 			<input type="hidden" id="paymethod" name="paymethod" value="0">
 			 			<input type="hidden" id="receiptAddressId" name="receiptAddressId">
