@@ -27,9 +27,15 @@ function radioBound(){
 		   //$(this).val();
 		   
 		  $(this).parent().parent().css('background','#fff3e8');
-		
-		  $("#receiptAddressId").val($(this).parent().parent().attr("id").subString(5));
 		  
+		  
+		  //给提交的地址id赋值
+		  
+		  
+		  if(!$(this).val()=='addnewoption'){
+			  var id = $(this).parent().parent().attr("id");
+			  $("#receiptAddressId").val(id.substring(5));
+		  }
 		  
 		  
 		  $(":radio").each(function(){
@@ -330,7 +336,7 @@ function changePaymentMethod(index){
 				 			
 			 			</div>
 			 			
-			 			<form id="inputForm" method="post" action="/front/orderrecord/add.action">
+			 			<form id="inputForm" method="post" action="${basePath }/front/orderrecord/add.action">
 			 			
 			 			<input type="hidden" id="paymethod" name="paymethod" value="0">
 			 			<input type="hidden" id="receiptAddressId" name="receiptAddressId">

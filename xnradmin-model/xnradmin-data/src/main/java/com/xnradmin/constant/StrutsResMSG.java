@@ -16,5 +16,9 @@ public final class StrutsResMSG{
     public static final String FAILED = "failed";
 
     public static final String ERROR = "error";
+    
+    public static final String WEIXIN = "WEIXIN";
+    
+    public static final String ALIPAY = "alipay";
 
 }

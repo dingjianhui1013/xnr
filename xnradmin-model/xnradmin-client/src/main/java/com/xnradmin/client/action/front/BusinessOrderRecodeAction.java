@@ -56,6 +56,7 @@ import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.mall.region.Area;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
+import com.xnradmin.po.pay.Alipay;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
 import com.xnradmin.vo.front.BusinessGoodsCartVo;
@@ -116,7 +117,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private  List<ReceiptAddress> addrs;
 	
 	
-	
+	private Alipay alipay;
 	private String receiptName;
 	private String detailedAddress;
 	private String telAddress;
@@ -355,6 +356,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	
 	
 
+	public Alipay getAlipay() {
+		return alipay;
+	}
+
+	public void setAlipay(Alipay alipay) {
+		this.alipay = alipay;
+	}
+
 	public Integer getPaymethod() {
 		return paymethod;
 	}
@@ -470,7 +479,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	@Action(value = "add",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
+	@Action(value = "add",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp"),@Result(name = StrutsResMSG.ALIPAY, location = "/pay/alipay/alipayapi.jsp") })
 	public String add() throws JSONException {
 		
 		 	user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
@@ -516,15 +525,18 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			orderRecord.setBillTime(null);
 			orderRecord.setBillTimeName(null);
 			
+			String StrutsMessage = "";
 			Status statusCode = new Status();
 			if(paymethod==0){
 				statusCode = statusService.findByStatusNameAndReadme("微信支付","商户订单支付方式");
 				orderRecord.setPaymentProvider(statusCode.getId());
 				orderRecord.setPaymentProviderName(statusCode.getStatusName());
+				StrutsMessage = StrutsResMSG.WEIXIN;
 			}else if(paymethod==1){
 				statusCode = statusService.findByStatusNameAndReadme("支付宝支付","商户订单支付方式");
 				orderRecord.setPaymentProvider(statusCode.getId());	
 				orderRecord.setPaymentProviderName(statusCode.getStatusName());
+				StrutsMessage = StrutsResMSG.ALIPAY;
 			}
 			
 			// 状态为处理中
@@ -563,10 +575,6 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			Long newOrderRecordId = orderRecordService.save(orderRecord);
 			orderRecordId = String.valueOf(newOrderRecordId);
 			
-			
-			
-			
-			
 			 if(cartids.equals("all")){
 	        	 
 				 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
@@ -588,13 +596,12 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 relation.setPurchasePrice(Float.parseFloat(totalMoney));
 	        		 
 	        		 orderGoodsRelationService.save(relation);
-	        		 
-	        		 
-	        		 
 	        		 shoppingCartService.del(cart.getId().toString());
-	        		 
 				 }
-				 
+				 if(paymethod==1)
+	     			{//跳转去支付。。。。。
+	     				this.alipay = payInfo(outTradeNo, newOrderRecordId,totalMoney);
+	     			}
 				 
 	         }else{
 	        	 
@@ -622,6 +629,10 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 orderGoodsRelationService.save(relation);
 	        		 shoppingCartService.del(cart.getId().toString());
 	        	 }
+	        	 if(paymethod==1)
+	     			{//跳转去支付。。。。。
+	        			 this.alipay = payInfo(outTradeNo, newOrderRecordId,totalMoney);
+	     			}
 	         }
 			
 			 
@@ -630,7 +641,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			 
 			
 
-		return StrutsResMSG.SUCCESS;
+		return StrutsMessage;
 	}
 
 	/**
@@ -912,6 +923,27 @@ public class BusinessOrderRecodeAction extends ParentAction {
 
 	public void setUserDesc(String userDesc) {
 		this.userDesc = userDesc;
+	}
+	public Alipay payInfo(String outTradeNo,Long id,String totalMoney)
+	{
+		List<BusinessGoods> goodsNames = orderGoodsRelationService.findGoodsName(id);
+		String subject = "";
+		int index=0;
+		if(goodsNames.size()>3){
+			index = 3;
+		}else
+		{
+			index = goodsNames.size();
+		}
+		for (int i = 0; i < index; i++) {
+			subject+="  "+goodsNames.get(i).getGoodsName();
+		}
+		Alipay ali = new Alipay();
+		ali.setSubject(subject);
+		ali.setOutTradeNo(outTradeNo);
+	//			ali.setTotalFee(totalMoney); 正式是这个数字，测试暂时用0.01；
+		ali.setTotalFee("0.01");
+		return ali;
 	}
 	
 	
