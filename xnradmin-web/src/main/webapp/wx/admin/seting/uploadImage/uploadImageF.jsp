@@ -24,7 +24,7 @@ $(function(){
 				alert("审核信息已经提交，请等待！")
 			}else
 			{
-				$.get("<%= path %>/page/wx/wxconnect/uploadFF.action",{userName:$("#userName").val(),_:new Date().getTime()},function (data){
+				$.get("<%= path %>/page/wx/wxconnect/uploadFF.action",{userId:$("#userId").val(),userName:$("#userName").val(),_:new Date().getTime()},function (data){
 					window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImageF.jsp";
 				  },"json");
 			}
@@ -35,6 +35,7 @@ $(function(){
 	<form action="">
 		<input type="hidden" value="${userName}" id="userName"/>
 		<input type="hidden" value="${status}" id="status"/>
+		<input type="hidden" value="${userId}" id="userId">
 	</form>
 </body>
 </html>

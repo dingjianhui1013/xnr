@@ -26,7 +26,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>支付宝即时到账交易接口</title>
+		<title>支付</title>
 	</head>
 	<%
 		////////////////////////////////////请求参数//////////////////////////////////////

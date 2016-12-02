@@ -104,7 +104,7 @@ public class TestDB {
 	//
 	// log.debug("rl: " + rl);
 	// for(Object o : rl){
-	// System.out.print("[ o cls: " + o.getClass().getName()
+	//
 	// + " | value: " + o.toString() + " ]");
 	// }
 	// log.debug(" | ");

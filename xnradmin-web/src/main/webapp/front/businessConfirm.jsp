@@ -27,9 +27,15 @@ function radioBound(){
 		   //$(this).val();
 		   
 		  $(this).parent().parent().css('background','#fff3e8');
-		
-		  $("#receiptAddressId").val($(this).parent().parent().attr("id").subString(5));
 		  
+		  
+		  //给提交的地址id赋值
+		  
+		  
+		  if(!$(this).val()=='addnewoption'){
+			  var id = $(this).parent().parent().attr("id");
+			  $("#receiptAddressId").val(id.substring(5));
+		  }
 		  
 		  
 		  $(":radio").each(function(){
@@ -85,6 +91,9 @@ function useNewAddress(){
             	
             	
             	radioBound();
+            	
+            	
+            	layer.msg("保存成功！");
             	
             }else{
                 
@@ -233,7 +242,7 @@ function changePaymentMethod(index){
 								          <span>使用新地址</span>
 								        </label>
 										</div>
-										<div class="add-addItem">
+										<div id="" class="add-addItem">
 											<form id="newAddressForm"  class="form-horizontal" role="form">
 												  <div class="form-group">
 												    <label class="col-sm-2 control-label"><em>*</em>收货人：</label>
