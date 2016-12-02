@@ -88,8 +88,17 @@ public class ShoppingCartAction extends ParentAction {
 	private PrimaryConfiguration primaryConfiguration;
 	private Status status;
 	private Goods goods;
-	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
+	private String userId;
 	private Map<String,Integer> count_number;
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	public ShoppingCartService getShoppingCartService() {
 		return shoppingCartService;
 	}

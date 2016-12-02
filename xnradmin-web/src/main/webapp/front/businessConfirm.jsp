@@ -27,9 +27,15 @@ function radioBound(){
 		   //$(this).val();
 		   
 		  $(this).parent().parent().css('background','#fff3e8');
-		
-		  $("#receiptAddressId").val($(this).parent().parent().attr("id").subString(5));
 		  
+		  
+		  //给提交的地址id赋值
+		  
+		  
+		  if(!$(this).val()=='addnewoption'){
+			  var id = $(this).parent().parent().attr("id");
+			  $("#receiptAddressId").val(id.substring(5));
+		  }
 		  
 		  
 		  $(":radio").each(function(){
