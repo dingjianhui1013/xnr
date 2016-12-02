@@ -11,14 +11,16 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jdom.JDOMException;
+import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
-import com.xnradmin.core.pay.wxpay.util.MD5Util;
+import com.xnradmin.core.pay.wxpay.util.MD5;
 import com.xnradmin.core.pay.wxpay.util.Sha1Util;
 import com.xnradmin.core.pay.wxpay.util.TenpayUtil;
-import com.xnradmin.core.pay.wxpay.util.XMLUtil;
+import com.xnradmin.core.pay.wxpay.util.XMLParser;
 
 
 /**
@@ -129,10 +131,10 @@ public class ResponseHandler {
 	public SortedMap getAllParameters() {
 		return this.parameters;
 	}
-	public void doParse(String xmlContent) throws JDOMException, IOException {
+	public void doParse(String xmlContent) throws JDOMException, IOException, ParserConfigurationException, SAXException {
 		this.parameters.clear();
 		//解析xml,得到map
-		Map m = XMLUtil.doXMLParse(xmlContent);
+		Map m = XMLParser.getMapFromXML(xmlContent);
 		
 		//设置参数
 		Iterator it = m.keySet().iterator();
@@ -165,7 +167,7 @@ public class ResponseHandler {
 		// 算出摘要
 		String enc = TenpayUtil.getCharacterEncoding(this.request,
 				this.response);
-		String sign = MD5Util.MD5Encode(sb.toString(), enc).toLowerCase();
+		String sign = MD5.MD5Encode(sb.toString()).toLowerCase();
 
 		String ValidSign = this.getParameter("sign").toLowerCase();
 

@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.xnradmin.core.pay.wxpay.util.MD5Util;
-import com.xnradmin.core.pay.wxpay.util.Sha1Util;
+import com.xnradmin.core.pay.wxpay.util.MD5;
 import com.xnradmin.core.pay.wxpay.util.TenpayUtil;
 
 /*
@@ -176,7 +175,7 @@ public class RequestHandler {
 		}
 		sb.append("key=" + this.getKey());
 		log.debug("md5 sb:" + sb);
-		String sign = MD5Util.MD5Encode(sb.toString(), this.charset)
+		String sign = MD5.MD5Encode(sb.toString())
 				.toUpperCase();
 
 		return sign;
@@ -201,7 +200,7 @@ public class RequestHandler {
 		// 算出摘要
 		String enc = TenpayUtil.getCharacterEncoding(this.request,
 				this.response);
-		String sign = MD5Util.MD5Encode(sb.toString(), enc).toLowerCase();
+		String sign = MD5.MD5Encode(sb.toString()).toLowerCase();
 
 		String tenpaySign = this.getParameter("sign").toLowerCase();
 

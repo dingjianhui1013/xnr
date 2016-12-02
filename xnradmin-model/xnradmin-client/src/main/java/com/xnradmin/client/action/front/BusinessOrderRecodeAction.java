@@ -31,6 +31,7 @@ import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.front.ReceiptAddressService;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.pay.wxpay.util.QRcodeUtils;
 import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
@@ -42,21 +43,22 @@ import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.core.service.mall.region.AreaService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
 import com.xnradmin.core.service.mall.seting.PrimaryConfigurationService;
+import com.xnradmin.core.service.pay.wx.ScanPayService;
 import com.xnradmin.core.util.Log4jUtil;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.client.ClientUserInfo;
-import com.xnradmin.po.client.ClientUserRegionInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
 import com.xnradmin.po.mall.order.ShoppingCart;
-import com.xnradmin.po.mall.region.Area;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
 import com.xnradmin.po.pay.Alipay;
+import com.xnradmin.po.pay.protocol.pay_protocol.ScanPayReqData;
+import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
 import com.xnradmin.vo.front.BusinessGoodsCartVo;
@@ -148,6 +150,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private String cartids;
 	private String totalMoney;
 	private Integer paymethod;
+	private String outTradeNo;
 	
 	
 	
@@ -356,7 +359,15 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	
 	
 
-	public Alipay getAlipay() {
+	public String getOutTradeNo() {
+        return outTradeNo;
+    }
+
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
+    }
+
+    public Alipay getAlipay() {
 		return alipay;
 	}
 
@@ -479,7 +490,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	@Action(value = "add",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp"),@Result(name = StrutsResMSG.ALIPAY, location = "/pay/alipay/alipayapi.jsp") })
+	@Action(value = "add",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp"),@Result(name = StrutsResMSG.ALIPAY, location = "/pay/alipay/alipayapi.jsp"),@Result(name = StrutsResMSG.WEIXIN, location = "/pay/wxpay/subSuccess.jsp") })
 	public String add() throws JSONException {
 		
 		 	user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
@@ -500,7 +511,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 				
 				orderRecord.setStaffId(user.getId().toString());
 			}
-			String outTradeNo = StringHelper.getSystime("yyyyMMddHHmmss")
+			outTradeNo = StringHelper.getSystime("yyyyMMddHHmmss")
 					+ StringHelper.getRandom(5);
 			orderRecord.setOrderNo(outTradeNo);
 			orderRecord.setClientUserName(address.getReceiptName());
@@ -598,10 +609,6 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 orderGoodsRelationService.save(relation);
 	        		 shoppingCartService.del(cart.getId().toString());
 				 }
-				 if(paymethod==1)
-	     			{//跳转去支付。。。。。
-	     				this.alipay = payInfo(outTradeNo, newOrderRecordId,totalMoney);
-	     			}
 				 
 	         }else{
 	        	 
@@ -629,19 +636,59 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 orderGoodsRelationService.save(relation);
 	        		 shoppingCartService.del(cart.getId().toString());
 	        	 }
-	        	 if(paymethod==1)
-	     			{//跳转去支付。。。。。
-	        			 this.alipay = payInfo(outTradeNo, newOrderRecordId,totalMoney);
-	     			}
+	        	 
 	         }
-			
-			 
-			 
-			 
-			 
-			
-
+			if(paymethod==1)
+      {//跳转去支付。。。。。
+      this.alipay = payInfo(outTradeNo, newOrderRecordId,totalMoney);
+          }else if(paymethod==0){
+              boolean wxFlag = this.wxPayInfo(outTradeNo,totalMoney);
+              if(wxFlag){
+                  StrutsMessage = StrutsResMSG.WEIXIN;
+                  return StrutsMessage;
+              }else{
+                  StrutsMessage = StrutsResMSG.FAILED;
+                  return StrutsMessage;
+              }
+          }
 		return StrutsMessage;
+	}
+	
+	private boolean wxPayInfo(String outTradeNo, String  totalMoney){
+	   String  body = "test";
+       String  detail = "test";;
+//       int   total_fee = (int)Float.parseFloat(totalMoney)*100;
+       int   total_fee = 1;
+    String out_trade_no = outTradeNo;
+    String spbill_create_ip = WXfInit.getIP();
+    String trade_type = WXfInit.getTradeType();
+    // 获取二维码
+    ScanPayReqData unifiedOrderReqData = new ScanPayReqData(body, detail, out_trade_no,
+            total_fee, spbill_create_ip, trade_type, "", "", "");
+    try {
+        ScanPayService service = new ScanPayService();
+        String res = service.getCallOrderInfo(unifiedOrderReqData);
+        log.info("res:"+res);
+        JSONObject json = new JSONObject(res);
+        if (json.has("return_code")) {
+            if (json.get("return_code").equals("SUCCESS")) {
+                if (json.has("return_msg")) {
+                    if (json.get("return_msg").equals("OK")) {
+                        if (json.has("code_url")) {
+                            String codeUrl = json.getString("code_url");
+                            boolean flag = QRcodeUtils.getQRCode(codeUrl, "getWxImage");
+                            return flag;
+                        }
+                    }
+                }
+            }
+        }
+    } catch (Exception e) {
+        log.error(e.getMessage());
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+    return false;
 	}
 
 	/**

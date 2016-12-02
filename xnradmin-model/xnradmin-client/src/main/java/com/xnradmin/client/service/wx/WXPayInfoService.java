@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.dao.CommonDAO;
-import com.xnradmin.core.pay.wxpay.util.MD5Util;
+import com.xnradmin.core.pay.wxpay.util.MD5;
 import com.xnradmin.core.pay.wxpay.util.Sha1Util;
 import com.xnradmin.core.pay.wxpay.xnrutil.SDKRuntimeException;
 import com.xnradmin.core.util.Log4jUtil;
@@ -100,7 +100,7 @@ public class WXPayInfoService {
 				+ "&notify_url=" + notifyUrl + "&out_trade_no=" + outTradeNo
 				+ "&partner=" + partner + "&spbill_create_ip=" + ip
 				+ "&total_fee=" + totalFee + "&key=" + partnerKey;
-		String md5SignValue = MD5Util.MD5Encode(signString, "UTF-8");
+		String md5SignValue = MD5.MD5Encode(signString);
 
 		banktype = URLEncoder.encode(banktype);
 		productName = URLEncoder.encode(productName);

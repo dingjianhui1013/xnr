@@ -5,4 +5,5 @@ encoding//xnradmin-web/src/main/resources/conf/server.properties=UTF-8
 encoding//xnradmin-web/src/main/webapp/mall/portal/wx/demo/config.jsp=UTF-8
 encoding//xnradmin-web/src/main/webapp/mall/portal/wx/demo/jsapi.jsp=UTF-8
 encoding//xnradmin-web/src/main/webapp/mall/portal/wx/demo/jstest.jsp=UTF-8
+encoding//xnradmin-web/src/main/webapp/pay/wxpay/subSuccess.jsp=UTF-8
 encoding/<project>=UTF-8

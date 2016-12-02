@@ -1,320 +1,505 @@
 package com.xnradmin.core.pay.wxpay.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+
+
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.Certificate;
+import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
-/**
- * Http客户端工具类<br/>
- * 这是内部调用类，请不要在外部调用。
- * 
- * @author miklchen
- * 
- */
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
+
 public class HttpClientUtil {
+    
+    private final static Logger LOG = LoggerFactory.getLogger(HttpClientUtil.class);
+    
+    private static PoolingHttpClientConnectionManager connMgr;
+    private static RequestConfig requestConfig;
+    private static final int MAX_TIMEOUT = 7000;
 
-	public static final String SunX509 = "SunX509";
-	public static final String JKS = "JKS";
-	public static final String PKCS12 = "PKCS12";
-	public static final String TLS = "TLS";
+    static {
+        // 设置连接池
+        connMgr = new PoolingHttpClientConnectionManager();
+        // 设置连接池大小
+        connMgr.setMaxTotal(100);
 
-	/**
-	 * get HttpURLConnection
-	 * 
-	 * @param strUrl
-	 *            url地址
-	 * @return HttpURLConnection
-	 * @throws IOException
-	 */
-	public static HttpURLConnection getHttpURLConnection(String strUrl)
-			throws IOException {
-		URL url = new URL(strUrl);
-		HttpURLConnection httpURLConnection = (HttpURLConnection) url
-				.openConnection();
-		return httpURLConnection;
-	}
+        connMgr.setDefaultMaxPerRoute(connMgr.getMaxTotal());
 
-	/**
-	 * get HttpsURLConnection
-	 * 
-	 * @param strUrl
-	 *            url地址
-	 * @return HttpsURLConnection
-	 * @throws IOException
-	 */
-	public static HttpsURLConnection getHttpsURLConnection(String strUrl)
-			throws IOException {
-		URL url = new URL(strUrl);
-		HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url
-				.openConnection();
-		return httpsURLConnection;
-	}
 
-	/**
-	 * 获取不带查询串的url
-	 * 
-	 * @param strUrl
-	 * @return String
-	 */
-	public static String getURL(String strUrl) {
 
-		if (null != strUrl) {
-			int indexOf = strUrl.indexOf("?");
-			if (-1 != indexOf) {
-				return strUrl.substring(0, indexOf);
-			}
+        RequestConfig.Builder configBuilder = RequestConfig.custom();
+        // 设置连接超时
+        configBuilder.setConnectTimeout(MAX_TIMEOUT);
+        // 设置读取超时
+        configBuilder.setSocketTimeout(MAX_TIMEOUT);
+        // 设置从连接池获取连接实例的超时
+        configBuilder.setConnectionRequestTimeout(MAX_TIMEOUT);
+        // 在提交请求之前 测试连接是否可用
+        // configBuilder.setStaleConnectionCheckEnabled(true);
+        requestConfig = configBuilder.build();
+    }
 
-			return strUrl;
-		}
+    /**
+     * 发送 GET 请求（HTTP），不带输入数据
+     * 
+     * @param url
+     * @return
+     */
+    public static String doGet(String url) {
+        return doGet(url, new HashMap<String, Object>());
+    }
 
-		return strUrl;
+    /**
+     * 发送 GET 请求（HTTP），K-V形式
+     * 
+     * @param url
+     * @param params
+     * @return
+     */
+    public static String doGet(String url, Map<String, Object> params) {
+        return doGet(url, params, "UTF-8");
+    }
 
-	}
+    /**
+     * 发送 GET 请求（HTTP），K-V形式
+     * 
+     * @param url
+     * @param params
+     * @return
+     */
+    public static String doGet(String url, Map<String, Object> params, String charset) {
+        String apiUrl = url;
+        StringBuffer param = new StringBuffer();
+        int i = 0;
+        for (String key : params.keySet()) {
+            if (i == 0)
+                param.append("?");
+            else
+                param.append("&");
+            param.append(key).append("=").append(params.get(key));
+            i++;
+        }
+        apiUrl += param;
+        String result = null;
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        try {
+            HttpGet httpGet = new HttpGet(apiUrl);
+            HttpResponse response = httpClient.execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+            LOG.info("status code : {}", statusCode);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                result = EntityUtils.toString(entity, charset);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
-	/**
-	 * 获取查询串
-	 * 
-	 * @param strUrl
-	 * @return String
-	 */
-	public static String getQueryString(String strUrl) {
+    /**
+     * 发送 POST 请求（HTTP），不带输入数据
+     * 
+     * @param apiUrl
+     * @return
+     */
+    public static String doPost(String apiUrl) {
+        return doPost(apiUrl, new HashMap<String, Object>());
+    }
 
-		if (null != strUrl) {
-			int indexOf = strUrl.indexOf("?");
-			if (-1 != indexOf) {
-				return strUrl.substring(indexOf + 1, strUrl.length());
-			}
+    public static String doPost(String apiUrl, Map<String, Object> params) {
+        return doPost(apiUrl, params, "UTF-8");
+    }
 
-			return "";
-		}
+    /**
+     * 发送 POST 请求（HTTP），K-V形式
+     * 
+     * @param apiUrl
+     *            API接口URL
+     * @param params
+     *            参数map
+     * @return
+     */
+    public static String doPost(String apiUrl, Map<String, Object> params, String charset) {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String httpStr = null;
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
 
-		return strUrl;
-	}
+        try {
+            httpPost.setConfig(requestConfig);
+            List<NameValuePair> pairList = new ArrayList<>(params.size());
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry.getValue().toString());
+                pairList.add(pair);
+            }
+            httpPost.setEntity(new UrlEncodedFormEntity(pairList, Charset.forName(charset)));
+            response = httpClient.execute(httpPost);
+            LOG.info("status code : {}", response.getStatusLine().getStatusCode());
+            HttpEntity entity = response.getEntity();
+            httpStr = EntityUtils.toString(entity, charset);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
 
-	/**
-	 * 查询字符串转换成Map<br/>
-	 * name1=key1&name2=key2&...
-	 * 
-	 * @param queryString
-	 * @return
-	 */
-	public static Map queryString2Map(String queryString) {
-		if (null == queryString || "".equals(queryString)) {
-			return null;
-		}
+    /**
+     * 发送 POST 请求（HTTP），JSON形式
+     * 
+     * @param apiUrl
+     * @param json
+     *            json对象
+     * @return
+     */
+    public static String doPost(String apiUrl, Object json, String charset) {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String httpStr = null;
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
 
-		Map m = new HashMap();
-		String[] strArray = queryString.split("&");
-		for (int index = 0; index < strArray.length; index++) {
-			String pair = strArray[index];
-			HttpClientUtil.putMapByPair(pair, m);
-		}
+        try {
+            httpPost.setConfig(requestConfig);
+            StringEntity stringEntity = new StringEntity(json.toString(), charset);// 解决中文乱码问题
+            stringEntity.setContentEncoding("UTF-8");
+            stringEntity.setContentType("application/json");
+            httpPost.setEntity(stringEntity);
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            LOG.info("status code : {}",response.getStatusLine().getStatusCode());
+            httpStr = EntityUtils.toString(entity, charset);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
+    
+    /**
+     * 发送 SSL GET 请求（HTTPS），K-V形式
+     * 
+     * @param apiUrl
+     *            API接口URL
+     * @param params
+     *            参数map
+     * @return
+     */
+    public static String doGetSSL(String apiUrl, Map<String, Object> params, String charset) {
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setDefaultRequestConfig(requestConfig).build();
+        StringBuffer param = new StringBuffer();
+        int i = 0;
+        for (String key : params.keySet()) {
+            if (i == 0)
+                param.append("?");
+            else
+                param.append("&");
+            param.append(key).append("=").append(params.get(key));
+            i++;
+        }
+        apiUrl += param;
+        HttpGet httpGet = new HttpGet(apiUrl);
+        CloseableHttpResponse response = null;
+        String httpStr = null;
 
-		return m;
+        try {
+            httpGet.setConfig(requestConfig);           
+            response = httpClient.execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+            LOG.info("status code : {}",statusCode);
+            if (statusCode != HttpStatus.SC_OK) {
+                return null;
+            }
+            HttpEntity entity = response.getEntity();
+            if (entity == null) {
+                return null;
+            }
+            httpStr = EntityUtils.toString(entity, charset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
 
-	}
 
-	/**
-	 * 把键值添加至Map<br/>
-	 * pair:name=value
-	 * 
-	 * @param pair
-	 *            name=value
-	 * @param m
-	 */
-	public static void putMapByPair(String pair, Map m) {
+    /**
+     * 发送 SSL POST 请求（HTTPS），K-V形式
+     * 
+     * @param apiUrl
+     *            API接口URL
+     * @param params
+     *            参数map
+     * @return
+     */
+    public static String doPostSSL(String apiUrl, Map<String, Object> params, String charset) {
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setDefaultRequestConfig(requestConfig).build();
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
+        String httpStr = null;
 
-		if (null == pair || "".equals(pair)) {
-			return;
-		}
+        try {
+            httpPost.setConfig(requestConfig);
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>(params.size());
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry.getValue().toString());
+                pairList.add(pair);
+            }
+            httpPost.setEntity(new UrlEncodedFormEntity(pairList, Charset.forName(charset)));
+            response = httpClient.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            LOG.info("status code : {}",statusCode);
+            if (statusCode != HttpStatus.SC_OK) {
+                return null;
+            }
+            HttpEntity entity = response.getEntity();
+            if (entity == null) {
+                return null;
+            }
+            httpStr = EntityUtils.toString(entity, charset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
 
-		int indexOf = pair.indexOf("=");
-		if (-1 != indexOf) {
-			String k = pair.substring(0, indexOf);
-			String v = pair.substring(indexOf + 1, pair.length());
-			if (null != k && !"".equals(k)) {
-				m.put(k, v);
-			}
-		} else {
-			m.put(pair, "");
-		}
-	}
+    /**
+     * 发送 SSL POST 请求（HTTPS），JSON形式
+     * 
+     * @param apiUrl
+     *            API接口URL
+     * @param json
+     *            JSON对象
+     * @return
+     */
+    public static String doPostSSL(String apiUrl, Object json, String charset) {
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setDefaultRequestConfig(requestConfig).build();
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
+        String httpStr = null;
 
-	/**
-	 * BufferedReader转换成String<br/>
-	 * 注意:流关闭需要自行处理
-	 * 
-	 * @param reader
-	 * @return String
-	 * @throws IOException
-	 */
-	public static String bufferedReader2String(BufferedReader reader)
-			throws IOException {
-		StringBuffer buf = new StringBuffer();
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			buf.append(line);
-			buf.append("\r\n");
-		}
+        try {
+            httpPost.setConfig(requestConfig);
+            StringEntity stringEntity = new StringEntity(json.toString(), charset);// 解决中文乱码问题
+            stringEntity.setContentEncoding("UTF-8");
+            stringEntity.setContentType("application/json");
+            httpPost.setEntity(stringEntity);
+            response = httpClient.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            LOG.info("status code : {}",statusCode);
+            if (statusCode != HttpStatus.SC_OK) {
+                return null;
+            }
+            HttpEntity entity = response.getEntity();
+            if (entity == null) {
+                return null;
+            }
+            httpStr = EntityUtils.toString(entity, charset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
+    
+    /**
+     * 发送 SSL POST 请求（HTTPS），JSON形式
+     * 
+     * @param apiUrl
+     *            API接口URL
+     * @param json
+     *            JSON对象
+     * @return
+     */
+    public static String doXmlPostSSL(String apiUrl, Object xmlObj, String charset) {
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setDefaultRequestConfig(requestConfig).build();
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
+        String httpStr = null;
 
-		return buf.toString();
-	}
+        try {
+            httpPost.setConfig(requestConfig);
+            //解决XStream对出现双下划线的bug
+            XStream xStreamForRequestPostData = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("-_", "_")));
 
-	/**
-	 * 处理输出<br/>
-	 * 注意:流关闭需要自行处理
-	 * 
-	 * @param out
-	 * @param data
-	 * @param len
-	 * @throws IOException
-	 */
-	public static void doOutput(OutputStream out, byte[] data, int len)
-			throws IOException {
-		int dataLen = data.length;
-		int off = 0;
-		while (off < dataLen) {
-			if (len >= dataLen) {
-				out.write(data, off, dataLen);
-			} else {
-				out.write(data, off, len);
-			}
+            //将要提交给API的数据对象转换成XML格式数据Post给API
+            String postDataXML = xStreamForRequestPostData.toXML(xmlObj);
+            LOG.debug("postData : {}",postDataXML);
+            StringEntity stringEntity = new StringEntity(postDataXML.toString(), charset);// 解决中文乱码问题
+            stringEntity.setContentEncoding("UTF-8");
+            stringEntity.setContentType("text/xml");
+            httpPost.setEntity(stringEntity);
+            response = httpClient.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            LOG.info("status code : {}",statusCode);
+            if (statusCode != HttpStatus.SC_OK) {
+                return null;
+            }
+            HttpEntity entity = response.getEntity();
+            if (entity == null) {
+                return null;
+            }
+            httpStr = EntityUtils.toString(entity, charset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
 
-			// 刷新缓冲区
-			out.flush();
 
-			off += len;
+    /**
+     * 创建SSL安全连接
+     *
+     * @return
+     */
+    private static SSLConnectionSocketFactory createSSLConnSocketFactory() {
+        SSLConnectionSocketFactory sslsf = null;
+        try {
 
-			dataLen -= len;
-		}
+            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
 
-	}
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    return true;
+                }
+            }).build();
+            // SSLContext sslContext = SSLContext.getInstance("TLS");
+            X509TrustManager tm = new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+                }
 
-	/**
-	 * 获取SSLContext
-	 * 
-	 * @param trustFile
-	 * @param trustPasswd
-	 * @param keyFile
-	 * @param keyPasswd
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyStoreException
-	 * @throws IOException
-	 * @throws CertificateException
-	 * @throws UnrecoverableKeyException
-	 * @throws KeyManagementException
-	 */
-	public static SSLContext getSSLContext(
-			FileInputStream trustFileInputStream, String trustPasswd,
-			FileInputStream keyFileInputStream, String keyPasswd)
-			throws NoSuchAlgorithmException, KeyStoreException,
-			CertificateException, IOException, UnrecoverableKeyException,
-			KeyManagementException {
+                @Override
+                public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+                }
 
-		// ca
-		TrustManagerFactory tmf = TrustManagerFactory
-				.getInstance(HttpClientUtil.SunX509);
-		KeyStore trustKeyStore = KeyStore.getInstance(HttpClientUtil.JKS);
-		trustKeyStore.load(trustFileInputStream,
-				HttpClientUtil.str2CharArray(trustPasswd));
-		tmf.init(trustKeyStore);
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    // final Object[] obj = null;
+                    // return (X509Certificate[]) obj;
+                    return null;
+                }
 
-		final char[] kp = HttpClientUtil.str2CharArray(keyPasswd);
-		KeyManagerFactory kmf = KeyManagerFactory
-				.getInstance(HttpClientUtil.SunX509);
-		KeyStore ks = KeyStore.getInstance(HttpClientUtil.PKCS12);
-		ks.load(keyFileInputStream, kp);
-		kmf.init(ks, kp);
 
-		SecureRandom rand = new SecureRandom();
-		SSLContext ctx = SSLContext.getInstance(HttpClientUtil.TLS);
-		ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), rand);
+            };
+            sslContext.init(null, new TrustManager[] { tm }, null);
+            sslsf = new SSLConnectionSocketFactory(sslContext);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+        return sslsf;
+    }
 
-		return ctx;
-	}
-
-	/**
-	 * 获取CA证书信息
-	 * 
-	 * @param cafile
-	 *            CA证书文件
-	 * @return Certificate
-	 * @throws CertificateException
-	 * @throws IOException
-	 */
-	public static Certificate getCertificate(File cafile)
-			throws CertificateException, IOException {
-		CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		FileInputStream in = new FileInputStream(cafile);
-		Certificate cert = cf.generateCertificate(in);
-		in.close();
-		return cert;
-	}
-
-	/**
-	 * 字符串转换成char数组
-	 * 
-	 * @param str
-	 * @return char[]
-	 */
-	public static char[] str2CharArray(String str) {
-		if (null == str)
-			return null;
-
-		return str.toCharArray();
-	}
-
-	/**
-	 * 存储ca证书成JKS格式
-	 * 
-	 * @param cert
-	 * @param alias
-	 * @param password
-	 * @param out
-	 * @throws KeyStoreException
-	 * @throws NoSuchAlgorithmException
-	 * @throws CertificateException
-	 * @throws IOException
-	 */
-	public static void storeCACert(Certificate cert, String alias,
-			String password, OutputStream out) throws KeyStoreException,
-			NoSuchAlgorithmException, CertificateException, IOException {
-		KeyStore ks = KeyStore.getInstance("JKS");
-
-		ks.load(null, null);
-
-		ks.setCertificateEntry(alias, cert);
-
-		// store keystore
-		ks.store(out, HttpClientUtil.str2CharArray(password));
-
-	}
-
-	public static InputStream String2Inputstream(String str) {
-		return new ByteArrayInputStream(str.getBytes());
-	}
-
+//    public static JSONObject getJsonByUrl(final String url) {
+//        JSONObject json = null;
+//        try {
+//            if (StringUtils.startsWith(url, "https://")) {
+//                final String httpOrgCreateTestRtn = doGetSSL(url, new HashMap<String, Object>(), "utf-8");
+//                if(httpOrgCreateTestRtn == null) return null;
+//                json = new JSONObject(httpOrgCreateTestRtn);
+//
+//            } else if (StringUtils.startsWith(url, "http://")) {
+//                final String httpOrgCreateTestRtn = doGet(url, new HashMap<String, Object>(), "utf-8");
+//                if(httpOrgCreateTestRtn == null) return null;
+//                json = new JSONObject(httpOrgCreateTestRtn);
+//            }
+//
+//        } catch (final JSONException e) {
+//        }
+//        return json;
+//    }
+//    public static JSONObject getJsonByUrl(final String url,HashMap<String, Object> map) {
+//        JSONObject json = null;
+//        try {
+//            if (StringUtils.startsWith(url, "https://")) {
+//                final String httpOrgCreateTestRtn = doPostSSL(url, "", "utf-8");
+//                if(httpOrgCreateTestRtn == null) return null;
+//                json = new JSONObject(httpOrgCreateTestRtn);
+//
+//            } else if (StringUtils.startsWith(url, "http://")) {
+//                final String httpOrgCreateTestRtn = doGet(url, map, "utf-8");
+//                if(httpOrgCreateTestRtn == null) return null;
+//                json = new JSONObject(httpOrgCreateTestRtn);
+//            }
+//
+//        } catch (final JSONException e) {
+//        }
+//        return json;
+//    }
 }
