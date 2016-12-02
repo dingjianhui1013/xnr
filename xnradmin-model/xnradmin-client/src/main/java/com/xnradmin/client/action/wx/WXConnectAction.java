@@ -67,7 +67,7 @@ import com.xnradmin.vo.business.OutPlanVO;
 public class WXConnectAction {
 
 	private static Logger log = Logger.getLogger(WXConnectAction.class);
-	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
+	private String userId ;
 	private String userName;
 	private String serverId;
 	private String type;
@@ -75,6 +75,15 @@ public class WXConnectAction {
 	private OutPlanVO outplanVO;
 	private String status;
 	private List<BusinessCategory> businesCategorys;
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	public String getType() {
 		return type;
 	}

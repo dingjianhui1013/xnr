@@ -65,8 +65,14 @@ public class OutPlanAction extends ParentAction{
 	private boolean outplanStatus;//验证生产计划时间是否重复
 	private String startTime;//
 	private String endTime;
-	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
+	private String userId ;
 	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	public String getStartTime() {
 		return startTime;
 	}

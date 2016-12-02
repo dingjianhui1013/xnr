@@ -49,7 +49,14 @@ public class PersonalCenterAction {
 	private String imageUrl;
 	private String status;
 	private String imageid;
-	private String userId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
+	private String userId ;
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	public String getImageid() {
 		return imageid;
 	}
