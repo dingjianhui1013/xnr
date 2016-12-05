@@ -229,19 +229,19 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		return isok;
 	}
-	public boolean validationDate(String userId,String startTime,String endTime){
-		String hql = "from OutPlan where userId='"+userId+ "' and startTime<='"+startTime+"' and endTime>='"+startTime+"'";
+	public boolean validationDate(String userId,String startTime,String endTime,String goodsId){
+		String hql = "from OutPlan where userId='"+userId+ "' and goodsId='"+goodsId+"' and startTime<='"+startTime+"' and endTime>='"+startTime+"'";
 		try {
 			List l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 			if(l.size()>0){
 				return false;
 			}
-			hql = "from OutPlan where userId='"+userId+ "' and startTime<='"+endTime+"' and endTime>='"+endTime+"'";
+			hql = "from OutPlan where userId='"+userId+ "' and goodsId='"+goodsId+"' and startTime<='"+endTime+"' and endTime>='"+endTime+"'";
 			l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 			if(l.size()>0){
 				return false;
 			}
-			hql = "from OutPlan where userId='"+userId+ "' and startTime>='"+startTime+"' and endTime<='"+endTime+"'";
+			hql = "from OutPlan where userId='"+userId+ "' and goodsId='"+goodsId+"' and startTime>='"+startTime+"' and endTime<='"+endTime+"'";
 			l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 			if(l.size()>0){
 				return false;

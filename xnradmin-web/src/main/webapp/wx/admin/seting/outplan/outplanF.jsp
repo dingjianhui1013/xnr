@@ -64,14 +64,15 @@
 			var userId = $("#userId").val();
 			var startTime = $("#dateStart").val();  
 			var endTime = $("#dateEnd").val();
-			
+			var leixing = $("#leixing").val();
 			$.ajax({
 				type:'POST',
 				url:'<%=path %>/page/wx/outplan/validationDate.action',
 					data : {
 						userId : userId,
 						startTime : startTime,
-						endTime : endTime
+						endTime : endTime,
+						leixing : leixing
 					},
 					dataType : 'JSON',
 					success : function(data) {
@@ -187,7 +188,7 @@
 							onchange="getWeight()">
 							<option value="">请选择详细</option>
 							<c:forEach items="${goodslist}" var="goodslist">
-								<option value="${goodslist.id }" class="${goodslist.goodsWeightId}">${goodslist.goodsName}</option>
+								<option id="leixing" value="${goodslist.id }" class="${goodslist.goodsWeightId}">${goodslist.goodsName}</option>
 							</c:forEach>
 						</select>
 					</div>

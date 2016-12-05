@@ -66,7 +66,22 @@ public class OutPlanAction extends ParentAction{
 	private String startTime;//
 	private String endTime;
 	private String userId ;
+	private String goodsId;
+	private Double occupyAmount;
 	
+	
+	public Double getOccupyAmount() {
+		return occupyAmount;
+	}
+	public void setOccupyAmount(Double occupyAmount) {
+		this.occupyAmount = occupyAmount;
+	}
+	public String getGoodsId() {
+		return goodsId;
+	}
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
 	public String getUserId() {
 		return userId;
 	}
@@ -373,11 +388,21 @@ public class OutPlanAction extends ParentAction{
 	 */
 	@Action(value = "validationDate",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
 	public String validationDate() {
-		this.outplanStatus = outPlanService.validationDate(this.userId,this.startTime,this.endTime);
+		this.outplanStatus = outPlanService.validationDate(this.userId,this.startTime,this.endTime,this.goodsId);
 		log.debug("userId:"+this.userId);
 		log.debug("startTime:"+this.startTime);
 		log.debug("endTime:"+this.endTime);
 		log.debug("outplanStatus:"+this.outplanStatus);
+		 return  StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 查询生产计划，占用数量
+	 * @return
+	 */
+	@Action(value = "selectOccupyAmount",results = {@Result(name = StrutsResMSG.SUCCESS,type="json")})
+	public String selectOccupyAmount() {
+		OutPlan findById = outPlanService.findById(this.eidtId);
+		this.occupyAmount = findById.getOccupyAmount();
 		 return  StrutsResMSG.SUCCESS;
 	}
 	/**

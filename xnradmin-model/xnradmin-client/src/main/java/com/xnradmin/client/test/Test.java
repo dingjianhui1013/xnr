@@ -43,7 +43,7 @@ public class Test {
 	public static void main(String[] args) throws Exception {
 		testPath();
 		OutPlanService outPlanService = new OutPlanService();
-		outPlanService.validationDate("jiaojianan", "2016-11-24", "2016-11-24");
+//		outPlanService.validationDate("jiaojianan", "2016-11-24", "2016-11-24");
 		log.debug(StringHelper.formartDecimalToStr(0.89f));
 	}
 }
