@@ -39,9 +39,29 @@
 			}else if(goodsId==null||goodsId==""){
 				$("#Yz").html("请输入详细类型").show();
 			}else{
-				$("#Yz").html("").hide();
-				$("#form").submit();
+				validationOutplan();
 			}
+		}
+		
+		function selectOccupyAmount(){
+			var eidtId = $("#outplanId").val();
+			var output = Number($("#output").val());
+			$.ajax({
+				type:'POST',
+				url:'<%=path %>/page/wx/outplan/validationOutplan.action',
+					data : {
+						eidtId : eidtId
+					},
+					dataType : 'JSON',
+					success : function(data) {
+						if(output>=data.occupyAmount){
+							$("#Yz").html("").hide();
+							$("#form").submit();
+						}else{
+							$("#Yz").html("您的商品已卖出'"+data.occupyAmount+"'请您重新输入").show();
+						}
+					}
+				});
 		}
 // 		function getGoods()
 // 		{
@@ -152,7 +172,7 @@
 				  	 <div class="planListCon">
 						  <div class="editPlanBox">
 							  <form id="form" action="saveEditF.action" method="post">
-							  		<input type="hidden" name="outplan.id" value="${outPlanVO.outPlan.id}"/>
+							  		<input type="hidden" id="outplanId" name="outplan.id" value="${outPlanVO.outPlan.id}"/>
 								<div class="form-group">
 <!-- 									<label for="" class="col-sm-2 control-label labelFont">选择分类</label> -->
 <!-- 									<div class="col-sm-10"> -->
@@ -166,7 +186,7 @@
 <!-- 									</div> -->
 									<label for="" class="col-sm-2 control-label labelFont">选择详细类型</label>
 									<div class="col-sm-11">
-										<select class="form-control" name="outplan.goodsId" id="goodsId" onchange="getWeight()">
+										<select readonly="readonly"  class="form-control" name="outplan.goodsId" id="goodsId" onchange="getWeight()">
 											<option value="">请选择详细</option>
 											<c:forEach items="${goodslist}" var="goodslist">
 												<option value="${goodslist.id}" class="${goodslist.goodsWeightId}" <c:if test="${outPlanVO.outPlan.goodsId==goodslist.id}">selected="selected"</c:if>>${goodslist.goodsName}</option>
@@ -177,8 +197,8 @@
 								  <div class="form-group">
 								    <label for="" class="col-sm-2 control-label labelFont">预计产出日期</label>
 								    <div class="col-sm-10">
-								    	  <input onchange="startTimeYz()" type="text" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlanVO.outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
-				    					  <input onchange="endTimeYz()" type="text"  name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlanVO.outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
+								    	  <input readonly="readonly" onchange="startTimeYz()" type="text" name="outplan.startTime"  id="dateStart" value="<fmt:formatDate value="${outPlanVO.outPlan.startTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>" class="input form-control" placeholder="请选择开始日期" />
+				    					  <input readonly="readonly" onchange="endTimeYz()" type="text"  name="outplan.endTime"  id="dateEnd"  value="<fmt:formatDate value="${outPlanVO.outPlan.endTime }" pattern="yyyy-MM-dd " ></fmt:formatDate>"  class="input form-control dateEnd" placeholder="请选择结束日期" />
 								    </div>
 								  </div>
 								  <div class="form-group">
@@ -186,7 +206,7 @@
 								    <div class="col-sm-10">
 										<input type="text" id="output" onblur="outputYz()" name="outplan.output" value="${outPlanVO.outPlan.output}" class="numInput form-control" />
 										<div class=" mt1">
-											<select class="form-control" name="outplan.unitId" id="weigthId">
+											<select readonly="readonly" class="form-control" name="outplan.unitId" id="weigthId">
 												<option value="${outPlanVO.outPlan.unitId }">${outPlanVO.businessWeight.weightName }</option>
 											</select>
 										</div>
