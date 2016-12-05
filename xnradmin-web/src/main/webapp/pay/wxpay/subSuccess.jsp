@@ -33,7 +33,6 @@
  </script>
 </head>
 <body> 
-
 <div class="checkout">	 
 	 <div class="container">	
 		 <ol class="breadcrumb">

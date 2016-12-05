@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 public class MD5 {
     
     public static String MD5Encode(String input) {
-        try {
+      /*  try {
             // 获得MD5摘要算法的 MessageDigest 对象
             MessageDigest mdInst = MessageDigest.getInstance("MD5");
             // 使用指定的字节更新摘要
@@ -31,7 +31,61 @@ public class MD5 {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return "";
+        return "";*/
+    	
+    	
+    	if (input != null) {
+    		try {
+    		// 创建具有指定算法名称的信息摘要
+    		MessageDigest md = MessageDigest.getInstance("MD5");
+    		// 使用指定的字节数组对摘要进行最后的更新，然后完成摘要计算
+    		byte[] results = md.digest(input.getBytes("utf-8"));
+    		// 将得到的字节数组编程字符窜返回
+    		String resultString = bytesToHexString(results);
+    		return resultString.toUpperCase();
+    		} catch (Exception ex) {
+    		ex.printStackTrace();
+    		}
+    		}
+    		return null;
+    	
+    	
     }
+    
+    
+    
+    public static String bytesToHexString(byte[] src){       
+
+        StringBuilder stringBuilder = new StringBuilder();       
+
+        if (src == null || src.length <= 0) {       
+
+            return null;       
+
+        }       
+
+        for (int i = 0; i < src.length; i++) {       
+
+            int v = src[i] & 0xFF;       
+
+            String hv = Integer.toHexString(v);       
+
+            if (hv.length() < 2) {       
+
+                stringBuilder.append(0);       
+
+            }       
+
+            stringBuilder.append(hv);       
+
+        }       
+
+        return stringBuilder.toString();       
+
+    }
+    
+    
+    
+    
 
 }

@@ -1,20 +1,16 @@
 package com.xnradmin.client.action.front;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -42,6 +38,8 @@ public class WeiXinPayAction  {
     private BusinessOrderRecordService orderRecordService;
     
     private String outTradeNo;
+    
+    private String reqData;//支付结果通知 的数据 
     
     private  String result;//  支付结果通知 返回的结果
     
@@ -80,6 +78,16 @@ public class WeiXinPayAction  {
     public void setErrMeg(String errMeg) {
         this.errMeg = errMeg;
     }
+    
+    
+
+    public String getReqData() {
+        return reqData;
+    }
+
+    public void setReqData(String reqData) {
+        this.reqData = reqData;
+    }
 
     /**
      * 微信返回的 支付结果通知
@@ -89,7 +97,7 @@ public class WeiXinPayAction  {
      * @return
      */
     @Action(value = "wechatNotifyURL", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
-    public String wechatNotifyURL(@RequestBody final String reqData, HttpServletResponse response) {
+    public String wechatNotifyURL() {
         LOG.info("------->wechatPay notify:" + reqData);
         ScanPayCallBackRes notifyResData = new ScanPayCallBackRes();
         try {
@@ -118,7 +126,7 @@ public class WeiXinPayAction  {
             notifyResData.setReturn_msg(e.getMessage());
         }
         XStream xStreamForRequestPostData = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("-_", "_")));
-        response.setContentType("application/xml");
+        ServletActionContext.getResponse().setContentType("application/xml");
        this.result = xStreamForRequestPostData.toXML(notifyResData);
        this.result = StringUtils.replace(this.result, "com.tencent.protocol.apppay_protocol.NotifyResData", "xml");
         LOG.info("wechatPay notify response:" + this.result);
@@ -134,8 +142,7 @@ public class WeiXinPayAction  {
      * @return
      */
     @Action(value = "queryOrder", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
-    public String queryOrder(HttpServletRequest request, HttpServletResponse response) {
-        JSONObject json = new JSONObject();
+    public String queryOrder() {
         try {
             ScanPayQueryReqData scanPayQueryReqData = new ScanPayQueryReqData("", outTradeNo);
             ScanPayQueryService service = new ScanPayQueryService();

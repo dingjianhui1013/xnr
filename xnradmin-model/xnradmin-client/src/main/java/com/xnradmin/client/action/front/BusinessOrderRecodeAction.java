@@ -586,6 +586,9 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			Long newOrderRecordId = orderRecordService.save(orderRecord);
 			orderRecordId = String.valueOf(newOrderRecordId);
 			
+			
+			String goodDetail = "";
+			
 			 if(cartids.equals("all")){
 	        	 
 				 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
@@ -593,6 +596,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 				 for(BusinessGoodsCartVo vo:cartVoList){
 					 ShoppingCart cart = vo.getCart();
 	        		 BusinessGoods goods = vo.getGoods();
+	        		 
+	        		 goodDetail += goods.getGoodsName()+" ";
 	        		 
 	        		 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
 	        		 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
@@ -620,7 +625,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
 	        		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
 	        		 
-	        		
+	        		 goodDetail += goods.getGoodsName()+" ";
+	        		 
 	        		 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
 	        		 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
 	        		 relation.setCurrentPrice(cart.getCurrentPrice());
@@ -642,7 +648,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
       {//跳转去支付。。。。。
       this.alipay = payInfo(outTradeNo, newOrderRecordId,totalMoney);
           }else if(paymethod==0){
-              boolean wxFlag = this.wxPayInfo(outTradeNo,totalMoney);
+              boolean wxFlag = this.wxPayInfo(outTradeNo,totalMoney,goodDetail);
               if(wxFlag){
                   StrutsMessage = StrutsResMSG.WEIXIN;
                   return StrutsMessage;
@@ -654,10 +660,10 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		return StrutsMessage;
 	}
 	
-	private boolean wxPayInfo(String outTradeNo, String  totalMoney){
-	   String  body = "test";
-       String  detail = "test";;
-//       int   total_fee = (int)Float.parseFloat(totalMoney)*100;
+	private boolean wxPayInfo(String outTradeNo, String  totalMoney ,String goodDetail){
+	   String  body = goodDetail;
+       String  detail = goodDetail;
+
        int   total_fee = 1;
     String out_trade_no = outTradeNo;
     String spbill_create_ip = WXfInit.getIP();
