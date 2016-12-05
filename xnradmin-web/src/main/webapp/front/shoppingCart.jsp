@@ -196,6 +196,10 @@ function totalprice(obj){
 }
 //计算全选价格
 function totalpriceAll(obj){
+	
+	
+
+	
 	var totalprice = 0;
 	//alert(obj.checked);
 	if(obj.checked==true){
