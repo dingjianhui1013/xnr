@@ -149,6 +149,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	
 	private String cartids;
 	private String totalMoney;
+	private Integer receiptAddressId;
 	private Integer paymethod;
 	private String outTradeNo;
 	
@@ -169,6 +170,17 @@ public class BusinessOrderRecodeAction extends ParentAction {
 
 	public void setTotalMoney(String totalMoney) {
 		this.totalMoney = totalMoney;
+	}
+
+	
+	
+	
+	public Integer getReceiptAddressId() {
+		return receiptAddressId;
+	}
+
+	public void setReceiptAddressId(Integer receiptAddressId) {
+		this.receiptAddressId = receiptAddressId;
 	}
 
 	public String getListJson() {
@@ -495,8 +507,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		
 		 	user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
 		   
-		
-		 	ReceiptAddress address = addressService.findByUserId(user.getId());
+		 	ReceiptAddress address = null;
+		 	
+		 	if(receiptAddressId!=null){
+		 		address = addressService.findByid(receiptAddressId.toString());
+		 	}else{
+		 		address = addressService.findByUserId(user.getId());
+		 	}	
+		 	
 		 	
 		 	
 			BusinessOrderRecord orderRecord = new BusinessOrderRecord();
@@ -509,7 +527,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 				 * 
 				 * */
 				
-				orderRecord.setStaffId(user.getId().toString());
+				orderRecord.setStaffId("2");
 			}
 			outTradeNo = StringHelper.getSystime("yyyyMMddHHmmss")
 					+ StringHelper.getRandom(5);
