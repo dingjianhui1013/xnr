@@ -38,11 +38,31 @@ public class ReceiptAddressAction {
 	private int saveSuccess;
 	private int getSuccess;
 	private int deleteSuccess;
+	private Long userId;
+	private int findSuccess;
 	
 	
 	
 	
 	
+	
+
+	public int getFindSuccess() {
+		return findSuccess;
+	}
+
+	public void setFindSuccess(int findSuccess) {
+		this.findSuccess = findSuccess;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	public FrontUser getUser() {
 		return user;
 	}
@@ -265,5 +285,17 @@ public class ReceiptAddressAction {
 		
 		return StrutsResMSG.SUCCESS;
 	}
-	
+	@Action(value = "getDistribution", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
+	public String getDistribution()
+	{
+		try {
+			addr = addressService.findByUserId(userId);
+			findSuccess=0;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			findSuccess=1;
+		}
+		return StrutsResMSG.SUCCESS;
+	}
 }
