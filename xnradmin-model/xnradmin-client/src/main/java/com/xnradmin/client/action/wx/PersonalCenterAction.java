@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONObject;
 
@@ -117,24 +118,27 @@ public class PersonalCenterAction {
 	@Action(value = "listF",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenterF.jsp") })
 	public String personalCenterF(){
 		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession();
 		String code = request.getParameter("code");
-		JSONObject userId = WeixinUtil.httpRequest(
+		JSONObject userIdObject = WeixinUtil.httpRequest(
 				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
 						.replace("CODE", code), "GET", null);
-		List<OutPlanVO> outplans = outPlanService.getListByUserId(userId.getString("openid"),0,0);
+		String userId = userIdObject.getString("openid");
+		List<OutPlanVO> outplans = outPlanService.getListByUserId(userId,0,0);
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
 		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
-		List<String> imagedates = farmerImageService.getImageDates(userId.getString("openid"));
-		this.status = farmerService.getStatus(userId.getString("openid"));
-		this.userId = userId.getString("openid");
+		List<String> imagedates = farmerImageService.getImageDates(userId);
+		this.status = farmerService.getStatus(userId);
+//		this.userId = userId;
+		session.setAttribute("userId", userId);
 		for (String images : imagedates) {
 			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
 			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
 			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
-			List<String> typeList = farmerImageService.findByType(images,userId.getString("openid"));
+			List<String> typeList = farmerImageService.findByType(images,userId);
 			for (String type : typeList) {
 			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
-				List<String> imageList = farmerImageService.findByImages(type,images,userId.getString("openid"));
+				List<String> imageList = farmerImageService.findByImages(type,images,userId);
 				type_images.put(typeName, imageList);
 			}
 			type_imagesList.add(type_images);
@@ -142,7 +146,7 @@ public class PersonalCenterAction {
 			date_type_images.add(date_type_image);
 		}
 		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
-		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
+//		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value = "test",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })

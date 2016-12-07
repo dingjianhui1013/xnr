@@ -89,7 +89,11 @@
 							<c:if test="${loop.status=='2'}"><a title="查看提交资料" target="dialog" href="${basePath }page/wx/farmer/showExamine.action?farmerId=${loop.userId}" >拒绝审核</a></c:if>
 							<c:if test="${loop.status=='3'}"><a title="查看提交资料" target="dialog" href="${basePath }page/wx/farmer/showExamine.action?farmerId=${loop.userId}" >已提交审核数据</a></c:if>
 						</td>
-						<td><image src="${loop.headPortrait}64" /></td>
+						<td>
+						
+							<image src="${loop.headPortrait}" />
+						
+						</td>
 						<td><a title="商品" target="dialog" href="page/wx/farmer/anthinfo.action?farmerId=${loop.id}" class="btnAuth">商品</a>
 						<a title="生成二维码" href="javascript:void(0)" class="btnEdit" onclick="generate('${loop.userId}')">生成二维码</a>
 						<c:if test="${loop.status!='0'}">

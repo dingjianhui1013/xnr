@@ -278,29 +278,31 @@ public class WXConnectAction {
 	@Action(value = "oAuthF", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImageF.jsp") })
 	public String oAuthF(){
 		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession();
 		String code = request.getParameter("code");
 		String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
-		JSONObject userId = WeixinUtil.httpRequest(
+		JSONObject userIdObject = WeixinUtil.httpRequest(
 				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
 						.replace("CODE", code), "GET", null);
-		if (userId.toString().indexOf("errcode") == -1) {
+		if (userIdObject.toString().indexOf("errcode") == -1) {
+			String userId = userIdObject.getString("openid");
 			JSONObject userInformation = WeixinUtil.httpRequest(
 					WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
 							access_tokenString).replace("OPENID",
-							userId.getString("openid")), "GET", null);
+									userId), "GET", null);
 			if (userInformation.toString().indexOf("40001")!=-1){
 				access_tokenString =WXFGetTokenService.getAccessToken();
 				userInformation = WeixinUtil.httpRequest(
 						WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
 								access_tokenString).replace("OPENID",
-								userId.getString("openid")), "GET", null);
+										userId), "GET", null);
 			}
 			String userName = userInformation.getString("nickname");
-			this.status = farmerService.getStatus(userId.getString("openid"));
-			this.userId = userId.getString("openid");
+			this.status = farmerService.getStatus(userId);
+//			this.userId = userId;
+			session.setAttribute("userId", userId);
 			this.userName = userName;
 		}
-		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	
@@ -359,7 +361,8 @@ public class WXConnectAction {
 		session.setAttribute("noncestr", noncestr);
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
-		session.setAttribute("userId", userId);
+//		session.setAttribute("userId", userId);
+		session.setAttribute("appId", WXfInit.APPID);
 		session.setAttribute("skiptUrl", WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI",WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
 	}
 	
@@ -388,6 +391,7 @@ public class WXConnectAction {
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
+		session.setAttribute("appId", WXInit.CORPID);
 		if(type!=null)
 		{
 			List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
@@ -477,7 +481,7 @@ public class WXConnectAction {
 				}
 			}
 		}
-		this.userId = userId;
+//		this.userId = userId;
 		this.userName = userName;
 	}
 	@ResponseBody

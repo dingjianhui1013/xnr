@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONObject;
 
@@ -254,15 +255,18 @@ public class OutPlanAction extends ParentAction{
 	@Action(value = "outplanF",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/outplan/outplanF.jsp") })
 	public String outplanF(){
 		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession();
 		String code = request.getParameter("code");
-		JSONObject userId = WeixinUtil.httpRequest(
+		JSONObject userIdObject = WeixinUtil.httpRequest(
 				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
 						.replace("CODE", code), "GET", null);
-		this.userId = userId.getString("openid");
-		String types = farmerService.getFenleiByUserId(userId.getString("openid"));
-		this.status  = farmerService.getStatus(userId.getString("openid"));
+		String userId = userIdObject.getString("openid");
+//		this.userId = userId;
+		String types = farmerService.getFenleiByUserId(userId);
+		this.status  = farmerService.getStatus(userId);
         goodslist = businessGoodsService.getTypeNameById(types);
-        ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
+        session.setAttribute("userId", userId);
+//        ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value="getGoods",results = {@Result(name = StrutsResMSG.SUCCESS, type="json")})
@@ -295,6 +299,8 @@ public class OutPlanAction extends ParentAction{
 	 */
 	@Action(value = "saveF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri="+WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
 	public String saveF(){
+		HttpSession session = ServletActionContext.getRequest().getSession();
+		outplan.setUserId(session.getAttribute("userId").toString());
 		outplan.setCreateBy(outplan.getUserId());
 		outplan.setExamine(0);//待审核
 		outPlanService.save(outplan);

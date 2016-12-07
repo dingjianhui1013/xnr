@@ -32,7 +32,7 @@
 		$(function(){
 			if("${status}"==null||"${status}"==""||"${status}"=="0")
 			{
-				var farmerId = $('#userId').val();
+				var farmerId = '${userId}';
 				window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId="+farmerId;
 			}else if ("${status}"=="3")
 				{
@@ -61,7 +61,7 @@
 		}
 		
 		function validationDate(){
-			var userId = $("#userId").val();
+			var userId = '${userId}';
 			var startTime = $("#dateStart").val();  
 			var endTime = $("#dateEnd").val();
 			var leixing = $("#leixing").val();
@@ -170,7 +170,7 @@
 		</div>
 		<div class="contentBox">
 			<form id="form" role="form" action="saveF.action" method="post">
-				<input type="hidden" value="${userId}" name="outplan.userId" id="userId">
+<%-- 				<input type="hidden" value="${userId}" name="outplan.userId" id="userId"> --%>
 				<div class="form-group">
 <!-- 					<label for="" class="col-sm-2 control-label labelFont">选择分类</label> -->
 <!-- 					<div class="col-sm-10"> -->

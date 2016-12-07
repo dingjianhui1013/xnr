@@ -119,7 +119,7 @@
 					<tr target="sid_menuid" rel="${loop.outPlan.id}">	
 						<td>${loop.outPlan.id}</td>							
 						<td>${loop.farmer.userName}</td>
-						<td>${loop.businessGood.goodsName}</td>						
+						<td>${loop.businessGoods.goodsName}</td>						
 						<td><fmt:formatDate value="${loop.outPlan.startTime}" pattern="yyyy-MM-dd " ></fmt:formatDate></td>
 						<td><fmt:formatDate value="${loop.outPlan.endTime}" pattern="yyyy-MM-dd " ></fmt:formatDate></td>	
 						<td>${loop.outPlan.output}</td>	

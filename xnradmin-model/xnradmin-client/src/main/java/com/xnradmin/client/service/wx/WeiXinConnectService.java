@@ -115,7 +115,7 @@ public class WeiXinConnectService {
   								access_Token).replace("OPENID",
   										FromUserName), "GET", null);
   	        	farmer.setUserName(userInformation.getString("nickname"));
-  	        	farmer.setHeadPortrait(userInformation.getString("headimgurl"));
+  	        	farmer.setHeadPortrait(userInformation.getString("headimgurl").substring(0, userInformation.getString("headimgurl").length()-1)+"64");
   	        	farmer.setStatus("0");
   	        	farmerService.saveFarmer(farmer);
   	        	message = "欢迎关注康源公社服务号\n"
