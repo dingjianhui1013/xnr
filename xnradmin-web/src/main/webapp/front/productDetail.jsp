@@ -164,6 +164,7 @@ function getUuid(){
 									<p class="priceBox">
 										配送至： <span> 
 										<select id="distribution">
+												<option value="jn">济南</option>
 												<option value="bj">北京市</option>
 												<option value="hb">河北省</option>
 												<option value="sd">山东省</option>
@@ -172,7 +173,7 @@ function getUuid(){
 									</p>
 								</div>
 								<p class="msgList">
-									发货地：<span>北京</span>
+									发货地：<span>济南</span>
 								</p>
 								<div class="addCart-box">
 									<div class="addNum">
