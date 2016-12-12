@@ -147,10 +147,21 @@ public class farmerAction extends ParentAction{
 	@Action(value="farmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examine.jsp") })
 	public String farmerExamine()
 	{
-		this.farmerId = ServletActionContext.getRequest().getSession().getAttribute("userId").toString();
+		this.farmerId = farmerId;
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value="saveFarmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examine.jsp") })
+	@Action(value="farmerExamineEdit",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examineEdit.jsp") })
+	public String farmerExamineEdit()
+	{
+		this.farmerId = farmerId;
+		List<FarmerExamine>  farmerExamines = farmerService.findExamineByUserId(farmerId);
+		if(!farmerExamines.isEmpty())
+		{
+			farmerExamine = farmerExamines.get(0);
+		}
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="saveFarmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examineEdit.jsp") })
 	public String saveFarmerExamine()
 	{
 		Farmer farmer = farmerService.getUserNameById(farmerExamine.getFarmerId());
@@ -160,6 +171,16 @@ public class farmerAction extends ParentAction{
 		this.msg = "审核信息已提交，请等待！";
 		return StrutsResMSG.SUCCESS;
 	}
+	@Action(value="updateFarmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examineEdit.jsp") })
+	public String updateFarmerExamine()
+	{
+		Farmer farmer = farmerService.getUserNameById(farmerExamine.getFarmerId());
+		farmerService.examineUser(farmerExamine.getFarmerId(), "3");
+		farmerService.examineRelease(farmerId, "3", remarks);
+		farmerService.updateFarmerExamine(farmerExamine);
+		this.msg = "审核信息已修改，请等待！";
+		return StrutsResMSG.SUCCESS;
+	}
 	@Action(value="showExamine",results = {@Result(name=StrutsResMSG.SUCCESS,location = "/wx/admin/seting/examine/examineInfo.jsp")})
 	public String showExamine()
 	{
@@ -167,6 +188,7 @@ public class farmerAction extends ParentAction{
 		if(!farmerExamines.isEmpty())
 		{
 			farmerExamine = farmerExamines.get(0);
+			query = farmerService.getUserNameById(farmerExamine.getFarmerId());
 		}
 		return StrutsResMSG.SUCCESS;
 	}

@@ -39,10 +39,15 @@
 			}else if(goodsId==null||goodsId==""){
 				$("#Yz").html("请输入详细类型").show();
 			}else{
-				validationOutplan();
+// 				validationOutplan();
+					$("#form").submit();
 			}
 		}
-		
+		//这里是要进行占用数量验证，还没理解佳男是怎么考虑的。
+		function validationOutplan()
+		{
+			
+		}
 		function selectOccupyAmount(){
 			var eidtId = $("#outplanId").val();
 			var output = Number($("#output").val());

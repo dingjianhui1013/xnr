@@ -147,7 +147,6 @@ function uploadI()
 	};
 function upF()
 {
-	alert('${userId}');
 	$.ajax({
 		url:"<%= path %>/page/wx/wxconnect/downloadFF.action",
 		type:"POST",

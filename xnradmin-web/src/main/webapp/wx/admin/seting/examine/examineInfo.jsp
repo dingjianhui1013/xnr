@@ -18,24 +18,14 @@
 			<label>合同号：</label>
 			<input type="text"  class="login_input" readonly="readonly" value="${farmerExamine.contractNumber}"/>
 		</p>
+		<c:if test="${query.status==2}">
+			<p>
+				<label>拒绝理由：</label>
+				<input type="text"  class="login_input" readonly="readonly" value="${query.remarks}"/>
+			</p>
+		</c:if>
 	</div>
 	<div class="formBar">
-<!-- 		<label style="float: left"><input type="checkbox" -->
-<!-- 			class="checkboxCtrl" group="types" />全选</label> -->
-<!-- 		<ul> -->
-<!-- 			<li><div class="button"> -->
-<!-- 					<div class="buttonContent"> -->
-<!-- 						<button type="button" class="checkboxCtrl" -->
-<!-- 							group="types" selectType="invert">反选</button> -->
-<!-- 					</div> -->
-<!-- 				</div></li> -->
-<!-- 			<li><div class="buttonActive"> -->
-<!-- 					<div class="buttonContent"> -->
-<!-- 						<button type="submit">提交</button> -->
-<!-- 					</div> -->
-<!-- 				</div></li> -->
-<!-- 		</ul> -->
-<!-- 	<button type="submit">提交</button> -->
 	</div>
 	</div>
 </form>

@@ -142,7 +142,21 @@ public class WeiXinConnectService {
 	  	  		textMessageF.setText(text);
 	  	  		String outputStr = JSONObject.fromObject(textMessageF).toString();
   	        	JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
-  	        }else if(status.equals("3"))
+  	        }else if(status.equals("2"))
+  	        {
+  	        	message = "审核资料已被拒绝，请等待审核！请前往链接进行修改。";
+  	        	String access_tokenF = WXFGetTokenService.accessTokenIsOvertime();
+  	        	String messages = "<a href=\""+WXfInit.SERVICEURLW+"/xnr/page/wx/farmer/farmerExamineEdit.action?farmerId="+FromUserName+"\">请前往页面填写审核信息。</a>";
+  	        	Text text = new Text();
+	  	  		text.setContent(messages);
+	  	  		TextMessageF textMessageF =new TextMessageF();
+	  	  		textMessageF.setTouser(FromUserName);
+	  	  		textMessageF.setMsgtype("text");
+	  	  		textMessageF.setText(text);
+	  	  		String outputStr = JSONObject.fromObject(textMessageF).toString();
+  	        	JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+  	        }
+  	        	else if(status.equals("3"))
   	        {
   	        	message = "审核资料已提交，请等待审核！";
   	        }
@@ -158,7 +172,6 @@ public class WeiXinConnectService {
 	  			}
 	  	    	message = "请按顺序回复上传图片分类："+me.toString();
   	        }
-  	        log.debug(message+"************");
   	    	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
   	      }
   	    }
