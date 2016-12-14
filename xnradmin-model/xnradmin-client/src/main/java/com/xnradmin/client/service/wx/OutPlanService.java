@@ -8,6 +8,7 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.cntinker.util.StringHelper;
 import com.cntinker.util.wx.connect.Text;
 import com.cntinker.util.wx.connect.TextMessage;
 import com.cntinker.util.wx.connect.TextMessageF;
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
@@ -29,6 +31,7 @@ import com.xnradmin.vo.business.OutPlanVO;
 @Service("OutPlanService")
 public class OutPlanService {
 	
+	private static Logger log = Logger.getLogger(OutPlanService.class);
 	@Autowired
 	private CommonDAO commonDao;
 	
@@ -294,6 +297,9 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
 					+ "\n被拒绝。拒绝原因为："+outPlanVO.getOutPlan().getRemarks();
 		}
+		log.debug("***********************");
+		log.debug(message+"***********message************");
+		log.debug("***********************");
 //		String access_token = WXGetTokenService.accessTokenIsOvertime();
 //	    Text text = new Text();
 //	    text.setContent(message);
@@ -314,7 +320,13 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		textMessageF.setMsgtype("text");
 		textMessageF.setText(text);
 		String outputStr = JSONObject.fromObject(textMessageF).toString();
+		log.debug("***********************");
+		log.debug(outputStr+"***********outputStr************");
+		log.debug("***********************");
 		JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+		log.debug("***********************");
+		log.debug(jsons+"***********jsons************");
+		log.debug("***********************");
 	}
 	
 	

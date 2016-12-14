@@ -386,7 +386,7 @@ public class OutPlanAction extends ParentAction{
 		Integer personId = super.getCurrentStaff().getId();
 		this.examineStatus  = outPlanService.examine(examineId,personId.toString());
 		outPlanService.examineRelease(examineId);
-		 return  StrutsResMSG.SUCCESS;
+		return  StrutsResMSG.SUCCESS;
 	}
 	/**
 	 * 生产计划时间验证
