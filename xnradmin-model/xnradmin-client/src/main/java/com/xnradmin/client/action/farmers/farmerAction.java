@@ -39,6 +39,7 @@ import com.xnradmin.po.wx.connect.FarmerImage;
 public class farmerAction extends ParentAction{
 	
 	private Farmer query;
+	private BusinessGoods goods;
 	private List<Farmer> farmerList;
 	String farmerId;
 	String types;
@@ -128,6 +129,12 @@ public class farmerAction extends ParentAction{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
+	public BusinessGoods getGoods() {
+		return goods;
+	}
+	public void setGoods(BusinessGoods goods) {
+		this.goods = goods;
+	}
 	@Override
 	public boolean isPublic() {
 		return true;
@@ -161,7 +168,7 @@ public class farmerAction extends ParentAction{
 		}
 		return StrutsResMSG.SUCCESS;
 	}
-	@Action(value="saveFarmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examineEdit.jsp") })
+	@Action(value="saveFarmerExamine",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/examine/examine.jsp") })
 	public String saveFarmerExamine()
 	{
 		Farmer farmer = farmerService.getUserNameById(farmerExamine.getFarmerId());
@@ -222,6 +229,8 @@ public class farmerAction extends ParentAction{
 	@Action(value="showFarmerImage",results = {@Result(name=StrutsResMSG.SUCCESS,location="/business/admin/farmer/showFarmerIamge.jsp")})
 	public String showFarmerImage()
 	{
+		query = farmerService.getUserNameById(farmerId);
+		goods = businessGoodsService.findByid(goodsId);
 		farmerImages = farmerImageService.findFarmerImage(farmerId, goodsId);
 		return StrutsResMSG.SUCCESS;
 	}

@@ -47,7 +47,10 @@ public class FarmerService {
 	{
 		farmerDao.save(farmer);
 	}
-	
+	public void delFarmer(Farmer farmer)
+	{
+		farmerDao.delete(farmer);;
+	}
 	public List<Farmer> getList(Farmer query,int pageNo,int pageSize){
 		
 		String hql = getHql(query);

@@ -114,6 +114,9 @@ public class WeiXinConnectService {
   						WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
   								access_Token).replace("OPENID",
   										FromUserName), "GET", null);
+  	        	log.debug("********************");
+    			log.debug("userInformation::"+userInformation);
+    			log.debug("********************");
   	        	farmer.setUserName(userInformation.getString("nickname"));
   	        	farmer.setHeadPortrait(userInformation.getString("headimgurl").substring(0, userInformation.getString("headimgurl").length()-1)+"64");
   	        	farmer.setStatus("0");
@@ -123,6 +126,12 @@ public class WeiXinConnectService {
    		        		+ "\n上传生产计划请选择菜单进行上传"
    		        		+ "\n查看个人信息请选择菜单进行查看";
   	        	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
+  	        }
+  	        if("unsubscribe".equals(event))
+  	        {
+  	        	Farmer farmer = new Farmer();
+  	        	farmer.setUserName(FromUserName);
+  	        	farmerService.delFarmer(farmer);
   	        }
   	      }
   	      if (WXMsgType.REQ_MESSAGE_TYPE_IMAGE.equals(MsgType)) {

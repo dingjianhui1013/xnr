@@ -327,6 +327,12 @@ public class WXMenuService {
 		return res;
 	}
 
+	public List<WXMenu> getList()
+	{
+		String hql = "from WXMenu ORDER BY sortOrder ASC";
+		List<WXMenu> list = (List<WXMenu>)commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
+		return list;
+	}
 	private String getHql(WXMenuVO query) {
 		StringBuffer hql = new StringBuffer();
 		hql.append("from WXMenu");
@@ -371,7 +377,7 @@ public class WXMenuService {
 			hql.append(" typeid =").append(query.getMenu().getTypeid());
 			isAnd++;
 		}
-		hql.append(" order by id desc");
+		hql.append(" order by sortOrder ASC");
 		return hql.toString();
 	}
 }
