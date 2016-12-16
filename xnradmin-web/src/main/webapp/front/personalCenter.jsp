@@ -207,7 +207,8 @@
                 </div>
                 <ul class="pSlideNavUl">
                 	<li class="active"><a href="#">账号信息</a></li> 
-                    <li id="myorder"><a href="#">我的订单</a></li> 
+                	<li id="myorder"><a href="#">我的订单</a></li>
+<%--                     <li id="myorder"><a href="${basePath}/front/frontUserInfo.action?clientUserId=${user.id}">我的订单</a></li>  --%>
                     <li id="address"><a href="#">地址管理</a></li> 
                     <li><a href="#">密码修改</a></li> 
                 </ul>
@@ -258,87 +259,43 @@
                     		</ul>
                     	</div>
                     </div>
-                     <div class="orderList">
-                    	<div class="orderTit">
-	                          订单号：<span>2016010223</span>
-                    		<span class="orderTime">
-	                          	2016-10-12
-	                        </span>
-                    	</div>
-                    	<div class="orderTitCol">
-                    		<ul>
-                    			<li class="ordercol-d">
-                    				<a href="#"><img src="${basePath }images/front/products/sc-img1.jpg"></a>
-	  	                          	 <div class="orderCon">
-	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
-	  		                          </div>
-                    			</li>
-                    			<li>
-                    				<span>张三</span>
-                    			</li>
-                    			<li>
-			                          <span class="orderMoney">总额：<em>￥200</em></span>
-			                          <p>微信支付</p>
-			                    </li>
-                    			<li><span>已完成 </span></li>
-                    			<li><span><a href="#">再次购买</a></span></li>
-                    		</ul>
-                    	</div>
-                    </div>
-                    <div class="orderList">
-                    	<div class="orderTit">
-	                          订单号：<span>2016010223</span>
-                    		<span class="orderTime">
-	                          	2016-10-12
-	                        </span>
-                    	</div>
-                    	<div class="orderTitCol">
-                    		<ul>
-                    			<li class="ordercol-d">
-                    				<a href="#"><img src="${basePath }images/front/products/sc-img1.jpg"></a>
-	  	                          	 <div class="orderCon">
-	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
-	  		                          </div>
-                    			</li>
-                    			<li>
-                    				<span>张三</span>
-                    			</li>
-                    			<li>
-			                          <span class="orderMoney">总额：<em>￥200</em></span>
-			                          <p>微信支付</p>
-			                    </li>
-                    			<li><span>已完成 </span></li>
-                    			<li><span><a href="#">再次购买</a></span></li>
-                    		</ul>
-                    	</div>
-                    </div>
-                    <div class="orderList">
-                    	<div class="orderTit">
-	                          订单号：<span>2016010223</span>
-                    		<span class="orderTime">
-	                          	2016-10-12
-	                        </span>
-                    	</div>
-                    	<div class="orderTitCol">
-                    		<ul>
-                    			<li class="ordercol-d">
-                    				<a href="#"><img src="${basePath }images/front/products/sc-img2.jpg"></a>
-	  	                          	 <div class="orderCon">
-	  			                          <h3><a href="#">有机怀山堂铁棍山药（垆土） 1.5kg/箱 长度为38cm 左右</a></h3>
-	  		                          </div>
-                    			</li>
-                    			<li>
-                    				<span>张三</span>
-                    			</li>
-                    			<li>
-			                          <span class="orderMoney">总额：<em>￥200</em></span>
-			                          <p>微信支付</p>
-			                    </li>
-                    			<li><span>已完成 </span></li>
-                    			<li><span><a href="#">再次购买</a></span></li>
-                    		</ul>
-                    	</div>
-                    </div>
+                    <c:forEach items="${voList}" var="loop">
+	                    <c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations">
+	                    	<div class="orderList">
+		                    	<div class="orderTit">
+		                    		订单号：<span>${loop.businessOrderRecord.orderNo}</span>
+					                    		<span class="orderTime">
+						                          	${loop.businessOrderRecord.createTime}
+						                        </span>
+					                    	</div>
+					                    	<div class="orderTitCol">
+					                    		<ul>
+					                    			<li class="ordercol-d">
+					                    				<a href="#"><img src="${basePath }/${businessOrderRelations.businessGoods.goodsLogo}"></a>
+						  	                          	 <div class="orderCon">
+						  			                          <h3><a href="${bastPath}/front/productDetail.action?goodsId=${businessOrderRelations.businessGoods.id}">${businessOrderRelations.businessGoods.goodsName}</a></h3>
+						  		                          </div>
+					                    			</li>
+					                    			<li>
+					                    				<span>${loop.businessOrderRecord.userRealName}</span>
+					                    			</li>
+					                    			<li>
+								                          <span class="orderMoney">总额：<em>${businessOrderRelations.businessGoods.goodsOriginalPrice}</em></span>
+								                          <p>${loop.businessOrderRecord.paymentProviderName}</p>
+								                    </li>
+								                    <c:if test="${loop.businessOrderRecord.paymentStatusName!='未支付'}">
+								                   		<li><span>${loop.businessOrderRecord.paymentStatusName}</span></li>
+								                    </c:if>
+								                    <c:if test="${loop.businessOrderRecord.paymentStatusName=='未支付'}">
+								                   		<li><span>${loop.businessOrderRecord.paymentStatusName}<br> <a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
+								                    </c:if>
+					                    			<li><span><a href="${bastPath}/front/productDetail.action?goodsId=${businessOrderRelations.businessGoods.id}">再次购买</a></span></li>
+					                    		</ul>
+					                    	</div>
+		                    </div>
+	                    </c:forEach>
+                     
+                   </c:forEach>
                 <!--分页-->
                 <nav class="text-center">
 				      <ul class="pagination">

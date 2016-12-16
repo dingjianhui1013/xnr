@@ -2511,6 +2511,13 @@ public class BusinessOrderRecordService {
 							.append(query.getBusinessOrderRecord()
 									.getUserRealName()).append("%'");
 				}
+				// 指定用户Id
+				if(query.getBusinessOrderRecord()
+						.getClientUserId()!=null)
+				{
+					hql.append(" and record.clientUserId = ").append(query.getBusinessOrderRecord()
+							.getClientUserId());
+				}
 			}
 
 			// 复选

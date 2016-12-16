@@ -43,6 +43,7 @@ import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.core.service.mall.region.AreaService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
 import com.xnradmin.core.service.mall.seting.PrimaryConfigurationService;
+import com.xnradmin.core.service.pay.AlipayService;
 import com.xnradmin.core.service.pay.wx.ScanPayService;
 import com.xnradmin.core.util.Log4jUtil;
 import com.xnradmin.po.CommonStaff;
@@ -109,6 +110,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 
 	@Autowired
 	private StaffService staffService;
+	@Autowired
+	private AlipayService alipayService;
 
 	private Log exLog = Log4jUtil.getLog("ex");
 
@@ -664,7 +667,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	         }
 			if(paymethod==1)
       {//跳转去支付。。。。。
-      this.alipay = payInfo(outTradeNo, newOrderRecordId,totalMoney);
+				this.alipay = alipayService.payInfo(outTradeNo, newOrderRecordId,totalMoney);
           }else if(paymethod==0){
               boolean wxFlag = this.wxPayInfo(outTradeNo,totalMoney,goodDetail);
               if(wxFlag){
@@ -995,33 +998,5 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	public void setUserDesc(String userDesc) {
 		this.userDesc = userDesc;
 	}
-	public Alipay payInfo(String outTradeNo,Long id,String totalMoney)
-	{
-		List<BusinessGoods> goodsNames = orderGoodsRelationService.findGoodsName(id);
-		String subject = "";
-		int index=0;
-		if(goodsNames.size()>3){
-			index = 3;
-		}else
-		{
-			index = goodsNames.size();
-		}
-		for (int i = 0; i < index; i++) {
-			subject+="  "+goodsNames.get(i).getGoodsName();
-		}
-		Alipay ali = new Alipay();
-		ali.setSubject(subject);
-		ali.setOutTradeNo(outTradeNo);
-	//			ali.setTotalFee(totalMoney); 正式是这个数字，测试暂时用0.01；
-		ali.setTotalFee("0.01");
-		return ali;
-	}
-	
-	
-	
-	
-	
-	
-	
 	
 }
