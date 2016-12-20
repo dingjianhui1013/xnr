@@ -607,6 +607,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			Long newOrderRecordId = orderRecordService.save(orderRecord);
 			orderRecordId = String.valueOf(newOrderRecordId);
 			
+			Integer totalCount = 0;
 			
 			String goodDetail = "";
 			
@@ -631,6 +632,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 relation.setOrderRecordId(orderRecord.getId());
 	        		 relation.setOriginalPrice(Float.parseFloat(totalMoney));
 	        		 relation.setPurchasePrice(Float.parseFloat(totalMoney));
+	        		 
+	        		 totalCount += cart.getGoodsCount();
 	        		 
 	        		 orderGoodsRelationService.save(relation);
 	        		 shoppingCartService.del(cart.getId().toString());
@@ -660,11 +663,21 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 relation.setOriginalPrice(Float.parseFloat(totalMoney));
 	        		 relation.setPurchasePrice(Float.parseFloat(totalMoney));
 	        		 
+	        		 
+	        		 totalCount += cart.getGoodsCount();
+	        		 
 	        		 orderGoodsRelationService.save(relation);
 	        		 shoppingCartService.del(cart.getId().toString());
 	        	 }
 	        	 
 	         }
+			 
+			 
+			 orderRecord.setTotalCount(totalCount);
+			 orderRecordService.modify(orderRecord);
+			 
+			 
+			 
 			if(paymethod==1)
       {//跳转去支付。。。。。
 				this.alipay = alipayService.payInfo(outTradeNo, newOrderRecordId,totalMoney);
