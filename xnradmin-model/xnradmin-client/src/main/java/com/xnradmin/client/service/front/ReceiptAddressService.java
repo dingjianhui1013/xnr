@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
@@ -22,7 +23,7 @@ public class ReceiptAddressService {
 	private CommonDAO commonDao;
 	
 	
-	
+
 	
 	/**
 	 * 
@@ -32,6 +33,14 @@ public class ReceiptAddressService {
 		return true;
 		
 	}
+	
+	
+	
+	public void update(ReceiptAddress receiptAddress) throws Exception{
+		commonDao.merge(receiptAddress);
+	}
+	
+	
 	
 	public ReceiptAddress findByid(String id){
 		String hql = "from ReceiptAddress where id="+id;
@@ -93,10 +102,10 @@ public class ReceiptAddressService {
 		}
 	}
 	
-	public boolean update(ReceiptAddress addr){
+	/*public boolean update(ReceiptAddress addr){
 		String hql = "update ReceiptAddress set type="+addr.getType() + " where id = "+addr.getId();
 		commonDao.executeUpdateOrDelete(hql.toString());
 		return true;
-	}
+	}*/
 	
 }
