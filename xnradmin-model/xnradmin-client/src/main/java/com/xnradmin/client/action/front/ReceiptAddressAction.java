@@ -137,32 +137,59 @@ public class ReceiptAddressAction {
 			"enableGZIP", "true" }) })
 	public String saveNewAddress() throws Exception {
 		
-		
-		
-		
 		user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
-		
-		addr = addressService.findByType1("1");
-		
 		
 		saveSuccess = 0;
 		
+		ReceiptAddress address = null;
+	
+		addr = addressService.findByType1("1");
+		
+		
+		
+		
 		try {
-			ReceiptAddress address = new ReceiptAddress();
 			
-			address.setDetailedAddress(detailedAddress);
-			address.setFrontUserId(user.getId());
-			address.setReceiptName(receiptName);
-			address.setTel(telAddress);
-			address.setProvince("山东省");
-			address.setCity("济南市");
-			address.setCounty(county);
-			address.setType("1");
-			addressService.save(address);
-			addressId = new Long((long)address.getId());
-			addr.setType("0");
-			addressService.update(addr);
-			saveSuccess = 1;
+			if(addressId!=0){
+				address = addressService.findByid(addressId.toString());
+				address.setDetailedAddress(detailedAddress);
+				address.setFrontUserId(user.getId());
+				address.setReceiptName(receiptName);
+				address.setTel(telAddress);
+				address.setProvince("山东省");
+				address.setCity("济南市");
+				address.setCounty(county);
+				address.setType("1");
+				addressService.update(address);
+				
+				if(addr.getId()!=addressId){
+					addr.setType("0");
+					addressService.update(addr);
+				}
+				
+				saveSuccess = 2;
+				
+			}else{
+				address = new ReceiptAddress();
+				
+				address.setDetailedAddress(detailedAddress);
+				address.setFrontUserId(user.getId());
+				address.setReceiptName(receiptName);
+				address.setTel(telAddress);
+				address.setProvince("山东省");
+				address.setCity("济南市");
+				address.setCounty(county);
+				address.setType("1");
+				addressService.save(address);
+				addressId = new Long((long)address.getId());
+				addr.setType("0");
+				addressService.update(addr);
+				saveSuccess = 1;
+			}
+			
+			
+			
+			
 		} catch (Exception e) {
 			
 		}
