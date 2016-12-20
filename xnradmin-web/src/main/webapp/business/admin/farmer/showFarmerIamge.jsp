@@ -45,7 +45,9 @@
 		<div class="contentBox personalBox">
 			<div class="uploadImgListBox">
 				<form role="form">
-					<h3 class="bigTit">图片展示</h3>
+					<h3 class="bigTit">农户姓名：${query.userName} </h3>
+					<h3 class="bigTit">菜品名称：${goods.goodsName} </h3>
+					<h3 class="bigTit">生长过程</h3>
 					<div class="form-group">
 						<div class="col-sm-10 uploadImgBox">
 							<ul>

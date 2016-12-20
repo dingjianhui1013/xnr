@@ -30,6 +30,7 @@ import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.FarmerExamine;
 import com.xnradmin.po.wx.connect.FarmerQrCode;
 import com.xnradmin.po.wx.connect.WXInit;
+import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
 import com.xnradmin.vo.business.OutPlanVO;
 
@@ -46,7 +47,10 @@ public class FarmerService {
 	{
 		farmerDao.save(farmer);
 	}
-	
+	public void delFarmer(Farmer farmer)
+	{
+		farmerDao.delete(farmer);;
+	}
 	public List<Farmer> getList(Farmer query,int pageNo,int pageSize){
 		
 		String hql = getHql(query);
@@ -217,7 +221,8 @@ public class FarmerService {
 			message = "你的账户已经通过审核。";
 		}else if(status.equals("2"))
 		{
-			message = "你的账户未通过审核。未通过原因："+remarks;
+			message = "你的账户未通过审核。未通过原因："+remarks+"<a href=\""+WXfInit.SERVICEURLW+"/xnr/page/wx/farmer/farmerExamineEdit.action?farmerId="+farmerId+"\">请前往页面进行审核信息。</a>";
+			
 		}else
 		{
 			message = "您的信息已经提交，请耐心等待审核！";
@@ -250,5 +255,23 @@ public class FarmerService {
 		textMessageF.setText(text);
 		String outputStr = JSONObject.fromObject(textMessageF).toString();
 		JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+	}
+
+	public void updateFarmerExamine(FarmerExamine farmerExamine) {
+		StringBuffer  hql = new StringBuffer("update FarmerExamine set ");
+		if(farmerExamine.getFarmerName()!=null)
+		{
+			hql.append(" farmerName = '"+farmerExamine.getFarmerName()+"'");
+		}
+		if(farmerExamine.getFarmerTel()!=null)
+		{
+			hql.append(", farmerTel = '"+farmerExamine.getFarmerTel()+"'");
+		}
+		if(farmerExamine.getContractNumber()!=null)
+		{
+			hql.append(", contractNumber = '"+farmerExamine.getContractNumber()+"'");
+		}
+		hql.append(" where id="+farmerExamine.getId());
+		commonDao.executeUpdateOrDelete(hql.toString());
 	}
 }

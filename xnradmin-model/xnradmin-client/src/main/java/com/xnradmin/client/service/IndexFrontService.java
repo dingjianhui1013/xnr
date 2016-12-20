@@ -187,12 +187,16 @@ public class IndexFrontService {
 	/**
 	 * 遍历收货地址
 	 */
-	public List<ReceiptAddress> getListAddress(FrontUser user) {
-		String hql = "from ReceiptAddress where frontUserId = '" + user.getId()
-				+ "'";
-		List<ReceiptAddress> list = commonDao.getEntitiesByPropertiesWithHql(
-				hql, 0, 0);
+	public List<ReceiptAddress> getListAddress(FrontUser user,int curPage,int pageSize ) {
+		String hql = "from ReceiptAddress where frontUserId = '" + user.getId()+ "'";
+		List<ReceiptAddress> list = commonDao.getEntitiesByPropertiesWithHql(hql, curPage, pageSize);
 		return list;
+	}
+	
+	public Integer getAddressCount(FrontUser user) {
+		String hql ="select count(id) from ReceiptAddress where frontUserId = '" + user.getId()+ "'";
+		Integer count =  commonDao.getNumberOfEntitiesWithHql(hql);
+		return count;
 	}
 
 	public ReceiptAddress getAddress(ReceiptAddress receiptAddress) {

@@ -42,16 +42,16 @@ public class WXFGetTokenService {
 	        long nowTime = new Date().getTime();
 	        if(StringUtils.isNullOrEmpty(accessToken)||StringUtils.isNullOrEmpty(expiresTime))
 	        {
-	        	accessToken = getAccessToken();
 	        	long time = new Date().getTime();
+	        	accessToken = getAccessToken();
 	        	writeAccessToken(accessToken, time, request);
 	        }else if(!StringUtils.isNullOrEmpty(accessToken)||!StringUtils.isNullOrEmpty(expiresTime))
 	        { 
 	        	long expirest = Long.parseLong(expiresTime);
 	        	if(nowTime>expirest)
 	        	{
-	        		accessToken = getAccessToken();
 	        		long time = new Date().getTime();
+	        		accessToken = getAccessToken();
 	        		writeAccessToken(accessToken, time, request);
 	        	}
 	        }
@@ -75,7 +75,7 @@ public class WXFGetTokenService {
 		SAXReader saxReader = new SAXReader();
 		File inputFile = new File(fileName);
         try {
-        	String expiresTime = (time+7200000)+"";
+        	String expiresTime = (time+7000000)+"";
 			Document document = saxReader.read(inputFile);
 			Element root = document.getRootElement();
 			Element e = (Element) root.selectSingleNode("/xml/AccessToken");

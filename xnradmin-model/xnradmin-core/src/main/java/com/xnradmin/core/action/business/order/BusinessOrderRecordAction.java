@@ -150,7 +150,13 @@ public class BusinessOrderRecordAction extends ParentAction {
 
 		// return StrutsResMSG.SUCCESS;
 	}
-
+	@Action(value = "frontUserInfo",results = {@Result(name =StrutsResMSG.SUCCESS, type="redirect",location = "/front/personalCenter.action",params = {"flag", "myorder" })})
+	public String frontUserInfo()
+	{
+		setFrontPageInfo();
+		return StrutsResMSG.SUCCESS;
+		
+	}
 	@Action(value = "syncPrice", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
 	public String syncPrice() throws IOException {
 		orderRecordService.syncPrice(createStartTime, createEndTime);
@@ -523,7 +529,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 		this.billList = statusService.find(CommonStaff.class, "staffBillTime");
 	}
 
-	private void setPageInfo() {
+	public void setPageInfo() {
 		// 设置排序
 		setDateTime();
 		findPaymentStatusList();
@@ -667,7 +673,151 @@ public class BusinessOrderRecordAction extends ParentAction {
 		String select = "select count(distinct record.id) ";
 		this.totalCount = orderRecordService.getCount2(select, vo);
 	}
-
+	private void setFrontPageInfo() {
+		// 设置排序
+		setDateTime();
+		findPaymentStatusList();
+		findPaymentProviderList();
+		findOperateStatusList();
+		findDeliveryStatus();
+		findPaymentTypeList();
+		BusinessOrderVO vo = new BusinessOrderVO();
+		BusinessOrderRecord po = new BusinessOrderRecord();
+		if (!StringHelper.isNull(orderGoodsRelationClientUserId)) {
+			po.setClientUserId(Integer.parseInt(orderGoodsRelationClientUserId));
+		}
+		po.setOrderNo(orderNo);
+		if (!StringHelper.isNull(orderRecordId)) {
+			po.setId(Long.valueOf(orderRecordId));
+		}
+		po.setClientUserName(clientUserName);
+		po.setClientUserEmail(clientUserEmail);
+		po.setClientUserMobile(clientUserMobile);
+		po.setClientUserSex(clientUserSex);
+		if (!StringHelper.isNull(clientUserType)) {
+			po.setClientUserType(Integer.parseInt(clientUserType));
+		}
+		po.setClientUserTypeName(clientUserTypeName);
+		po.setWxOpenId(wxOpenId);
+		po.setStaffId(orderGoodsRelationStaffId);
+		po.setUserRealMobile(userRealMobile);
+		po.setUserRealPlane(userRealPlane);
+		po.setUserRealName(userRealName);
+		if (!StringHelper.isNull(countryId)) {
+			po.setCountryId(Integer.parseInt(countryId));
+		}
+		po.setCountryName(countryName);
+		if (!StringHelper.isNull(provinceId)) {
+			po.setProvinceId(Integer.parseInt(provinceId));
+		}
+		po.setProvinceName(provinceName);
+		if (!StringHelper.isNull(cityId)) {
+			po.setCityId(Integer.parseInt(cityId));
+		}
+		po.setCityName(cityName);
+		if (!StringHelper.isNull(areaId)) {
+			po.setAreaId(Integer.parseInt(areaId));
+		}
+		po.setAreaName(areaName);
+		po.setUserRealAddress(userRealAddress);
+		po.setUserRealPostcode(userRealPostcode);
+		if (!StringHelper.isNull(paymentType)) {
+			po.setPaymentType(Integer.parseInt(paymentType));
+		}
+		po.setPaymentTypeName(paymentTypeName);
+		if (!StringHelper.isNull(paymentStatus)) {
+			po.setPaymentStatus(Integer.parseInt(paymentStatus));
+		}
+		po.setPaymentStatusName(paymentStatusName);
+		if (!StringHelper.isNull(paymentProvider)) {
+			po.setPaymentProvider(Integer.parseInt(paymentProvider));
+		}
+		po.setPaymentProviderName(paymentProviderName);
+		if (!StringHelper.isNull(operateStatus)) {
+			if (!operateStatus.equals("0")) {
+				po.setOperateStatus(Integer.parseInt(operateStatus));
+			}
+		}
+		po.setOperateStatusName(operateStatusName);
+		if (!StringHelper.isNull(originalPrice)) {
+			po.setOriginalPrice(Float.valueOf(originalPrice));
+		}
+		if (!StringHelper.isNull(totalPrice)) {
+			po.setTotalPrice(Float.valueOf(totalPrice));
+		}
+		if (!StringHelper.isNull(purchasePrice)) {
+			po.setPurchasePrice(Float.valueOf(purchasePrice));
+		}
+		if (!StringHelper.isNull(discount)) {
+			po.setDiscount(Float.valueOf(discount));
+		}
+		if (!StringHelper.isNull(logisticsCompanyId)) {
+			po.setLogisticsCompanyId(Integer.parseInt(logisticsCompanyId));
+		}
+		po.setLogisticsCompanyName(logisticsCompanyName);
+		po.setDeliveryStaffId(deliveryStaffId);
+		po.setDeliveryStaffName(deliveryStaffName);
+		po.setDeliveryStaffMobile(deliveryStaffMobile);
+		if (!StringHelper.isNull(deliveryStatus)) {
+			po.setDeliveryStatus(Integer.parseInt(deliveryStatus));
+		}
+		po.setDeliveryStatusName(deliveryStatusName);
+		if (!StringHelper.isNull(sourceId)) {
+			po.setSourceId(Integer.parseInt(sourceId));
+		}
+		po.setSourceName(sourceName);
+		if (!StringHelper.isNull(sourceType)) {
+			po.setSourceType(Integer.parseInt(sourceType));
+		}
+		po.setSourceTypeName(sourceTypeName);
+		po.setSerNo(serNo);
+		if (!StringHelper.isNull(sellerId)) {
+			po.setSellerId(Integer.parseInt(sellerId));
+		}
+		po.setSellerName(sellerName);
+		if (!StringHelper.isNull(cusId)) {
+			po.setCusId(Integer.parseInt(cusId));
+		}
+		po.setCusName(cusName);
+		if (!StringHelper.isNull(orderGoodsRelationPrimaryConfigurationId)) {
+			po.setPrimaryConfigurationId(Integer
+					.parseInt(orderGoodsRelationPrimaryConfigurationId));
+		}
+		po.setPrimaryConfigurationName(primaryConfigurationName);
+		po.setClientUserId(Integer.parseInt(clientUserId));
+		vo.setBusinessOrderRecord(po);
+		vo.setUserRealStartTime(userRealStartTime);
+		vo.setUserRealEndTime(userRealEndTime);
+		vo.setPaymentStartTime(paymentStartTime);
+		vo.setPaymentEndTime(paymentEndTime);
+		vo.setOperateStartTime(operateStartTime);
+		vo.setOperateEndTime(operateEndTime);
+		vo.setCreateStartTime(createStartTime);
+		vo.setCreateEndTime(createEndTime);
+		vo.setDeliveryStartStartTime(deliveryStartStartTime);
+		vo.setDeliveryStartEndTime(deliveryStartEndTime);
+		vo.setDeliveryEndStartTime(deliveryEndStartTime);
+		vo.setDeliveryEndEndTime(deliveryEndEndTime);
+		vo.setRequiredDeliveryStartTime(requiredDeliveryStartTime);
+		vo.setRequiredDeliveryEndTime(requiredDeliveryEndTime);
+		vo.setFinalDeliveryStartTime(finalDeliveryStartTime);
+		vo.setFinalDeliveryEndTime(finalDeliveryEndTime);
+		vo.setLeaderStaff(leaderStaff);
+		vo.setProductName(productName);
+		
+		if(staff!=null){
+			vo.setStaff(staff);
+		}
+		
+		vo.setGroupBy("record.id");
+		vo.setOrderBy("record.staffId");
+		vo.setOrderByField("desc");
+		this.voList = orderRecordService.listVO2(vo, getPageNum(),
+				getNumPerPage(), orderField, orderDirection);
+		vo.setGroupBy("");
+		String select = "select count(distinct record.id) ";
+		this.totalCount = orderRecordService.getCount2(select, vo);
+	}
 	/**
 	 * 加载所有支付状态
 	 */

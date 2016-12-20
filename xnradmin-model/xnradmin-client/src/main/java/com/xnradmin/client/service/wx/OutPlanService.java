@@ -8,12 +8,15 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
 import com.cntinker.util.wx.connect.Text;
 import com.cntinker.util.wx.connect.TextMessage;
+import com.cntinker.util.wx.connect.TextMessageF;
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
@@ -28,6 +31,7 @@ import com.xnradmin.vo.business.OutPlanVO;
 @Service("OutPlanService")
 public class OutPlanService {
 	
+	private static Logger log = Logger.getLogger(OutPlanService.class);
 	@Autowired
 	private CommonDAO commonDao;
 	
@@ -293,20 +297,36 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 					+ " 产量为："+outPlanVO.getOutPlan().getOutput()+outPlanVO.getBusinessWeight().getWeightName()
 					+ "\n被拒绝。拒绝原因为："+outPlanVO.getOutPlan().getRemarks();
 		}
-		String access_token = WXGetTokenService.accessTokenIsOvertime();
+		log.debug("***********************");
+		log.debug(message+"***********message************");
+		log.debug("***********************");
+//		String access_token = WXGetTokenService.accessTokenIsOvertime();
+//	    Text text = new Text();
+//	    text.setContent(message);
+//	    TextMessage textMessage = new TextMessage();
+//	    textMessage.setTouser(outPlanVO.getOutPlan().getUserId());
+//	    textMessage.setMsgtype("text");
+//	   //如果是服务号此处注释掉
+////	    textMessage.setAgentid(WXInit.AGENT_ID);
+//	    textMessage.setText(text);
+//	    textMessage.setSafe(0);
+//	    String outputStr = JSONObject.fromObject(textMessage).toString();
+//	    WeixinUtil.httpRequest(WXurl.WX_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_token), "POST", outputStr);
 		String access_tokenF = WXFGetTokenService.accessTokenIsOvertime();
-	    Text text = new Text();
-	    text.setContent(message);
-	    TextMessage textMessage = new TextMessage();
-	    textMessage.setTouser(outPlanVO.getOutPlan().getUserId());
-	    textMessage.setMsgtype("text");
-	   //如果是服务号此处注释掉
-	    textMessage.setAgentid(WXInit.AGENT_ID);
-	    textMessage.setText(text);
-	    textMessage.setSafe(0);
-	    String outputStr = JSONObject.fromObject(textMessage).toString();
-	    WeixinUtil.httpRequest(WXurl.WX_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_token), "POST", outputStr);
-	    WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_FROMUSER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+		Text text = new Text();
+		text.setContent(message);
+		TextMessageF textMessageF =new TextMessageF();
+		textMessageF.setTouser(outPlanVO.getOutPlan().getUserId());
+		textMessageF.setMsgtype("text");
+		textMessageF.setText(text);
+		String outputStr = JSONObject.fromObject(textMessageF).toString();
+		log.debug("***********************");
+		log.debug(outputStr+"***********outputStr************");
+		log.debug("***********************");
+		JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+		log.debug("***********************");
+		log.debug(jsons+"***********jsons************");
+		log.debug("***********************");
 	}
 	
 	

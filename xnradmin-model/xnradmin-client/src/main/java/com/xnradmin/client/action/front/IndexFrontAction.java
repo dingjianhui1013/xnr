@@ -1,12 +1,12 @@
 package com.xnradmin.client.action.front;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
@@ -16,22 +16,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
+import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
+import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
 import com.xnradmin.vo.business.BusinessGoodsVO;
+import com.xnradmin.vo.business.BusinessOrderRelationVO;
+import com.xnradmin.vo.business.BusinessOrderVO;
 import com.xnradmin.vo.front.ProductDetailVo;
 
 @Controller
 @Scope("prototype")
 @Namespace("/front")
 @ParentPackage("json-default")
-public class IndexFrontAction  {
+public class IndexFrontAction  extends ParentAction{
 	private String productCategoryId;//产品列表，分类id（三级）
 	private String first;//产品列表，一级菜单名称
 	private String three;//产品列表，三级菜单名称
@@ -45,6 +54,36 @@ public class IndexFrontAction  {
 	private List<ReceiptAddress> receiptAddressList;
 	private String setDefaultId;
 	private String flag;
+	private String createStartTime;
+	private String createEndTime;
+	private String operateStatus;
+	private List<Status> paymentTypeList;
+	private List<Status> paymentStatusList;
+	private List<Status> paymentProviderList;
+	private List<Status> operateStatusList;
+	private List<Status> deliveryStatusList;
+	private List<BusinessOrderVO> voList;
+	private Integer clientUserId;
+	private Integer RPageNum =0;
+	private Integer RTotalPage;
+	public Integer getRPageNum() {
+		if(this.RPageNum <= 0)
+            return 1;
+        else
+            return RPageNum;
+	}
+	public Integer getRTotalPage() {
+		return RTotalPage;
+	}
+	public void setRPageNum(Integer rPageNum) {
+		if(rPageNum <= 0)
+            this.RPageNum = 1;
+        else
+            this.RPageNum = rPageNum;
+	}
+	public void setRTotalPage(Integer rTotalPage) {
+		RTotalPage = rTotalPage;
+	}
 	public ProductDetailVo getProductDetailVo() {
 		return productDetailVo;
 	}
@@ -94,17 +133,96 @@ public class IndexFrontAction  {
 	public void setFlag(String flag) {
 		this.flag = flag;
 	}
+	public String getCreateStartTime() {
+		return createStartTime;
+	}
+	public String getCreateEndTime() {
+		return createEndTime;
+	}
+	public String getOperateStatus() {
+		return operateStatus;
+	}
+	public List<Status> getPaymentTypeList() {
+		return paymentTypeList;
+	}
+	public List<Status> getPaymentStatusList() {
+		return paymentStatusList;
+	}
+	public List<Status> getPaymentProviderList() {
+		return paymentProviderList;
+	}
+	public List<Status> getOperateStatusList() {
+		return operateStatusList;
+	}
+	public List<BusinessOrderVO> getVoList() {
+		return voList;
+	}
+	public Integer getClientUserId() {
+		return clientUserId;
+	}
+	public BusinessOrderRecordService getOrderRecordService() {
+		return orderRecordService;
+	}
+	public void setCreateStartTime(String createStartTime) {
+		this.createStartTime = createStartTime;
+	}
+	public void setCreateEndTime(String createEndTime) {
+		this.createEndTime = createEndTime;
+	}
+	public void setOperateStatus(String operateStatus) {
+		this.operateStatus = operateStatus;
+	}
+	public void setPaymentTypeList(List<Status> paymentTypeList) {
+		this.paymentTypeList = paymentTypeList;
+	}
+	public void setPaymentStatusList(List<Status> paymentStatusList) {
+		this.paymentStatusList = paymentStatusList;
+	}
+	public void setPaymentProviderList(List<Status> paymentProviderList) {
+		this.paymentProviderList = paymentProviderList;
+	}
+	public void setOperateStatusList(List<Status> operateStatusList) {
+		this.operateStatusList = operateStatusList;
+	}
+	public void setVoList(List<BusinessOrderVO> voList) {
+		this.voList = voList;
+	}
+	public void setClientUserId(Integer clientUserId) {
+		this.clientUserId = clientUserId;
+	}
+	public void setOrderRecordService(BusinessOrderRecordService orderRecordService) {
+		this.orderRecordService = orderRecordService;
+	}
+
+	public List<Status> getDeliveryStatusList() {
+		return deliveryStatusList;
+	}
+	public void setDeliveryStatusList(List<Status> deliveryStatusList) {
+		this.deliveryStatusList = deliveryStatusList;
+	}
 
 	@Autowired
 	private BusinessCategoryService businessCategoryService;
 	@Autowired
+	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
+	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	@Autowired
+	private StatusService statusService;
+	@Autowired
+	private BusinessOrderRecordService orderRecordService;
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;
 	private List<BusinessGoodsVO> indexGoods;
 	@Autowired IndexFrontService indexFrontService;
 	
 	@Action(value = "index", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/index.jsp") })
 	public String info() {
+		HttpSession session = ServletActionContext.getRequest().getSession();
+		FrontUser user = (FrontUser)session.getAttribute("alipayToIndex_user");
+		if(user!=null)
+		{
+			session.setAttribute("user", user);
+		}
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		this.indexGoods = indexFrontService.listBusinessGoodsVO();
 		return StrutsResMSG.SUCCESS;
@@ -144,7 +262,18 @@ public class IndexFrontAction  {
 		}
 		this.flag = flag;
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
-		this.receiptAddressList = indexFrontService.getListAddress(user);
+		this.numPerPage = 2;
+		this.receiptAddressList = indexFrontService.getListAddress(user,getRPageNum(),numPerPage);
+		int count = indexFrontService.getAddressCount(user);
+		if(count%numPerPage==0)
+		{
+			this.RTotalPage = count/numPerPage;
+		}else
+		{
+			this.RTotalPage =count/numPerPage +1 ;
+		}
+		this.clientUserId = clientUserId = Integer.parseInt(user.getId().toString());
+		setFrontPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
 	/**
@@ -230,6 +359,94 @@ public class IndexFrontAction  {
 	{
 		return StrutsResMSG.SUCCESS;
 	}
+	
+	private void setFrontPageInfo()
+	{
+		setDateTime();
+		findPaymentStatusList();
+		findPaymentProviderList();
+		findOperateStatusList();
+		findDeliveryStatus();
+		findPaymentTypeList();
+		BusinessOrderVO vo = new BusinessOrderVO();
+		BusinessOrderRecord po = new BusinessOrderRecord();
+		po.setClientUserId(clientUserId);
+		vo.setBusinessOrderRecord(po);
+		vo.setGroupBy("record.id");
+		vo.setOrderBy("record.staffId");
+		vo.setOrderByField("desc");
+		this.numPerPage=3;
+//		voList = orderRecordService.listVO2(vo,getPageNum(),numPerPage, null, null);
+		voList = orderRecordService.listVO3(vo,getPageNum(),numPerPage, null, null);
+		this.voList = voList;
+		vo.setGroupBy("");
+		String select = "select count(distinct record.id) ";
+		int count = orderRecordService.getCount2(select, vo);
+		int totalPage= 0;
+		if(count%numPerPage==0)
+		{
+			totalPage = count/numPerPage;
+		}else
+		{
+			totalPage = count/numPerPage + 1;
+		} 
+		this.totalCount = totalPage;
+		
+	}
+	private void setDateTime() {
+		// 设置默认时间
+		if (StringHelper.isNull(createStartTime)
+				&& StringHelper.isNull(createEndTime)) {
+			this.createStartTime = StringHelper.getSystime("yyyy-MM-dd");
+			createStartTime = createStartTime + " 00:00:00";
+			this.createEndTime = StringHelper.getSystime("yyyy-MM-dd");
+			createEndTime = createEndTime + " 23:59:59";
+		}
+		if (StringHelper.isNull(operateStatus)) {
+			this.operateStatus = "204";
+		}
+
+	}
+	/**
+	 * 加载所有支付状态
+	 */
+	private void findPaymentStatusList() {
+		this.paymentStatusList = statusService.find(BusinessOrderRecord.class,
+				"BusinessPaymentStatus");
+	}
+
+	/**
+	 * 加载所有支付提供者类型
+	 */
+	private void findPaymentProviderList() {
+		this.paymentProviderList = statusService.find(
+				BusinessOrderRecord.class, "BusinessPaymentProvider");
+	}
+
+	/**
+	 * 加载所有订单处理状态
+	 */
+	private void findOperateStatusList() {
+		this.operateStatusList = statusService.find(BusinessOrderRecord.class,
+				"BusinessOperateStatus");
+	}
+
+	/**
+	 * 加载所有订单派送状态
+	 */
+	private void findDeliveryStatus() {
+		this.deliveryStatusList = statusService.find(BusinessOrderRecord.class,
+				"BusinessDeliveryStatus");
+	}
+
+	/**
+	 * 加载所有支付类型
+	 */
+	private void findPaymentTypeList() {
+		this.paymentTypeList = statusService.find(BusinessOrderRecord.class,
+				"BusinessPaymentType");
+	}
+	
 	//getter And setter
 	public List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> getAllBusinessCategorys() {
 		return allBusinessCategorys;
@@ -276,6 +493,11 @@ public class IndexFrontAction  {
 	}
 	public void setSearch(String search) {
 		this.search = search;
+	}
+	@Override
+	public boolean isPublic() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
 

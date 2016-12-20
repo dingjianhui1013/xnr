@@ -86,6 +86,18 @@ public class WeixinUtil
     }
     return result;
   }
+  public static int createFMenu(Menu menu)
+  {		
+	  String jsonMenu = JSONObject.fromObject(menu).toString();
+	  int result = 0;
+	  String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
+	  JSONObject jsonObject = httpRequest(WXurl.WXF_CRATE_URL.replace("ACCESS_TOKEN", access_tokenString), "POST", jsonMenu);
+    if ((jsonObject != null) && 
+      (jsonObject.getInt("errcode") != 0)) {
+      result = jsonObject.getInt("errcode");
+    }
+    return result;
+  }
 
   public static JSONObject httpRequest(String requestUrl, String requestMethod, String outputStr)
   {

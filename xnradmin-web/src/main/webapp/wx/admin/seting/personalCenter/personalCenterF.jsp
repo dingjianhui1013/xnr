@@ -37,7 +37,7 @@
 	$(function(){
 		if("${status}"==null||"${status}"==""||"${status}"=="0")
 		{
-			var farmerId = $('#userId').val();
+			var farmerId = '${userId}';
 			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId="+farmerId;
 		}else if ("${status}"=="3")
 			{
@@ -156,7 +156,7 @@
 					    	 <c:set var="i" value="1"/>
 					    	 <c:set var="ii" value="1"/>
 					    	 <c:set var="count" value="1" />
-					    	 	<input type="hidden" value="${userId}" id="userId">
+<%-- 					    	 	<input type="hidden" value="${userId}" id="userId"> --%>
 					    	 	<c:forEach items="${date_type_images}" var="dtis">
 									<li id="datecount${count}"><span class="circleIcon"></span>
 									<c:forEach items="${dtis}" var="dti">

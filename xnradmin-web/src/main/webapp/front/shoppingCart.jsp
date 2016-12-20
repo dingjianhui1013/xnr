@@ -13,8 +13,12 @@
 <script type="text/javascript">
 
 function onSubmit(){
+	var userId = $("#userId").val();
 	if($("#cartids").val()== ""){
 		layer.msg("请至少选择一种商品!");
+		return false;
+	}else if(userId==""||userId==null){
+		window.location = "<%=basePath%>/front/login.jsp";
 		return false;
 	}
 	
@@ -434,10 +438,9 @@ function modefyToCart(id){
 			 		
 			 		    <form method="post" action="${basePath}/front/orderrecord/businessConfirm.action">
 			 		    	<input type="hidden" id="cartids" name="cartids"/>
-			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/>
-			 		    
-			 		    <input type="submit" onclick="return onSubmit()" class="pull-right cartSubmitBtn" value="去结算">
-			 		    </form>
+			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/> <input type="submit" onclick="return onSubmit()"
+									class="pull-right cartSubmitBtn" value="去结算">
+							</form>
 			 		
 			 			
 			 			<div class="pull-right totalMoney">

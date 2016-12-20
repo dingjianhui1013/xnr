@@ -9,6 +9,32 @@
 <%@include file="header.jsp"%>
 <!-- /start menu -->
 <script type="text/javascript">
+$(function(){
+	if($("#userId").val()!=null||$("#userId").val()!="")
+		{
+			$.ajax({
+				url:"<%=basePath%>/front/receiptAddress/getDistribution.action",
+				type:"POST",
+				data:{"userId":$("#userId").val(),"_":new Date().getTime()},
+				dataType:"json",
+				success:function(data){
+					if(data.findSuccess==0)
+						{
+							if(data.addr.province=="北京市")
+								{
+									$("#distribution option[value=bj]").attr("selected","true");
+								}else if(data.addr.province=="山东省")
+									{
+										$("#distribution option[value=sd]").attr("selected","true");
+									}else if(data.addr.province=="河北省")
+										{
+											$("#distribution option[value=hb]").attr("selected","true");
+										}
+						}
+				}
+			});
+		}
+})
 function plusNum()
 {
 		var index = $(".item_quantity").val();
@@ -136,15 +162,18 @@ function getUuid(){
 							<div class="p-detailCon">
 								<div class="sendAdd msgList">
 									<p class="priceBox">
-										配送至： <span> <select>
-												<option>北京</option>
-												<option>上海</option>
+										配送至： <span> 
+										<select id="distribution">
+												<option value="jn">济南</option>
+												<option value="bj">北京市</option>
+												<option value="hb">河北省</option>
+												<option value="sd">山东省</option>
 										</select>
 										</span>
 									</p>
 								</div>
 								<p class="msgList">
-									发货地：<span>北京</span>
+									发货地：<span>济南</span>
 								</p>
 								<div class="addCart-box">
 									<div class="addNum">

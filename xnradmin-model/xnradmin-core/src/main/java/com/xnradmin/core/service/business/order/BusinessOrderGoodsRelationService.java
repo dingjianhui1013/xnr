@@ -23,6 +23,7 @@ import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.vo.business.BusinessGoodsVO;
+import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
 
 /**
@@ -285,6 +286,22 @@ public class BusinessOrderGoodsRelationService {
 			goods.add((BusinessGoods) obj[1]);
 		}
 		return goods;
+	}
+
+	public List<BusinessOrderRelationVO> findByOrderRecordId(Long borId) {
+		String hql = "from BusinessOrderGoodsRelation a ,BusinessGoods b where a.goodsId=b.id and a.orderRecordId='"+borId+"'";
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<BusinessOrderRelationVO> borvo = new ArrayList<BusinessOrderRelationVO>();
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = (Object[]) l.get(i);
+			BusinessOrderRelationVO bo = new BusinessOrderRelationVO();
+			BusinessOrderGoodsRelation bogr = (BusinessOrderGoodsRelation)obj[0];
+			BusinessGoods bg = (BusinessGoods)obj[1];
+			bo.setOrderGoodsRelation(bogr);
+			bo.setBusinessGoods(bg);
+			borvo.add(bo);
+		}
+		return borvo;
 	}
 
 }

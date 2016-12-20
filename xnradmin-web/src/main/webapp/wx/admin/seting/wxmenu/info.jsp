@@ -86,7 +86,9 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">		
-			<li><a class="add" href="${add}" target="dialog" rel="menu_add"><span>添加菜单</span></a></li>				
+			<li><a class="add" href="${add}" target="dialog" rel="menu_add"><span>添加菜单</span></a></li>		
+			<li class="line">line</li>			
+			<li><a class="edit" target="ajaxTodo" href="${basePath }page/wx/wxconnect/createFMenu.action"  rel="menu_create"><span>创建菜单</span></a></li>	
 			<li class="line">line</li>			
 			<li><a class="delete" href="${del}?menuid={sid_menuid}&del=1" target="ajaxTodo" title="删除某个菜单将连带删除其下的所有子菜单"><span>删除</span></a></li>
 		</ul>

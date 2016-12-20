@@ -36,7 +36,7 @@
 <script type="text/javascript">
 wx.config({
     debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    appId: 'wxa15dd81410affe8f', // 必填，企业号的唯一标识，此处填写企业号corpid
+    appId: '${appId}', // 必填，企业号的唯一标识，此处填写企业号corpid
     timestamp: '${timep}', // 必填，生成签名的时间戳
     nonceStr: '${noncestr}', // 必填，生成签名的随机串
     signature:'${signature}',// 必填，签名，见附录1
@@ -150,7 +150,7 @@ function upF()
 	$.ajax({
 		url:"<%= path %>/page/wx/wxconnect/downloadFF.action",
 		type:"POST",
-		data:{serverId:$("#dId").val(),userId:$('#userId').val(),userName:$('#userName').val(),type:$("#type").val(),_:new Date().getTime()},
+		data:{serverId:$("#dId").val(),userId:'${userId}',userName:$('#userName').val(),type:$("#type").val(),_:new Date().getTime()},
 		success:function(){
 				alert("图片保存成功");
 				window.location.href="${skiptUrl}";
@@ -238,9 +238,9 @@ function yanzheng(){
 					</div>
 				</div>
 				<div class="btnBox">
-					<input type="hidden" id="Id" /> <input type="hidden" id="dId" /> <input
-						type="hidden" id="userId" value="${userId }" /> <input
-						type="hidden" id="userName" value="${userName }" />
+					<input type="hidden" id="Id" /> <input type="hidden" id="dId" />
+<%-- 					<input type="hidden" id="userId" value="${userId }" />  --%>
+						<input type="hidden" id="userName" value="${userName }" />
 					<button type="button" class="btn btn-success" onclick="yanzheng()">确认提交</button>
 				</div>
 			</form>

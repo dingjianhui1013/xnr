@@ -79,6 +79,8 @@ public class BusinessOrderVO implements java.io.Serializable, Cloneable {
 	private List<BusinessOrderGoodsRelation> businessOrderGoodsRelationList;
 
 	private List<BusinessGoods> businessGoodsList;
+	
+	private List<BusinessOrderRelationVO> businessOrderRelationVO;
 
 	private String[] queryCateList;
 
@@ -257,6 +259,16 @@ public class BusinessOrderVO implements java.io.Serializable, Cloneable {
 	public void setBusinessOrderGoodsRelationList(
 			List<BusinessOrderGoodsRelation> businessOrderGoodsRelationList) {
 		this.businessOrderGoodsRelationList = businessOrderGoodsRelationList;
+	}
+
+	
+	public List<BusinessOrderRelationVO> getBusinessOrderRelationVO() {
+		return businessOrderRelationVO;
+	}
+
+	public void setBusinessOrderRelationVO(
+			List<BusinessOrderRelationVO> businessOrderRelationVO) {
+		this.businessOrderRelationVO = businessOrderRelationVO;
 	}
 
 	public List<BusinessGoods> getBusinessGoodsList() {

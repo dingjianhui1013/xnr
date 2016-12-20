@@ -15,7 +15,7 @@ public class FarmerExamine {
 	private Long id;
 	private String farmerName;
 	private String farmerTel;
-	private String farmerId;
+	private String farmerId;//农户的userid也就是微信的openid
 	private String contractNumber;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

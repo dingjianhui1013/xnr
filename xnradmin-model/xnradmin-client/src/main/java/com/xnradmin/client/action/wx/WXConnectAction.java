@@ -14,11 +14,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,7 +23,6 @@ import javax.servlet.http.HttpSession;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -47,24 +43,34 @@ import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.client.service.wx.WXFGetTokenService;
 import com.xnradmin.client.service.wx.WXFarmerImageService;
 import com.xnradmin.client.service.wx.WXGetTokenService;
+import com.xnradmin.client.service.wx.WXMenuService;
 import com.xnradmin.client.service.wx.WeiXinConnectService;
 import com.xnradmin.client.service.wx.WeixinUtil;
+import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.wx.WXMenu;
+import com.xnradmin.po.wx.connect.Button;
+import com.xnradmin.po.wx.connect.ClickButton;
+import com.xnradmin.po.wx.connect.ComplexButton;
 import com.xnradmin.po.wx.connect.FarmerImage;
+import com.xnradmin.po.wx.connect.Menu;
+import com.xnradmin.po.wx.connect.ViewButton;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
 import com.xnradmin.vo.business.OutPlanVO;
+import com.xnradmin.vo.client.wx.WXMenuVO;
 
 @Controller
 @Scope("prototype")
 @Namespace("/page/wx/wxconnect")
 @ParentPackage("json-default")
-public class WXConnectAction {
+public class WXConnectAction extends ParentAction{
 
 	private static Logger log = Logger.getLogger(WXConnectAction.class);
 	private String userId ;
@@ -146,6 +152,8 @@ public class WXConnectAction {
 	private WXFarmerImageService wXFarmerImageService;
 	@Autowired
 	private ShoppingCartService shoppingCartService;
+	@Autowired
+	private	WXMenuService wXMenuService;
 	@Action(value = "connect")
 	public void connect() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -278,29 +286,31 @@ public class WXConnectAction {
 	@Action(value = "oAuthF", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImageF.jsp") })
 	public String oAuthF(){
 		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession();
 		String code = request.getParameter("code");
 		String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
-		JSONObject userId = WeixinUtil.httpRequest(
+		JSONObject userIdObject = WeixinUtil.httpRequest(
 				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
 						.replace("CODE", code), "GET", null);
-		if (userId.toString().indexOf("errcode") == -1) {
+		if (userIdObject.toString().indexOf("errcode") == -1) {
+			String userId = userIdObject.getString("openid");
 			JSONObject userInformation = WeixinUtil.httpRequest(
 					WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
 							access_tokenString).replace("OPENID",
-							userId.getString("openid")), "GET", null);
+									userId), "GET", null);
 			if (userInformation.toString().indexOf("40001")!=-1){
 				access_tokenString =WXFGetTokenService.getAccessToken();
 				userInformation = WeixinUtil.httpRequest(
 						WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
 								access_tokenString).replace("OPENID",
-								userId.getString("openid")), "GET", null);
+										userId), "GET", null);
 			}
 			String userName = userInformation.getString("nickname");
-			this.status = farmerService.getStatus(userId.getString("openid"));
-			this.userId = userId.getString("openid");
+			this.status = farmerService.getStatus(userId);
+//			this.userId = userId;
+			session.setAttribute("userId", userId);
 			this.userName = userName;
 		}
-		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	
@@ -318,16 +328,65 @@ public class WXConnectAction {
 	}
 	/***
 	 * 服务号创建菜单
+	 * @throws IOException 
 	 */
-	@Action(value="createFMenu")
-	public void createFMenu()
+	@Action(value="createFMenu",results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String createFMenu() throws IOException
 	{
-		int type = WeixinUtil.createFMenu();
-		if (type == 0) {
-			log.info("菜单创建成功 ");
-		} else {
-			log.info("菜单创建失败");
+//		int type = WeixinUtil.createFMenu();
+//		if (type == 0) {
+//			log.info("菜单创建成功 ");
+//		} else {
+//			log.info("菜单创建失败");
+//		}
+		String message = "";
+		List<WXMenu> menus = wXMenuService.getList();
+		List<Button> buttons = new ArrayList<>();
+		if(!menus.isEmpty())
+		{
+			for (int i = 0; i < menus.size(); i++) {
+				if(!menus.isEmpty())
+				{
+					if(menus.get(i).getMenuLevel().equals("1"))
+					{
+						ComplexButton mainBtn = new ComplexButton();
+						mainBtn.setName(menus.get(i).getMenuName());
+						List<Button> buts = new ArrayList<>();
+						for (int j = 0; j < menus.size(); j++) {
+							if(menus.get(j).getParentMenuId().equals(menus.get(i).getId()))
+							{
+								buts.add(createButton(menus.get(j)));
+							}
+						}
+						if(buts.size()>5)
+						{
+							message = "二级菜单数量不能大于五个";
+						}
+						mainBtn.setSub_button(buts.toArray(new Button[buts.size()]));
+						buttons.add(mainBtn);
+					}else
+					{
+						buttons.add(createButton(menus.get(i)));
+					}
+				}
+			}
+			if(buttons.size()>3)
+			{
+				message = "一级菜单数量不能大于三个";
+			}
+			Menu menu = new Menu();
+	        menu.setButton(buttons.toArray(new Button[buttons.size()]));
+	       int type =  WeixinUtil.createFMenu(menu);
+	       if (type == 0) {
+				message = "菜单创建成功 ";
+				
+			} else {
+				message = "菜单创建失败";
+			}
+	        
 		}
+		super.success(message, null, "wxmenuinfo",null);
+		return StrutsResMSG.SUCCESS;
 	}
 
 	@Action(value = "uploadFF")
@@ -359,7 +418,8 @@ public class WXConnectAction {
 		session.setAttribute("noncestr", noncestr);
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
-		session.setAttribute("userId", userId);
+//		session.setAttribute("userId", userId);
+		session.setAttribute("appId", WXfInit.APPID);
 		session.setAttribute("skiptUrl", WXurl.WX_CLICK_URL.replace("APPID", WXfInit.APPID).replace("REDIRECT_URI",WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action").replace("SCOPE", "snsapi_base"));
 	}
 	
@@ -388,6 +448,7 @@ public class WXConnectAction {
 		session.setAttribute("signature", signature);
 		session.setAttribute("userName", userName);
 		session.setAttribute("userId", userId);
+		session.setAttribute("appId", WXInit.CORPID);
 		if(type!=null)
 		{
 			List<BusinessGoods> typeNames = businessGoodsService.getTypeNameById(types);
@@ -477,7 +538,7 @@ public class WXConnectAction {
 				}
 			}
 		}
-		this.userId = userId;
+//		this.userId = userId;
 		this.userName = userName;
 	}
 	@ResponseBody
@@ -539,5 +600,26 @@ public class WXConnectAction {
 		this.userId = userId;
 		this.userName = userName;
 	}
-	
+	private Button createButton(WXMenu weixinMenu){
+		//判断类型创建菜单
+		if("137".equals(weixinMenu.getTypeid())){
+			ClickButton btn = new ClickButton();
+			btn.setName(weixinMenu.getMenuName());
+			btn.setType("click");
+			btn.setKey(weixinMenu.getWxkey());
+			return btn;
+		}else{
+			ViewButton btn = new ViewButton();
+	        btn.setName(weixinMenu.getMenuName());
+	        btn.setType("view");
+	        btn.setUrl(weixinMenu.getUrl());
+	        return btn;
+		}
+	}
+
+	@Override
+	public boolean isPublic() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

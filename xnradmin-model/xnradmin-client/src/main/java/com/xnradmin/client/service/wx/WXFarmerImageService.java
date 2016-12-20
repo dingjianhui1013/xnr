@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.business.BusinessGoods;
@@ -36,6 +38,7 @@ import com.xnradmin.po.wx.connect.FarmerImageBak;
 @Service("wXFarmerImageService")
 @Transactional
 public class WXFarmerImageService { 
+	private static Logger log = Logger.getLogger(WXFarmerImageService.class);
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
 	@Autowired
@@ -91,6 +94,7 @@ public class WXFarmerImageService {
 			if(!list.isEmpty())
 			{
 				FarmerImageBak farmerImageBak =list.get(0);
+				uploadImage(farmerImageBak.getPicUrl(), userId, type);
 				hql = "update FarmerImageBak set typeName = '"+typeName+"' where id ="+ farmerImageBak.getId();
 				common.executeUpdateOrDelete(hql);
 			}else

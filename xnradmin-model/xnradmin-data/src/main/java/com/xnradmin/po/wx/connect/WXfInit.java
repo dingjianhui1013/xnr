@@ -3,17 +3,17 @@ package com.xnradmin.po.wx.connect;
 
 public class WXfInit {
 	public static final String TOKEN = "WHWWEIXINTOKEN";
-	public static final String APPID = "wxa15dd81410affe8f";
+	public static final String APPID = "wx89fafeca214c267b";
 	public static final String ENCODINGAESKEY = "bjR366VQla3cpPEnDG9icjMW2h4XEUyeFvsW6x3Pvc1";
-	public static final String APPSECRET = "1ca4fbb1cf984f19fd2839b730154d06";
+	public static final String APPSECRET = "9b7f4e8d331f1ecdc6ca740cabc73a09";
 	public static final String SERVICEURL = "http%3a%2f%2fweixin.robustsoft.cn";
 	public static final String SERVICEURLW = "http://weixin.robustsoft.cn";
 	
 	
-	private static String key = "1ca4fbb1cf984f19fd2839b730154d06";
+	private static String key = "8gqOoPuyk1a9X9EAS33MzLC4mbTCNQOn";
 
     // 微信支付分配的商户号ID（开通公众号的微信支付功能之后可以获取到）
-    private static String mchID = "1417197702";
+    private static String mchID = "1419647002";
 
     // 受理模式下给子商户分配的子商户号
     private static String subMchID = "";
