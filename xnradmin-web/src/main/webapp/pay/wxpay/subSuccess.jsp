@@ -24,7 +24,7 @@
 					dataType : "JSON",
 					success : function(d) {
 						if (d.status == "1") {
-							//跳转到购买成功页面
+							window.location.href = "${basePath}/front/paySuccess.jsp";
 							
 						}
 					}
