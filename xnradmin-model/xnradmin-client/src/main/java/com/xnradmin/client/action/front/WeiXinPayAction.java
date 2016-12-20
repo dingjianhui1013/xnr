@@ -110,6 +110,10 @@ public class WeiXinPayAction  {
                         notifyResData.setReturn_code("SUCCESS");
                         notifyResData.setReturn_msg("Already Notified!!!!");
                         //支付成功 保存有用的信息 改变订单状态
+                        businessOrderRecord.setPaymentStatusName("支付完成");
+                        businessOrderRecord.setPaymentStatus(200);
+                        orderRecordService.modify(businessOrderRecord);
+                        
                     } else {
                         notifyResData.setReturn_code("FAIL");
                         notifyResData.setReturn_msg("Server Error");
