@@ -30,6 +30,7 @@ import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.client.ClientUserInfo;
+import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
 
 /**
@@ -44,6 +45,9 @@ public class BusinessOrderRecordService {
 
 	@Autowired
 	private CommonDAO commonDao;
+	
+	@Autowired
+	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
 
 	@Autowired
 	private CommonJDBCDAO jdbcDao;
@@ -986,6 +990,7 @@ public class BusinessOrderRecordService {
 			BusinessCategory cate = (BusinessCategory) e[3];
 			CommonStaff staff = (CommonStaff) e[4];
 
+			
 			CommonStaff leadStaff = new CommonStaff();
 			leadStaff.setId(staff.getLeadStaffId());
 			leadStaff.setStaffName(staff.getLeadStaffName());
@@ -1005,7 +1010,42 @@ public class BusinessOrderRecordService {
 
 		return returnList;
 	}
+	public List<BusinessOrderVO> listVO3(BusinessOrderVO vo, int curPage,
+			int pageSize, String orderField, String direction) {
+		String hql = getHql(vo);
 
+		List<Object[]> res = this.commonDao.getEntitiesByPropertiesWithHql(hql,
+				curPage, pageSize);
+		List<BusinessOrderVO> returnList = new ArrayList<BusinessOrderVO>();
+		for (Object[] e : res) {
+			BusinessOrderRecord record = (BusinessOrderRecord) e[0];
+			BusinessOrderGoodsRelation rel = (BusinessOrderGoodsRelation) e[1];
+			BusinessGoods goods = (BusinessGoods) e[2];
+			BusinessCategory cate = (BusinessCategory) e[3];
+			CommonStaff staff = (CommonStaff) e[4];
+
+			Long borId = record.getId();
+			List<BusinessOrderRelationVO> bogr = businessOrderGoodsRelationService.findByOrderRecordId(borId);
+			CommonStaff leadStaff = new CommonStaff();
+			leadStaff.setId(staff.getLeadStaffId());
+			leadStaff.setStaffName(staff.getLeadStaffName());
+			leadStaff.setLeadStaffOrgId(staff.getLeadStaffOrgId());
+			leadStaff.setLeadStaffOrgName(staff.getLeadStaffOrgName());
+
+			BusinessOrderVO v = new BusinessOrderVO();
+			v.setBusinessOrderRelationVO(bogr);
+			v.setBusinessOrderRecord(record);
+			v.setBusinessOrderGoodsRelation(rel);
+			v.setBusinessGoods(goods);
+			v.setBusinessCategory(cate);
+			v.setStaff(staff);
+			v.setLeaderStaff(leadStaff);
+
+			returnList.add(v);
+		}
+
+		return returnList;
+	}
 	public Integer getCount2(String select, BusinessOrderVO vo) {
 		String hql = select + getHql(vo);
 

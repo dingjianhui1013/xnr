@@ -294,19 +294,37 @@
 					                    	</div>
 		                    </div>
 	                    </c:forEach>
-                     
                    </c:forEach>
                 <!--分页-->
-                <nav class="text-center">
+   				<nav class="text-center">
 				      <ul class="pagination">
-				        <li class="disabled"><a href="#">«</a></li>
-				        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-				        <li><a href="#">2</a></li>
-				        <li><a href="#">3</a></li>
-				        <li><a href="#">4</a></li>
-				        <li><a href="#">5</a></li>
-				        <li><a href="#">»</a></li>
-				     </ul>
+				      <c:choose>
+						<c:when test="${pageNum==1}">
+							 <li class="disabled"><a>«</a></li>
+						</c:when>
+						<c:otherwise>	
+							<li class="disabled"><a href="${basePath}front/personalCenter.action?pageNum=1&flag=myorder">«</a></li>
+						</c:otherwise>
+					</c:choose>
+						<c:forEach begin="1" end="${totalCount}" var="numpage">
+							<c:choose>
+								<c:when test="${numpage==pageNum}">
+									<li class="active"><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li>
+								</c:when>
+								<c:otherwise>	
+									<li><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<c:choose>
+							<c:when test="${pageNum==totalCount}">
+								 <li class="disabled"><a>»</a></li>
+							</c:when>
+							<c:otherwise>	
+								<li><a href="${basePath}front/personalCenter.action?pageNum=${totalCount}&flag=myorder">»</a></li>
+							</c:otherwise>
+						</c:choose>
+				    </ul>
    				</nav>
 				<!--分页end-->
                 </div>
@@ -343,7 +361,38 @@
 	                		</div>
                 	</c:forEach>
                 	</div>
+                	<nav class="text-center">
+				      <ul class="pagination">
+				      <c:choose>
+						<c:when test="${RPageNum==1}">
+							 <li class="disabled"><a>«</a></li>
+						</c:when>
+						<c:otherwise>	
+							<li class="disabled"><a href="${basePath}front/personalCenter.action?RPageNum=1&flag=address">«</a></li>
+						</c:otherwise>
+					</c:choose>
+						<c:forEach begin="1" end="${RTotalPage}" var="numpage">
+							<c:choose>
+								<c:when test="${numpage==RPageNum}">
+									<li class="active"><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li>
+								</c:when>
+								<c:otherwise>	
+									<li><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<c:choose>
+							<c:when test="${RPageNum==RTotalPage}">
+								 <li class="disabled"><a>»</a></li>
+							</c:when>
+							<c:otherwise>	
+								<li><a href="${basePath}front/personalCenter.action?RPageNum=${RTotalPage}&flag=address">»</a></li>
+							</c:otherwise>
+						</c:choose>
+				    </ul>
+   				</nav>
                 </div>
+                
                  <div class="p-orderList editList">
                  		<h3 class="titBox">密码修改</h3>
                 		<form class="form-horizontal" id="submitForm" action="savePassword.action">

@@ -1,12 +1,12 @@
 package com.xnradmin.client.action.front;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
+import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
@@ -26,7 +27,6 @@ import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
-import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
@@ -40,7 +40,7 @@ import com.xnradmin.vo.front.ProductDetailVo;
 @Scope("prototype")
 @Namespace("/front")
 @ParentPackage("json-default")
-public class IndexFrontAction  {
+public class IndexFrontAction  extends ParentAction{
 	private String productCategoryId;//产品列表，分类id（三级）
 	private String first;//产品列表，一级菜单名称
 	private String three;//产品列表，三级菜单名称
@@ -64,6 +64,26 @@ public class IndexFrontAction  {
 	private List<Status> deliveryStatusList;
 	private List<BusinessOrderVO> voList;
 	private Integer clientUserId;
+	private Integer RPageNum =0;
+	private Integer RTotalPage;
+	public Integer getRPageNum() {
+		if(this.RPageNum <= 0)
+            return 1;
+        else
+            return RPageNum;
+	}
+	public Integer getRTotalPage() {
+		return RTotalPage;
+	}
+	public void setRPageNum(Integer rPageNum) {
+		if(rPageNum <= 0)
+            this.RPageNum = 1;
+        else
+            this.RPageNum = rPageNum;
+	}
+	public void setRTotalPage(Integer rTotalPage) {
+		RTotalPage = rTotalPage;
+	}
 	public ProductDetailVo getProductDetailVo() {
 		return productDetailVo;
 	}
@@ -242,30 +262,20 @@ public class IndexFrontAction  {
 		}
 		this.flag = flag;
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
-		this.receiptAddressList = indexFrontService.getListAddress(user);
+		this.numPerPage = 2;
+		this.receiptAddressList = indexFrontService.getListAddress(user,getRPageNum(),numPerPage);
+		int count = indexFrontService.getAddressCount(user);
+		if(count%numPerPage==0)
+		{
+			this.RTotalPage = count/numPerPage;
+		}else
+		{
+			this.RTotalPage =count/numPerPage +1 ;
+		}
 		this.clientUserId = clientUserId = Integer.parseInt(user.getId().toString());
 		setFrontPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
-//	/**
-//	 * 个人中心订单
-//	 * @return
-//	 */
-//	@Action(value = "frontUserInfo",results = {@Result(name =StrutsResMSG.SUCCESS,location = "/front/personalCenter.jsp")})
-//	public String frontUserInfo()
-//	{
-//		setFrontPageInfo();
-//		HttpSession session = ServletActionContext.getRequest().getSession();
-//		FrontUser user = (FrontUser)session.getAttribute("user");
-//		if(null==user){
-//			return StrutsResMSG.FAILED;
-//		}
-//		this.flag = "myorder";
-//		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
-//		this.receiptAddressList = indexFrontService.getListAddress(user);
-//		return StrutsResMSG.SUCCESS;
-//		
-//	}
 	/**
 	 * 产品列表
 	 * @return
@@ -365,16 +375,23 @@ public class IndexFrontAction  {
 		vo.setGroupBy("record.id");
 		vo.setOrderBy("record.staffId");
 		vo.setOrderByField("desc");
-		voList = orderRecordService.listVO2(vo, 0,0, null, null);
-		for (BusinessOrderVO bov : voList) {
-			Long borId = bov.getBusinessOrderRecord().getId();
-			List<BusinessOrderRelationVO> bogr = businessOrderGoodsRelationService.findByOrderRecordId(borId);
-			bov.setBusinessOrderRelationVO(bogr);
-		}
+		this.numPerPage=3;
+//		voList = orderRecordService.listVO2(vo,getPageNum(),numPerPage, null, null);
+		voList = orderRecordService.listVO3(vo,getPageNum(),numPerPage, null, null);
 		this.voList = voList;
-//		vo.setGroupBy("");
-//		String select = "select count(distinct record.id) ";
-//		this.totalCount = orderRecordService.getCount2(select, vo);
+		vo.setGroupBy("");
+		String select = "select count(distinct record.id) ";
+		int count = orderRecordService.getCount2(select, vo);
+		int totalPage= 0;
+		if(count%numPerPage==0)
+		{
+			totalPage = count/numPerPage;
+		}else
+		{
+			totalPage = count/numPerPage + 1;
+		} 
+		this.totalCount = totalPage;
+		
 	}
 	private void setDateTime() {
 		// 设置默认时间
@@ -476,6 +493,11 @@ public class IndexFrontAction  {
 	}
 	public void setSearch(String search) {
 		this.search = search;
+	}
+	@Override
+	public boolean isPublic() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
 
