@@ -166,6 +166,10 @@ public class BusinessOrderRecord implements java.io.Serializable{
     /** 当前用户折扣 */
     private Float discount; 
     
+    
+    //该订单商品总数量
+    private Integer totalCount;
+    
     public String toString() {
 		String res = "";
 		try {
@@ -779,6 +783,21 @@ public class BusinessOrderRecord implements java.io.Serializable{
 	public void setDiscount(Float discount) {
 		this.discount = discount;
 	}
+
+	@Column(name = "TOTALCOUNT")
+	public Integer getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(Integer totalCount) {
+		this.totalCount = totalCount;
+	}
+	
+	
+	
+	
+	
+	
 
 	
 }
