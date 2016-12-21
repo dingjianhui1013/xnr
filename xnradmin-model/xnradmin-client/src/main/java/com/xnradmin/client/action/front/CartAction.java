@@ -32,6 +32,7 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.clientUser.ClientUserInfoService;
 import com.xnradmin.core.service.mall.commodity.GoodsService;
@@ -47,6 +48,7 @@ import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
 import com.xnradmin.vo.StaffVO;
+import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.front.BusinessGoodsCartVo;
 import com.xnradmin.vo.mall.OrderVO;
 /**
@@ -72,6 +74,8 @@ public class CartAction extends ParentAction {
 	
 	@Autowired
 	private StatusService statusService;
+	@Autowired
+	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
 
     private FrontUser user;
 	private String shoppingCartId;
@@ -95,9 +99,10 @@ public class CartAction extends ParentAction {
 	private List<BusinessGoodsCartVo> cartVoList;
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;//导航菜单
 	private String cartId;//修改购物车数量
-	
-	
-	
+	private String orderRecordId;
+	private int res;
+	private int totalCount;
+	private Float totalMoney;
 
 	public String getCartId() {
 		return cartId;
@@ -296,12 +301,44 @@ public class CartAction extends ParentAction {
 	
 	
 
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public Float getTotalMoney() {
+		return totalMoney;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public void setTotalMoney(Float totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+
+	public int getRes() {
+		return res;
+	}
+
+	public void setRes(int res) {
+		this.res = res;
+	}
+
 	public FrontUser getUser() {
 		return user;
 	}
 
 	public void setUser(FrontUser user) {
 		this.user = user;
+	}
+
+	public String getOrderRecordId() {
+		return orderRecordId;
+	}
+
+	public void setOrderRecordId(String orderRecordId) {
+		this.orderRecordId = orderRecordId;
 	}
 
 	@Override
@@ -473,6 +510,69 @@ public class CartAction extends ParentAction {
 	public String del() throws IOException, JSONException {
 		if(null!=ServletActionContext.getRequest().getSession().getAttribute("user")){
 			this.delStatus = shoppingCartService.removeShoppingCartById(shoppingCartId);
+		}
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="againBuy",results={@Result(name=StrutsResMSG.SUCCESS,type="json")})
+	public String againBuy(){
+		totalCount=0;
+		totalMoney=0f;
+		List<BusinessOrderRelationVO> bogr = businessOrderGoodsRelationService.findByOrderRecordId(Long.parseLong(orderRecordId));
+		for (BusinessOrderRelationVO bogrV : bogr) {
+			String goodsId = bogrV.getBusinessGoods().getId().toString();
+			Integer goodsCount = bogrV.getOrderGoodsRelation().getGoodsCount();
+			if(!StringHelper.isNull(clientUserId) && !StringHelper.isNull(goodsId) &&!StringHelper.isNull(goodsCount.toString())){
+				FrontUser frontUser = userService.findByid(clientUserId);
+				BusinessGoods goods = goodsService.findByid(goodsId);
+				if(frontUser!=null && goods!=null && frontUser.getId()!=null){
+					List<ShoppingCart> list = shoppingCartService.findBygoodsCount(goodsId, Integer.parseInt(frontUser.getId().toString()));
+					if(!list.isEmpty())
+					{
+						int count = list.get(0).getGoodsCount();
+						ShoppingCart po = list.get(0);
+						po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
+						po.setGoodsId(goods.getId());
+						po.setGoodsCount(goodsCount+count);
+						
+						
+						po.setCurrentPrice(goods.getGoodsOriginalPrice());
+						po.setTotalPrice(list.get(0).getTotalPrice()+(goods.getGoodsOriginalPrice()*goodsCount));
+						po.setCurrentPriceType(121);
+						
+						po.setOriginalPrice(goods.getGoodsOriginalPrice());
+						po.setOriginalTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
+						po.setPrimaryConfigurationId(1);
+						po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
+						totalCount+=count;
+						totalMoney+=(goods.getGoodsOriginalPrice()*goodsCount);
+						res = shoppingCartService.modify(po);
+					}else
+					{
+						ShoppingCart po = new ShoppingCart();
+						po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
+						po.setGoodsId(goods.getId());
+						po.setGoodsCount(goodsCount);
+						
+						
+						po.setCurrentPrice(goods.getGoodsOriginalPrice());
+						po.setTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
+						po.setCurrentPriceType(121);
+						
+						po.setOriginalPrice(goods.getGoodsOriginalPrice());
+						po.setOriginalTotalPrice(goods.getGoodsOriginalPrice()*goodsCount);
+						po.setPrimaryConfigurationId(1);
+						po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
+						totalCount+=goodsCount;
+						try {
+							totalMoney+=po.getOriginalTotalPrice();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						res = shoppingCartService.save(po);
+					}
+				}
+			}
 		}
 		return StrutsResMSG.SUCCESS;
 	}

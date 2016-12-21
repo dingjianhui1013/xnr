@@ -403,7 +403,7 @@ figure.effect-bubba:hover p {
 	/* border-bottom: 2px solid #1db66f; */
 }
 .featured h3{ 
-	background-image: url(../images/iconBg.png); 
+	background-image: url(../images/front/iconBg.png); 
 	background-position:0px -68px;
 	background-repeat:no-repeat; 
 	color:#333;padding-left: 4.5rem;
@@ -2062,14 +2062,26 @@ a.cpns:hover{
 .orderTitCol ul li{ float: left;width:12%; text-align: center; padding:1rem 0.5rem;}
 .orderListBox .orderTitCol ul li{font-weight: bold}
 .orderTitCol ul li.ordercol-d{width:52%;}
-.orderList .orderTitCol ul li{ background: none; min-height: 106px;}
+.orderTitCol ul li a,.orderTitCol ul li span{ color:#333}
+.orderTitCol ul li.ordercol-d a,.orderTitCol ul li.ordercol-d em{margin:0 3px; display:block;float: left;}
+.productListNum{ padding:2.5rem 1rem;}
+.orderTitCol ul li.ordercol-d em{ padding:2rem 0 1rem;}
+.orderList .orderTitCol ul li{ background: none; min-height: 106px;border-right:1px solid #ddd;padding:1rem 0 0.5rem;}
+.orderList .orderTitCol ul li:last-child{ border-right: none;}
 .orderList{overflow: hidden;margin-bottom: 1rem;border:1px solid #ddd;}
 .orderList .orderTitCol ul li span{ padding-top: 1.5rem ;  display:block;  vertical-align: top}
 .orderMoney{border-bottom: 1px solid #ddd; padding-bottom: 0.5rem;margin-bottom: 0.5rem;}
 .orderMoney em{ font-style: normal;}
 .pSlideNavUl li a{ color: #333;}
 .p-orderList{ display: none;}
-
+.orderDetailMoney{ font-size: 1.8rem;}
+.cartListBox .cart-header:last-child{border-bottom: none;}
+.statusBox{color:#629715;}
+.orderStatusBox{overflow: hidden;}
+.order-checkBox .orderStatusBox{border-bottom: 1px solid #ddd}
+.order-checkBox .orderStatusBox h3{border-bottom: none}
+.buyBtn{ padding:0.3rem 2rem; background:#629715;color:#fff; margin-right: 2rem;}
+.buyBtn:hover{color: #fff}
 
 .orderTips{border:1px solid #ddd; padding: 1rem;overflow: hidden;}
 .orderTips p{ font-weight: bold;margin-bottom: 0.5rem;}
@@ -2505,4 +2517,16 @@ ul.cart-header .cart-pDetail{width: 75%;}
 .operateBtn{ padding-right: 0.5rem;}
 .operateBtn .delBtn1{ width: 25%; }
 .totalMoney .t-money{margin-right: 0}
+ 
+/*pay*/
+.addListItem{overflow:hidden;}
+.operatorBox{ width: 100%; text-align: right;}
+.add-addItem{ width: 100%;}
+.priceLine .chooseNum{margin-top:3rem;  float: left; width: 30%; text-align: right;}
+/*subSuccess*/
+.payImgBox{margin:0;}
+.pull-left{ float: none!important}
+.codeImgWrap{width: 100%; text-align: center;}
+.codeImgWrap img{ width: 100%;max-width:100%;height: 100%;}
+.videoSortBox{ margin-top: 2rem;}
 }

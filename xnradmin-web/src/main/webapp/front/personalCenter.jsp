@@ -185,6 +185,41 @@
 							$("#mAddress").submit();
 						}
 	}
+	function addToCart(id){
+		var userId = $("#userId").val()
+		if(userId!=null&&userId!=""){
+			$.ajax({
+				type:"POST", 
+				url:"<%=basePath%>/front/shopingCart/againBuy.action",
+				data:{"orderRecordId":id,"clientUserId":userId,_:new Date().getTime()},
+				dataType:"json",
+				success:function(msg){
+					if(msg.res==0)
+						{
+					 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+msg.totalMoney*Number(msg.totalCount)).toFixed(1));
+					 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(msg.totalCount)));
+							layer.msg("加入成功");
+						}
+					}
+				});
+		}
+// 		else
+// 			{
+// 				//layer.msg("请先登录");
+<%-- 				//setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000); --%>
+// 			var cart = getCartCookie();
+			
+// 			var item=new Object();
+// 			item.cookieId = getUuid();
+// 			item.goodsId = id;
+// 			item.goodsCount = goodsNumber;
+// 			item.price = Number($("#price"+id).val());
+// 			cart.push(item);
+// 			$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
+// 			layer.msg("加入成功");
+// 			}
+		
+	}
 </script>
 </head>
 <body> 
@@ -246,55 +281,58 @@
 							</form>
                 	</div>
                 </div>
-				<div class="p-orderList editList" id="p-orderList">
-					<h3 class="titBox">我的订单</h3>
-                    <div class="orderListBox">
-                    	<div class="orderTitCol">
-                    		<ul>
-                    			<li class="ordercol-d">订单详情</li>
-                    			<li>收货人</li>
-                    			<li>金额</li>
-                    			<li>状态</li>
-                    			<li>操作</li>
-                    		</ul>
-                    	</div>
-                    </div>
-                    <c:forEach items="${voList}" var="loop">
-	                    <c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations">
-	                    	<div class="orderList">
-		                    	<div class="orderTit">
-		                    		订单号：<span>${loop.businessOrderRecord.orderNo}</span>
-					                    		<span class="orderTime">
-						                          	${loop.businessOrderRecord.createTime}
-						                        </span>
-					                    	</div>
-					                    	<div class="orderTitCol">
-					                    		<ul>
-					                    			<li class="ordercol-d">
-					                    				<a href="#"><img src="${basePath }/${businessOrderRelations.businessGoods.goodsLogo}"></a>
-						  	                          	 <div class="orderCon">
-						  			                          <h3><a href="${bastPath}/front/productDetail.action?goodsId=${businessOrderRelations.businessGoods.id}">${businessOrderRelations.businessGoods.goodsName}</a></h3>
-						  		                          </div>
-					                    			</li>
-					                    			<li>
-					                    				<span>${loop.businessOrderRecord.userRealName}</span>
-					                    			</li>
-					                    			<li>
-								                          <span class="orderMoney">总额：<em>${businessOrderRelations.businessGoods.goodsOriginalPrice}</em></span>
-								                          <p>${loop.businessOrderRecord.paymentProviderName}</p>
-								                    </li>
-								                    <c:if test="${loop.businessOrderRecord.paymentStatusName!='未支付'}">
-								                   		<li><span>${loop.businessOrderRecord.paymentStatusName}</span></li>
-								                    </c:if>
-								                    <c:if test="${loop.businessOrderRecord.paymentStatusName=='未支付'}">
-								                   		<li><span>${loop.businessOrderRecord.paymentStatusName}<br> <a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
-								                    </c:if>
-					                    			<li><span><a href="${bastPath}/front/productDetail.action?goodsId=${businessOrderRelations.businessGoods.id}">再次购买</a></span></li>
-					                    		</ul>
-					                    	</div>
-		                    </div>
-	                    </c:forEach>
-                   </c:forEach>
+						<div class="p-orderList editList" id="p-orderList">
+						<h3 class="titBox">我的订单</h3>
+	                    <div class="orderListBox">
+	                    	<div class="orderTitCol">
+	                    		<ul>
+	                    			<li class="ordercol-d">订单详情</li>
+	                    			<li>收货人</li>
+	                    			<li>金额</li>
+	                    			<li>状态</li>
+	                    			<li>操作</li>
+	                    		</ul>
+	                    	</div>
+	                    </div>
+	                    <c:forEach items="${voList}" var="loop">
+	                     <div class="orderList">
+	                    	<div class="orderTit">
+		                                                              订单号：<span>${loop.businessOrderRecord.orderNo}</span> 
+	                    		<span class="orderTime">
+		                          	${loop.businessOrderRecord.createTime} 
+		                        </span>
+	                    	</div>
+	                    	<div class="orderTitCol">
+	                    		<ul>
+	                    			<li class="ordercol-d">
+		                    			<div class="pull-left  productListShow">
+		                    			<c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations"> 
+			                    			<a href="#"><img src="${basePath}${businessOrderRelations.businessGoods.goodsLogo}"></a>
+		                    			</c:forEach>
+		                    			<c:if test="${loop.businessOrderRecord.totalCount>4}"><em>...</em></c:if>
+		                    		 	</div>
+		                    		 	<div class="pull-right  productListNum">
+		                    		 		<a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">共${loop.businessOrderRecord.totalCount}件></a>
+		                    		 	</div>
+	                    			</li>
+	                    			<li>
+	                    				<span>${loop.businessOrderRecord.userRealName}</span>
+	                    			</li>
+	                    			<li> 
+				                          <span class="orderMoney">总额：<em>${loop.businessOrderRecord.totalPrice}</em></span>
+				                          <p>${loop.businessOrderRecord.paymentProviderName}</p>
+				                    </li>
+				                    <c:if test="${loop.businessOrderRecord.paymentStatusName!='未支付'}">
+				                   		<li><span>${loop.businessOrderRecord.paymentStatusName}</span></li>
+				                    </c:if>
+				                    <c:if test="${loop.businessOrderRecord.paymentStatusName=='未支付'}">
+				                   		<li><span>${loop.businessOrderRecord.paymentStatusName}<br> <a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
+				                    </c:if>
+	                    			<li><span><a href="javascript:addToCart('${loop.businessOrderRecord.id }')">再次购买</a></span><a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">查看详情</a></li>
+	                    		</ul>
+	                    	</div>
+	                    </div>
+	             </c:forEach>
                 <!--分页-->
    				<nav class="text-center">
 				      <ul class="pagination">
@@ -303,7 +341,7 @@
 							 <li class="disabled"><a>«</a></li>
 						</c:when>
 						<c:otherwise>	
-							<li class="disabled"><a href="${basePath}front/personalCenter.action?pageNum=1&flag=myorder">«</a></li>
+							<li><a href="${basePath}front/personalCenter.action?pageNum=1&flag=myorder">«</a></li>
 						</c:otherwise>
 					</c:choose>
 						<c:forEach begin="1" end="${totalCount}" var="numpage">

@@ -1,5 +1,6 @@
 package com.xnradmin.client.action.front;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,21 @@ public class IndexFrontAction  extends ParentAction{
 	private Integer clientUserId;
 	private Integer RPageNum =0;
 	private Integer RTotalPage;
+	private String businessOrderRecordId;
+	private BusinessOrderVO businessOrderVO;
+	
+	public BusinessOrderVO getBusinessOrderVO() {
+		return businessOrderVO;
+	}
+	public void setBusinessOrderVO(BusinessOrderVO businessOrderVO) {
+		this.businessOrderVO = businessOrderVO;
+	}
+	public String getBusinessOrderRecordId() {
+		return businessOrderRecordId;
+	}
+	public void setBusinessOrderRecordId(String businessOrderRecordId) {
+		this.businessOrderRecordId = businessOrderRecordId;
+	}
 	public Integer getRPageNum() {
 		if(this.RPageNum <= 0)
             return 1;
@@ -160,9 +176,6 @@ public class IndexFrontAction  extends ParentAction{
 	public Integer getClientUserId() {
 		return clientUserId;
 	}
-	public BusinessOrderRecordService getOrderRecordService() {
-		return orderRecordService;
-	}
 	public void setCreateStartTime(String createStartTime) {
 		this.createStartTime = createStartTime;
 	}
@@ -190,10 +203,6 @@ public class IndexFrontAction  extends ParentAction{
 	public void setClientUserId(Integer clientUserId) {
 		this.clientUserId = clientUserId;
 	}
-	public void setOrderRecordService(BusinessOrderRecordService orderRecordService) {
-		this.orderRecordService = orderRecordService;
-	}
-
 	public List<Status> getDeliveryStatusList() {
 		return deliveryStatusList;
 	}
@@ -293,6 +302,23 @@ public class IndexFrontAction  extends ParentAction{
 		return StrutsResMSG.SUCCESS;
 	}
 	/**
+	 * 订单详情
+	 * @return
+	 */
+	@Action(value="orderDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/orderDetail.jsp")})
+	public String orderDetail()
+	{
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+		this.indexGoods = indexFrontService.listBusinessGoodsVO();
+		BusinessOrderRecord orderRecord = orderRecordService.findByid(businessOrderRecordId);
+		List<BusinessOrderRelationVO> bogr = businessOrderGoodsRelationService.findByOrderRecordId(Long.parseLong(businessOrderRecordId));
+		BusinessOrderVO orderVOList = new BusinessOrderVO();
+		orderVOList.setBusinessOrderRecord(orderRecord);
+		orderVOList.setBusinessOrderRelationVO(bogr);
+		this.businessOrderVO = orderVOList;
+		return StrutsResMSG.SUCCESS;
+	}
+	/**
 	 * 搜索
 	 * @return
 	 */
@@ -375,7 +401,7 @@ public class IndexFrontAction  extends ParentAction{
 		vo.setGroupBy("record.id");
 		vo.setOrderBy("record.staffId");
 		vo.setOrderByField("desc");
-		this.numPerPage=3;
+		this.numPerPage=2;
 //		voList = orderRecordService.listVO2(vo,getPageNum(),numPerPage, null, null);
 		voList = orderRecordService.listVO3(vo,getPageNum(),numPerPage, null, null);
 		this.voList = voList;
