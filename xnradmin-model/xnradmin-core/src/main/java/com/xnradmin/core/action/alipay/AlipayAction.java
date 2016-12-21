@@ -120,7 +120,7 @@ public class AlipayAction {
 			
 			if(trade_status.equals("TRADE_FINISHED")){
 				//判断该笔订单是否在商户网站中已经做过处理
-				changePayStatus(out_trade_no, "处理中", total_fee, gmt_payment, "支付完成",trade_no,"完成", buyer_id, buyer_email,"yes");
+				changePayStatus(out_trade_no, "处理中", total_fee, gmt_payment, "已支付",trade_no,"完成", buyer_id, buyer_email,"yes");
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 				
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
@@ -134,7 +134,7 @@ public class AlipayAction {
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
 					//如果有做过处理，不执行商户的业务程序
-				changePayStatus(out_trade_no, "处理中", total_fee, gmt_payment, "支付完成",trade_no,"完成", buyer_id, buyer_email,"no");
+				changePayStatus(out_trade_no, "处理中", total_fee, gmt_payment, "已完成",trade_no,"完成", buyer_id, buyer_email,"no");
 				//注意：
 				//付款完成后，支付宝系统发送该交易状态通知
 			}else if(trade_status.equals("TRADE_PENDING"))
@@ -142,7 +142,7 @@ public class AlipayAction {
 				changePayStatus(out_trade_no, "等待收款", total_fee, gmt_payment, "未收款",trade_no,"等待收款", buyer_id, buyer_email,"no");
 			}else if(trade_status.equals("WAIT_BUYER_PAY"))
 			{
-				changePayStatus(out_trade_no, "等待买家付款", total_fee, gmt_payment, "未付款",trade_no,"等待买家付款", buyer_id, buyer_email,"no");
+				changePayStatus(out_trade_no, "等待买家付款", total_fee, gmt_payment, "未支付",trade_no,"等待买家付款", buyer_id, buyer_email,"no");
 			}
 
 			//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
@@ -207,7 +207,7 @@ public class AlipayAction {
 			
 			if(trade_status.equals("TRADE_FINISHED")){
 				//判断该笔订单是否在商户网站中已经做过处理
-				changePayStatus(out_trade_no, "处理完成", total_fee, notify_time, "支付完成",trade_no,"完成", buyer_id, buyer_email,"yes");
+				changePayStatus(out_trade_no, "处理中", total_fee, notify_time, "已支付",trade_no,"完成", buyer_id, buyer_email,"yes");
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 				
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
@@ -221,7 +221,7 @@ public class AlipayAction {
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
 					//如果有做过处理，不执行商户的业务程序
-				changePayStatus(out_trade_no, "处理中", total_fee, notify_time, "支付完成",trade_no,"完成", buyer_id, buyer_email,"no");
+				changePayStatus(out_trade_no, "处理中", total_fee, notify_time, "已支付",trade_no,"完成", buyer_id, buyer_email,"no");
 				//注意：
 				//付款完成后，支付宝系统发送该交易状态通知
 			}else if(trade_status.equals("TRADE_PENDING"))
@@ -273,6 +273,13 @@ public class AlipayAction {
 				orderRecord.setPaymentTime(Timestamp.valueOf(gmt_payment));
 				orderRecord.setOperateStatusName(operateStatusName);
 				orderRecord.setPaymentStatusName(paymentName);
+				if(paymentName.equals("已支付"))
+				{
+					orderRecord.setPaymentStatus(200);
+				}else if(paymentName.equals("未支付"))
+				{
+					orderRecord.setPaymentStatus(201);
+				}
 				orderRecordService.modify(orderRecord);
 				Reconciliation reconciliation = new Reconciliation();
 				reconciliation.setAlipayTradNo(trade_no);

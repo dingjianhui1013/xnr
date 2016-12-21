@@ -31,6 +31,7 @@ import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
@@ -229,6 +230,8 @@ public class OutPlanAction extends ParentAction{
 	private FarmerService farmerService;
 	@Autowired
 	private BusinessGoodsService businessGoodsService;
+	@Autowired
+	private FarmerOrderRecordService farmerOrderRecordService;
 	/**
 	 * 企业号生产计划跳转
 	 * @return
@@ -322,6 +325,21 @@ public class OutPlanAction extends ParentAction{
 	@Action(value = "deletePlanF",results = { @Result(name = StrutsResMSG.SUCCESS, type="redirect",location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WXfInit.APPID+"&redirect_uri="+WXfInit.SERVICEURL+"%2fxnr%2fpage%2fwx%2fpersonalCenter%2flistF.action&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect") })
 	public String deleteF(){
 		outPlanService.delete(deleteId);
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="deletePlanStatus",results = {@Result(name=StrutsResMSG.SUCCESS,type="json")})
+	public String deletePlanStatus()
+	{
+		log.debug("id = "+deleteId);
+		long count = farmerOrderRecordService.findByOutplanId(deleteId);
+		if(count!=0)
+		{
+			this.status = "1";
+		}else
+		{
+			this.status = "0";
+		}
+		log.debug("status ="+status);
 		return StrutsResMSG.SUCCESS;
 	}
 	/**

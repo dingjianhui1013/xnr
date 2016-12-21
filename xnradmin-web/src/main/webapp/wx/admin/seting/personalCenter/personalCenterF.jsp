@@ -45,23 +45,20 @@
 			}
 	})
 		function deletePlan(id){
-			var status = true;
-			//获取状态
-// 			$.ajax({
-// 				 type: "GET",
-// 	             url: "",
-// 	             data: {id:id,type:"delete"},
-// 	             dataType: "json",
-// 	             success: function(data){
-// 	            	 status = data.status;
-// 	             }
-// 			});
-			if(status){
-				location.href="<%=path %>/page/wx/outplan/deletePlanF.action?deleteId="+id;
-<%-- 			//	$.post("<%=path %>/page/wx/outplan/deletePlan.action",{deleteId:id},null);  --%>
-			}else{
-				alert("计划不能删除");
-			}
+			$.ajax({
+				 type: "GET",
+	             url: "<%=path %>/page/wx/outplan/deletePlanStatus.action",
+	             data: {"deleteId":id,_:new Date().getTime()},
+	             dataType: "json",
+	             success: function(data){
+	            	 var status = data.status;
+	            	 if(status=="0"){
+	     				location.href="<%=path %>/page/wx/outplan/deletePlan.action?deleteId="+id;
+	     			}else{
+	     				alert("计划已经分配,不可以删除。");
+	     			}
+	             }
+			});
 		}
 		function deleteImgae(imageUrl,imageid,count,typeCount){
 			// 点击图片所在日期所含类型数量

@@ -336,6 +336,12 @@ public class FarmerOrderRecordService {
 		hql.append(" order by d.id desc");
 		return hql.toString();
 	}
+
+	public long findByOutplanId(String deleteId) {
+		String hql = "select count(id) from FarmerOrderRecord where outPlanId = '"+deleteId+"'";
+		long count = commonDao.getNumberLongOfEntitiesWithHql(hql);
+		return count;
+	}
 	
 }
 

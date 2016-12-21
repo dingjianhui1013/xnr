@@ -188,7 +188,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 			}
 		}
 		
-		
+		hql.append(" and a.examine = '1'");
 		hql.append(" order by a.id desc");
 		return hql.toString();
 	}
