@@ -150,6 +150,8 @@ public class BusinessCategoryAction extends ParentAction {
 		this.categorySortId = categorySortId;
 	}
 
+	public void addd(){}
+	
 	public String getCategoryParentId() {
 		return categoryParentId;
 	}
