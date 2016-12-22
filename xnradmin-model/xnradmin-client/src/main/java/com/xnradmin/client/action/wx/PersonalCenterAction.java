@@ -30,6 +30,7 @@ import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.OutPlanCountVO;
 import com.xnradmin.vo.business.OutPlanVO;
 
 @Controller
@@ -51,6 +52,7 @@ public class PersonalCenterAction {
 	private String status;
 	private String imageid;
 	private String userId ;
+	private List<OutPlanCountVO> outPalnCountVO;
 	
 	public String getUserId() {
 		return userId;
@@ -75,6 +77,12 @@ public class PersonalCenterAction {
 	}
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+	public List<OutPlanCountVO> getOutPalnCountVO() {
+		return outPalnCountVO;
+	}
+	public void setOutPalnCountVO(List<OutPlanCountVO> outPalnCountVO) {
+		this.outPalnCountVO = outPalnCountVO;
 	}
 	/***
 	 * 企业号个人中心跳转
@@ -147,6 +155,7 @@ public class PersonalCenterAction {
 		}
 		ServletActionContext.getRequest().setAttribute("date_type_images", date_type_images);
 //		ServletActionContext.getRequest().getSession().setAttribute("userId", this.userId);
+		this.outPalnCountVO = outPlanService.findOccupyAmountCount(userId);
 		return StrutsResMSG.SUCCESS;
 	}
 	@Action(value = "test",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/personalCenter/personalCenter.jsp") })

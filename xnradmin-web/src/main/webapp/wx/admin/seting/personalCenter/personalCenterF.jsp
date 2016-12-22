@@ -258,6 +258,41 @@
 						  </div>
 					  </div>
 				  </div>
+				  <div class="planListBox">
+				   <h3 class="bigTit">销售统计</h3>
+				   <c:forEach items="${outPalnCountVO}" var="opcv">
+				  	 <div class="planListCon">
+				  	 	<div class="planShowBox" >
+				  	 		<div class="planList">
+				  	 			 <div class="form-group">
+									    <label for="" class="col-sm-2 control-label labelFont">类别</label>
+									    <div class="col-sm-10">
+									    	 <p class="form-control-static outputDate"><span>${opcv.goodsName }</span></p>
+									    </div>
+								 </div>
+								 <div class="form-group">
+									    <label for="" class="col-sm-2 control-label labelFont">计划总数</label>
+									    <div class="col-sm-10">
+									    	 <p class="form-control-static outputDate"><span>${opcv.outPutSum}</span></p>
+									    </div>
+								 </div>
+								 <div class="form-group">
+									    <label for="" class="col-sm-2 control-label labelFont">预订总数</label>
+									    <div class="col-sm-10">
+									    	 <p class="form-control-static outputDate"><span>${opcv.occupyAmountSum}</span></p>
+									    </div>
+								 </div>
+								 <div class="form-group">
+									    <label for="" class="col-sm-2 control-label labelFont">剩余数量</label>
+									    <div class="col-sm-10">
+									    	 <p class="form-control-static outputDate"><span>${opcv.validAmountSum}</span></p>
+									    </div>
+								 </div>
+				  	 		</div>
+				  	 	</div>
+				  	 </div>
+				  </c:forEach>
+				  </div>
 		</div>
 	</div>
 	<div id="gallery" class="pswp" tabindex="-1" role="dialog" aria-hidden="true">

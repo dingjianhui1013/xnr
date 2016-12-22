@@ -65,8 +65,8 @@ public class AlipayAction {
 	}
 
 
-	@Action(value="notify")
-	public void notiFy() throws Exception
+	@Action(value="notify",results={@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/index.action"),@Result(name = StrutsResMSG.FAILED,type="redirect", location = "/front/index.action")})
+	public String notiFy() throws Exception
 	{
 		//获取支付宝POST过来反馈信息
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -147,10 +147,11 @@ public class AlipayAction {
 
 			//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
 			out.getWriter().print("success");	//请不要修改或删除
-
+			return StrutsResMSG.SUCCESS;
 			//////////////////////////////////////////////////////////////////////////////////////////
 		}else{//验证失败
 			out.getWriter().print("fail");
+			return StrutsResMSG.FAILED;
 		}
 	}
 	@Action(value = "returUrl", results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/index.action"),@Result(name = StrutsResMSG.FAILED,type="redirect", location = "/front/index.action")})

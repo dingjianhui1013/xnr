@@ -40,7 +40,8 @@
 				$("#Yz").html("请输入详细类型").show();
 			}else{
 // 				validationOutplan();
-					$("#form").submit();
+				selectOccupyAmount();
+// 					$("#form").submit();
 			}
 		}
 		//这里是要进行占用数量验证，还没理解佳男是怎么考虑的。
@@ -53,7 +54,7 @@
 			var output = Number($("#output").val());
 			$.ajax({
 				type:'POST',
-				url:'<%=path %>/page/wx/outplan/validationOutplan.action',
+				url:'<%=path %>/page/wx/outplan/selectOccupyAmount.action',
 					data : {
 						eidtId : eidtId
 					},

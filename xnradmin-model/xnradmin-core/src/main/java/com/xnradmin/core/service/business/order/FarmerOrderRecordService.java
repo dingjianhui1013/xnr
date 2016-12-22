@@ -337,11 +337,11 @@ public class FarmerOrderRecordService {
 		return hql.toString();
 	}
 
-	public long findByOutplanId(String deleteId) {
-		String hql = "select count(id) from FarmerOrderRecord where outPlanId = '"+deleteId+"'";
-		long count = commonDao.getNumberLongOfEntitiesWithHql(hql);
-		return count;
-	}
-	
+//	public long findByOutplanId(String deleteId) {
+//		String hql = "select count(id) from FarmerOrderRecord where outPlanId = '"+deleteId+"'";
+//		long count = commonDao.getNumberLongOfEntitiesWithHql(hql);
+//		return count;
+//	}
+//	
 }
 

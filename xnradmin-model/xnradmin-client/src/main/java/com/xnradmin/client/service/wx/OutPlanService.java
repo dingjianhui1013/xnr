@@ -1,6 +1,7 @@
 package com.xnradmin.client.service.wx;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.OutPlanCountVO;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.OutPlanVO;
 
@@ -365,8 +367,94 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		}
 		return resList;
 	}
+	public int modify(OutPlan outPlan)
+	{
+		OutPlan old = new OutPlan();
+		old = findById(outPlan.getId().toString());
+		if (StringHelper.isNull(outPlan.getUserId())) {
+			outPlan.setUserId(old.getUserId());
+		}
+		if(StringHelper.isNull(outPlan.getGoodsId()))
+		{
+			outPlan.setGoodsId(old.getGoodsId());
+		}
+		if(outPlan.getStartTime()==null)
+		{
+			outPlan.setStartTime(old.getStartTime());
+		}
+		if(outPlan.getEndTime()==null)
+		{
+			outPlan.setEndTime(old.getEndTime());
+		}
+		if(StringHelper.isNull(outPlan.getUnitId()))
+		{
+			outPlan.setUnitId(old.getUnitId());
+		}
+		if(StringHelper.isNull(outPlan.getOutput()))
+		{
+			outPlan.setOutput(old.getOutput());
+		}
+		if(outPlan.getCreateDate()==null)
+		{
+			outPlan.setCreateDate(old.getCreateDate());
+		}
+		if(outPlan.getUpdateDate()==null)
+		{
+			outPlan.setUpdateDate(old.getUpdateDate());
+		}
+		if(StringHelper.isNull(outPlan.getCreateBy()))
+		{
+			outPlan.setCreateBy(old.getCreateBy());
+		}
+		if(StringHelper.isNull(outPlan.getUpdateBy()))
+		{
+			outPlan.setUpdateBy(old.getUpdateBy());
+		}
+		if(StringHelper.isNull(outPlan.getDelFlage()+""))
+		{
+			outPlan.setDelFlage(old.getDelFlage());
+		}
+		if(StringHelper.isNull(outPlan.getExaminePerson()))
+		{
+			outPlan.setExaminePerson(old.getExaminePerson());
+		}
+		if(StringHelper.isNull(outPlan.getRemarks()))
+		{
+			outPlan.setRemarks(old.getRemarks());
+		}
+		if(outPlan.getExamine()==null)
+		{
+			outPlan.setExamine(old.getExamine());
+		}
+		if(outPlan.getOccupyAmount()==null)
+		{
+			outPlan.setOccupyAmount(old.getOccupyAmount());
+		}
+		if(outPlan.getValidAmount()==null)
+		{
+			outPlan.setValidAmount(old.getValidAmount());
+		}
+		commonDao.merge(outPlan);
+		return 0;
+	}
 	
-	
+	public List<OutPlanCountVO> findOccupyAmountCount(String userId)
+	{
+		String hql = "select sum(a.occupyAmount),sum(a.validAmount),sum(a.output),a.goodsId,b.goodsName from OutPlan a,BusinessGoods b where a.userId='"+userId+"' and a.examine='1' and a.goodsId=b.id GROUP BY a.goodsId";
+		List list =  commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<OutPlanCountVO> opcv = new ArrayList<OutPlanCountVO>();
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj= (Object[])list.get(i);
+			OutPlanCountVO ov = new OutPlanCountVO();
+			ov.setOccupyAmountSum(obj[0].toString());
+			ov.setValidAmountSum((String)obj[1].toString());
+			ov.setOutPutSum(obj[2].toString());
+			ov.setGoodsId((String)obj[3]);
+			ov.setGoodsName(obj[4].toString());
+			opcv.add(ov);
+		}
+		return opcv;
+	}
 	
 	
 }

@@ -1568,7 +1568,9 @@ public class BusinessOrderRecordAction extends ParentAction {
 			farmerOrder.setOrderRecordId(Long.parseLong(orderRecordId));
 			farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
 			farmerOrder.setStaffId(this.getCurrentStaff().getId());
-			
+			plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
+			plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
+			planService.modify(plan);
 			farmerOrderService.save(farmerOrder);
 			
 		}

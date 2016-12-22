@@ -40,6 +40,7 @@ import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.WXInit;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
+import com.xnradmin.vo.OutPlanCountVO;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.OutPlanVO;
 
@@ -330,16 +331,14 @@ public class OutPlanAction extends ParentAction{
 	@Action(value="deletePlanStatus",results = {@Result(name=StrutsResMSG.SUCCESS,type="json")})
 	public String deletePlanStatus()
 	{
-		log.debug("id = "+deleteId);
-		long count = farmerOrderRecordService.findByOutplanId(deleteId);
-		if(count!=0)
+		OutPlan plan = outPlanService.findById(deleteId);
+		if(plan.getOccupyAmount()!=0)
 		{
 			this.status = "1";
-		}else
+		}else if(plan.getOccupyAmount()==0)
 		{
 			this.status = "0";
 		}
-		log.debug("status ="+status);
 		return StrutsResMSG.SUCCESS;
 	}
 	/**
@@ -427,7 +426,7 @@ public class OutPlanAction extends ParentAction{
 	public String selectOccupyAmount() {
 		OutPlan findById = outPlanService.findById(this.eidtId);
 		this.occupyAmount = findById.getOccupyAmount();
-		 return  StrutsResMSG.SUCCESS;
+		return  StrutsResMSG.SUCCESS;
 	}
 	/**
 	 * 带信息去拒绝页面
@@ -498,8 +497,4 @@ public class OutPlanAction extends ParentAction{
 		this.totalCount = outPlanService.getCount(vo);
 
 	}
-	
-	
-	
-	
 }

@@ -29,7 +29,7 @@ public class OutPlan  implements java.io.Serializable{
 	private int delFlage;//删除状态
 	private Integer examine;//审核状态
 	private String remarks;//备注
-	private String examinePerson;
+	private String examinePerson;//审核人员id
 	
 	
 	
