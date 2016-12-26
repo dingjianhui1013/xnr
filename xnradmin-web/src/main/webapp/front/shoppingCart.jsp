@@ -11,18 +11,30 @@
 
 </head>
 <script type="text/javascript">
-
 function onSubmit(){
 	var userId = $("#userId").val();
-	if($("#cartids").val()== ""){
-		layer.msg("请至少选择一种商品!");
-		return false;
-	}else if(userId==""||userId==null){
+	if(userId==""||userId==null){
 		window.location = "<%=basePath%>/front/login.jsp";
 		return false;
-	}
+	}else if($("#cartids").val()== ""){
+		layer.msg("请至少选择一种商品!");
+		return false;
+	}	
 	
-	$("#inputForm").submit();
+	$.ajax({
+		type:"POST", 
+		url:"<%=basePath%>/front/orderrecord/businessConfirmCheck.action",
+		data:{"cartids":$("#cartids").val()},
+		dataType:"json",
+		success:function(data){
+			console.log(data);
+			if(data.msg==''){
+				$("#inputMoney").submit();
+			}else{
+				layer.msg(data.msg);
+			}
+		}
+	});
 	return true;
 			
 
@@ -157,15 +169,20 @@ function delfromCart(id){
 //计算总价格
 function totalprice(obj){
 	var totalprice = 0;
+	$("#cartidcount").val("");
 	$('input:checkbox:checked').each(function(i){
 		if($(this).attr("id")!="checkAll"){
 		var cartId = ($(this).attr("cartId"));
 		var xiaoji = Number($("#xiaoji"+cartId).html());
 		totalprice = add(totalprice,xiaoji);
+		if($("#cartidcount").val()==""){
+			$("#cartidcount").val($("#count"+cartId).val());
+		}else{
+			$("#cartidcount").val($("#cartidcount").val()+","+$("#count"+cartId).val());
+		}
 		}
 	});
 	$("#totalprices").html(totalprice);
-	
 	$("#totalMoney").val(totalprice);
 	
 	
@@ -175,7 +192,6 @@ function totalprice(obj){
 	
 	
 	if($(obj).is(":checked") == true) {
-		
 		if(cartids==""||cartids.length==0){
 			$("#cartids").val($(obj).val());
 		}else{
@@ -183,12 +199,10 @@ function totalprice(obj){
 		}	
 	}else{
 		if(cartids.indexOf($(obj).val())>-1){
-			cartids = cartids.replace($(obj).val(), "");
-			cartids = cartids.replace(",,", ",");
-			if(cartids.indexOf(",")==0){
-				cartids = cartids.subString(1);
-			}
-			
+			cartids = cartids.replace(","+$(obj).val()+",", ",");
+			cartids = cartids.replace($(obj).val()+",", "");
+			cartids = cartids.replace(","+$(obj).val(), "");
+			cartids = cartids.replace($(obj).val(), "");			
 			$("#cartids").val(cartids);
 			
 		}
@@ -436,9 +450,10 @@ function modefyToCart(id){
 			 		<!-- <li class="checkCol"><input type="checkbox" />全选</li> -->
 			 		<li class="totalCol">
 			 		
-			 		    <form method="post" action="${basePath}/front/orderrecord/businessConfirm.action">
+			 		    <form id="inputMoney" method="post" action="${basePath}/front/orderrecord/businessConfirm.action">
 			 		    	<input type="hidden" id="cartids" name="cartids"/>
-			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/> <input type="submit" onclick="return onSubmit()"
+			 		    	<input type="hidden" id="cartidcount" name="cartidcount"/>
+			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/> <input type="button" onclick="return onSubmit()"
 									class="pull-right cartSubmitBtn" value="去结算">
 							</form>
 			 		

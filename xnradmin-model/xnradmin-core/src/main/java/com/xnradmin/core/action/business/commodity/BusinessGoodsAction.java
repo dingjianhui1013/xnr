@@ -44,12 +44,14 @@ import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.commodity.BusinessWeightService;
 import com.xnradmin.core.service.business.data.ProcessOtherExcel;
 import com.xnradmin.core.service.common.status.StatusService;
+import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.core.util.Log4jUtil;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.common.status.Status;
+import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
 import com.xnradmin.vo.StaffVO;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 
@@ -79,6 +81,9 @@ public class BusinessGoodsAction extends ParentAction {
 
 	@Autowired
 	private StaffService staffService;
+	
+	@Autowired
+	private GoodsAllocationShowService allocationShowService;
 
 	@Autowired
 	private ProcessOtherExcel processOtherExcel;
@@ -140,7 +145,20 @@ public class BusinessGoodsAction extends ParentAction {
 	private String goodsDishRelationModifyStartTime; // 修改开始时间
 	private String goodsDishRelationModifyEndTime; // 修改结束时间
 	private String goodsDishRelationModifyStaffId; // 修改人
-
+	//GoodsAllocationShow
+	private List<GoodsAllocationShow> allocationShowList;
+	private String goodsAllocationShowId;
+	private String goodsAllocationShowGoodsId;//商品Id
+	private String goodsAllocationShowStartTime;//开始时间
+	private String goodsAllocationShowEndTime;//结束时间
+	private String goodsAllocationShowAllocationCount;//分配总数
+	private String goodsAllocationShowSaleCount;//占用总数（已销售
+	private String goodsAllocationShowSurplusCount;//剩余总数（分配总数-已销售）
+	private String goodsAllocationShowCreateTime;//建立时间
+	private String goodsAllocationShowCreateStaffId;//建立人
+	private String goodsAllocationShowModifyTime;//修改时间
+	private String goodsAllocationShowModifyStaffId;//修改人
+	
 	private List<Status> isDiscountList;
 	private List<Status> goodsStatusList;
 	private List<StaffVO> staffList;
@@ -697,6 +715,14 @@ public class BusinessGoodsAction extends ParentAction {
 		goods.setModifyTime(new Timestamp(System.currentTimeMillis()));
 		goodsService.save(goods);
 
+		//保存商品的分配信息
+		for(GoodsAllocationShow allocationShow:allocationShowList){
+			allocationShow.setGoodsId(Integer.valueOf(goods.getId()));
+			allocationShow.setCreateStaffId(currentStaff.getId());
+			allocationShow.setCreateTime(new Timestamp(System.currentTimeMillis()));
+			allocationShow.setSurplusCount(allocationShow.getAllocationCount());
+		}
+		allocationShowService.modify(allocationShowList, Integer.valueOf(goods.getId()));
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
 				"businessGoods", null);
 		return null;
@@ -720,6 +746,7 @@ public class BusinessGoodsAction extends ParentAction {
 		findBusinessGoodsBuyteamList();
 		goodsSourceList = statusService.find(BusinessGoods.class,
 				"businessGoodsSource");
+		allocationShowList = allocationShowService.findByGoodsid(goodsId);
 		// 加载该商品信息
 		goods = goodsService.findByid(goodsId);
 		category = categoryService.findByid(goods.getGoodsCategoryId());
@@ -853,6 +880,15 @@ public class BusinessGoodsAction extends ParentAction {
 			oldGoods.setGoodsDescription(goodsDescription);
 		goodsService.modify(oldGoods);
 
+		//保存商品的分配信息
+		for(GoodsAllocationShow allocationShow:allocationShowList){
+			allocationShow.setGoodsId(Integer.valueOf(goodsId));
+			allocationShow.setCreateStaffId(currentStaff.getId());
+			allocationShow.setCreateTime(new Timestamp(System.currentTimeMillis()));
+			allocationShow.setSurplusCount(allocationShow.getAllocationCount());
+		}
+		allocationShowService.modify(allocationShowList, Integer.valueOf(goodsId));
+		
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
 				"businessGoods", null);
 		return null;
@@ -861,6 +897,7 @@ public class BusinessGoodsAction extends ParentAction {
 	@Action(value = "del", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
 	public String del() throws IOException, JSONException {
 		goodsService.removeGoodsId(goodsId);
+		allocationShowService.del(goodsId);
 		super.success(null, null, "businessGoods", null);
 		return null;
 	}
@@ -1479,6 +1516,108 @@ public class BusinessGoodsAction extends ParentAction {
 
 	public void setGoodsSourceList(List<Status> goodsSourceList) {
 		this.goodsSourceList = goodsSourceList;
+	}
+
+	public String getGoodsAllocationShowId() {
+		return goodsAllocationShowId;
+	}
+
+	public void setGoodsAllocationShowId(String goodsAllocationShowId) {
+		this.goodsAllocationShowId = goodsAllocationShowId;
+	}
+
+	public String getGoodsAllocationShowGoodsId() {
+		return goodsAllocationShowGoodsId;
+	}
+
+	public void setGoodsAllocationShowGoodsId(String goodsAllocationShowGoodsId) {
+		this.goodsAllocationShowGoodsId = goodsAllocationShowGoodsId;
+	}
+
+	public String getGoodsAllocationShowStartTime() {
+		return goodsAllocationShowStartTime;
+	}
+
+	public void setGoodsAllocationShowStartTime(String goodsAllocationShowStartTime) {
+		this.goodsAllocationShowStartTime = goodsAllocationShowStartTime;
+	}
+
+	public String getGoodsAllocationShowEndTime() {
+		return goodsAllocationShowEndTime;
+	}
+
+	public void setGoodsAllocationShowEndTime(String goodsAllocationShowEndTime) {
+		this.goodsAllocationShowEndTime = goodsAllocationShowEndTime;
+	}
+
+	public String getGoodsAllocationShowAllocationCount() {
+		return goodsAllocationShowAllocationCount;
+	}
+
+	public void setGoodsAllocationShowAllocationCount(
+			String goodsAllocationShowAllocationCount) {
+		this.goodsAllocationShowAllocationCount = goodsAllocationShowAllocationCount;
+	}
+
+	public String getGoodsAllocationShowSaleCount() {
+		return goodsAllocationShowSaleCount;
+	}
+
+	public void setGoodsAllocationShowSaleCount(String goodsAllocationShowSaleCount) {
+		this.goodsAllocationShowSaleCount = goodsAllocationShowSaleCount;
+	}
+
+	public String getGoodsAllocationShowSurplusCount() {
+		return goodsAllocationShowSurplusCount;
+	}
+
+	public void setGoodsAllocationShowSurplusCount(
+			String goodsAllocationShowSurplusCount) {
+		this.goodsAllocationShowSurplusCount = goodsAllocationShowSurplusCount;
+	}
+
+	public String getGoodsAllocationShowCreateTime() {
+		return goodsAllocationShowCreateTime;
+	}
+
+	public void setGoodsAllocationShowCreateTime(
+			String goodsAllocationShowCreateTime) {
+		this.goodsAllocationShowCreateTime = goodsAllocationShowCreateTime;
+	}
+
+	public String getGoodsAllocationShowCreateStaffId() {
+		return goodsAllocationShowCreateStaffId;
+	}
+
+	public void setGoodsAllocationShowCreateStaffId(
+			String goodsAllocationShowCreateStaffId) {
+		this.goodsAllocationShowCreateStaffId = goodsAllocationShowCreateStaffId;
+	}
+
+	public String getGoodsAllocationShowModifyTime() {
+		return goodsAllocationShowModifyTime;
+	}
+
+	public void setGoodsAllocationShowModifyTime(
+			String goodsAllocationShowModifyTime) {
+		this.goodsAllocationShowModifyTime = goodsAllocationShowModifyTime;
+	}
+
+	public String getGoodsAllocationShowModifyStaffId() {
+		return goodsAllocationShowModifyStaffId;
+	}
+
+	public void setGoodsAllocationShowModifyStaffId(
+			String goodsAllocationShowModifyStaffId) {
+		this.goodsAllocationShowModifyStaffId = goodsAllocationShowModifyStaffId;
+	}
+
+	public List<GoodsAllocationShow> getAllocationShowList() {
+		return allocationShowList;
+	}
+
+	public void setAllocationShowList(List<GoodsAllocationShow> allocationShowList) {
+		this.allocationShowList = allocationShowList;
 	}
 
 }

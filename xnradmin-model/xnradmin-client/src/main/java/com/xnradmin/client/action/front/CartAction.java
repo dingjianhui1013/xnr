@@ -35,6 +35,7 @@ import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.clientUser.ClientUserInfoService;
+import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.core.service.mall.commodity.GoodsService;
 import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.core.service.mall.seting.PrimaryConfigurationService;
@@ -45,6 +46,7 @@ import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.mall.commodity.Goods;
+import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
 import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
 import com.xnradmin.vo.StaffVO;
@@ -76,7 +78,7 @@ public class CartAction extends ParentAction {
 	private StatusService statusService;
 	@Autowired
 	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
-
+	
     private FrontUser user;
 	private String shoppingCartId;
 	private String clientUserId; //用户ID
@@ -103,6 +105,7 @@ public class CartAction extends ParentAction {
 	private int res;
 	private int totalCount;
 	private Float totalMoney;
+	private GoodsAllocationShow goodsAllocationShow;//该商品被今天被分配的数量
 
 	public String getCartId() {
 		return cartId;
@@ -297,9 +300,13 @@ public class CartAction extends ParentAction {
 		this.totalPrice = totalPrice;
 	}
 	
-	
-	
-	
+	public GoodsAllocationShow getGoodsAllocationShow() {
+		return goodsAllocationShow;
+	}
+
+	public void setGoodsAllocationShow(GoodsAllocationShow goodsAllocationShow) {
+		this.goodsAllocationShow = goodsAllocationShow;
+	}
 
 	public int getTotalCount() {
 		return totalCount;
@@ -371,6 +378,8 @@ public class CartAction extends ParentAction {
 		}
 		 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
 		 this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+		 
+		
 		return StrutsResMSG.SUCCESS;
 		
     }

@@ -379,7 +379,7 @@ var url = '<%=basePath%>front/receiptAddress/deleteReceiptAddress.action';
 								<c:forEach items="${cartVoList}" var="cartVo" varStatus="status">
 									<ul class="cart-header" id="test">
 										<li class="productCol"><a href="productDetail.html">
-												<img src="images/products/sc-img3.jpg"
+												<img src="${basePath }${cartVo.goods.goodsLogo}"
 												class="pull-left img-responsive" alt="">
 										</a> <span class="pull-left cart-pDetail">${cartVo.goods.goodsName}
 												约${cartVo.goods.goodsWeight }g</span></li>

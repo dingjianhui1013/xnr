@@ -9,7 +9,14 @@
 <%@include file="header.jsp"%>
 <!-- /start menu -->
 <script type="text/javascript">
+var productMaxNum=0;
+var simpleCart_numbertmp =0;
 $(function(){
+	//初始化购买数量
+	var productMaxNumtmp = '${goodsAllocationShow.surplusCount}';
+	if(productMaxNumtmp!=''){
+		productMaxNum=productMaxNumtmp;
+	}
 	if($("#userId").val()!=null||$("#userId").val()!="")
 		{
 			$.ajax({
@@ -39,50 +46,68 @@ function plusNum()
 {
 		var index = $(".item_quantity").val();
 		index++;
-		$(".item_quantity").val(index);
+		if(index>productMaxNum){
+			layer.msg("库存有限，该产品购买量不能超过"+productMaxNum);
+			index--;
+		}else{
+			$(".item_quantity").val(index);
+		}
 	}
 function minusNum()
 {
 		var index = $(".item_quantity").val();
 		index--;
-		if(index>=1)
-			{
-				$(".item_quantity").val(index);
-			}else
+		if(index>productMaxNum){
+			layer.msg("库存有限，该产品购买量不能超过"+productMaxNum);
+			index++;
+		}else{
+			if(index>=1)
 				{
-				$(".item_quantity").val(1);
-				}
+					$(".item_quantity").val(index);
+				}else
+					{
+					$(".item_quantity").val(1);
+					}
+		}
 	}
 function addToCart(id,money){
 	var userId = $("#userId").val()
-		var goodsNumber = $("#goodsNumber").val()
+	var goodsNumber = $("#goodsNumber").val();
+	//购物车里面的数量
+	simpleCart_numbertmp = (Number($("#simpleCart_number").html())+Number(goodsNumber));
+	if(simpleCart_numbertmp>productMaxNum){
+		layer.msg("库存有限，该产品购买量不能超过"+productMaxNum);
+	}else{	
 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(1));
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
-	if(userId!=null&&userId!=""){
-		$.ajax({
-			type:"POST", 
-			url:"<%=basePath%>/front/shopingCart/add.action",
-			data:{"goodsId":id,"goodsCount":goodsNumber,"clientUserId":userId,_:new Date().getTime()},
-			dataType:"json",
-			success:function(msg){
-				layer.msg("加入成功");
-				}
-			});
-	}else
-		{
-			//layer.msg("请先登录");
-			//setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
-		var cart = getCartCookie();
+			
+		if(userId!=null&&userId!=""){
+			$.ajax({
+				type:"POST", 
+				url:"<%=basePath%>/front/shopingCart/add.action",
+				data:{"goodsId":id,"goodsCount":goodsNumber,"clientUserId":userId,_:new Date().getTime()},
+				dataType:"json",
+				success:function(msg){
+					layer.msg("加入成功");
+					}
+				});
+		}else
+			{
+				//layer.msg("请先登录");
+				//setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
+			var cart = getCartCookie();
+			
+			var item=new Object();
+			item.cookieId = getUuid();
+			item.goodsId = id;
+			item.goodsCount = goodsNumber;
+			item.price = Number($("#price"+id).val());
+			cart.push(item);
+			$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
+			layer.msg("加入成功");
+			}
+	}
 		
-		var item=new Object();
-		item.cookieId = getUuid();
-		item.goodsId = id;
-		item.goodsCount = goodsNumber;
-		item.price = Number($("#price"+id).val());
-		cart.push(item);
-		$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
-		layer.msg("加入成功");
-		}
 	
 }
 function getCartCookie(){

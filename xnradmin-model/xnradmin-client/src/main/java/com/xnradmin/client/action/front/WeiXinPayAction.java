@@ -1,5 +1,7 @@
 package com.xnradmin.client.action.front;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -18,13 +20,17 @@ import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.pay.wxpay.util.Signature;
 import com.xnradmin.core.pay.wxpay.util.Util;
+import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
+import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.core.service.pay.wx.ScanPayQueryService;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
 import com.xnradmin.po.pay.protocol.pay_protocol.ScanPayCallBackReq;
 import com.xnradmin.po.pay.protocol.pay_protocol.ScanPayCallBackRes;
 import com.xnradmin.po.pay.protocol.pay_query_protocol.ScanPayQueryReqData;
 import com.xnradmin.po.pay.protocol.pay_query_protocol.ScanPayQueryResData;
+import com.xnradmin.vo.business.BusinessOrderRelationVO;
 
 @Controller
 @Scope("prototype")
@@ -36,6 +42,13 @@ public class WeiXinPayAction  {
 
     @Autowired
     private BusinessOrderRecordService orderRecordService;
+    
+    @Autowired
+	private GoodsAllocationShowService allocationShowService;
+    
+    @Autowired
+	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
+    
     
     private String outTradeNo;
     
@@ -113,7 +126,16 @@ public class WeiXinPayAction  {
                         businessOrderRecord.setPaymentStatusName("支付完成");
                         businessOrderRecord.setPaymentStatus(200);
                         orderRecordService.modify(businessOrderRecord);
-                        
+                        //修改库存 查出所有产品
+                        List<BusinessOrderRelationVO> relaions = businessOrderGoodsRelationService.findByOrderRecordId(businessOrderRecord.getId());
+                        for(BusinessOrderRelationVO br:relaions){
+                        	GoodsAllocationShow allocationshow = allocationShowService.findByGoodsidToday(br.getBusinessGoods().getId()+"");
+                        	int using = br.getOrderGoodsRelation().getGoodsCount();
+                        	int surplus = allocationshow.getAllocationCount()-using<0?0:allocationshow.getAllocationCount()-using;
+                        	allocationshow.setSaleCount(using);
+                        	allocationshow.setSurplusCount(surplus);
+                        	allocationShowService.save(allocationshow);
+                        }
                     } else {
                         notifyResData.setReturn_code("FAIL");
                         notifyResData.setReturn_msg("Server Error");

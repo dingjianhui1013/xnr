@@ -8,7 +8,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +41,7 @@ import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.clientUser.ClientUserInfoService;
 import com.xnradmin.core.service.mall.clientUser.ClientUserRegionInfoService;
+import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.core.service.mall.order.ShoppingCartService;
 import com.xnradmin.core.service.mall.region.AreaService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
@@ -54,6 +57,7 @@ import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
+import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
 import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
@@ -113,6 +117,9 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	@Autowired
 	private AlipayService alipayService;
 
+	@Autowired
+	private GoodsAllocationShowService allocationShowService;
+	
 	private Log exLog = Log4jUtil.getLog("ex");
 
 	private Log coopLog = Log4jUtil.getLog("coopLog");
@@ -156,9 +163,20 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private Integer paymethod;
 	private String outTradeNo;
 	
+	//订单与分配库存数的有关变量
+	private String cartidcount;//订单每一项的订单数目
+	private Map<String,Integer> goodsCountMap = new HashMap<String,Integer>();//每一个产品的订单数
+	private String msg;//库存不足的提示信息
 	
 	
-	
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
 	public String getCartids() {
 		return cartids;
 	}
@@ -175,9 +193,22 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		this.totalMoney = totalMoney;
 	}
 
-	
-	
-	
+	public String getCartidcount() {
+		return cartidcount;
+	}
+
+	public void setCartidcount(String cartidcount) {
+		this.cartidcount = cartidcount;
+	}
+
+	public Map<String, Integer> getGoodsCountMap() {
+		return goodsCountMap;
+	}
+
+	public void setGoodsCountMap(Map<String, Integer> goodsCountMap) {
+		this.goodsCountMap = goodsCountMap;
+	}
+
 	public Integer getReceiptAddressId() {
 		return receiptAddressId;
 	}
@@ -433,15 +464,11 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	 * 跳转到订单结算界面
 	 * @return
 	 */
-	@Action(value = "businessConfirm",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
+	@Action(value = "businessConfirm",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp"),@Result(name = StrutsResMSG.ERROR, type = "json") })
     public String businessConfirm() {
 		
-		
-		 
-		
 		 user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
-		
-		 
 		 addrs = addressService.findListByUserId(user.getId());
 		 
          if(cartids.equals("all")){
@@ -451,23 +478,69 @@ public class BusinessOrderRecodeAction extends ParentAction {
         	 cartVoList = new ArrayList<BusinessGoodsCartVo>();
         	 
         	 String[] cartIdArray = cartids.split(",");
-        	 
         	 for(int i=0;i<cartIdArray.length;i++){
         		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
         		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
-        		 
+        		 if(goodsCountMap.get(goods.getId()+"")==null){
+        			 goodsCountMap.put(goods.getId()+"", cart.getGoodsCount());        			 
+        		 }else{
+        			 goodsCountMap.put(goods.getId()+"", goodsCountMap.get(goods.getId()+"")+cart.getGoodsCount());
+        		 }
         		 BusinessGoodsCartVo vo = new BusinessGoodsCartVo();
         		 vo.setCart(cart);
         		 vo.setGoods(goods);
         		 cartVoList.add(vo);
-        		 
         	 }
-        	 
-        	 
          }
-		 
 		
 		 return StrutsResMSG.SUCCESS;
+		
+    }
+	
+	/**
+	 * 跳转到订单前检测库存
+	 * @return
+	 */
+	@Action(value = "businessConfirmCheck",results = { @Result(name = StrutsResMSG.SUCCESS, type = "json")})
+    public String businessConfirmCheck() {
+
+		 List<BusinessGoodsCartVo> newcartVoList=null;
+         if(cartids.equals("all")){
+        	 newcartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
+        	 for(int i=0;i<newcartVoList.size();i++){
+        		 BusinessGoodsCartVo cartVo = newcartVoList.get(i);
+        		 ShoppingCart cart = cartVo.getCart();
+        		 BusinessGoods goods = cartVo.getGoods();
+        		 if(goodsCountMap.get(cartVo.getGoods().getId()+"")==null){
+        			 goodsCountMap.put(goods.getId()+"", cart.getGoodsCount());        			 
+        		 }else{
+        			 goodsCountMap.put(goods.getId()+"", goodsCountMap.get(goods.getId()+"")+cart.getGoodsCount());
+        		 }
+        	 }
+         }else{
+        	 newcartVoList = new ArrayList<BusinessGoodsCartVo>();
+        	 String[] cartIdArray = cartids.split(",");
+        	 for(int i=0;i<cartIdArray.length;i++){
+        		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
+        		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
+        		 if(goodsCountMap.get(goods.getId()+"")==null){
+        			 goodsCountMap.put(goods.getId()+"", cart.getGoodsCount());        			 
+        		 }else{
+        			 goodsCountMap.put(goods.getId()+"", goodsCountMap.get(goods.getId()+"")+cart.getGoodsCount());
+        		 }
+        	 }
+         }
+         for(String skey:goodsCountMap.keySet()){
+        	 GoodsAllocationShow allocationshow = allocationShowService.findByGoodsidToday(skey);
+        	 if(goodsCountMap.get(skey)>allocationshow.getSurplusCount()){
+        		 BusinessGoods goods = goodsService.findByid(skey);
+        		 msg = goods.getGoodsName() +"库存不足，无法下订单";
+        		 return StrutsResMSG.SUCCESS;
+        	 }else{
+        		 msg="";
+        	 }
+         }
+         return StrutsResMSG.SUCCESS;
 		
     }
 

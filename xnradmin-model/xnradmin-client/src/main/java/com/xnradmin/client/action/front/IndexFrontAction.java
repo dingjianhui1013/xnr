@@ -1,13 +1,11 @@
 package com.xnradmin.client.action.front;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
@@ -26,12 +24,14 @@ import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
+import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
+import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
@@ -69,6 +69,7 @@ public class IndexFrontAction  extends ParentAction{
 	private Integer RTotalPage;
 	private String businessOrderRecordId;
 	private BusinessOrderVO businessOrderVO;
+	private GoodsAllocationShow goodsAllocationShow;//该商品被今天被分配的数量
 	
 	public BusinessOrderVO getBusinessOrderVO() {
 		return businessOrderVO;
@@ -218,6 +219,10 @@ public class IndexFrontAction  extends ParentAction{
 	private BusinessGoodsService businessGoodsService;
 	@Autowired
 	private StatusService statusService;
+	
+	@Autowired
+	private GoodsAllocationShowService allocationShowService;
+	
 	@Autowired
 	private BusinessOrderRecordService orderRecordService;
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;
@@ -251,6 +256,8 @@ public class IndexFrontAction  extends ParentAction{
 		this.productDetailVo = productDetailVo;
 		Map<String, List<BusinessGoods>> related_classification = new HashMap<String, List<BusinessGoods>>();
 		List<BusinessGoods> goods = businessGoodsService.getListBycategoryId(businessCategory.getId().toString());
+		//查询该商品的可以购买数量
+		this.goodsAllocationShow = allocationShowService.findByGoodsidToday(goodsId);
 		related_classification.put(businessCategory.getCategoryName(), goods);
 		this.related_classification = related_classification;
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
@@ -525,8 +532,11 @@ public class IndexFrontAction  extends ParentAction{
 		// TODO Auto-generated method stub
 		return true;
 	}
-	
-
-	
+	public GoodsAllocationShow getGoodsAllocationShow() {
+		return goodsAllocationShow;
+	}
+	public void setGoodsAllocationShow(GoodsAllocationShow goodsAllocationShow) {
+		this.goodsAllocationShow = goodsAllocationShow;
+	}
 	
 }
