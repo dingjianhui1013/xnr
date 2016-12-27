@@ -151,78 +151,76 @@ function getUuid(){
 </div>
 	 <c:set var="k" value="1"/>
 	 <c:forEach items="${ allBusinessCategorys}" var="firstBusinessCategory">
-	  <c:forEach items="${firstBusinessCategory }" var="first">
-	  <c:set var="i" value="0"/>
-	  <c:set var="j" value="0"/>
+	 <c:forEach items="${firstBusinessCategory }" var="first">
+	 <c:set var="i" value="0"/>
+	 <c:set var="j" value="0"/>
 	  
-	   <div class="featured">
-	     <div class="container">
-	 	  <div class="sortNavBox v-box">
-		   <h3>${first.key.categoryName }</h3>
-		    <ul class="sortNavUl sortTab${k }">
-				<c:forEach items="${first.value }" var="secondBusinessCategory">
-					<c:forEach items="${secondBusinessCategory }" var="second">
-						<c:forEach items="${second.value }" var="threeBusinessCategory">
-							<li <c:if test="${ i==0}">class="cur"</c:if>>${threeBusinessCategory.categoryName }</li>
-							<c:set var="i" value="${i+1 }" />
-						</c:forEach>
+	 <div class="featured">
+	 <div class="container">
+	 	<div class="sortNavBox v-box">
+		<h3>${first.key.categoryName }</h3>
+		 <ul class="sortNavUl sortTab${k }">
+			<c:forEach items="${first.value }" var="secondBusinessCategory">
+				<c:forEach items="${secondBusinessCategory }" var="second">
+					<c:forEach items="${second.value }" var="threeBusinessCategory">
+						<li <c:if test="${ i==0}">class="cur"</c:if>>${threeBusinessCategory.categoryName }</li>
+						<c:set var="i" value="${i+1 }" />
 					</c:forEach>
 				</c:forEach>
-		    </ul>
-		  </div>
-		  <div class="adBanner">
-	 	     <a href="#"><img src="${basePath }${first.key.categoryLogo }" /></a>
-	 	  </div>
-	 	  <div class="sortListBox sortListBox${k }">
-	 	    <c:forEach items="${first.value }" var="secondBusinessCategory">
+			</c:forEach>
+		</ul>
+		</div>
+		<div class="adBanner">
+	 	<a href="#"><img src="${basePath }${first.key.categoryLogo }" /></a>
+	 	</div>
+	 	<div class="sortListBox sortListBox${k }">
+	 	<c:forEach items="${first.value }" var="secondBusinessCategory">
 				<c:forEach items="${secondBusinessCategory }" var="second">
 					<c:forEach items="${second.value }" var="threeBusinessCategory" varStatus="status">
+					
 					 	<div class="sortListCon" <c:if test="${ j==0}">style="display:block;"</c:if>>
 					 		<c:set var="m" value="0"/> 
 					 		<c:forEach items="${indexGoods }" var="good" varStatus="status">
 					 			<c:if test="${m<8 }">
-						 			<c:if test="${good.businessCategory.id==threeBusinessCategory.id}">
-							 			<c:if test="${m==0 }">
-							 				<div class="feature-grids">
-							 			</c:if>
-							 			<div class="col-md-3 feature-grid jewel">
-										 <a href="<%=basePath%>/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo }" alt=""/>	
-										 	 <div class="arrival-info">
-												 <h4>${ good.businessGoods.goodsName} </h4>
-												 <p>约${good.businessGoods.goodsWeight }g</p>
-												 <input id="price${good.businessGoods.id }" type="hidden" value="${good.businessGoods.goodsOriginalPrice }"/>
-												 <span class="disc">￥${good.businessGoods.goodsOriginalPrice }/${good.businessWeight.weightName }</span>
-											 </div>
-											 <div class="shrt">
-												<a href="javascript:addToCart(${good.businessGoods.id },${good.businessGoods.goodsOriginalPrice})"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
-										 	 </div>
-										 </a>
-										</div>
-										<c:if test="${m==3 }">
-							 				</div>
-							 				<div class="feature-grids secondLine-grid">
-							 			</c:if>
-							 			<c:if test="${m==7 }">
-							 				</div>
-							 			</c:if>
-						 				<c:set var="m" value="${m+1 }"/> 
-						 			</c:if> 
+					 			<c:if test="${good.businessCategory.id==threeBusinessCategory.id}">
+					 			<c:if test="${m==0 }">
+					 				<div class="feature-grids">
+					 			</c:if>
+					 			<div class="col-md-3 feature-grid jewel">
+								 <a href="<%=basePath%>/front/productDetail.action?goodsId=${good.businessGoods.id}"><img src="${basePath }${good.businessGoods.goodsLogo }" alt=""/>	
+							 	<div class="arrival-info">
+								 <h4>${ good.businessGoods.goodsName} </h4>
+								 <p>约${good.businessGoods.goodsWeight }g</p>
+								 <input id="price${good.businessGoods.id }" type="hidden" value="${good.businessGoods.goodsOriginalPrice }"/>
+								 <span class="disc">￥${good.businessGoods.goodsOriginalPrice }/${good.businessWeight.weightName }</span>
+								 </div>
+								 <div class="shrt">
+									<a href="javascript:addToCart(${good.businessGoods.id },${good.businessGoods.goodsOriginalPrice})"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
+							 	</div>
+								 </a>
+								 </div>
+								 <c:if test="${m==3 }">
+					 				</div>
+					 				<div class="feature-grids secondLine-grid">
+					 			</c:if>
+					 			<c:if test="${m==7 }">
+					 				</div>
+					 			</c:if>
+					 			<c:set var="m" value="${m+1 }"/> 
+					 			</c:if> 
 					 			</c:if>
 					 		</c:forEach>
-			 			</div>
-			 			</div>
+			 </div>
 						<c:set var="j" value="${j+1 }" />
 					</c:forEach>
 				</c:forEach>
 			</c:forEach>
-	 	   </div>
-		  </div>
-		  <div class="adBox">
-				<img src="${basePath }${first.key.categoryHeadLogo}" class="img-responsive" />
-		  </div>
+	 	</div>
+		</div>
+		<div class="adBox">
+			<img src="${basePath }${first.key.categoryHeadLogo}" class="img-responsive" />
+		</div>
 		 <c:set var="k" value="${k+1 }" />
-		 </div>
-		 </div>
 	 </c:forEach>
 	 </c:forEach>
 	

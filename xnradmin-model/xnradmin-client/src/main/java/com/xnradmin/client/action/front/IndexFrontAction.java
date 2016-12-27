@@ -232,11 +232,11 @@ public class IndexFrontAction  extends ParentAction{
 	@Action(value = "index", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/index.jsp") })
 	public String info() {
 		HttpSession session = ServletActionContext.getRequest().getSession();
-		FrontUser user = (FrontUser)session.getAttribute("alipayToIndex_user");
-		if(user!=null)
-		{
-			session.setAttribute("user", user);
-		}
+//		FrontUser user = (FrontUser)session.getAttribute("alipayToIndex_user");
+//		if(user!=null)
+//		{
+//			session.setAttribute("user", user);
+//		}
 		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		this.indexGoods = indexFrontService.listBusinessGoodsVO();
 		return StrutsResMSG.SUCCESS;

@@ -19,7 +19,7 @@ function addToCart(id){
 			success:function(msg){
 				if(msg.res==0)
 					{
-				 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+msg.totalMoney*Number(msg.totalCount)).toFixed(1));
+				 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+msg.totalMoney).toFixed(1));
 				 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(msg.totalCount)));
 						layer.msg("加入成功");
 					}
