@@ -210,7 +210,9 @@ function getUuid(){
 					 			</c:if>
 					 		</c:forEach>
 			 			</div>
-			 			</div>
+			 			<c:if test="${k==1}">
+			 				</div>
+			 			</c:if>
 						<c:set var="j" value="${j+1 }" />
 					</c:forEach>
 				</c:forEach>
@@ -221,8 +223,10 @@ function getUuid(){
 				<img src="${basePath }${first.key.categoryHeadLogo}" class="img-responsive" />
 		  </div>
 		 <c:set var="k" value="${k+1 }" />
-		 </div>
-		 </div>
+
+			</div>
+			</div>
+
 	 </c:forEach>
 	 </c:forEach>
 	

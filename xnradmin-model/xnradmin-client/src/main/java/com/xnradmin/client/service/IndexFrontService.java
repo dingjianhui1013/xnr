@@ -131,7 +131,9 @@ public class IndexFrontService {
 	}
 
 	public List<BusinessGoodsVO> listBusinessGoodsByCategoryId(String categoryId) {
-		String hql = "from BusinessGoods a,BusinessCategory b,BusinessWeight c where a.goodsCategoryId=b.id and a.goodsWeightId=c.id and a.goodsCategoryId='"
+		String hql = "from BusinessGoods a,BusinessCategory b,BusinessWeight c , GoodsAllocationShow gas "
+				+ " where a.goodsCategoryId=b.id and a.goodsWeightId=c.id  and a.id = gas.goodsId and gas.startTime<=now() and gas.endTime>now() "
+				+ " and a.goodsCategoryId='"
 				+ categoryId + "'";
 		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		List<BusinessGoodsVO> resList = new LinkedList<BusinessGoodsVO>();

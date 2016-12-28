@@ -8,6 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -714,12 +717,18 @@ public class BusinessGoodsAction extends ParentAction {
 		goods.setModifyStaffId(currentStaff.getId());
 		goods.setModifyTime(new Timestamp(System.currentTimeMillis()));
 		goodsService.save(goods);
-
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		//保存商品的分配信息
 		for(GoodsAllocationShow allocationShow:allocationShowList){
 			allocationShow.setGoodsId(Integer.valueOf(goods.getId()));
 			allocationShow.setCreateStaffId(currentStaff.getId());
 			allocationShow.setCreateTime(new Timestamp(System.currentTimeMillis()));
+			allocationShow.setSurplusCount(allocationShow.getAllocationCount());
+			Timestamp endtime =allocationShow.getEndTime();
+		    Calendar   calendar   =   new   GregorianCalendar(); 
+		    calendar.setTime(sdf.parse(sdf.format(endtime))); 
+		    calendar.add(calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动 
+		    allocationShow.setEndTime(Timestamp.valueOf(sdf.format(calendar.getTime())));
 			allocationShow.setSurplusCount(allocationShow.getAllocationCount());
 		}
 		allocationShowService.modify(allocationShowList, Integer.valueOf(goods.getId()));
@@ -879,13 +888,20 @@ public class BusinessGoodsAction extends ParentAction {
 		else
 			oldGoods.setGoodsDescription(goodsDescription);
 		goodsService.modify(oldGoods);
-
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//保存商品的分配信息
 		for(GoodsAllocationShow allocationShow:allocationShowList){
 			allocationShow.setGoodsId(Integer.valueOf(goodsId));
 			allocationShow.setCreateStaffId(currentStaff.getId());
 			allocationShow.setCreateTime(new Timestamp(System.currentTimeMillis()));
 			allocationShow.setSurplusCount(allocationShow.getAllocationCount());
+			Timestamp endtime =allocationShow.getEndTime();
+		    Calendar   calendar   =   new   GregorianCalendar(); 
+		    calendar.setTime(sdf.parse(sdf.format(endtime))); 
+		    calendar.set(Calendar.HOUR, 23);
+		    calendar.set(Calendar.MINUTE, 59);
+		    calendar.set(Calendar.SECOND, 59);
+		    allocationShow.setEndTime(Timestamp.valueOf(sdf.format(calendar.getTime())));
 		}
 		allocationShowService.modify(allocationShowList, Integer.valueOf(goodsId));
 		
