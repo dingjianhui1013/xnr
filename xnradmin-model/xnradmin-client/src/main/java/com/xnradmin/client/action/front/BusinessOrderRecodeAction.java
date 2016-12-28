@@ -157,8 +157,6 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private String outTradeNo;
 	
 	
-	
-	
 	public String getCartids() {
 		return cartids;
 	}
@@ -166,6 +164,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	public void setCartids(String cartids) {
 		this.cartids = cartids;
 	}
+	
+	
 
 	public String getTotalMoney() {
 		return totalMoney;

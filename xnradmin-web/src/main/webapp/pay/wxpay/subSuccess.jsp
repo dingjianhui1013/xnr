@@ -24,6 +24,7 @@
 					dataType : "JSON",
 					success : function(d) {
 						if (d.status == "1") {
+							
 							window.location.href = "${basePath}/front/paySuccess.jsp";
 							
 						}
