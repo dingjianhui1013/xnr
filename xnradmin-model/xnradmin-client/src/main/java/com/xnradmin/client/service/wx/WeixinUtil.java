@@ -7,11 +7,14 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+
+import org.apache.struts2.ServletActionContext;
 
 import net.sf.json.JSONObject;
 
@@ -80,6 +83,12 @@ public class WeixinUtil
 	  int result = 0;
 	  String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
 	  JSONObject jsonObject = httpRequest(WXurl.WXF_CRATE_URL.replace("ACCESS_TOKEN", access_tokenString), "POST", jsonMenu);
+	  if(jsonObject.toString().indexOf("40001")!=-1)
+		{
+		  access_tokenString = WXFGetTokenService.getAccessToken();
+		  WXFGetTokenService.writeAccessToken(access_tokenString, new Date().getTime(), ServletActionContext.getRequest());
+		  jsonObject = httpRequest(WXurl.WXF_CRATE_URL.replace("ACCESS_TOKEN", access_tokenString), "POST", jsonMenu);
+		}
     if ((jsonObject != null) && 
       (jsonObject.getInt("errcode") != 0)) {
       result = jsonObject.getInt("errcode");
@@ -92,6 +101,12 @@ public class WeixinUtil
 	  int result = 0;
 	  String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
 	  JSONObject jsonObject = httpRequest(WXurl.WXF_CRATE_URL.replace("ACCESS_TOKEN", access_tokenString), "POST", jsonMenu);
+	  if(jsonObject.toString().indexOf("40001")!=-1)
+		{
+		  access_tokenString = WXFGetTokenService.getAccessToken();
+		  WXFGetTokenService.writeAccessToken(access_tokenString, new Date().getTime(), ServletActionContext.getRequest());
+		  jsonObject = httpRequest(WXurl.WXF_CRATE_URL.replace("ACCESS_TOKEN", access_tokenString), "POST", jsonMenu);
+		}
     if ((jsonObject != null) && 
       (jsonObject.getInt("errcode") != 0)) {
       result = jsonObject.getInt("errcode");

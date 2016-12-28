@@ -114,6 +114,13 @@ public class WeiXinConnectService {
   						WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",
   								access_Token).replace("OPENID",
   										FromUserName), "GET", null);
+  	        	if(userInformation.toString().indexOf("40001")!=-1)
+  	  		{
+  	        	access_Token = WXFGetTokenService.getAccessToken();
+  	  			WXFGetTokenService.writeAccessToken(access_Token, new Date().getTime(), ServletActionContext.getRequest());
+  	  			userInformation = WeixinUtil.httpRequest(WXurl.WXF_USERNAME_URL.replace("ACCESS_TOKEN",access_Token).replace("OPENID",
+										FromUserName), "GET", null);
+  	  		}
   	        	log.debug("********************");
     			log.debug("userInformation::"+userInformation);
     			log.debug("********************");
