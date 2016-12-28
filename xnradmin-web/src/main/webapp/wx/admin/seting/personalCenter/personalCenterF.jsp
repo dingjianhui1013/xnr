@@ -35,13 +35,18 @@
     </script>
 	<script type="text/javascript" >
 	$(function(){
+		var farmerId = '${userId}';
 		if("${status}"==null||"${status}"==""||"${status}"=="0")
 		{
-			var farmerId = '${userId}';
 			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId="+farmerId;
 		}else if ("${status}"=="3")
 			{
 				alert("审核信息已经提交，请等待！")
+				window.location.href="<%= path%>/page/wx/farmer/farmerExamineEdit.action?farmerId="+farmerId;
+			}else if("${status}"=="2")
+			{
+				alert("你未通过审核，请联系管理员");
+				window.location.href="<%= path%>/page/wx/farmer/farmerExamineEdit.action?farmerId="+farmerId;
 			}
 	})
 		function deletePlan(id){
@@ -53,7 +58,7 @@
 	             success: function(data){
 	            	 var status = data.status;
 	            	 if(status=="0"){
-	     				location.href="<%=path %>/page/wx/outplan/deletePlan.action?deleteId="+id;
+	     				location.href="<%=path %>/page/wx/outplan/deletePlanF.action?deleteId="+id;
 	     			}else{
 	     				alert("计划已经分配,不可以删除。");
 	     			}

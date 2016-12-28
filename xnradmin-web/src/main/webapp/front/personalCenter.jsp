@@ -326,7 +326,14 @@
 				                   		<li><span>${loop.businessOrderRecord.paymentStatusName}</span></li>
 				                    </c:if>
 				                    <c:if test="${loop.businessOrderRecord.paymentStatusName=='未支付'}">
-				                   		<li><span>${loop.businessOrderRecord.paymentStatusName}<br> <a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
+				                   		<li><span>${loop.businessOrderRecord.paymentStatusName}<br>
+				                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='支付宝支付'}">
+						                   	<a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
+				                   		</c:if>
+				                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='微信支付'}">
+						                   	<a href="#">前往支付</a></span></li>
+				                   		</c:if>
+				                   		
 				                    </c:if>
 	                    			<li><span><a href="javascript:addToCart('${loop.businessOrderRecord.id }')">再次购买</a></span><a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">查看详情</a></li>
 	                    		</ul>
@@ -406,7 +413,7 @@
 							 <li class="disabled"><a>«</a></li>
 						</c:when>
 						<c:otherwise>	
-							<li class="disabled"><a href="${basePath}front/personalCenter.action?RPageNum=1&flag=address">«</a></li>
+							<li><a href="${basePath}front/personalCenter.action?RPageNum=1&flag=address">«</a></li>
 						</c:otherwise>
 					</c:choose>
 						<c:forEach begin="1" end="${RTotalPage}" var="numpage">

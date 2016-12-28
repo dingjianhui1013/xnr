@@ -16,8 +16,8 @@ public class AlipayConfig {
 //↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 	// 合作身份者ID，签约账号，以2088开头由16位纯数字组成的字符串，查看地址：https://b.alipay.com/order/pidAndKey.htm
-	public static String partner = "2088521373675106";
-	
+//	public static String partner = "2088521373675106"; 鲁邦
+	public static String partner = "2088521382842461";
 	// 收款支付宝账号，以2088开头由16位纯数字组成的字符串，一般情况下收款账号就是签约账号
 	public static String seller_id = partner;
 	
@@ -30,7 +30,9 @@ public class AlipayConfig {
 
 
 	// MD5密钥，安全检验码，由数字和字母组成的32位字符串，查看地址：https://b.alipay.com/order/pidAndKey.htm
-    public static String key = "3as57kjh1uit1czew2zlyq4l1qv1voja";
+//    public static String key = "3as57kjh1uit1czew2zlyq4l1qv1voja"; 鲁棒
+	  public static String key = "occ028an8z40gbp7cnx98t4x4oia1dig";
+    
 
 	// 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
 	public static String notify_url = "http://weixin.robustsoft.cn/xnr/page/alipay/notify.action";

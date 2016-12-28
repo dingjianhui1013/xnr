@@ -269,11 +269,12 @@ public class AlipayAction {
 		BusinessOrderRecord orderRecord = orderRecordService.findByOutOderNo(out_trade_no);
 //		if(orderRecord.getTotalPrice().equals(totla_fee))//判断支付宝支付价格是不是和订单相同。
 //		{
-			if(!orderRecord.getOperateStatusName().equals(operateStatusName))
+			if(orderRecord.getPaymentStatus().equals(201))
 			{
 				orderRecord.setPaymentTime(Timestamp.valueOf(gmt_payment));
 				orderRecord.setOperateStatusName(operateStatusName);
 				orderRecord.setPaymentStatusName(paymentName);
+				
 				if(paymentName.equals("已支付"))
 				{
 					orderRecord.setPaymentStatus(200);
@@ -293,5 +294,6 @@ public class AlipayAction {
 			}
 //		}
 	}
+	
 }
 

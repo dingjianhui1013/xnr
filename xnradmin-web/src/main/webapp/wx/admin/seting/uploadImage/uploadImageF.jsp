@@ -15,15 +15,22 @@
 <script src="<%=path %>/js/verifyCode.js" type="text/javascript"></script>
 <script>
 $(function(){ 
+	alert($("#status").val());
+	var farmerId = '${userId}';
 	if($("#status").val()==null||$("#status").val()==""||$("#status").val()=="0")
 		{
 // 			var farmerId = $('#userId').val();
-			var farmerId = '${userId}';
 			window.location.href="<%= path%>/page/wx/farmer/farmerExamine.action?farmerId="+farmerId;
 		}else if ($("#status").val()=="3")
 			{
-				alert("审核信息已经提交，请等待！")
-			}else
+				alert("审核信息已经提交，请等待！");
+				window.location.href="<%= path%>/page/wx/farmer/farmerExamineEdit.action?farmerId="+farmerId;
+			}else if($("#status").val()=="2")
+				{
+					alert("你未通过审核，请联系管理员");
+					window.location.href="<%= path%>/page/wx/farmer/farmerExamineEdit.action?farmerId="+farmerId;
+				}
+			else
 			{
 				$.get("<%= path %>/page/wx/wxconnect/uploadFF.action",{userId:'${userId}',userName:$("#userName").val(),_:new Date().getTime()},function (data){
 					window.location.href="<%= path %>/wx/admin/seting/uploadImage/obtainImageF.jsp";
