@@ -559,7 +559,9 @@ public class BusinessGoodsService {
 		return lst;
 	}
 	public List<BusinessGoods> getListBycategoryId(String categoryId) {
-		String hql = "from BusinessGoods where goodsCategoryId ='"+categoryId+"'";
+		String hql = "from BusinessGoods a , GoodsAllocationShow gas "
+				+ " where a.id = gas.goodsId and gas.startTime<=now() and gas.endTime>now() "
+				+ " and a.goodsCategoryId ='"+categoryId+"'";
 		List<BusinessGoods> lst = commonDao.getEntitiesByPropertiesWithHql(hql,
 				0, 0);
 		return lst;
