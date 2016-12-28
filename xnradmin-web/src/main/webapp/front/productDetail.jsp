@@ -342,7 +342,7 @@ function getUuid(){
 						<div class="single-bottom">
 						<c:forEach items="${rc.value}" var="rcv">
 							
-							<a href="<%=basePath%>/front/productDetail.action?goodsId=${rcv.id}"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>${rcv.goodsName }</span></a>
+							<a href="<%=basePath%>/front/productDetail.action?goodsId=${rcv[0].id}"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span>${rcv[0].goodsName }</span></a>
 						</c:forEach>
 						</div>
 					</c:forEach>
