@@ -171,6 +171,15 @@ public class WeiXinPayAction  {
                         if (scanPayQueryResData.getTrade_state().equals("SUCCESS")) {
                             // 表示查单结果为“支付成功”
                             LOG.info("查询到订单支付成功");
+                            BusinessOrderRecord businessOrderRecord =  orderRecordService.findByOutOderNo(scanPayQueryResData.getOut_trade_no());
+                            if (businessOrderRecord != null) {
+                                //支付成功 保存有用的信息 改变订单状态
+                                businessOrderRecord.setPaymentStatusName("支付完成");
+                                businessOrderRecord.setPaymentStatus(200);
+                                orderRecordService.modify(businessOrderRecord);
+                                
+                            }
+                            
                             this.status = "1";
                             this.errMeg = "查询到订单支付成功";
                         } else {
