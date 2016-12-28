@@ -74,7 +74,7 @@ public class GoodsAllocationShowService {
 	
 	public GoodsAllocationShow findByGoodsidToday(String goodsId) {
 		List<GoodsAllocationShow> list = this.dao.findByOlayToday(goodsId, "");
-		if(list!=null){
+		if(list!=null&&list.size()>0){
 			for(GoodsAllocationShow goodsAllocationShow:list){
 				goodsAllocationShow.setStartString(goodsAllocationShow.getStartTime().toString().substring(0,10));
 				goodsAllocationShow.setEndString(goodsAllocationShow.getEndTime().toString().substring(0,10));
