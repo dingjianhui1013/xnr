@@ -168,6 +168,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private Map<String,Integer> goodsCountMap = new HashMap<String,Integer>();//每一个产品的订单数
 	private String msg;//库存不足的提示信息
 	
+
 	
 	public String getMsg() {
 		return msg;
@@ -177,6 +178,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		this.msg = msg;
 	}
 
+
+
 	public String getCartids() {
 		return cartids;
 	}
@@ -184,6 +187,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	public void setCartids(String cartids) {
 		this.cartids = cartids;
 	}
+	
+	
 
 	public String getTotalMoney() {
 		return totalMoney;

@@ -48,7 +48,7 @@ public class OrganizationAction extends ParentAction {
 	@Override
 	public boolean isPublic() {
 		return false;
-	};
+	}
 
 	static Log log = LogFactory.getLog(OrganizationAction.class);
 

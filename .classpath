@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-
 	<classpathentry kind="src" path="xnradmin-model/xnradmin-core/src/main/java"/>
 	<classpathentry kind="src" path="xnradmin-model/xnradmin-templates/src/main/java"/>
 	<classpathentry kind="src" path="xnradmin-model/xnradmin-client/src/main/java"/>
@@ -8,11 +7,6 @@
 	<classpathentry kind="src" path="xnradmin-model/xnradmin-utils/src/main/java"/>
 	<classpathentry kind="src" path="xnradmin-model/xnradmin-stat/src/main/java"/>
 	<classpathentry kind="src" path="xnradmin-model/xnradmin-data/src/main/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
@@ -21,5 +15,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry exported="true" kind="lib" path="xnradmin-web/target/xnradmin-web/WEB-INF/classes"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8"/>
 	<classpathentry kind="output" path="xnradmin-web/target/xnradmin-web/WEB-INF/classes"/>
 </classpath>

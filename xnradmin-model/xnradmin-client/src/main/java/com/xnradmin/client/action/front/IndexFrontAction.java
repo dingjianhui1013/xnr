@@ -224,7 +224,7 @@ public class IndexFrontAction  extends ParentAction{
 	private GoodsAllocationShowService allocationShowService;
 	
 	@Autowired
-	private BusinessOrderRecordService orderRecordService;
+	private BusinessOrderRecordService orderRecordService;    
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;
 	private List<BusinessGoodsVO> indexGoods;
 	@Autowired IndexFrontService indexFrontService;
