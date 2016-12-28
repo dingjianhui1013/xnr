@@ -618,7 +618,8 @@ public class BusinessCategoryAction extends ParentAction {
 				po.setCategoryLevel(categoryParent.getCategoryLevel()+1);
 			}
 			else{
-				po.setCategoryLevel(0);
+//				po.setCategoryLevel(0);
+				po.setCategoryLevel(1);
 			}
 			if(categoryParent.getPrimaryConfigurationId()!=null){
 				po.setPrimaryConfigurationId(categoryParent.getPrimaryConfigurationId());

@@ -2,6 +2,7 @@ package com.xnradmin.client.service.wx;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -255,6 +256,12 @@ public class FarmerService {
 		textMessageF.setText(text);
 		String outputStr = JSONObject.fromObject(textMessageF).toString();
 		JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+		if(jsons.toString().indexOf("40001")!=-1)
+		{
+		  access_tokenF = WXFGetTokenService.getAccessToken();
+		  WXFGetTokenService.writeAccessToken(access_tokenF, new Date().getTime(), ServletActionContext.getRequest());
+		  jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+		}
 	}
 
 	public void updateFarmerExamine(FarmerExamine farmerExamine) {

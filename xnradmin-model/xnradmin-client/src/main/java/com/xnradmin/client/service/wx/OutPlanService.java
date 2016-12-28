@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -326,6 +327,13 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 		log.debug(outputStr+"***********outputStr************");
 		log.debug("***********************");
 		JSONObject jsons =  WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+		if(jsons.toString().indexOf("40001")!=-1)
+		{
+			access_tokenF = WXFGetTokenService.getAccessToken();
+			WXFGetTokenService.writeAccessToken(access_tokenF, new Date().getTime(), ServletActionContext.getRequest());
+			WeixinUtil.httpRequest(WXurl.WXF_MESSARW_TO_USER.replace("ACCESS_TOKEN", access_tokenF), "POST", outputStr);
+		}
+		
 		log.debug("***********************");
 		log.debug(jsons+"***********jsons************");
 		log.debug("***********************");

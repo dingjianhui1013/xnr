@@ -396,6 +396,12 @@ public class WXConnectAction extends ParentAction{
 		JSONObject jsapi_ticket = WeixinUtil.httpRequest(
 				WXurl.WXF_GET_JSAPI_TICKET.replace("ACCESS_TOKEN",
 						access_tokenString), "GET", null);
+		if(jsapi_ticket.toString().indexOf("40001")!=-1)
+	  		{
+				access_tokenString = WXFGetTokenService.getAccessToken();
+	  			WXFGetTokenService.writeAccessToken(access_tokenString, new Date().getTime(), ServletActionContext.getRequest());
+	  			jsapi_ticket = WeixinUtil.httpRequest(WXurl.WXF_GET_JSAPI_TICKET.replace("ACCESS_TOKEN",access_tokenString), "GET", null);
+	  		}
 		Long time = Long.valueOf( new Date().getTime());
 		String timep = time.toString().substring(0, 10);
 		String noncestr = "Wm3WZYTPz0wzccnW";
@@ -490,6 +496,12 @@ public class WXConnectAction extends ParentAction{
 		for (int i = 0; i < serverIds.length; i++) {
 			String requestUrl = WXurl.WXF_DOWN_IMAGE.replace("ACCESS_TOKEN", access_token)
 					.replace("MEDIA_ID", serverIds[i]);
+			 if(requestUrl.toString().indexOf("40001")!=-1)
+				{
+				  access_token = WXFGetTokenService.getAccessToken();
+				  WXFGetTokenService.writeAccessToken(access_token, new Date().getTime(), ServletActionContext.getRequest());
+				  requestUrl = WXurl.WXF_DOWN_IMAGE.replace("ACCESS_TOKEN", access_token).replace("MEDIA_ID", serverIds[i]);
+				}
 			HttpURLConnection conn = null;
 			try {
 				URL url = new URL(requestUrl);
