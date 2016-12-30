@@ -15,7 +15,6 @@
 <script src="<%=path %>/js/verifyCode.js" type="text/javascript"></script>
 <script>
 $(function(){ 
-	alert($("#status").val());
 	var farmerId = '${userId}';
 	if($("#status").val()==null||$("#status").val()==""||$("#status").val()=="0")
 		{
