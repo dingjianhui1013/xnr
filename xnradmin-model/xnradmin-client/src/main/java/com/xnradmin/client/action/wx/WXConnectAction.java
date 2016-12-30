@@ -314,6 +314,40 @@ public class WXConnectAction extends ParentAction{
 		return StrutsResMSG.SUCCESS;
 	}
 	
+	@Action(value = "oAuthFF", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/wx/admin/seting/uploadImage/uploadImageFF.jsp") })
+	public String oAuthFF(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession();
+		String code = request.getParameter("code");
+		String access_tokenString = WXFGetTokenService.accessTokenIsOvertime();
+		JSONObject userIdObject = WeixinUtil.httpRequest(
+				WXurl.WXF_USERID_URL.replace("APPID", WXfInit.APPID).replace("SECRET", WXfInit.APPSECRET)
+						.replace("CODE", code), "GET", null);
+		String url = "https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID";
+		String xurl = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN";
+		String userUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+		JSONObject at = WeixinUtil.httpRequest(
+				url.replace("OPENID", userIdObject.getString("openid")).replace("ACCESS_TOKEN", userIdObject.getString("access_token")), "GET", null);
+		JSONObject xat = WeixinUtil.httpRequest(
+				xurl.replace("APPID",WXfInit.APPID).replace("REFRESH_TOKEN", userIdObject.getString("refresh_token")), "GET", null);
+		log.debug("**************");
+		log.debug("userIdObject::"+userIdObject);
+		log.debug(":access_token:"+userIdObject.getString("access_token"));
+		log.debug(":-----------at:"+at.toString());
+		log.debug(":-----------xat:"+xat.toString());
+		log.debug(":-----------urlr:"+url.replace("openid", userIdObject.getString("openid")).replace("ACCESS_TOKEN", userIdObject.getString("access_token")));
+		log.debug("**************");
+		JSONObject userInformation = WeixinUtil.httpRequest(
+				userUrl.replace("ACCESS_TOKEN",
+						userIdObject.getString("access_token")).replace("OPENID",
+									userIdObject.getString("openid")), "GET", null);
+		log.debug("**************");
+		log.debug("userInformation"+userInformation);
+		log.debug("**************");
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	
 	/***
 	 * 企业号创建菜单
 	 */
