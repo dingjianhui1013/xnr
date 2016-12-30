@@ -134,6 +134,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private String detailedAddress;
 	private String telAddress;
 	
+	private Long businessOrderRecodeId;
+	
 	private String listJson; // List页面返回的JSON值
 	private String goods;
 	private String userReal;
@@ -476,6 +478,10 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		 user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
 		 addrs = addressService.findListByUserId(user.getId());
 		 
+		 
+		 
+		
+		 
          if(cartids.equals("all")){
         	 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));	 
          }else{
@@ -509,6 +515,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	@Action(value = "businessConfirmCheck",results = { @Result(name = StrutsResMSG.SUCCESS, type = "json")})
     public String businessConfirmCheck() {
 
+		user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
+		
 		 List<BusinessGoodsCartVo> newcartVoList=null;
          if(cartids.equals("all")){
         	 newcartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
@@ -771,6 +779,45 @@ public class BusinessOrderRecodeAction extends ParentAction {
           }
 		return StrutsMessage;
 	}
+	
+	
+	
+	
+	
+	 
+	@Action(value = "wxPayAgain",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/pay/wxpay/subSuccess.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp"),@Result(name = StrutsResMSG.ERROR, type = "json") })	
+	public String wxPayAgain() {
+		
+		BusinessOrderRecord orderRecord = orderRecordService.findByid(businessOrderRecodeId.toString());
+		
+		this.outTradeNo = orderRecord.getOrderNo();
+		this.totalMoney = orderRecord.getTotalPrice().toString();
+		
+		String goodDetail = "";
+		
+		List<BusinessOrderGoodsRelation> relations = orderGoodsRelationService.findByOrderId(businessOrderRecodeId);
+		
+		for(BusinessOrderGoodsRelation relation:relations){
+			
+			BusinessGoods good = goodsService.findByid(relation.getGoodsId().toString());
+			
+			goodDetail += good.getGoodsName()+" ";
+			
+		}
+		
+		 boolean wxFlag = this.wxPayInfo(outTradeNo,totalMoney,goodDetail);
+         if(wxFlag){
+        	 return  StrutsResMSG.SUCCESS;
+              
+         }else{
+        	 return  StrutsResMSG.FAILED;
+              
+         }
+	}
+	
+	
+	
 	
 	private boolean wxPayInfo(String outTradeNo, String  totalMoney ,String goodDetail){
 	   String  body = goodDetail;
@@ -1089,5 +1136,16 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	public void setUserDesc(String userDesc) {
 		this.userDesc = userDesc;
 	}
+
+	public Long getBusinessOrderRecodeId() {
+		return businessOrderRecodeId;
+	}
+
+	public void setBusinessOrderRecodeId(Long businessOrderRecodeId) {
+		this.businessOrderRecodeId = businessOrderRecodeId;
+	}
+	
+	
+	
 	
 }
