@@ -331,7 +331,7 @@
 						                   	<a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
 				                   		</c:if>
 				                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='微信支付'}">
-						                   	<a href="#">前往支付</a></span></li>
+						                   	<a href="${basePath}front/shopingCart/shoppingCart.action">前往支付</a></span></li>
 				                   		</c:if>
 				                   		
 				                    </c:if>
