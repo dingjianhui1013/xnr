@@ -99,10 +99,12 @@
 			<li class="line">line</li>			
 			<li><a class="delete" href="${del}?goodsId={sid_goodsId}&del=1" target="ajaxTodo" title="删除某个商品"><span>删除</span></a></li>
 			<li class="line">line</li>	
-			<li><a class="icon" href="${exportGoods}" target="dwzExport" targetType="navTab" title="要导出这些记录吗?"><span>导出小农人商品列表</span></a></li>
+			<li><a class="icon" href="${exportGoods}" target="dwzExport" targetType="navTab" title="要导出这些记录吗?"><span>导出商品列表</span></a></li>
+			<!-- 
 			<li><a class="icon" href="${outputYsmc}" target="dwzExport" targetType="navTab" title="要导出这些记录吗?"><span>导出ysmc商品列表</span></a></li>
 			<li><a class="icon" href="${outputFdlm}" target="dwzExport" targetType="navTab" title="要导出这些记录吗?"><span>导出fdlm商品列表</span></a></li>
 			<li><a class="icon" href="${outputLnFile}" target="dwzExport" targetType="navTab" title="要导出这些记录吗?"><span>导出ln商品列表</span></a></li>
+			 -->
 			<li class="line">line</li>	
 			<li><a class="edit" href="${uploadGoodsInfo}" target="navTab" ><span>批量上传更新商品</span></a></li>
 		</ul>
