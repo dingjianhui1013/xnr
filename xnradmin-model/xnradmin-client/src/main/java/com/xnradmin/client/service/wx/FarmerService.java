@@ -134,7 +134,13 @@ public class FarmerService {
 	{
 		String hql = "from Farmer where userId='"+userId+"'";
 		List<Farmer> user = (List)commonDao.getEntityByPropertiesWithHql(hql);
-		return user.get(0);
+		if(!user.isEmpty())
+		{
+			return user.get(0);
+		}else
+		{
+			return null;
+		}
 	}
 	/***
 	 * 生成二维码
@@ -281,4 +287,5 @@ public class FarmerService {
 		hql.append(" where id="+farmerExamine.getId());
 		commonDao.executeUpdateOrDelete(hql.toString());
 	}
+	
 }
