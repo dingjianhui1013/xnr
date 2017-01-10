@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<h2 class="contentTitle">商品授权</h2>
+<h2 class="contentTitle">商品签约</h2>
 <form method="post" action="page/wx/farmer/saveAnthinfo.action"
 	class="pageForm required-validate"
 	onsubmit="return validateCallback(this, dialogAjaxDone)">

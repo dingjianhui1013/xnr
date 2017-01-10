@@ -29,16 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.cntinker.security.MD5Encoder;
 import com.cntinker.util.StringHelper;
-import com.cntinker.util.SystemHelper;
-
-import com.xnradmin.core.service.mall.clientUser.ClientUserInfoService;
-import com.xnradmin.core.service.mall.clientUser.ClientUserRegionInfoService;
 import com.xnradmin.client.service.wx.OutPlanService;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
-import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
@@ -47,6 +41,8 @@ import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationServic
 import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
+import com.xnradmin.core.service.mall.clientUser.ClientUserInfoService;
+import com.xnradmin.core.service.mall.clientUser.ClientUserRegionInfoService;
 import com.xnradmin.core.service.mall.region.AreaService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
 import com.xnradmin.core.service.mall.seting.PrimaryConfigurationService;
@@ -1570,6 +1566,10 @@ public class BusinessOrderRecordAction extends ParentAction {
 			farmerOrder.setStaffId(this.getCurrentStaff().getId());
 			plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
 			plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
+			if(deliveryStatus.equals("208"))
+			{
+				plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
+			}
 			planService.modify(plan);
 			farmerOrderService.save(farmerOrder);
 			

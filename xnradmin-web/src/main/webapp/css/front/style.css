@@ -2059,13 +2059,13 @@ a.cpns:hover{
 .orderTime{padding-left:3rem; display: inline-block; color: #666} 
 
 .orderListBox .orderTitCol{overflow: hidden;margin-bottom: 1rem;border-bottom: 1px solid #fff; background: #f6f6f6}
-.orderTitCol ul li{ float: left;width:12%; text-align: center; padding:1rem 0.5rem;}
+.orderTitCol ul li{ float: left;width:11%; text-align: center; padding:1rem 0.5rem;}
 .orderListBox .orderTitCol ul li{font-weight: bold}
-.orderTitCol ul li.ordercol-d{width:52%;}
+.orderTitCol ul li.ordercol-d{width:45%;}
 .orderTitCol ul li a,.orderTitCol ul li span{ color:#333}
 .orderTitCol ul li.ordercol-d a,.orderTitCol ul li.ordercol-d em{margin:0 3px; display:block;float: left;}
 .productListNum{ padding:2.5rem 1rem;}
-.orderTitCol ul li.ordercol-d em{ padding:2rem 0 1rem;}
+.orderTitCol ul li.ordercol-d em{ padding:2rem 1rem 1rem;}
 .orderList .orderTitCol ul li{ background: none; min-height: 106px;border-right:1px solid #ddd;padding:1rem 0 0.5rem;}
 .orderList .orderTitCol ul li:last-child{ border-right: none;}
 .orderList{overflow: hidden;margin-bottom: 1rem;border:1px solid #ddd;}

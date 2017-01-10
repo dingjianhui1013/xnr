@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 import com.xnradmin.client.action.wx.WXConnectAction;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.FarmerImageBak;
 
@@ -80,26 +83,45 @@ public class WXFarmerImageService {
 		farmerImageBak.setCreateDate(new Date());
 		common.save(farmerImageBak);
 	}
-	public Map<String, Integer> findImageByUserId(String userId,String type)
+	public Map<String, Integer> findImageByUserId(String userId,String type,String remarks)
 	{
 		String index="0";
 		Map<String, Integer> index_count = new HashMap<String, Integer>();
 		int count = 0;
-		String hql = "from FarmerImageBak where userId = '"+userId+"' and typeName is null order by createDate asc";
+		String hql = "from FarmerImageBak where userId = '"+userId+"' and typeId is null order by createDate asc";
 		List<FarmerImageBak> list = (List)common.getEntityByPropertiesWithHql(hql);
 		BusinessGoods businessgoods = businessGoodsService.findByid(type);
 		if(businessgoods!=null)
 		{
-			String typeName = businessGoodsService.findByid(type).getGoodsName();
-			if(!list.isEmpty())
+			String types[] = farmerService.getFenleisByUserId(userId);
+			int is=0;
+			for (String string : types) {
+				if(string.equals(businessgoods.getId().toString()))
+				{
+					is++;
+				}
+			}
+			if(is!=0)
 			{
-				FarmerImageBak farmerImageBak =list.get(0);
-				uploadImage(farmerImageBak.getPicUrl(), userId, type);
-				hql = "update FarmerImageBak set typeName = '"+typeName+"' where id ="+ farmerImageBak.getId();
-				common.executeUpdateOrDelete(hql);
+				String typeName = businessGoodsService.findByid(type).getGoodsName();
+				if(!list.isEmpty())
+				{
+					FarmerImageBak farmerImageBak =list.get(0);
+					uploadImage(farmerImageBak.getPicUrl(), userId, type,remarks);
+					hql = "update FarmerImageBak set typeId = '"+type+"' ";
+					if(remarks!=null)
+					{
+						hql += " , remarks = '"+remarks+"'";
+					}
+					hql += " where id ="+ farmerImageBak.getId();
+					common.executeUpdateOrDelete(hql);
+				}else
+				{
+					index="2";
+				}
 			}else
 			{
-				index="2";
+				index="1";
 			}
 		}else
 		{
@@ -111,7 +133,7 @@ public class WXFarmerImageService {
 		return index_count;
 	}
 	public static void main(String[] args) {
-		new WXFarmerImageService().findImageByUserId("owt3dwds69_EA04QBLrTvTjNgmdI", "7589");
+//		new WXFarmerImageService().findImageByUserId("owt3dwds69_EA04QBLrTvTjNgmdI", "7589");
 	}
 	public Map read(String userId,String type)
 	{
@@ -213,6 +235,57 @@ public class WXFarmerImageService {
 			farmerImage.setUserId(userId);
 			farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+File.separator+imageName);
 			farmerImage.setUserName(userName);
+			farmerImageService.saveFarmerImage(farmerImage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void uploadImage(String picurl,String userId,String type,String remarks)
+	{
+		String requestUrl = picurl;
+		HttpURLConnection conn = null;
+		try {
+			URL url = new URL(requestUrl);
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setDoInput(true);
+			conn.setRequestMethod("GET");
+			conn.setConnectTimeout(30000);
+			conn.setReadTimeout(30000);
+			InputStream in = conn.getInputStream();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			int b;
+			while ((b = in.read()) != -1) {
+				baos.write(b);
+			}
+			byte[] bytes = baos.toByteArray();
+			BufferedOutputStream bos = null;
+			String typeName = businessGoodsService.findByid(type).getGoodsName();
+			String imageUrl = userId+File.separator+typeName;
+			String filePath = ServletActionContext.getServletContext()
+					.getRealPath("/farmerImage");
+			String imageName = new Date().getTime() + "_" + userId + ".jpg";
+			String fileName = filePath+File.separator+imageUrl+File.separator+imageName;
+			File file = new File(filePath+File.separator+imageUrl);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+			File imageFile = new File(fileName);
+			imageFile.createNewFile();
+			bos = new BufferedOutputStream(new FileOutputStream(imageFile));
+			bos.write(bytes);
+			bos.close();
+			baos.close();
+			String userName = farmerService.getUserNameById(userId).getUserName();
+			FarmerImage farmerImage =  new FarmerImage();
+			farmerImage.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+			farmerImage.setType(type);
+			farmerImage.setUserId(userId);
+			farmerImage.setUrl("/farmerImage"+File.separator+imageUrl+File.separator+imageName);
+			farmerImage.setUserName(userName);
+			if(remarks!=null)
+			{
+				farmerImage.setRemarks(remarks);
+			}
 			farmerImageService.saveFarmerImage(farmerImage);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -68,14 +68,32 @@ public class WeiXinConnectService {
   	        String message = null;
   	        if(Content.startsWith("t"))
   	        {
-  	        	String type=Content.substring(1, Content.length());
+  	        	String messages = Content.substring(1, Content.length());
+  	        	String type=null;
+  	        	String remarks=null;
+  	        	if(messages.indexOf("tm")!=-1)
+  	        	{
+  	        		String m[]=messages.split("tm");
+  	  	        	type=m[0];
+  	  	        	remarks=m[1];
+  	        	}else
+  	        	{
+  	  	        	type=messages;
+  	        	}
+  	        	log.debug("****************");
+  	        		log.debug("type:"+type);
+  	        		log.debug("remarks:"+remarks);
+  	        	log.debug("****************");
 //  	        	Map<String, Integer> index_count = wXFarmerImageService.read(FromUserName, type);
-  	        	Map<String, Integer> index_count = wXFarmerImageService.findImageByUserId(FromUserName, type);
+  	        	Map<String, Integer> index_count = wXFarmerImageService.findImageByUserId(FromUserName, type,remarks);
   	        	Iterator iter =index_count.entrySet().iterator(); 
   	        	while (iter.hasNext()) { 
   		        	Map.Entry entry = (Map.Entry) iter.next(); 
   		        	String key = (String)entry.getKey(); 
   		        	int val = (int)entry.getValue(); 
+  		        	log.debug("****************");
+  	        			log.debug("key:"+key);
+  	        		log.debug("****************");
   		        	if(key.equals("0"))
   		        	{
   		        		if(val!=0)
@@ -94,6 +112,14 @@ public class WeiXinConnectService {
   		        	
   	        	}
   	        	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
+  	        }else if(Content.equals("产品")){
+  	        	String types = farmerService.getFenleiByUserId(FromUserName);
+	  	    	List<BusinessGoods> list = businessGoodsService.getTypeNameById(types);
+  	        	StringBuffer me = new StringBuffer();
+	  	    	for (BusinessGoods businessGoods : list) {
+	  				me.append(businessGoods.getGoodsName()+"\n");
+	  			}
+	  	    	message="您签约的产品有：\n"+me.toString();
   	        }else
   	        {
   		        message = "温馨提示：\n上传图片可直接回复图片或选择菜单上传"
@@ -184,9 +210,9 @@ public class WeiXinConnectService {
 	  	    	List<BusinessGoods> list = businessGoodsService.getTypeNameById(types);
 	  	    	StringBuffer me = new StringBuffer();
 	  	    	for (BusinessGoods businessGoods : list) {
-	  				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"\n");
+	  				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"tm“照片备注：可以为空”\n");
 	  			}
-	  	    	message = "请按顺序回复上传图片分类："+me.toString();
+	  	    	message = "请按顺序回复上传图片分类：\n"+me.toString();
   	        }
   	    	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
   	      }
@@ -285,7 +311,7 @@ public class WeiXinConnectService {
 	    	for (BusinessGoods businessGoods : list) {
 				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"\n");
 			}
-	    	String message = "请按顺序回复上传图片分类："+me.toString();
+	    	String message = "请按顺序回复上传图片分类：\n"+me.toString();
 	    	respMessage = respText(FromUserName, ToUserName, message, AgentID, "1234567890123456");
 	      }
 	      if (WXMsgType.REQ_MESSAGE_TYPE_VOICE.equals(MsgType))

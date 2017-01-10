@@ -21,13 +21,14 @@ public class FarmerImage implements Serializable{
 	private String type;
 	private String url;
 	private String date;
+	private String remarks;
 	public FarmerImage() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public FarmerImage(int id, String userId, String userName, String type,
-			String url,String date) {
+			String url, String date, String remarks) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -35,6 +36,7 @@ public class FarmerImage implements Serializable{
 		this.type = type;
 		this.url = url;
 		this.date = date;
+		this.remarks = remarks;
 	}
 
 	@Id
@@ -62,6 +64,14 @@ public class FarmerImage implements Serializable{
 	@Column(name="date")
 	public String getDate() {
 		return date;
+	}
+	@Column(name="remarks")
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 
 	public void setDate(String date) {

@@ -16,7 +16,9 @@ public class FarmerImageBak {
 	private String userId;
 	private String picUrl;
 	private String typeName;
+	private String typeId;
 	private Date createDate;
+	private String remarks;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false) 
@@ -35,6 +37,13 @@ public class FarmerImageBak {
 	public String getTypeName() {
 		return typeName;
 	}
+	@Column(name="remarks")
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -52,6 +61,13 @@ public class FarmerImageBak {
 	}
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+	@Column(name="type_id")
+	public String getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(String typeId) {
+		this.typeId = typeId;
 	}
 
 }

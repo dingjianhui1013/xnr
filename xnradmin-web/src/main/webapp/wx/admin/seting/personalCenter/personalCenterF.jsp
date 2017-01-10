@@ -288,6 +288,12 @@
 									    </div>
 								 </div>
 								 <div class="form-group">
+									    <label for="" class="col-sm-2 control-label labelFont">发货总数</label>
+									    <div class="col-sm-10">
+									    	 <p class="form-control-static outputDate"><span>${opcv.sendoutAmount}</span></p>
+									    </div>
+								 </div>
+								 <div class="form-group">
 									    <label for="" class="col-sm-2 control-label labelFont">剩余数量</label>
 									    <div class="col-sm-10">
 									    	 <p class="form-control-static outputDate"><span>${opcv.validAmountSum}</span></p>

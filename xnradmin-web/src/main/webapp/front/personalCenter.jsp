@@ -290,6 +290,7 @@
 	                    			<li>收货人</li>
 	                    			<li>金额</li>
 	                    			<li>状态</li>
+	                    			<li>派送状态</li>
 	                    			<li>操作</li>
 	                    		</ul>
 	                    	</div>
@@ -306,10 +307,10 @@
 	                    		<ul>
 	                    			<li class="ordercol-d">
 		                    			<div class="pull-left  productListShow">
-		                    			<c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations"> 
+		                    			<c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations" begin="0" end="2"> 
 			                    			<a href="#"><img src="${basePath}${businessOrderRelations.businessGoods.goodsLogo}"></a>
 		                    			</c:forEach>
-		                    			<c:if test="${loop.businessOrderRecord.totalCount>4}"><em>...</em></c:if>
+		                    			<c:if test="${loop.businessOrderRecord.totalCount>3}"><em>...</em></c:if>
 		                    		 	</div>
 		                    		 	<div class="pull-right  productListNum">
 		                    		 		<a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">共${loop.businessOrderRecord.totalCount}件></a>
@@ -333,8 +334,8 @@
 				                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='微信支付'}">
 						                   	<a href="${basePath}front/orderrecord/wxPayAgain.action?businessOrderRecodeId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
 				                   		</c:if>
-				                   		
 				                    </c:if>
+				                    <li><span>${loop.businessOrderRecord.deliveryStatusName}</span></li>
 	                    			<li><span><a href="javascript:addToCart('${loop.businessOrderRecord.id }')">再次购买</a></span><a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">查看详情</a></li>
 	                    		</ul>
 	                    	</div>

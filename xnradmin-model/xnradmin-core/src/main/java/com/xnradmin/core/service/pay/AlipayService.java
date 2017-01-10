@@ -41,7 +41,7 @@ public class AlipayService {
 			subject+="  "+goodsNames.get(i).getGoodsName();
 		}
 		Alipay ali = new Alipay();
-		ali.setSubject(subject);
+		ali.setSubject("康源公社["+subject+"]");
 		ali.setOutTradeNo(outTradeNo);
 	//			ali.setTotalFee(totalMoney); 正式是这个数字，测试暂时用0.01；
 		ali.setTotalFee("0.01");
