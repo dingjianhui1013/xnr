@@ -172,7 +172,7 @@ function getUuid(){
 							<div class="prdt-cost">
 							<input id="price${businessGoodsVO.businessGoods.id}" type="hidden" value="${businessGoodsVO.businessGoods.goodsOriginalPrice}"/>
 								<p class="priceBox">
-									优惠价：<span class="active">${businessGoodsVO.businessGoods.goodsOriginalPrice}/${businessGoodsVO.businessWeight.weightName}</span>
+									优惠价：<span class="active">${businessGoodsVO.businessGoods.goodsOriginalPriceStr}/${businessGoodsVO.businessWeight.weightName}</span>
 								</p>
 								<div class="comment-count">
 									<p class="comment">已售数量</p>
@@ -229,7 +229,7 @@ function getUuid(){
 									名称：<span>${businessGoodsVO.businessGoods.goodsName}</span>
 								</p>
 								<p>
-									价格：<span>${businessGoodsVO.businessGoods.goodsOriginalPrice}/${businessGoodsVO.businessWeight.weightName}</span>
+									价格：<span>${businessGoodsVO.businessGoods.goodsOriginalPriceStr}/${businessGoodsVO.businessWeight.weightName}</span>
 								</p>
 								<p>
 									规格<span> 约${businessGoodsVO.businessGoods.goodsWeight }g</span>

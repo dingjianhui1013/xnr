@@ -328,10 +328,10 @@ function modefyToCart(id){
 								</li>
 								<li>
 									<c:if test="${!empty cartVo.cart.id }">
-										<span id="price${cartVo.cart.id }">${cartVo.goods.goodsOriginalPrice}</span>
+										<span id="price${cartVo.cart.id }">${cartVo.goods.goodsOriginalPriceStr}</span>
 									</c:if>
 									<c:if test="${empty cartVo.cart.id }">
-										<span id="price${cartVo.cart.cookieCartId }">${cartVo.goods.goodsOriginalPrice}</span>
+										<span id="price${cartVo.cart.cookieCartId }">${cartVo.goods.goodsOriginalPriceStr}</span>
 									</c:if>
 								</li>
 								<li class="cart-num">
