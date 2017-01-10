@@ -267,24 +267,24 @@
 							</thead>
 							<tbody>
 							<c:if test="${farmerOrderList!=null}">
-									<c:forEach items="${farmerOrderList}" var="loop">
+									<c:forEach items="${farmerOrderList}" var="loop" varStatus="status">
 									<tr class="unitBox">
 									
 									        <td>
-									        <input type="text" value="${loop.farmerOrder.id}">
+									        <input name="items[${status.index}].outPlanId" type="text" value="${loop.farmerOrder.outPlanId}">
 									        </td>
 											<td>
-											    <input type="text" value="${loop.businessGoods.goodsName}" >
+											    <input name="items[${status.index}].goodsName" type="text" value="${loop.businessGoods.goodsName}" >
 											</td>
 											<td>
-												 <input type="text" value="${loop.farmer.userName}" >
-												<a class="btnLook" title="查找带回" lookupGroup="items[#index#]" href="${goodsLookup}">查找带回</a>
+												 <input name="items[${status.index}].userName" type="text" value="${loop.farmer.userName}" >
+												<a class="btnLook" title="查找带回" lookupGroup="items[#index#]" href="${outplanLookup}">查找带回</a>
 											</td>
 											<td>
-											 	<input type="text" value="${loop.outPlan.validAmount}" >
+											 	<input name="items[${status.index}].validAmount" type="text" value="${loop.outPlan.validAmount}" >
 											</td>	
 											<td>
-												<input type="text" value="${loop.farmerOrder.goodsCount}" >
+												<input name="items[${status.index}].goodsCount" type="text" value="${loop.farmerOrder.goodsCount}" >
 											</td>	
 											
 											<td>
