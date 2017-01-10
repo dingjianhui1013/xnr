@@ -1549,31 +1549,34 @@ public class BusinessOrderRecordAction extends ParentAction {
 		}
 		
 		
+		farmerOrderService.delByOrderId(Long.parseLong(orderRecordId));
 		
-		
-		Iterator<String> item = items.keySet().iterator();
-		item = items.keySet().iterator();
-		while (item.hasNext()) {
-			String key = item.next();
-			FarmerOrderRecord farmerOrder = items.get(key);
+		if(items!=null){
+			Iterator<String> item = items.keySet().iterator();
 			
-			OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
-			
-			farmerOrder.setFarmerUserId(plan.getUserId());
-			farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
-			farmerOrder.setOrderRecordId(Long.parseLong(orderRecordId));
-			farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
-			farmerOrder.setStaffId(this.getCurrentStaff().getId());
-			plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
-			plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
-			if(deliveryStatus.equals("208"))
-			{
-				plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
-			}
-			planService.modify(plan);
-			farmerOrderService.save(farmerOrder);
-			
+			while (item.hasNext()) {
+				String key = item.next();
+				FarmerOrderRecord farmerOrder = items.get(key);
+				
+				OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+				
+				farmerOrder.setFarmerUserId(plan.getUserId());
+				farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
+				farmerOrder.setOrderRecordId(Long.parseLong(orderRecordId));
+				farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
+				farmerOrder.setStaffId(this.getCurrentStaff().getId());
+				plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
+				plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
+				if(deliveryStatus.equals("208"))
+				{
+					plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
+				}
+				planService.modify(plan);
+				farmerOrderService.save(farmerOrder);
+				
+			}	
 		}
+		
 		
 		
 		
