@@ -823,7 +823,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	   String  body = goodDetail;
        String  detail = goodDetail;
 
-       int   total_fee = 1;
+//       int   total_fee = 1;
+    int   total_fee = (int)Float.parseFloat(totalMoney)*100;
     String out_trade_no = outTradeNo;
     String spbill_create_ip = WXfInit.getIP();
     String trade_type = WXfInit.getTradeType();

@@ -267,6 +267,11 @@ public class AlipayAction {
 	public void changePayStatus(String out_trade_no,String operateStatusName,String totla_fee,String gmt_payment,String paymentName,String trade_no,String trades,String buyer_id,String buyer_email,String isRefund)
 	{
 		BusinessOrderRecord orderRecord = orderRecordService.findByOutOderNo(out_trade_no);
+		log.debug("************");
+		log.debug("********orderRecord.getTotalPrice()****"+Float.parseFloat(orderRecord.getTotalPrice().toString()));
+		log.debug("******totla_fee*****"+totla_fee);
+		log.debug("************");
+	
 //		if(orderRecord.getTotalPrice().equals(totla_fee))//判断支付宝支付价格是不是和订单相同。
 //		{
 			if(orderRecord.getPaymentStatus().equals(201))
@@ -292,8 +297,8 @@ public class AlipayAction {
 				reconciliation.setIsRefund(isRefund);
 				alipayService.saveRecon(reconciliation);
 			}
-//		}
-	}
+		}
+//	}
 	
 }
 

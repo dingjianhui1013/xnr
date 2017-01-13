@@ -210,9 +210,9 @@ function getUuid(){
 					 			</c:if>
 					 		</c:forEach>
 			 			</div>
-			 			<c:if test="${k==1}">
-			 				</div>
-			 			</c:if>
+<%-- 			 			<c:if test="${k==1}"> --%>
+<!-- 			 				</div> -->
+<%-- 			 			</c:if> --%>
 						<c:set var="j" value="${j+1 }" />
 					</c:forEach>
 				</c:forEach>

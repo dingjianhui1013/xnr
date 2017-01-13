@@ -109,7 +109,7 @@ function getUuid(){
 					 <div class="product-grid love-grid">	
 				 		<a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">				
 							<div class="product-img b-link-stripe b-animate-go  thickbox">
-								<img src="${basePath }${product.businessGoods.goodsLogo}" class="img-responsive" alt=""/>
+								<img src="${basePath }${product.businessGoods.goodsLogo}" class="img-responsive" alt="" style="height: 250px"/>
 								<div class="b-wrapper">
 									<h4 class="b-animate b-from-left  b-delay03">							
 										<button class="btns"><span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>查看详情</button>
