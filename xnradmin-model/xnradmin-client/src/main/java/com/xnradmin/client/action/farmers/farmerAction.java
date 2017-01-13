@@ -31,6 +31,7 @@ import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.FarmerExamine;
 import com.xnradmin.po.wx.connect.FarmerImage;
+import com.xnradmin.vo.business.FarmerImageVO;
 
 @Controller
 @Scope("prototype")
@@ -47,6 +48,7 @@ public class farmerAction extends ParentAction{
 	List<BusinessGoods> allBusinessGoods;
 	private String goodsId;
 	private List<FarmerImage> farmerImages;
+	private List<FarmerImageVO> FarmerImageVOs;
 	@Autowired FarmerService farmerService;
 	@Autowired BusinessGoodsService  businessGoodsService;
 	@Autowired
@@ -57,6 +59,7 @@ public class farmerAction extends ParentAction{
 	private FarmerExamine farmerExamine;
 	private String msg;
 	private String remarks;
+	private String delId;
 	public List<BusinessGoods> getAllBusinessGoods() {
 		return allBusinessGoods;
 	}
@@ -135,6 +138,20 @@ public class farmerAction extends ParentAction{
 	public void setGoods(BusinessGoods goods) {
 		this.goods = goods;
 	}
+	
+	public List<FarmerImageVO> getFarmerImageVOs() {
+		return FarmerImageVOs;
+	}
+	public void setFarmerImageVOs(List<FarmerImageVO> farmerImageVOs) {
+		FarmerImageVOs = farmerImageVOs;
+	}
+	
+	public String getDelId() {
+		return delId;
+	}
+	public void setDelId(String delId) {
+		this.delId = delId;
+	}
 	@Override
 	public boolean isPublic() {
 		return true;
@@ -143,6 +160,25 @@ public class farmerAction extends ParentAction{
 	@Action(value = "info", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/info.jsp") })
 	public String info() {
 		setPageInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	@Action(value = "pictureInfo", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/pictureInfo.jsp") })
+	public String pictureInfo() {
+		
+		this.FarmerImageVOs = this.farmerImageService.getPictureList(super.getPageNum(),
+				super.getNumPerPage());
+		super.totalCount = this.farmerService.getCount(query);
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	@Action(value = "dealPicture", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
+	public String dealPicture() {
+		if(this.farmerImageService.delectImageById(delId)){
+			this.status="true";
+		}else{
+			this.status="false";
+		};
 		return StrutsResMSG.SUCCESS;
 	}
 	

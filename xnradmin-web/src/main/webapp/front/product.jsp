@@ -122,7 +122,7 @@ function getUuid(){
 								<h4><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">${product.businessGoods.goodsName} </a></h4>
 								<p><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">农场出品，清脆爽口</a></p>
 								<input id="price${product.businessGoods.id}" type="hidden" value="${product.businessGoods.goodsOriginalPrice }"/>
-								<p class="item_price">￥${product.businessGoods.goodsOriginalPrice }/${product.businessWeight.weightName }</p>
+								<p class="item_price">￥${product.businessGoods.goodsOriginalPriceStr }/${product.businessWeight.weightName }</p>
 								<div class="addCartBox">	
 									<div class="addNum">						
 										<span><input id="count${product.businessGoods.id }" type="text" class="item_quantity" value="1"/></span>

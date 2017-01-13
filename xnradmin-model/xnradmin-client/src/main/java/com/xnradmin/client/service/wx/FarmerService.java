@@ -287,4 +287,5 @@ public class FarmerService {
 		hql.append(" where id="+farmerExamine.getId());
 		commonDao.executeUpdateOrDelete(hql.toString());
 	}
+	
 }
