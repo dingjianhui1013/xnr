@@ -28,13 +28,18 @@
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/common.js"></script>
-	
+	<script src="<%=path %>/js/layer/layer.js"></script>
 	<script src="<%=path %>/js/photoswipe.min.js"></script>
     <script src="<%=path %>/js/photoswipe-ui-default.min.js"></script>
     <script type="text/javascript">
     </script>
 	<script type="text/javascript" >
 	$(function(){
+		//调用示例
+		layer.photos({
+		  photos: '.layer-photos-demo'
+		  ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+		}); 
 		var farmerId = '${userId}';
 		if("${status}"==null||"${status}"==""||"${status}"=="0")
 		{
@@ -171,24 +176,32 @@
 													<c:forEach items="${dtiv}" var="ditvs">
 														<p class="sortTit" id="typeCount${typeCount}">${ditvs.key}</p>
 														<c:forEach items="${ditvs.value}" var="images">
-															<img src="<%=path %>${images}" style="display: none" class="images${ii}"/>
+															<img src="<%=path %>${images.url}" style="display: none" class="images${ii}"/>
 															 <c:set var="ii" value="${ii+1}"/>
 														</c:forEach> 
-														<div class="uploadImgList  demo-gallery">
-															<c:forEach items="${ditvs.value }" var="images">
-																	<a href="<%=path %>${images}" data-size="1600x1068" data-med="<%=path %>${images}" data-med-size="1024x683" id="image${i}">
-									    	 						<p class="closeIcon" onclick="deleteImgae('${images}','${i}','${count}','${typeCount}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
-					          											<img src="<%=path %>${images}" />
-					          											<script type="text/javascript">
-// 					          												alert($(".images"+${i}).width()+"x"+$(".images"+${i}).height());
-					          												$("#image"+${i}).attr("data-med-size",$(".images"+${i}).width()+"x"+$(".images"+${i}).height());
-// 					          												alert($("#image"+${i}).attr("data-med-size"));
-					          											</script>
-					          											<c:set var="i" value="${i+1}"/>
-<!-- 					          											类型下的图片数量 -->
-					          											<input type="hidden" value="${fn:length(ditvs.value)}" class="typecount${count}${typeCount}"/>
-					        										</a>
-															</c:forEach>
+<!-- 														<div class="uploadImgList  demo-gallery"> -->
+<%-- 															<c:forEach items="${ditvs.value }" var="images"> --%>
+<%-- 																	<a href="<%=path %>${images}" data-size="1600x1068" data-med="<%=path %>${images}" data-med-size="1024x683" id="image${i}"> --%>
+<%-- 									    	 						<p class="closeIcon" onclick="deleteImgae('${images}','${i}','${count}','${typeCount}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p> --%>
+<%-- 					          											<img src="<%=path %>${images}" /> --%>
+<!-- 					          											<script type="text/javascript"> -->
+<!-- 				          												$("#image"+${i}).attr("data-med-size",$(".images"+${i}).width()+"x"+$(".images"+${i}).height()); --> 
+<!-- 					          											</script> -->
+<%-- 					          											<c:set var="i" value="${i+1}"/> --%>
+<!-- 				          											类型下的图片数量 --> 
+<%-- 					          											<input type="hidden" value="${fn:length(ditvs.value)}" class="typecount${count}${typeCount}"/> --%>
+<!-- 					        										</a> -->
+<%-- 															</c:forEach> --%>
+<!-- 														</div> -->
+														<div class="layer-photos-demo uploadImgList layer-photos-demo">
+															<c:forEach items="${ditvs.value }" var="images"> 
+															<p class="closeIcon" onclick="deleteImgae('${images.url}','${i}','${count}','${typeCount}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
+															<img  layer-pid="${ii }" layer-src="<%=path %>${images.url}" src="<%=path %>${images.url}" alt="${images.remarks}" id="image${i}">
+															<br/><h3><span>图片描述：${images.remarks}</span></h3><br/>
+															<c:set var="i" value="${i+1}"/>
+<!--					          											类型下的图片数量 -->
+		          											<input type="hidden" value="${fn:length(ditvs.value)}" class="typecount${count}${typeCount}"/>
+															</c:forEach> 
 														</div>
 														<c:set var="typeCount" value="${typeCount+1}"/>
 													</c:forEach>

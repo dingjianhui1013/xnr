@@ -39,7 +39,7 @@ public class FrontUserService {
 		try {
 			frontUser.setCreateDate(new Date());
 			frontUser.setDelFlag("0");
-			frontUser.setType("0");
+//			frontUser.setType("0");//暂时不需要审核
 			if(frontUser.getUserName()==null||"".equals(frontUser.getUserName())){
 				frontUser.setUserName(frontUser.getPhone());
 			}

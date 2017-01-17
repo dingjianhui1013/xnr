@@ -150,7 +150,7 @@ function upF()
 	$.ajax({
 		url:"<%= path %>/page/wx/wxconnect/downloadFF.action",
 		type:"POST",
-		data:{serverId:$("#dId").val(),userId:'${userId}',userName:$('#userName').val(),type:$("#type").val(),_:new Date().getTime()},
+		data:{serverId:$("#dId").val(),userId:'${userId}',userName:$('#userName').val(),type:$("#type").val(),remarks:$("#remarks").val(),_:new Date().getTime()},
 		success:function(){
 				alert("图片保存成功");
 				window.location.href="${skiptUrl}";
@@ -236,6 +236,11 @@ function yanzheng(){
 							</c:forEach>
 						</select>
 					</div>
+				</div>
+				
+				<div  class="form-group">
+					<label for="" class="col-sm-2 control-label labelFont">请填写照片备注</label>
+					<input type="text" id="remarks" name="remarks" class="numInput form-control" />
 				</div>
 				<div class="btnBox">
 					<input type="hidden" id="Id" /> <input type="hidden" id="dId" />
