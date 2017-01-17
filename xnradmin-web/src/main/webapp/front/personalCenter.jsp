@@ -295,6 +295,16 @@
 	                    		</ul>
 	                    	</div>
 	                    </div>
+	                    <c:if test="${empty voList}">
+	                    	<div class="searchTips">
+					 			<p>暂时您还没有购买我们的商品</p>
+					 			<p>建议您：</p>
+				 				<a href="<%=basePath%>front/index.action">前去购买>></a>
+			 				</div>
+	                    </c:if>
+	                    <c:if test="${not empty voList}">
+	                    
+	                    
 	                    <c:forEach items="${voList}" var="loop">
 	                     <div class="orderList">
 	                    	<div class="orderTit">
@@ -372,11 +382,20 @@
 						</c:choose>
 				    </ul>
    				</nav>
+   				</c:if>
 				<!--分页end-->
                 </div>
                 <div class="p-orderList editList">
 					<h3 class="titBox">地址管理</h3>
                 	<a href="javascript:;" class="btn btn-default add-address" id="addAddressBtn">新增收货地址</a>
+                	<c:if test="${empty receiptAddressList }">
+                		<div class="searchTips">
+					 			<p>暂时您还没有添加收货地址</p>
+					 			<p>建议您：</p>
+				 				<p>点击上方“新增收货地址”进行添加地址</p>
+			 			</div>
+                	</c:if>
+                	<c:if test="${not empty receiptAddressList}">
                 	<div class="addressBox">
                 	<c:forEach items="${receiptAddressList}" var = "address">
 	                	 <div class="addressList">
@@ -438,7 +457,7 @@
 				    </ul>
    				</nav>
                 </div>
-                
+                </c:if>
                  <div class="p-orderList editList">
                  		<h3 class="titBox">密码修改</h3>
                 		<form class="form-horizontal" id="submitForm" action="savePassword.action">
@@ -505,18 +524,12 @@
 				   <label for="">地址：</label>
 				    <div class="selAddressBox">
 					    <select class="form-control provinceSel" id="modifyProvince" class="" name="receiptAddress.province">
-					    	<option value="北京市">北京市</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="山东省">山东省</option>
 					    </select>
 					    <select class="form-control citySel" id="modifyCity" name="receiptAddress.city">
-					    	<option value="北京市">北京市</option>
-					    	<option value="三河市">三河市</option>
 					    	<option value="济南市">济南市</option>
 					    </select>
 					    <select class="form-control countrySel" id="modifyCounty" name="receiptAddress.county">
-					    	<option value="燕郊">燕郊</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="济南县区">济南县区</option>
 					    </select>
 					 </div>
@@ -557,18 +570,12 @@
 				    <label for="">地址：</label>
 				    <div class="selAddressBox">
 					    <select class="form-control provinceSel" class="" name="receiptAddress.province">
-					    	<option value="北京市">北京市</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="山东省">山东省</option>
 					    </select>
 					    <select class="form-control citySel" name="receiptAddress.city">
-					    	<option value="北京市">北京市</option>
-					    	<option value="三河市">三河市</option>
 					    	<option value="济南市">济南市</option>
 					    </select>
 					    <select class="form-control countrySel" name="receiptAddress.county">
-					    	<option value="燕郊">燕郊</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="济南县区">济南县区</option>
 					    </select>
 				    </div>

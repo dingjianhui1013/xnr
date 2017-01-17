@@ -79,7 +79,7 @@ h1.b1,h2.b2,h3.b3 {
 .loginBox .nav-tabs{margin-bottom:2rem}
 .loginBox a.regLinkBox{margin-top:1rem;text-align: right;width: 100%;display: block;}
 .loginBox em{ padding: 0 0.2rem;color:red; font-style: normal;}
-.errorTips{ margin-top:0.5rem;}
+.errorTips{ padding-top:0.5rem; clear:both;}
 .forgotPwd{text-decoration:underline}
 .login a{
 	font-size:13px;
@@ -87,13 +87,14 @@ h1.b1,h2.b2,h3.b3 {
 	border:1px solid #E4E4E4;
 	padding:10px 15px;
 }
-.yzmInput{ width: 70%;}
+.yzmInput{ width: 85%;}
 .login a:hover{
 	color:#333;
 }
 .regtipsBox{ text-align: center; padding:5rem 2rem;border:1px solid #ddd; font-size: 1.6rem;}
 .searchTips{ width:40%; margin:0px auto; padding:10rem 2rem}
 .searchTips p{margin-bottom:0.6rem;}
+.yzmImgBox{float:left;margin-left:1rem;}
 .searchTipsNav{margin:1rem; padding:1rem; font-size:1.4rem; border-bottom:1px solid #ddd; }
 .searchTipsNav span{color:#e4393c; font-weight:bold;}
 .tipsBtnBox{margin-top: 2rem;}
@@ -2281,7 +2282,14 @@ p.prod-desc {
 .jewel{margin-right: 0}
 .feature-grid{width: 50%; float: left}
 .loginBox .control-label{ margin-bottom: 1rem}
-.loginBox .yzmInput{ width: 60%;}
+.loginBox .yzmInput{ width:100%}
+.yzmImgBox{
+    padding: 0.5rem 1.5rem 0;
+    text-align: right;
+    width: 100%;
+    }
+.yzmImgBox span a{ font-size:1.2rem}   
+.yzmImgBox img{width:50px; height:25px;}
 .loginBox .btn-default{ width: 35%;}
 .loginBtn .btn-success{ width: 100%;}
 .addNum{ width: 100%;}

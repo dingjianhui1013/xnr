@@ -52,6 +52,12 @@ public class FarmerImageService {
 		List<String> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
 		return list;
 	}
+	public List<FarmerImage> findByImagesAndRemarks(String type,String images,String userId)
+	{
+		String hql = "from FarmerImage where type ='"+type+"'and date ='"+images+"'" +"and userId ='"+userId+"'";
+		List<FarmerImage> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
+		return list;
+	}
 	public void delectImages(String imageUrl) {
 		try {
 			String hql = "delete from FarmerImage where url='"+imageUrl+"'";

@@ -81,6 +81,7 @@ public class WXConnectAction extends ParentAction{
 	private OutPlanVO outplanVO;
 	private String status;
 	private List<BusinessCategory> businesCategorys;
+	private String remarks;
 	
 	public String getUserId() {
 		return userId;
@@ -136,6 +137,14 @@ public class WXConnectAction extends ParentAction{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 
 	@Autowired
@@ -574,6 +583,7 @@ public class WXConnectAction extends ParentAction{
 				farmerImage.setUserName(userName);
 				farmerImage.setUserId(userId);
 				farmerImage.setType(type);
+				farmerImage.setRemarks(remarks);
 				farmerImage.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 				farmerImageService.saveFarmerImage(farmerImage);
 			} catch (Exception e) {

@@ -268,12 +268,16 @@ public class AlipayAction {
 	{
 		BusinessOrderRecord orderRecord = orderRecordService.findByOutOderNo(out_trade_no);
 		log.debug("************");
-		log.debug("********orderRecord.getTotalPrice()****"+Float.parseFloat(orderRecord.getTotalPrice().toString()));
+		log.debug("********orderRecord.getTotalPrice()****"+orderRecord.getTotalPrice().toString());
+		if(totla_fee.indexOf(".") > 0){
+						totla_fee = totla_fee.replaceAll("0+?$", "");//去掉后面无用的零
+						totla_fee = totla_fee.replaceAll("[.]$", "");//如小数点后面全是零则去掉小数点
+			}
 		log.debug("******totla_fee*****"+totla_fee);
-		log.debug("************");
+		log.debug("*****if*******"+totla_fee.equals(orderRecord.getTotalPrice().toString()));
 	
-//		if(orderRecord.getTotalPrice().equals(totla_fee))//判断支付宝支付价格是不是和订单相同。
-//		{
+		if(totla_fee.equals(orderRecord.getTotalPrice().toString()))//判断支付宝支付价格是不是和订单相同。
+		{
 			if(orderRecord.getPaymentStatus().equals(201))
 			{
 				orderRecord.setPaymentTime(Timestamp.valueOf(gmt_payment));
@@ -298,7 +302,7 @@ public class AlipayAction {
 				alipayService.saveRecon(reconciliation);
 			}
 		}
-//	}
+	}
 	
 }
 
