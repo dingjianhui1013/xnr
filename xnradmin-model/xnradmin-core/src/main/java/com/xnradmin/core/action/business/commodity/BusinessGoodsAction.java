@@ -180,6 +180,10 @@ public class BusinessGoodsAction extends ParentAction {
 	private Status isDiscount;
 	private List<Status> buyTeamList;
 	private List<Status> goodsSourceList;
+	
+	//排序的保存
+	private String newOrder;
+	
 
 	private Map<String, BusinessGoodsVO> goodsBuyteamList;
 
@@ -203,6 +207,31 @@ public class BusinessGoodsAction extends ParentAction {
 		return StrutsResMSG.SUCCESS;
 	}
 
+	/**
+	 * 商品排序保存
+	 * 
+	 * @return
+	 */
+	@Action(value = "sortSave",	results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String sortSave() throws IOException {
+		if(!StringHelper.isNull(newOrder)){
+			String[] ords = newOrder.split(",");
+			setPageInfo();
+			if(ords.length==voList.size()){
+				int i=0;
+				for(BusinessGoodsVO vo :voList){
+					BusinessGoods bg = vo.getBusinessGoods();
+					bg.setSortId(Integer.parseInt(ords[i]));
+					goodsService.modify(bg);
+					i++;
+				}
+			}
+		}
+		super.success(null, null,"businessGoods", null);
+		return null;
+	}
+
+	
 	/**
 	 * 跳转到信息页。。
 	 * 
@@ -262,7 +291,7 @@ public class BusinessGoodsAction extends ParentAction {
 		// 设置排序
 		findBusinessGoodsStatusList();
 		findBusinessIsDiscountList();
-		findStaffList();
+		//findStaffList();
 		findBusinessCategoryList();
 		findBusinessGoodsList();
 		findBusinessWeightList();
@@ -717,6 +746,9 @@ public class BusinessGoodsAction extends ParentAction {
 		goods.setModifyStaffId(currentStaff.getId());
 		goods.setModifyTime(new Timestamp(System.currentTimeMillis()));
 		goodsService.save(goods);
+		//取出goods 的id 默认做为其排序
+		goods.setSortId(goods.getId());
+		goodsService.modify(goods);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		//保存商品的分配信息
 		for(GoodsAllocationShow allocationShow:allocationShowList){
@@ -1634,6 +1666,14 @@ public class BusinessGoodsAction extends ParentAction {
 
 	public void setAllocationShowList(List<GoodsAllocationShow> allocationShowList) {
 		this.allocationShowList = allocationShowList;
+	}
+
+	public String getNewOrder() {
+		return newOrder;
+	}
+
+	public void setNewOrder(String newOrder) {
+		this.newOrder = newOrder;
 	}
 
 }

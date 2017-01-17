@@ -59,8 +59,8 @@ public class BusinessGoodsVO implements java.io.Serializable{
 
 	public void setBusinessGoods(BusinessGoods businessGoods) {
 		DecimalFormat df = new DecimalFormat("#.00");
-		businessGoods.setGoodsOriginalPriceStr(df.format(businessGoods.getGoodsOriginalPrice()));
-		BigDecimal   b  =   new  BigDecimal(businessGoods.getGoodsOriginalPrice());
+		BigDecimal   b  =   new  BigDecimal(df.format(businessGoods.getGoodsOriginalPrice()==null?0.00:businessGoods.getGoodsOriginalPrice()));
+		businessGoods.setGoodsOriginalPriceStr(df.format(businessGoods.getGoodsOriginalPrice()==null?0.00:businessGoods.getGoodsOriginalPrice()));
 		businessGoods.setGoodsOriginalPrice(b.setScale(3,  BigDecimal.ROUND_HALF_UP).floatValue());
 		this.businessGoods = businessGoods;
 	}

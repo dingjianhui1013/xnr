@@ -19,10 +19,12 @@ import org.springframework.stereotype.Controller;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.commodity.CategoryService;
 import com.xnradmin.core.service.stat.OrderPriceStatService;
 import com.xnradmin.core.service.stat.RawMaterialStatService;
+import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.dishes.Dish;
 import com.xnradmin.po.dishes.RawMaterial;
@@ -30,6 +32,7 @@ import com.xnradmin.po.mall.commodity.Category;
 import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.OrderRecord;
 import com.xnradmin.po.mall.order.Purchase;
+import com.xnradmin.vo.business.BusinessOrderVO;
 
 /**
  * @autohr: xiang_liu
@@ -46,6 +49,9 @@ public class OrderPriceStatAction extends ParentAction {
 	
 	@Autowired
 	private OrderPriceStatService orderPriceStatService;
+	
+	@Autowired
+	private BusinessOrderRecordService orderRecordService;
 	
 	@Override
 	public boolean isPublic() {
@@ -221,28 +227,28 @@ public class OrderPriceStatAction extends ParentAction {
 	 * 加载支付渠道
 	 * */
 	private void findPaymentProviderList(){
-		this.paymentProviderList = statusService.find(OrderRecord.class,"paymentProvider");
+		this.paymentProviderList = statusService.find(BusinessOrderRecord.class,"businessPaymentProvider");
 	}
 	
 	/*
 	 * 加载支付状态
 	 * */
 	private void findPaymentStatusList(){
-		this.paymentStatusList = statusService.find(OrderRecord.class,"paymentStatus");
+		this.paymentStatusList = statusService.find(BusinessOrderRecord.class,"businessPaymentStatus");
 	}
 	
 	/*
 	 * 加载配送状态
 	 * */
 	private void findDeliveryStatusList(){
-		this.deliveryStatusList = statusService.find(OrderRecord.class,"deliveryStatus");
+		this.deliveryStatusList = statusService.find(BusinessOrderRecord.class,"businessDeliveryStatus");
 	}
 	
 	/*
 	 * 加载处理状态
 	 * */
 	private void findOperateStatusList(){
-		this.operateStatusList = statusService.find(OrderRecord.class,"operateStatus");
+		this.operateStatusList = statusService.find(BusinessOrderRecord.class,"businessOperateStatus");
 	}
 	
 	/**
@@ -259,18 +265,14 @@ public class OrderPriceStatAction extends ParentAction {
 		findPaymentStatusList();
 		findDeliveryStatusList();
 		findOperateStatusList();
-		OrderRecord po = new OrderRecord();
+		findPaymentStatusList();
+		BusinessOrderVO vo = new BusinessOrderVO();
+		BusinessOrderRecord po = new BusinessOrderRecord();
+		
+		po.setOrderNo(orderNo);
 		if(!StringHelper.isNull(clientUserId)){
 			po.setClientUserId(Integer.parseInt(clientUserId));
 		}
-		po.setClientUserMobile(clientUserMobile);
-		if(!StringHelper.isNull(orderRecordId)){
-			po.setId(Long.valueOf(orderRecordId));
-		}
-		po.setOrderNo(orderNo);
-		po.setUserRealMobile(userRealMobile);
-		po.setUserRealName(userRealName);
-		po.setWxOpenId(wxOpenId);
 		if(!StringHelper.isNull(paymentProvider)){
 			po.setPaymentProvider(Integer.parseInt(paymentProvider));
 		}
@@ -280,9 +282,31 @@ public class OrderPriceStatAction extends ParentAction {
 		if(!StringHelper.isNull(deliveryStatus)){
 			po.setDeliveryStatus(Integer.parseInt(deliveryStatus));
 		}
-		if(!StringHelper.isNull(operateStatus)){
-			po.setOperateStatus(Integer.parseInt(operateStatus));
+		if (!StringHelper.isNull(orderRecordId)) {
+			po.setId(Long.valueOf(orderRecordId));
 		}
+		po.setClientUserMobile(clientUserMobile);
+		po.setWxOpenId(wxOpenId);
+		po.setUserRealMobile(userRealMobile);
+		po.setUserRealName(userRealName);
+		if (!StringHelper.isNull(operateStatus)) {
+			if (!operateStatus.equals("0")) {
+				po.setOperateStatus(Integer.parseInt(operateStatus));
+			}
+		}
+		vo.setBusinessOrderRecord(po);
+		vo.setCreateStartTime(createStartTime);
+		vo.setCreateEndTime(createEndTime);
+		
+		vo.setGroupBy("record.id");
+		vo.setOrderBy("record.staffId");
+		vo.setOrderByField("desc");
+		
+//		this.voList = orderRecordService.listVO2(vo, getPageNum(),
+//				getNumPerPage(), orderField, orderDirection);
+//		vo.setGroupBy("");
+//		String select = "select count(distinct record.id) ";
+//		this.totalCount = orderRecordService.getCount2(select, vo);
 		
 		List<Object[]> list = orderPriceStatService.findOrderPrice(createStartTime, createEndTime, 
 				po, getPageNum(), getNumPerPage(), orderField, orderDirection);

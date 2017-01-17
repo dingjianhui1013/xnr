@@ -33,6 +33,17 @@ public class FarmerImageDao {
 			throw re;
 		}
 	}
+	
+	public void modify(FarmerImage farmerImage) {
+		log.debug("modify FarmerImage instance");
+		try {
+			commonDao.modify(farmerImage);
+			log.debug("save successful");
+		} catch (RuntimeException re) {
+			log.error("save failed", re);
+			throw re;
+		}
+	}
 
 	public void delete(FarmerImage farmerImage) {
 		log.debug("deleting SmsRecord instance");

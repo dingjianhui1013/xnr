@@ -1,7 +1,14 @@
 package com.xnradmin.client.action.farmers;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +17,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
@@ -47,6 +56,8 @@ public class farmerAction extends ParentAction{
 	String[] fenleiById;
 	List<BusinessGoods> allBusinessGoods;
 	private String goodsId;
+	private File uploadify; // 农户产品新图片
+	private FarmerImage farmerImage;
 	private List<FarmerImage> farmerImages;
 	private List<FarmerImageVO> FarmerImageVOs;
 	@Autowired FarmerService farmerService;
@@ -139,6 +150,12 @@ public class farmerAction extends ParentAction{
 		this.goods = goods;
 	}
 	
+	public File getUploadify() {
+		return uploadify;
+	}
+	public void setUploadify(File uploadify) {
+		this.uploadify = uploadify;
+	}
 	public List<FarmerImageVO> getFarmerImageVOs() {
 		return FarmerImageVOs;
 	}
@@ -151,6 +168,12 @@ public class farmerAction extends ParentAction{
 	}
 	public void setDelId(String delId) {
 		this.delId = delId;
+	}
+	public FarmerImage getFarmerImage() {
+		return farmerImage;
+	}
+	public void setFarmerImage(FarmerImage farmerImage) {
+		this.farmerImage = farmerImage;
 	}
 	@Override
 	public boolean isPublic() {
@@ -165,21 +188,116 @@ public class farmerAction extends ParentAction{
 	
 	@Action(value = "pictureInfo", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/pictureInfo.jsp") })
 	public String pictureInfo() {
-		
 		this.FarmerImageVOs = this.farmerImageService.getPictureList(super.getPageNum(),
-				super.getNumPerPage());
+				super.getNumPerPage(),farmerImage);
 		super.totalCount = this.farmerService.getCount(query);
 		return StrutsResMSG.SUCCESS;
 	}
 	
-	@Action(value = "dealPicture", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
-	public String dealPicture() {
-		if(this.farmerImageService.delectImageById(delId)){
-			this.status="true";
-		}else{
-			this.status="false";
-		};
+	@Action(value = "dealPicture", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String dealPicture() {		
+		try {
+			farmerImageService.delectImageById(delId);
+			super.success(null, null, "uploadPicture",null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Action(value="downloadPicture",results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String downloadFarmerQrCode() throws Exception
+	{
+		String filepath = ServletActionContext.getServletContext()
+		.getRealPath(farmerImage.getUrl());
+		File file = new File(filepath);
+		String fileName = filepath.substring(filepath.lastIndexOf(File.separator)+1);
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType(response.getContentType());
+		response.setHeader("Content-disposition",
+				"attachment; filename="+fileName);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		int len = 0;
+		FileInputStream inputStream = new FileInputStream(file);
+		byte [] buffer  = new byte[3];
+		while((len = inputStream.read(buffer)) != -1)
+		{
+			baos.write(buffer, 0,  len);
+		}
+		byte[] bytes = baos.toByteArray();
+		response.setHeader("Content-Length", String.valueOf(bytes.length));
+		BufferedOutputStream bos = null;
+		bos = new BufferedOutputStream(response.getOutputStream());
+		bos.write(bytes);
+		bos.close();
+		baos.close();
+		return null;
+	}
+	/**
+	 * 图片替换页面
+	 * 
+	 * @return String
+	 */
+	@Action(value = "findPicture", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String findPicture() {
+		this.farmerImage = this.farmerImageService.findByImagesId(farmerImage.getId()+"");
 		return StrutsResMSG.SUCCESS;
+	}
+	
+	/**
+	 * 图片替换页面
+	 * 
+	 * @return String
+	 */
+	@Action(value = "replacePicture", results = {@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/farmer/pictureReplace.jsp") })
+	public String replacePicture() {
+		this.farmerImage = this.farmerImageService.findByImagesId(farmerImage.getId()+"");
+		return StrutsResMSG.SUCCESS;
+	}
+	/**
+	 * 图片替换上传
+	 * 
+	 * @return String
+	 */
+	@Action(value = "replace",results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String replace()throws Exception {
+		this.farmerImage = this.farmerImageService.findByImagesId(farmerImage.getId()+"");
+/*		HttpServletRequest request = ServletActionContext.getRequest();
+		request.getp*/
+		if (uploadify != null) {
+			String filePath = ServletActionContext.getServletContext()
+					.getRealPath("");
+			String oldUrl = farmerImage.getUrl();
+			String beforeStr =oldUrl.substring(0,oldUrl.lastIndexOf('/')+1);
+			String imageName =new Date().getTime()+"_"+oldUrl.substring(oldUrl.lastIndexOf('_')+1);			
+			String fileName = beforeStr+imageName;
+			File newfile = new File(filePath+fileName);
+			if(!newfile.exists()){
+				if(!newfile.getParentFile().exists()){
+					newfile.getParentFile().mkdirs();					
+				}
+				newfile.createNewFile();
+		    }
+
+			FileOutputStream fos = new FileOutputStream(newfile);
+			FileInputStream fis = new FileInputStream(uploadify);
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while ((len = fis.read(buffer)) > 0) {
+				fos.write(buffer, 0, len);
+			}
+			fos.close();
+			fis.close();
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			farmerImage.setNewUrl(fileName);
+			farmerImage.setModifyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			farmerImageService.updateFarmerImage(farmerImage);
+			
+		}
+		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT, "uploadPicture",null);
+		return null;
 	}
 	
 	private void setPageInfo() {

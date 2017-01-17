@@ -4,8 +4,6 @@
 package com.xnradmin.core.action.stat;
 
 import java.io.FileOutputStream;
-import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +31,7 @@ import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.order.OrderGoodsRelationService;
 import com.xnradmin.core.service.mall.order.OrderRecordService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
+import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.OrderGoodsRelation;
@@ -1277,40 +1276,40 @@ public class OrderRecordStatAction extends ParentAction {
 	 * 加载所有支付状态
 	 */
 	private void findPaymentStatusList() {
-		this.paymentStatusList = statusService.find(OrderRecord.class,
-				"paymentStatus");
+		this.paymentStatusList = statusService.find(BusinessOrderRecord.class,
+				"businessPaymentStatus");
 	}
 
 	/**
 	 * 加载所有支付提供者类型
 	 */
 	private void findPaymentProviderList() {
-		this.paymentProviderList = statusService.find(OrderRecord.class,
-				"paymentProvider");
+		this.paymentProviderList = statusService.find(BusinessOrderRecord.class,
+				"businessPaymentProvider");
 	}
 
 	/**
 	 * 加载所有订单处理状态
 	 */
 	private void findOperateStatusList() {
-		this.operateStatusList = statusService.find(OrderRecord.class,
-				"operateStatus");
+		this.operateStatusList = statusService.find(BusinessOrderRecord.class,
+				"businessOperateStatus");
 	}
 
 	/**
 	 * 加载所有订单派送状态
 	 */
 	private void findDeliveryStatus() {
-		this.deliveryStatusList = statusService.find(OrderRecord.class,
-				"deliveryStatus");
+		this.deliveryStatusList = statusService.find(BusinessOrderRecord.class,
+				"businessDeliveryStatus");
 	}
 
 	/**
 	 * 加载所有支付类型
 	 */
 	private void findPaymentTypeList() {
-		this.paymentTypeList = statusService.find(OrderRecord.class,
-				"paymentType");
+		this.paymentTypeList = statusService.find(BusinessOrderRecord.class,
+				"businessPaymentType");
 	}
 
 	private void findDateTime() {
@@ -1323,7 +1322,7 @@ public class OrderRecordStatAction extends ParentAction {
 			createEndTime = createEndTime + " 23:59:59";
 		}
 		if (StringHelper.isNull(operateStatus)) {
-			this.operateStatus = "169";
+			this.operateStatus = "204";
 		}
 	}
 

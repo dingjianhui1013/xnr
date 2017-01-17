@@ -2073,7 +2073,7 @@ public class OrderRecordService {
 			String sellerId, String sellerName, String cusId, String cusName,
 			String primaryConfigurationId, String primaryConfigurationName,
 			int curPage, int pageSize, String orderField, String direction) {
-		String hql = "select b.goodsName, count(*) from OrderRecord a, Goods b,OrderGoodsRelation c "
+		String hql = "select b.goodsName, count(*) from BusinessOrderRecord a, BusinessGoods b,BusinessOrderGoodsRelation c "
 				+ " where c.orderRecordId=a.id and c.goodsId=b.id";
 		if (!StringHelper.isNull(orderNo)) {
 			hql = hql + " and a.orderNo = '" + orderNo + "'";

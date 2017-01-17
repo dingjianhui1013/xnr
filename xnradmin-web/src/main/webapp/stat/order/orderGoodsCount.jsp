@@ -108,7 +108,7 @@
 					</select>
 				</td>
 				<td>
-					<label>订单状态：${operateStatus}</label>
+					<label>订单状态：</label>
 					<select class="combox" name="operateStatus">
 					<c:if test="${operateStatusList!=null}">
 						<option value="" selected>选择</option>

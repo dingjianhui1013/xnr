@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.wx.FarmerImageDao;
 import com.xnradmin.po.business.BusinessGoods;
-import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.wx.connect.Farmer;
 import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.vo.business.FarmerImageVO;
@@ -52,6 +51,16 @@ public class FarmerImageService {
 		List<String> list = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
 		return list;
 	}
+	public FarmerImage findByImagesId(String id)
+	{
+		String hql = "from FarmerImage where id ='"+id+"' ";
+		List<FarmerImage> farmerImages = commonDAO.getEntitiesByPropertiesWithHql(hql, 0,0);
+		if(farmerImages!=null&&farmerImages.size()>0){
+			return farmerImages.get(0);
+		}else{
+			return null;
+		}
+	}
 	public void delectImages(String imageUrl) {
 		try {
 			String hql = "delete from FarmerImage where url='"+imageUrl+"'";
@@ -77,8 +86,11 @@ public class FarmerImageService {
 		return list;
 	}
 	
-	public List<FarmerImageVO> getPictureList(int pageNum, int numPerPage) {
+	public List<FarmerImageVO> getPictureList(int pageNum, int numPerPage,FarmerImage farmerImageInfo) {
 		String hql = "from Farmer a, FarmerImage b, BusinessGoods c where b.type=c.id and a.userId=b.userId ";
+		if(farmerImageInfo!=null&&farmerImageInfo.getUserName()!=null){
+			hql += " and a.userName like '%"+farmerImageInfo.getUserName()+"%'";
+		}
 		List l = commonDAO.getEntitiesByPropertiesWithHql(hql, pageNum,numPerPage);
 		List<FarmerImageVO> farmerImageVOList = new ArrayList<>();
 		if(l!=null&&l.size()>0){
@@ -96,5 +108,8 @@ public class FarmerImageService {
 			return farmerImageVOList;			
 		}
 		return null;
+	}
+	public void updateFarmerImage(FarmerImage farmerImage) {
+		farmerImageDao.modify(farmerImage);
 	}
 }

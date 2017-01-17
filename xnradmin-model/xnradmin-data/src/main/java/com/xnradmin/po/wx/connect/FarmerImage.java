@@ -22,6 +22,8 @@ public class FarmerImage implements Serializable{
 	private String url;
 	private String date;
 	private String remarks;
+	private String newUrl;
+	private String modifyDate;
 	public FarmerImage() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -69,9 +71,26 @@ public class FarmerImage implements Serializable{
 	public String getRemarks() {
 		return remarks;
 	}
+	@Column(name="new_url")
+	public String getNewUrl() {
+		return newUrl;
+	}
+	@Column(name="modify_date")
+	public String getModifyDate() {
+		return modifyDate;
+	}
+
+	public void setModifyDate(String modifyDate) {
+		this.modifyDate = modifyDate;
+	}
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+
+
+	public void setNewUrl(String newUrl) {
+		this.newUrl = newUrl;
 	}
 
 	public void setDate(String date) {

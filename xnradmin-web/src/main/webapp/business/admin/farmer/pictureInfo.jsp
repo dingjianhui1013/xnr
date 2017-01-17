@@ -7,6 +7,7 @@
 	String action = basePath+"page/wx/farmer/pictureInfo.action";
 	
 	request.setAttribute("action",action);
+	request.setAttribute("basePath",basePath);
 %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -17,40 +18,19 @@
 		<input type="hidden" name="orderField" value="${orderField}" />
 		<input type="hidden" name="orderDirection" value="${orderDirection}" />
 </form>
-<script type="text/javascript">
-	function generate(id){
-		if(confirm("确定删除吗？")){
-			$.ajax({
-				url:'<%= basePath%>/page/wx/farmer/dealPicture.action',
-				type:'POST',
-				data:{delId:id},
-				dataType:'JSON',
-				success:function(data){
-					/* if(data.status==true){
-	            		 alert("删除成功")
-	            	 }else{
-	            		 alert("删除失败");
-	            	 } */
-	            	 
-				}
-			});
-			window.location='<%= basePath%>/page/wx/farmer/pictureInfo.action';
-		}
-	}
-</script>
 <div class="pageHeader">
 	<form onsubmit="return navTabSearch(this);" action="${action}" method="post">
 	<div class="searchBar">	
 		<table class="searchContent">
 			<tr>
 				<td>
-					用户名称
-					<input type="text" name="query.userName" value="${query.userName }"/>
+					农户名称
+					<input type="text" name="farmerImage.userName" value="${farmerImage.userName }"/>
 				</td>	
-				<td>
+<%-- 				<td>
 					用户ID
 					<input type="text" name="query.userId" value="${ query.userId}"/>
-				</td>		
+				</td> --%>		
 			</tr>
 		</table>
 		<div class="subBar">
@@ -69,7 +49,7 @@
 		<thead>
 			<tr>							
 				<th width="25"">ID</th>
-				<th width="45">用户名称</th>
+				<th width="45">农户名称</th>
 				<th width="45">图片</th>
 				<th width="45">操作</th>
 			</tr>
@@ -80,11 +60,18 @@
 					<tr target="sid_menuid">								
 						<td>${loop.farmerImage.id}</td>
 						<td>${loop.farmer.userName}</td>
-						<td>
-							<image src="${basePath}${loop.farmerImage.url}" />					
+						<td align="center">
+							<c:if test="${loop.farmerImage.newUrl!=null}">
+								<img src="${basePath}${loop.farmerImage.newUrl}" style="height: 100px;vertical-align:middle"/>	
+							</c:if>
+							<c:if test="${loop.farmerImage.newUrl==null}">
+								<img src="${basePath}${loop.farmerImage.url}" style="height: 100px;vertical-align:middle"/>
+							</c:if>					
 						</td>
 						<td>
-						<a title="删除" href="javascript:void(0)" class="btnDel" onclick="generate('${loop.farmerImage.id}')">删除</a>
+						<a title="删除" target="ajaxTodo" href="page/wx/farmer/dealPicture.action?delId=${loop.farmerImage.id}" class="btnDel">删除</a>
+						<a title="编辑替换" target="dialog" href="page/wx/farmer/replacePicture.action?farmerImage.id=${loop.farmerImage.id}" class="btnEdit">编辑</a>
+						<a title="下载" href="page/wx/farmer/downloadPicture.action?farmerImage.url=${loop.farmerImage.url}" class="btnSelect">下载</a>
 						</td>
 					</tr>				
 				</c:forEach>
