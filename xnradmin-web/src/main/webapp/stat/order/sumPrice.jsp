@@ -43,10 +43,10 @@
 					 用户手机号
 					<input type="text" name="clientUserMobile" value="${clientUserMobile}"/>
 				</td>
-				<td>
-					 用户微信ID
-					<input type="text" name="wxOpenId" value="${wxOpenId}"/>
-				</td>
+<!-- 				<td> -->
+<!-- 					 用户微信ID -->
+<%-- 					<input type="text" name="wxOpenId" value="${wxOpenId}"/> --%>
+<!-- 				</td> -->
 				<td>
 					 用户订单ID
 					<input type="text" name="orderRecordId" value="${orderRecordId}"/>
