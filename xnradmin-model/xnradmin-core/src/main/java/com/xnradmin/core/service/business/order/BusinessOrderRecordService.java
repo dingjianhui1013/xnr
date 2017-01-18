@@ -2558,6 +2558,31 @@ public class BusinessOrderRecordService {
 					hql.append(" and record.clientUserId = ").append(query.getBusinessOrderRecord()
 							.getClientUserId());
 				}
+				//支付状态
+				if(query.getBusinessOrderRecord().getPaymentStatus()!=null)
+				{
+					hql.append(" and record.paymentStatus =").append(query.getBusinessOrderRecord().getPaymentStatus());
+				}
+				//订单操作状态
+				if(query.getBusinessOrderRecord().getOperateStatus()!=null)
+				{
+					hql.append(" and record.operateStatus = ").append(query.getBusinessOrderRecord().getOperateStatus());
+				}
+				//支付渠道
+				if(query.getBusinessOrderRecord().getPaymentProvider()!=null)
+				{
+					hql.append(" and record.paymentProvider = ").append(query.getBusinessOrderRecord().getPaymentProvider());
+				}
+				//派送状态
+				if(query.getBusinessOrderRecord().getDeliveryStatus()!=null)
+				{
+					hql.append(" and record.deliveryStatus = ").append(query.getBusinessOrderRecord().getDeliveryStatus());
+				}
+				//订单编号
+				if(!StringHelper.isNull(query.getBusinessOrderRecord().getOrderNo()))
+				{
+					hql.append(" and record.orderNo = '").append(query.getBusinessOrderRecord().getOrderNo()+"'");
+				}
 			}
 
 			// 复选

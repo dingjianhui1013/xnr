@@ -37,7 +37,7 @@
 var fixHelper = function(e, ui) {  
     //console.log(ui)  
     ui.children().each(function() {  
-        $(this).width($(this).width());     //在拖动时，拖动行的cell（单元格）宽度会发生改变。在这里做了处理就没问题了  
+//          $(this).width($(this).width());     //在拖动时，拖动行的cell（单元格）宽度会发生改变。在这里做了处理就没问题了  
     });  
     return ui;  
 };  
