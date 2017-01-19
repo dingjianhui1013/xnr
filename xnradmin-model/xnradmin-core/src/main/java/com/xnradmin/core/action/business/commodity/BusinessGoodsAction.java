@@ -46,12 +46,14 @@ import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.commodity.BusinessWeightService;
 import com.xnradmin.core.service.business.data.ProcessOtherExcel;
+import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.core.util.Log4jUtil;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
@@ -75,6 +77,9 @@ public class BusinessGoodsAction extends ParentAction {
 
 	@Autowired
 	private BusinessCategoryService categoryService;
+	
+	@Autowired
+	private BusinessOrderGoodsRelationService orderGoodsRelationService;
 
 	@Autowired
 	private BusinessWeightService weightService;
@@ -1018,9 +1023,17 @@ public class BusinessGoodsAction extends ParentAction {
 
 	@Action(value = "del", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
 	public String del() throws IOException, JSONException {
-		goodsService.removeGoodsId(goodsId);
-		allocationShowService.del(goodsId);
-		super.success(null, null, "businessGoods", null);
+		List<BusinessOrderGoodsRelation> list = orderGoodsRelationService.findByGoodsId(goodsId);
+		if(list.isEmpty())
+		{
+			goodsService.removeGoodsId(goodsId);
+			allocationShowService.del(goodsId);
+			super.success(null, null, "businessGoods", null);
+		}else
+		{
+			super.success("商品已经存在订单中不能删除。", null, "businessGoods", null);
+		}
+		
 		return null;
 	}
 

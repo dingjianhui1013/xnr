@@ -220,6 +220,28 @@
 // 			}
 		
 	}
+	function toPage(){
+		var pageN = $("#pageNum").val();
+		if(pageN>${totalCount})
+			{
+				pageN = ${totalCount};
+			}else if(pageN<1)
+				{
+					pageN = 1;
+				}
+		window.location.href="${basePath}front/personalCenter.action?pageNum="+pageN+"&flag=myorder";
+	}
+	function toRPage(){
+		var pageN = $("#RPageNum").val();
+		if(pageN>${RTotalPage})
+			{
+				pageN = ${RTotalPage};
+			}else if(pageN<1)
+				{
+					pageN = 1;
+				}
+		window.location.href="${basePath}front/personalCenter.action?RPageNum="+pageN+"&flag=address";
+	}
 </script>
 </head>
 <body> 
@@ -359,27 +381,32 @@
 							 <li class="disabled"><a>«</a></li>
 						</c:when>
 						<c:otherwise>	
-							<li><a href="${basePath}front/personalCenter.action?pageNum=1&flag=myorder">«</a></li>
+							<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum-1}&flag=myorder">«</a></li>
 						</c:otherwise>
 					</c:choose>
-						<c:forEach begin="1" end="${totalCount}" var="numpage">
-							<c:choose>
-								<c:when test="${numpage==pageNum}">
-									<li class="active"><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li>
-								</c:when>
-								<c:otherwise>	
-									<li><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-						<c:choose>
+					<li class="active"><a>${pageNum}</a></li>
+<%-- 						<c:forEach begin="1" end="${totalCount}" var="numpage"> --%>
+<%-- 							<c:choose> --%>
+<%-- 								<c:when test="${numpage==pageNum}"> --%>
+<%-- 									<li class="active"><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li> --%>
+<%-- 								</c:when> --%>
+<%-- 								<c:otherwise>	 --%>
+<%-- 									<li><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li> --%>
+<%-- 								</c:otherwise> --%>
+<%-- 							</c:choose> --%>
+<%-- 						</c:forEach> --%>
+						<c:choose> 
 							<c:when test="${pageNum==totalCount}">
 								 <li class="disabled"><a>»</a></li>
 							</c:when>
 							<c:otherwise>	
-								<li><a href="${basePath}front/personalCenter.action?pageNum=${totalCount}&flag=myorder">»</a></li>
+								<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum+1}&flag=myorder">»</a></li>
 							</c:otherwise>
 						</c:choose>
+					<li><a>共${totalCount}页</a></li>
+					<li><a>跳转至</a></li>
+					<li><a><input type="text" value="" id="pageNum" onkeyup="if(/\D/.test(this.value)){this.value='';}" style="width:25px;height:20px"/></a></li>
+				    <li><a href="javascript:toPage()">»</a></li>
 				    </ul>
    				</nav>
    				</c:if>
@@ -433,27 +460,33 @@
 							 <li class="disabled"><a>«</a></li>
 						</c:when>
 						<c:otherwise>	
-							<li><a href="${basePath}front/personalCenter.action?RPageNum=1&flag=address">«</a></li>
+							<li><a href="${basePath}front/personalCenter.action?RPageNum=${RPageNum-1}&flag=address">«</a></li>
 						</c:otherwise>
 					</c:choose>
-						<c:forEach begin="1" end="${RTotalPage}" var="numpage">
-							<c:choose>
-								<c:when test="${numpage==RPageNum}">
-									<li class="active"><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li>
-								</c:when>
-								<c:otherwise>	
-									<li><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
+					<li class="active"><a>${RPageNum}</a></li>
+<%-- 						<c:forEach begin="1" end="${RTotalPage}" var="numpage"> --%>
+<%-- 							<c:choose> --%>
+<%-- 								<c:when test="${numpage==RPageNum}"> --%>
+<%-- 									<li class="active"><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li> --%>
+<%-- 								</c:when> --%>
+<%-- 								<c:otherwise>	 --%>
+<%-- 									<li><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li> --%>
+<%-- 								</c:otherwise> --%>
+<%-- 							</c:choose> --%>
+<%-- 						</c:forEach> --%>
+						
 						<c:choose>
 							<c:when test="${RPageNum==RTotalPage}">
 								 <li class="disabled"><a>»</a></li>
 							</c:when>
 							<c:otherwise>	
-								<li><a href="${basePath}front/personalCenter.action?RPageNum=${RTotalPage}&flag=address">»</a></li>
+								<li><a href="${basePath}front/personalCenter.action?RPageNum=${RPageNum+1}&flag=address">»</a></li>
 							</c:otherwise>
 						</c:choose>
+					<li><a>共${RTotalPage}页</a></li>
+					<li><a>跳转至</a></li>
+					<li><a><input type="text" value="" id="RPageNum" onkeyup="if(/\D/.test(this.value)){this.value='';}" style="width:25px;height:20px"/></a></li>
+				    <li><a href="javascript:toRPage()">»</a></li>
 				    </ul>
    				</nav>
                 </div>

@@ -166,7 +166,7 @@ public class BusinessGoods implements java.io.Serializable{
 	}
 
 	public void setGoodsOriginalPrice(Float goodsOriginalPrice) {
-		DecimalFormat df = new DecimalFormat("#.00");
+		DecimalFormat df = new DecimalFormat("#0.00");
 		this.goodsOriginalPriceStr=df.format(goodsOriginalPrice);
 		this.goodsOriginalPrice = goodsOriginalPrice;
 	}

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
-
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.business.order.BusinessOrderGoodsRelationDAO;
 import com.xnradmin.core.service.StaffService;
@@ -311,6 +310,12 @@ public class BusinessOrderGoodsRelationService {
 		
 		 List<BusinessOrderGoodsRelation> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		 
+		 return l;
+	}
+
+	public List<BusinessOrderGoodsRelation> findByGoodsId(String goodsId) {
+		String hql = "from BusinessOrderGoodsRelation where goodsId = '" +goodsId+"'";
+		 List<BusinessOrderGoodsRelation> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		 return l;
 	}
 	
