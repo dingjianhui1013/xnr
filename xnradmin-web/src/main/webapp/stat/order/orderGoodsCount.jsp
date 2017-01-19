@@ -6,7 +6,9 @@
 	        + path + "/";
 	
 	String action = basePath+"/page/stat/order/orderGoodsCount.action";
+	String modify = basePath+"/page/stat/order/toAllocation.action";
 	request.setAttribute("action",action);
+	request.setAttribute("modify",modify);
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <form id="pagerForm" method="post" action="${action}">
@@ -123,6 +125,24 @@
 						<c:forEach items="${operateStatusList}" var="loop">
 							<c:choose>
 								<c:when test="${loop.id==operateStatus}">
+									<option value=${loop.id} selected>${loop.statusName}</option>
+   								</c:when>
+   								<c:otherwise>
+   									<option value=${loop.id}>${loop.statusName}</option>
+   								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</c:if>
+					</select>
+				</td>
+				<td>
+					<label>分配状态：</label>
+					<select class="combox" name="allocationStatus">
+					<c:if test="${allocationStatusList!=null}">
+						<option value="" selected>选择</option>
+						<c:forEach items="${allocationStatusList}" var="loop">
+							<c:choose>
+								<c:when test="${loop.id==allocationStatus}">
 									<option value=${loop.id} selected>${loop.statusName}</option>
    								</c:when>
    								<c:otherwise>

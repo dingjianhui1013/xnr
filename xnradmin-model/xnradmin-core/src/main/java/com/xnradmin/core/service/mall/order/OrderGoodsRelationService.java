@@ -343,6 +343,24 @@ public class OrderGoodsRelationService {
             throw re;
         }
     }
+	
+	/**
+	 * 
+	 * @param dishId
+	 * @return int
+	 */
+	public int removeOrderRecordById(Long id){
+
+        log.debug("setOffOrderRecordId: " + id);
+        try{
+            String queryString = "update BusinessOrderGoodsRelation br set br.delFlag=1 where br.id="
+                    + id;
+            return commonDao.executeUpdateOrDelete(queryString);
+        }catch(RuntimeException re){
+            log.error("removeDishId failed",re);
+            throw re;
+        }
+    }
 	/**
 	 * @return List<OrderGoodsRelation>
 	 */

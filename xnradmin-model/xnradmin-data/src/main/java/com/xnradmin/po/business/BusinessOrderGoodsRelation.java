@@ -48,6 +48,8 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
     
     private String staffId;	//隶属用户Id
     
+    private String delFlag;	//删除标志位 1 
+    
     private Integer primaryConfigurationId; //对应商城ID
 	
     private Timestamp orderGoodsRelationTime; //生成时间 
@@ -177,6 +179,14 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 
 	public void setDiscount(Float discount) {
 		this.discount = discount;
+	}
+	@Column(name = "del_flag")
+	public String getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(String delFlag) {
+		this.delFlag = delFlag;
 	}
 
 	public Integer getGoodsWeightId() {

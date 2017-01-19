@@ -1194,7 +1194,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 		findOperateStatusList();
 		findDeliveryStatus();
 		findPaymentTypeList();
-		findStaffList();
+		//findStaffList();
 		// 加载该订单所有商品
 		BusinessOrderVO vo = new BusinessOrderVO();
 		BusinessOrderGoodsRelation po = new BusinessOrderGoodsRelation();

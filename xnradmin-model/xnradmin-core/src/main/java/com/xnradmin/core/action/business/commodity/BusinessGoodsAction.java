@@ -206,6 +206,80 @@ public class BusinessGoodsAction extends ParentAction {
 		setPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
+	
+	/**
+	 * 跳转到未分配的商品页面
+	 * 
+	 * @return
+	 */
+	@Action(value = "toallocationNo", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/commodity/goods/infoAllocation.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/commodity/goods/infoAllocation.jsp") })
+	public String toallocationNo() {
+		// 设置排序
+		findBusinessGoodsStatusList();
+		findBusinessIsDiscountList();
+		//findStaffList();
+		findBusinessCategoryList();
+		findBusinessGoodsList();
+		findBusinessWeightList();
+		findBusinessGoodsBuyteamList();
+		BusinessGoodsVO vo = new BusinessGoodsVO();
+		BusinessGoods po = new BusinessGoods();
+		if (!StringHelper.isNull(goodsCategoryId)) {
+			po.setGoodsCategoryId(goodsCategoryId);
+		}
+		if (!StringHelper.isNull(goodsParentId)) {
+			po.setGoodsParentId(goodsParentId);
+		}
+		if (!StringHelper.isNull(goodsName)) {
+			po.setGoodsName(goodsName);
+		}
+		if (!StringHelper.isNull(goodsBrandId)) {
+			po.setGoodsBrandId(Integer.parseInt(goodsBrandId));
+		}
+		if (!StringHelper.isNull(goodsStatus)) {
+			po.setGoodsStatus(Integer.parseInt(goodsStatus));
+		}
+		if (!StringHelper.isNull(goodsPreferentialPrice)) {
+			po.setGoodsPreferentialPrice(Float.valueOf(goodsPreferentialPrice));
+		}
+		if (!StringHelper.isNull(goodsPurchasePrice)) {
+			po.setGoodsPurchasePrice(Float.valueOf(goodsPurchasePrice));
+		}
+		if (!StringHelper.isNull(isFreeLogistics)) {
+			po.setIsFreeLogistics(Integer.parseInt(isFreeLogistics));
+		}
+		if (!StringHelper.isNull(isNewGoods)) {
+			po.setIsNewGoods(Integer.parseInt(isNewGoods));
+		}
+		if (!StringHelper.isNull(isDiscountGoods)) {
+			po.setIsDiscountGoods(Integer.parseInt(isDiscountGoods));
+		}
+		if (!StringHelper.isNull(isHotSaleGoods)) {
+			po.setIsHotSaleGoods(Integer.parseInt(isHotSaleGoods));
+		}
+		if (!StringHelper.isNull(goodsCreateStaffId)) {
+			po.setCreateStaffId(Integer.parseInt(goodsCreateStaffId));
+		}
+		if (!StringHelper.isNull(goodsModifyStaffId)) {
+			po.setModifyStaffId(Integer.parseInt(goodsModifyStaffId));
+		}
+		vo.setBusinessGoods(po);
+		vo.setCreateStartTime(goodsCreateStartTime);
+		vo.setCreateEndTime(goodsCreateEndTime);
+		vo.setModifyStartTime(goodsModifyStartTime);
+		vo.setModifyEndTime(goodsModifyEndTime);
+		
+		//设置来源列表
+		goodsSourceList = statusService.find(BusinessGoods.class,
+				"businessGoodsSource");
+
+		this.voList = goodsService.listVO(vo, getPageNum(), getNumPerPage(),
+				orderField, orderDirection);
+		this.totalCount = goodsService.getCount(vo);
+		return StrutsResMSG.SUCCESS;
+	}
 
 	/**
 	 * 商品排序保存

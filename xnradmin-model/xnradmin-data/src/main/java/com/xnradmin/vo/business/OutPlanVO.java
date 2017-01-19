@@ -11,6 +11,7 @@ public class OutPlanVO {
 	private Farmer farmer;
 	private BusinessGoods businessGoods;
 	private BusinessWeight businessWeight;
+	private String exceptIds;//用于对ID的过滤
 //	private BusinessCategory businessCategory;
 	
 	public OutPlan getOutPlan() {
@@ -43,5 +44,11 @@ public class OutPlanVO {
 //	public void setBusinessCategory(BusinessCategory businessCategory) {
 //		this.businessCategory = businessCategory;
 //	}
+	public String getExceptIds() {
+		return exceptIds;
+	}
+	public void setExceptIds(String exceptIds) {
+		this.exceptIds = exceptIds;
+	}
 	
 } 

@@ -121,12 +121,12 @@ public class FarmerOrderRecordService {
 	private String getHql(FarmerOrderVO query) {
 		StringBuffer hql = new StringBuffer();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		hql.append("from OutPlan a,Farmer b,BusinessGoods c,FarmerOrderRecord d where a.delFlage=0 and a.userId=b.userId"
-				+ " and a.goodsId=c.id and d.outPlanId=a.id and d.goodsId=c.id and d.farmerUserId=b.userId");
+		
+		hql.append("FROM OutPlan a,Farmer b,BusinessGoods c,FarmerOrderRecord d,AllocationData e WHERE a.delFlage = 0 "
+				+ " AND d.outPlanId = a.id	AND d.goodsId = c.id AND d.farmerUserId = b.userId	and e.id = d.orderRecordId ");
 		if (query == null){
 			return hql.append(" order by d.id desc").toString();
 		}
-		
 		
 		if(query.getFarmerOrder()!=null){
 			if(query.getFarmerOrder().getOrderRecordId()!=null){
@@ -163,6 +163,12 @@ public class FarmerOrderRecordService {
 			}
 		}
 		
+		
+		if(query.getAllocationData()!=null){
+			if(query.getAllocationData().getId()!=null&&!query.getAllocationData().getId().equals("")){
+				hql.append(" and e.id = ").append(query.getAllocationData().getId());
+			}
+		}
 		
 		hql.append(" order by d.id desc");
 		return hql.toString();

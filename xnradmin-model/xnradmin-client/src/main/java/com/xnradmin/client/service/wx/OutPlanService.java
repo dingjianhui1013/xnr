@@ -190,6 +190,9 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 				hql.append(" and c.goodsName like '%").append(query.getBusinessGoods().getGoodsName()).append("%'");
 			}
 		}
+		if(query.getExceptIds()!=null&&!query.getExceptIds().equals("")){
+			hql.append(" and c.id in (").append(query.getExceptIds()).append(")");
+		}
 		
 		hql.append(" and a.examine = '1'");
 		hql.append(" order by a.id desc");

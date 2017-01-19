@@ -71,8 +71,15 @@ public class OutPlanAction extends ParentAction{
 	private String userId ;
 	private String goodsId;
 	private Double occupyAmount;
+	private String goodsIdstr;
 	
 	
+	public String getGoodsIdstr() {
+		return goodsIdstr;
+	}
+	public void setGoodsIdstr(String goodsIdstr) {
+		this.goodsIdstr = goodsIdstr;
+	}
 	public Double getOccupyAmount() {
 		return occupyAmount;
 	}
@@ -487,7 +494,9 @@ public class OutPlanAction extends ParentAction{
 		if (!StringHelper.isNull(farmerName)) {
 			farmer.setUserName(farmerName);
 		}
-		
+		if (!StringHelper.isNull(goodsIdstr)) {
+			vo.setExceptIds(goodsIdstr);
+		}
 		vo.setFarmer(farmer);
 		vo.setBusinessGoods(goods);
 		

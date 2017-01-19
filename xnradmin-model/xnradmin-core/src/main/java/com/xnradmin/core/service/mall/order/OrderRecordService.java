@@ -10,8 +10,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,10 +24,14 @@ import com.cntinker.util.StringHelper;
 import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.mall.order.OrderRecordDAO;
+import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessOrderGoodsRelation;
+import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.OrderGoodsRelation;
 import com.xnradmin.po.mall.order.OrderRecord;
+import com.xnradmin.vo.business.BusinessAllocationVO;
 import com.xnradmin.vo.mall.OrderVO;
 import com.xnradmin.vo.stat.OrderRecordVO;
 
@@ -2073,7 +2079,7 @@ public class OrderRecordService {
 			String sellerId, String sellerName, String cusId, String cusName,
 			String primaryConfigurationId, String primaryConfigurationName,
 			int curPage, int pageSize, String orderField, String direction) {
-		String hql = "select b.goodsName, count(*) from BusinessOrderRecord a, BusinessGoods b,BusinessOrderGoodsRelation c "
+		String hql = "select b.goodsName, sum(c.goodsCount) from BusinessOrderRecord a, BusinessGoods b,BusinessOrderGoodsRelation c "
 				+ " where c.orderRecordId=a.id and c.goodsId=b.id";
 		if (!StringHelper.isNull(orderNo)) {
 			hql = hql + " and a.orderNo = '" + orderNo + "'";
@@ -2288,6 +2294,305 @@ public class OrderRecordService {
 				curPage, pageSize);
 		return l;
 	}
+	
+	/**
+	 * 统计的详细信息
+	 * @param firstletter
+	 * @param curPage
+	 * @param pageSize
+	 * @param orderField
+	 * @param direction
+	 * @return List<OrderVO>
+	 */
+	public List<BusinessAllocationVO> orderGoodsCountDetail(String orderNo, String orderRecordId,
+			String clientUserId, String clientUserName,
+			String clientUserMobile, String clientUserEmail,
+			String clientUserSex, String clientUserType,
+			String clientUserTypeName, String wxOpenId, String staffId,
+			String userRealMobile, String userRealPlane, String userRealName,
+			String countryId, String countryName, String provinceId,
+			String provinceName, String cityId, String cityName, String areaId,
+			String areaName, String userRealAddress, String userRealPostcode,
+			String userRealStartTime, String userRealEndTime,
+			String paymentType, String paymentTypeName, String paymentStatus,
+			String paymentStatusName, String paymentProvider,
+			String paymentProviderName, String paymentStartTime,
+			String paymentEndTime, String operateStartTime,
+			String operateEndTime, String operateStatus,
+			String operateStatusName, String createStartTime,
+			String createEndTime, String originalPrice, String totalPrice,
+			String logisticsCompanyId, String logisticsCompanyName,
+			String deliveryStaffId, String deliveryStaffName,
+			String deliveryStaffMobile, String deliveryStartStartTime,
+			String deliveryStartEndTime, String deliveryEndStartTime,
+			String deliveryEndEndTime, String deliveryStatus,
+			String deliveryStatusName, String sourceId, String sourceName,
+			String sourceType, String sourceTypeName, String serNo,
+			String sellerId, String sellerName, String cusId, String cusName,
+			String primaryConfigurationId,String allocationStatus, String primaryConfigurationName,
+			int curPage, int pageSize, String orderField, String direction) {
+		String hql = "from BusinessOrderRecord a, BusinessGoods b,BusinessOrderGoodsRelation c "
+				+ " where c.orderRecordId=a.id and c.goodsId=b.id";
+		if (!StringHelper.isNull(orderNo)) {
+			hql = hql + " and a.orderNo = '" + orderNo + "'";
+		}
+		if (!StringHelper.isNull(orderRecordId)) {
+			hql = hql + " and a.id = '" + orderRecordId + "'";
+		}
+		if (!StringHelper.isNull(clientUserId)) {
+			hql = hql + " and a.clientUserId = '" + clientUserId + "'";
+		}
+		if (!StringHelper.isNull(clientUserName)) {
+			hql = hql + " and a.clientUserName like '%" + clientUserName + "%'";
+		}
+		if (!StringHelper.isNull(clientUserMobile)) {
+			hql = hql + " and a.clientUserMobile = '" + clientUserMobile + "'";
+		}
+		if (!StringHelper.isNull(clientUserEmail)) {
+			hql = hql + " and a.clientUserEmail = '" + clientUserEmail + "'";
+		}
+		if (!StringHelper.isNull(clientUserSex)) {
+			hql = hql + " and a.clientUserSex = '" + clientUserSex + "'";
+		}
+		if (!StringHelper.isNull(clientUserType)) {
+			hql = hql + " and a.clientUserType = " + clientUserType;
+		}
+		if (!StringHelper.isNull(clientUserTypeName)) {
+			hql = hql + " and a.clientUserTypeName like '%"
+					+ clientUserTypeName + "%'";
+		}
+		if (!StringHelper.isNull(wxOpenId)) {
+			hql = hql + " and a.wxOpenId = '" + wxOpenId + "'";
+		}
+		if (!StringHelper.isNull(staffId)) {
+			hql = hql + " and a.staffId = '" + staffId + "'";
+		}
+		if (!StringHelper.isNull(userRealName)) {
+			hql = hql + " and a.userRealName like '%" + userRealName + "%'";
+		}
+		
+		
+		if (!StringHelper.isNull(allocationStatus)) {
+			hql = hql + " and ( c.delFlag is null or c.delFlag !=1 ) ";
+		}
+		
+		if (!StringHelper.isNull(countryId)) {
+			hql = hql + " and a.countryId = '" + countryId + "'";
+		}
+		if (!StringHelper.isNull(countryName)) {
+			hql = hql + " and a.countryName like '%" + countryName + "%'";
+		}
+		if (!StringHelper.isNull(provinceId)) {
+			hql = hql + " and a.provinceId = '" + provinceId + "'";
+		}
+		if (!StringHelper.isNull(provinceName)) {
+			hql = hql + " and a.provinceName like '%" + provinceName + "%'";
+		}
+		if (!StringHelper.isNull(cityId)) {
+			hql = hql + " and a.cityId = '" + cityId + "'";
+		}
+		if (!StringHelper.isNull(cityName)) {
+			hql = hql + " and a.cityName like '%" + cityName + "%'";
+		}
+		if (!StringHelper.isNull(areaId)) {
+			hql = hql + " and a.areaId = '" + areaId + "'";
+		}
+		if (!StringHelper.isNull(areaName)) {
+			hql = hql + " and a.areaName like '%" + areaName + "%'";
+		}
+		if (!StringHelper.isNull(userRealAddress)) {
+			hql = hql + " and a.userRealAddress like '%" + userRealAddress
+					+ "%'";
+		}
+		if (!StringHelper.isNull(userRealMobile)) {
+			hql = hql + " and a.userRealMobile = " + userRealMobile;
+		}
+		if (!StringHelper.isNull(userRealPlane)) {
+			hql = hql + " and a.userRealPlane = " + userRealPlane;
+		}
+		if (!StringHelper.isNull(userRealPostcode)) {
+			hql = hql + " and a.userRealPostcode = " + userRealPostcode;
+		}
+		if (!StringHelper.isNull(primaryConfigurationId)) {
+			hql = hql + " and a.primaryConfigurationId = "
+					+ primaryConfigurationId;
+		}
+		if (!StringHelper.isNull(userRealStartTime)) {
+			hql = hql + " and a.userRealTime >='" + userRealStartTime + "'";
+		}
+		if (!StringHelper.isNull(userRealEndTime)) {
+			hql = hql + " and a.userRealTime <='" + userRealEndTime + "'";
+		}
+		if (!StringHelper.isNull(paymentType)) {
+			hql = hql + " and a.paymentType = " + paymentType;
+		}
+		if (!StringHelper.isNull(paymentTypeName)) {
+			hql = hql + " and a.paymentTypeName like '" + paymentTypeName
+					+ "%'";
+		}
+		if (!StringHelper.isNull(paymentStatus)) {
+			hql = hql + " and a.paymentStatus = " + paymentStatus;
+		}
+		if (!StringHelper.isNull(paymentStatusName)) {
+			hql = hql + " and a.paymentStatusName like '%" + paymentStatusName
+					+ "%'";
+		}
+		if (!StringHelper.isNull(paymentProvider)) {
+			hql = hql + " and a.paymentProvider = " + paymentProvider;
+		}
+		if (!StringHelper.isNull(paymentProviderName)) {
+			hql = hql + " and a.paymentProviderName like '%"
+					+ paymentProviderName + "%'";
+		}
+		if (!StringHelper.isNull(paymentStartTime)) {
+			hql = hql + " and a.paymentTime >='" + paymentStartTime + "'";
+		}
+		if (!StringHelper.isNull(paymentEndTime)) {
+			hql = hql + " and a.paymentTime <='" + paymentEndTime + "'";
+		}
+		if (!StringHelper.isNull(operateStartTime)) {
+			hql = hql + " and a.operateTime >='" + operateStartTime + "'";
+		}
+		if (!StringHelper.isNull(operateEndTime)) {
+			hql = hql + " and a.operateTime <='" + operateEndTime + "'";
+		}
+		if (!StringHelper.isNull(operateStatus) && !operateStatus.equals("0")) {
+			hql = hql + " and a.operateStatus = " + operateStatus;
+		}
+		if (!StringHelper.isNull(operateStatusName)) {
+			hql = hql + " and a.operateStatusName like '%" + operateStatusName
+					+ "%'";
+		}
+		if (!StringHelper.isNull(createStartTime)) {
+			hql = hql + " and a.createTime >='" + createStartTime + "'";
+		}
+		if (!StringHelper.isNull(createEndTime)) {
+			hql = hql + " and a.createTime <='" + createEndTime + "'";
+		}
+		if (!StringHelper.isNull(originalPrice)) {
+			hql = hql + " and a.originalPrice = " + originalPrice;
+		}
+		if (!StringHelper.isNull(totalPrice)) {
+			hql = hql + " and a.totalPrice = " + totalPrice;
+		}
+		if (!StringHelper.isNull(logisticsCompanyId)) {
+			hql = hql + " and a.logisticsCompanyId = " + logisticsCompanyId;
+		}
+		if (!StringHelper.isNull(logisticsCompanyName)) {
+			hql = hql + " and a.logisticsCompanyName like '%"
+					+ logisticsCompanyName + "%'";
+		}
+		if (!StringHelper.isNull(deliveryStaffId)) {
+			hql = hql + " and a.deliveryStaffId = " + deliveryStaffId;
+		}
+		if (!StringHelper.isNull(deliveryStaffName)) {
+			hql = hql + " and a.deliveryStaffName like '%" + deliveryStaffName
+					+ "%'";
+		}
+		if (!StringHelper.isNull(deliveryStaffMobile)) {
+			hql = hql + " and a.deliveryStaffMobile = " + deliveryStaffMobile;
+		}
+		if (!StringHelper.isNull(deliveryStartStartTime)) {
+			hql = hql + " and a.deliveryStartTime >='" + deliveryStartStartTime
+					+ "'";
+		}
+		if (!StringHelper.isNull(deliveryStartEndTime)) {
+			hql = hql + " and a.deliveryStartTime <='" + deliveryStartEndTime
+					+ "'";
+		}
+		if (!StringHelper.isNull(deliveryEndStartTime)) {
+			hql = hql + " and a.deliveryEndTime >='" + deliveryEndStartTime
+					+ "'";
+		}
+		if (!StringHelper.isNull(deliveryEndEndTime)) {
+			hql = hql + " and a.deliveryEndTime <='" + deliveryEndEndTime + "'";
+		}
+		if (!StringHelper.isNull(deliveryStatus)) {
+			hql = hql + " and a.deliveryStatus = " + deliveryStatus;
+		}
+		if (!StringHelper.isNull(deliveryStatusName)) {
+			hql = hql + " and a.deliveryStatusName like '%"
+					+ deliveryStatusName + "%'";
+		}
+		if (!StringHelper.isNull(sourceId)) {
+			hql = hql + " and a.sourceId = " + sourceId;
+		}
+		if (!StringHelper.isNull(sourceName)) {
+			hql = hql + " and a.sourceName like '%" + sourceName + "%'";
+		}
+		if (!StringHelper.isNull(sourceType)) {
+			hql = hql + " and a.sourceType = " + sourceType;
+		}
+		if (!StringHelper.isNull(sourceTypeName)) {
+			hql = hql + " and a.sourceTypeName like '%" + sourceTypeName + "%'";
+		}
+		if (!StringHelper.isNull(serNo)) {
+			hql = hql + " and a.serNo = '" + serNo + "'";
+		}
+		if (!StringHelper.isNull(sellerId)) {
+			hql = hql + " and a.sellerId = " + sellerId;
+		}
+		if (!StringHelper.isNull(sellerName)) {
+			hql = hql + " and a.sellerName like '%" + sellerName + "%'";
+		}
+		if (!StringHelper.isNull(cusId)) {
+			hql = hql + " and a.cusId = " + cusId;
+		}
+		if (!StringHelper.isNull(cusName)) {
+			hql = hql + " and a.cusName like '%" + cusName + "%'";
+		}
+		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
+			hql = hql + " order by " + orderField + " " + direction;
+		} else {
+			hql += " order by b.id";
+		}
+		log.debug(hql);
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql,
+				curPage, pageSize);
+		List<BusinessAllocationVO> voList = new ArrayList<>();
+		Map<String,Integer> temMap = new HashMap<>();
+		
+		//对同一商品进行汇总
+		if(l!=null&&l.size()>0){
+			for(int i=0;i<l.size();i++){
+				Object[] obj = (Object[]) l.get(i);
+				BusinessAllocationVO businessAllocationVO =new BusinessAllocationVO();
+				BusinessOrderRecord businessOrderRecord=(BusinessOrderRecord)obj[0];
+				BusinessGoods businessGoods=(BusinessGoods)obj[1];
+				BusinessOrderGoodsRelation businessOrderGoodsRelation=(BusinessOrderGoodsRelation)obj[2];
+				Integer businessGoodsCount=0;
+				if(temMap.get(businessGoods.getId()+"")==null){
+					temMap.put(businessGoods.getId()+"", businessOrderGoodsRelation.getGoodsCount());
+					businessGoodsCount=businessOrderGoodsRelation.getGoodsCount();
+					businessAllocationVO.setBusinessGoods(businessGoods);
+					businessAllocationVO.setBusinessOrderGoodsRelation(businessOrderGoodsRelation);
+					businessAllocationVO.setBusinessOrderRecord(businessOrderRecord);
+					businessAllocationVO.setBusinessGoodsCount(businessGoodsCount);
+					businessAllocationVO.setBusinessOrder(businessOrderGoodsRelation.getId()+"");
+					voList.add(businessAllocationVO);
+				}else{
+					businessGoodsCount=temMap.get(businessGoods.getId()+"")+businessOrderGoodsRelation.getGoodsCount();
+					temMap.put(businessGoods.getId()+"", businessGoodsCount);
+					for(BusinessAllocationVO ba :voList){
+						if(ba.getBusinessGoods().getId()==businessGoods.getId()){
+							ba.setBusinessGoodsCount(businessGoodsCount);
+							String orderStr = ba.getBusinessOrder();
+							String newOrder = businessOrderGoodsRelation.getId()+"";
+							if(newOrder.indexOf(orderStr)==-1){
+								orderStr+=","+newOrder;
+							}
+							ba.setBusinessOrder(orderStr);
+						}
+					}
+				}
+			}
+		}
+		if(voList.size()>0){
+			return voList;
+		}
+		return null;
+	}
+
 
 	/**
 	 * @return List<OrderRecord>
