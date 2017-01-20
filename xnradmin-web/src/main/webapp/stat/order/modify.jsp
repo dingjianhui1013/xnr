@@ -147,7 +147,7 @@ function saveAllocation(){
 				</div>
 				<div class="tabsContent">
 					<div>
-						<table class="list nowrap itemDetail" addButton="添加商品" width="100%">
+						<table class="list nowrap " width="100%">
 							<thead>
 								<tr>
 									<th type="input" name="allocationList[#index#].businessGoods.goodsName" readonly>选择商品</th>

@@ -158,7 +158,7 @@
 				<legend>订单总价（原始价格为：${orderRecord.totalPrice}）：</legend>
 				<input name="totalPrice" type="text"  size="25"/>注：修改订单总价时候用（单位：元）		
 			</fieldset>
-			<div class="tabs">
+<!-- 	<div class="tabs">
 				<div class="tabsHeader">
 					<div class="tabsHeaderContent">
 						<ul>
@@ -301,6 +301,7 @@
 					<div class="tabsFooterContent"></div>
 				</div>
 			</div>
+			-->		
 
 			<br> <br> <br>
 
