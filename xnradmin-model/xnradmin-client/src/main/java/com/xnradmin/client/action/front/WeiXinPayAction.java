@@ -125,6 +125,8 @@ public class WeiXinPayAction  {
                         //支付成功 保存有用的信息 改变订单状态
                         businessOrderRecord.setPaymentStatusName("支付完成");
                         businessOrderRecord.setPaymentStatus(200);
+                        businessOrderRecord.setOperateStatusName("待处理");
+                        businessOrderRecord.setOperateStatus(203);
                         orderRecordService.modify(businessOrderRecord);
                         //修改库存 查出所有产品
                         List<BusinessOrderRelationVO> relaions = businessOrderGoodsRelationService.findByOrderRecordId(businessOrderRecord.getId());
