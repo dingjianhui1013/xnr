@@ -96,7 +96,7 @@ public class GoodsAllocationShowDAO{
         }
     }
 
-    public GoodsAllocationShow findById(Long id){
+    public GoodsAllocationShow findById(Integer id){
         log.debug("getting GoodsAllocationShow instance with id: " + id);
         try{
 
