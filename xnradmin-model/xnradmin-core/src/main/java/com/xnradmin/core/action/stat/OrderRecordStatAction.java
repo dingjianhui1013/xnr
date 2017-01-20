@@ -35,6 +35,8 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.order.AllocationService;
+import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
+import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.order.OrderGoodsRelationService;
@@ -89,6 +91,12 @@ public class OrderRecordStatAction extends ParentAction {
 	
 	@Autowired
 	private OutPlanService planService;
+	
+	@Autowired
+	private BusinessOrderRecordService businessOrderRecordService;
+	
+	@Autowired
+	private BusinessOrderGoodsRelationService orderGoodsRService;
 
 	// orderRecford
 	private String orderRecordId;
@@ -1227,6 +1235,14 @@ public class OrderRecordStatAction extends ParentAction {
 				String[] orderRelations = ba.getBusinessOrder().split(",");
 				for(String s:orderRelations){
 					orderGoodsRelationService.removeOrderRecordById(Long.parseLong(s));
+					BusinessOrderGoodsRelation ordergoodsRelat = orderGoodsRService.findByid(s);
+					if(ordergoodsRelat!=null)
+					{
+						BusinessOrderRecord br = businessOrderRecordService.findByid(ordergoodsRelat.getOrderRecordId().toString());
+						br.setOperateStatusName("处理中");
+						br.setOperateStatus(204);
+						businessOrderRecordService.modify(br);
+					}
 				}
 			}
 			log.debug("end:::");
