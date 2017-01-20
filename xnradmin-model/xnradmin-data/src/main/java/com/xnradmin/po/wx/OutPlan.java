@@ -35,6 +35,7 @@ public class OutPlan  implements java.io.Serializable{
 	
 	private Double occupyAmount;  //占用数量
 	private Double validAmount;   //有效数量(可支配数量)
+	private Double sendoutAmount;
 	
 	@Id
     @GeneratedValue(strategy = IDENTITY)
@@ -161,6 +162,19 @@ public class OutPlan  implements java.io.Serializable{
 	}
 	public void setValidAmount(Double validAmount) {
 		this.validAmount = validAmount;
+	}
+	@Column(name="sendoutAmount",nullable=false,columnDefinition="INT default 0")
+	public Double getSendoutAmount() {
+		if(sendoutAmount==null||"".equals(sendoutAmount))
+		{
+			return 0D;
+		}else
+		{
+			return sendoutAmount;
+		}
+	}
+	public void setSendoutAmount(Double sendoutAmount) {
+		this.sendoutAmount = sendoutAmount;
 	}
 	
 	

@@ -22,6 +22,7 @@
 <link href="${basePath }css/front/memenu.css" rel="stylesheet" type="text/css" media="all" />
 <script src="${basePath }js/front/jquery-1.11.3.min.js"></script>
 <script src="${basePath }js/front/bootstrap.min.js"></script>
+<script src="${basePath }js/verifyCode.js"></script>
 <script type="text/javascript" src="${basePath }js/front/common.js"></script>
 <script type="application/x-javascript"> 
 	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
@@ -144,13 +145,13 @@
 		var phone = $("#phone").val();
 		phone = $.trim(phone);
 		var valideCode = $("#valideCode").val();
-		if (valideCode == code) {
+		if (valideCode !="") {
 			$.ajax({
-				url : "${ctx}/workUser/validatePin",
+				url : "${ctx}/front/validateCode.action",
 				type : "POST",
 				data : {
-					"phone" : phone,
-					"smsPin" : valideCode
+					"valideCode" : valideCode,
+					"_" : new Date().getTime()
 				},
 				dataType : "JSON",
 				success : function(data) {
@@ -170,7 +171,7 @@
 		} else {
 			$("#check_codeError").show();
 			$("#check_code").show();
-			$("#check_code").html("验证码错误");
+			$("#check_code").html("<span style=\"color: red;font-size: 10px\">请输入验证码</span>");
 			$("#valideCode").val("");
 		}
 	}
@@ -178,7 +179,7 @@
 	//注册
 	function register() {
 		if (phoneFlag && checkPassword() && checkConfirmPassword()
-				&& emailFlag ) {//&&checkcode
+				&& emailFlag &&checkcode ) {//&&checkcode
 			$("#submitForm").submit();
 		}else{
 			checkEmail();
@@ -208,8 +209,8 @@
 				</ul> -->
 				<!--登录后显示-->
 				<ul>
-					<li><a href="login.jsp">登录</a></li>
-					<li><a href="register.jsp">注册</a></li>
+					<li><a href="${basePath}/front/login.jsp">登录</a></li>
+					<li><a href="${basePath}/front/register.jsp">注册</a></li>
 				</ul>
 
 			</div>
@@ -310,19 +311,22 @@
 							</p>
 						</div>
 					</div>
-					<!-- <div class="form-group">
+					<div class="form-group">
 						<label for="register-email" class="col-sm-2 control-label">验证码:</label>
 						<div class="col-sm-10 ">
 							<input type="text" id="valideCode" onblur="checkCode()"
-								class="pull-left form-control yzmInput" placeholder="验证码"> <input
-								type="button" value="获取验证码" id="btnSendCode"
-								onclick="getValideCode()" class="btn btn-default pull-right" />
-							<p class="errorTips" id="check_codeError" style="display: none">
-								<span class="glyphicon glyphicon-remove-sign errorIcon"></span>
-								<span id="check_code" style="display: none"></span>
-							</p>
+								class="pull-left form-control yzmInput" placeholder="验证码"> 
+								<div class="yzmImgBox">
+									<span><img id="imgObj" onclick="changeImg()" src="${basePath }page/vcode/vcode.action" alt="" width="80" height="25" /></span>
+									<span><a href="#" onclick="changeImg()">换一张</a></span>
+								</div>						
+								<p class="errorTips" id="check_codeError" style="display: none">
+									<span class="glyphicon glyphicon-remove-sign errorIcon"></span>
+									<span id="check_code" style="display: none"></span>
+								</p>
 						</div>
-					</div> -->
+						
+					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10 loginBtn">
 							<input type="button" class="btn btn-success" onclick="register()"

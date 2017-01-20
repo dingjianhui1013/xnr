@@ -5,9 +5,12 @@ package com.xnradmin.core.action.stat;
 
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
-import java.text.ParseException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,18 +29,34 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.cntinker.util.StringHelper;
+import com.xnradmin.client.service.wx.OutPlanService;
+import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.service.business.order.AllocationService;
+import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.order.OrderGoodsRelationService;
 import com.xnradmin.core.service.mall.order.OrderRecordService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
+import com.xnradmin.po.CommonStaff;
+import com.xnradmin.po.business.AllocationData;
+import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessOrderGoodsRelation;
+import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.FarmerOrderRecord;
+import com.xnradmin.po.client.ClientUserRegionInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.OrderGoodsRelation;
 import com.xnradmin.po.mall.order.OrderRecord;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
+import com.xnradmin.po.mall.seting.PrimaryConfiguration;
+import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.vo.business.BusinessAllocationVO;
+import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.FarmerOrderVO;
 import com.xnradmin.vo.mall.OrderVO;
 
 /**
@@ -61,6 +80,15 @@ public class OrderRecordStatAction extends ParentAction {
 
 	@Autowired
 	private LogisticsCompanyService logisticsCompanyService;
+	
+	@Autowired
+	private FarmerOrderRecordService farmerOrderService;
+	
+	@Autowired
+	private AllocationService allocationService;
+	
+	@Autowired
+	private OutPlanService planService;
 
 	// orderRecford
 	private String orderRecordId;
@@ -150,6 +178,8 @@ public class OrderRecordStatAction extends ParentAction {
 	private String operateEndTime; // 订单操作结束时间（待处理，处理中，处理完成，订单退单）
 
 	private String operateStatus; // 订单操作状态（待处理，处理中，处理完成，订单退单）
+	
+	private String allocationStatus; // 订单分配状态（已分配，未分配）
 
 	private String operateStatusName; // 订单操作状态名称（待处理，处理中，处理完成，订单退单）
 
@@ -232,6 +262,8 @@ public class OrderRecordStatAction extends ParentAction {
 	private List<Status> operateStatusList;
 
 	private List<Status> deliveryStatusList;
+	
+	private List<Status> allocationStatusList;
 
 	private List<LogisticsCompany> logisticsCompanyList;
 
@@ -240,13 +272,47 @@ public class OrderRecordStatAction extends ParentAction {
 	private List<OrderVO> excelVoList;
 
 	private List<OrderVO> dvList;
-
+	
+	private List<BusinessAllocationVO> allocationList;
+	
 	private List<String[]> orderGoodsCountList;
+	
+	private List<FarmerOrderVO> farmerOrderList;
 
 	private OrderRecord orderRecord;
+	
+	private CommonStaff currentStaff;//登录用户信息
+	
+	private String goodsIdstr;
+	
+	private Map<String, FarmerOrderRecord> items;
+
+	public String getGoodsIdstr() {
+		return goodsIdstr;
+	}
+
+	public void setGoodsIdstr(String goodsIdstr) {
+		this.goodsIdstr = goodsIdstr;
+	}
 
 	public String getOrderRecordId() {
 		return orderRecordId;
+	}
+
+	public List<FarmerOrderVO> getFarmerOrderList() {
+		return farmerOrderList;
+	}
+
+	public CommonStaff getCurrentStaff() {
+		return currentStaff;
+	}
+
+	public void setCurrentStaff(CommonStaff currentStaff) {
+		this.currentStaff = currentStaff;
+	}
+
+	public void setFarmerOrderList(List<FarmerOrderVO> farmerOrderList) {
+		this.farmerOrderList = farmerOrderList;
 	}
 
 	public void setOrderRecordId(String orderRecordId) {
@@ -255,6 +321,14 @@ public class OrderRecordStatAction extends ParentAction {
 
 	public String getClientUserId() {
 		return clientUserId;
+	}
+
+	public Map<String, FarmerOrderRecord> getItems() {
+		return items;
+	}
+
+	public void setItems(Map<String, FarmerOrderRecord> items) {
+		this.items = items;
 	}
 
 	public void setClientUserId(String clientUserId) {
@@ -267,6 +341,14 @@ public class OrderRecordStatAction extends ParentAction {
 
 	public void setClientUserName(String clientUserName) {
 		this.clientUserName = clientUserName;
+	}
+	
+	public String getAllocationStatus() {
+		return allocationStatus;
+	}
+
+	public void setAllocationStatus(String allocationStatus) {
+		this.allocationStatus = allocationStatus;
 	}
 
 	public String getClientUserMobile() {
@@ -435,6 +517,14 @@ public class OrderRecordStatAction extends ParentAction {
 
 	public void setUserRealTime(String userRealTime) {
 		this.userRealTime = userRealTime;
+	}
+
+	public List<BusinessAllocationVO> getAllocationList() {
+		return allocationList;
+	}
+
+	public void setAllocationList(List<BusinessAllocationVO> allocationList) {
+		this.allocationList = allocationList;
 	}
 
 	public String getPaymentType() {
@@ -969,6 +1059,14 @@ public class OrderRecordStatAction extends ParentAction {
 		this.orderRecord = orderRecord;
 	}
 
+	public List<Status> getAllocationStatusList() {
+		return allocationStatusList;
+	}
+
+	public void setAllocationStatusList(List<Status> allocationStatusList) {
+		this.allocationStatusList = allocationStatusList;
+	}
+
 	@Override
 	public boolean isPublic() {
 		return false;
@@ -1007,6 +1105,7 @@ public class OrderRecordStatAction extends ParentAction {
 		findOperateStatusList();
 		findDeliveryStatus();
 		findPaymentTypeList();
+		findAllocationStatus();
 		// 处理订单列表
 		List<Object[]> list = orderRecordService.orderGoodsCount(orderNo,
 				orderRecordId, clientUserId, clientUserName, clientUserMobile,
@@ -1042,6 +1141,134 @@ public class OrderRecordStatAction extends ParentAction {
 		return StrutsResMSG.SUCCESS;
 	}
 
+	/**
+	 * 带信息到修改页
+	 * 
+	 * @return String
+	 */
+	@Action(value = "toAllocation", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/stat/order/modify.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/stat/order/modify.jsp" )})
+	public String toAllocation() {
+		findDateTime();
+		findPaymentStatusList();
+		findPaymentProviderList();
+		findOperateStatusList();
+		findDeliveryStatus();
+		findPaymentTypeList();
+		findAllocationStatus();
+		// 处理订单列表 已支付  未派送  待处理 的未分配的订单
+		allocationList = orderRecordService.orderGoodsCountDetail(orderNo,
+				orderRecordId, clientUserId, clientUserName, clientUserMobile,
+				clientUserEmail, clientUserSex, clientUserType,
+				clientUserTypeName, wxOpenId, orderGoodsRelationStaffId,
+				userRealMobile, userRealPlane, userRealName, countryId,
+				countryName, provinceId, provinceName, cityId, cityName,
+				areaId, areaName, userRealAddress, userRealPostcode,
+				userRealStartTime, userRealEndTime, paymentType,
+				paymentTypeName, "200", paymentStatusName,
+				paymentProvider, paymentProviderName, paymentStartTime,
+				paymentEndTime, operateStartTime, operateEndTime,
+				"203", operateStatusName, createStartTime,
+				createEndTime, originalPrice, totalPrice, logisticsCompanyId,
+				logisticsCompanyName, deliveryStaffId, deliveryStaffName,
+				deliveryStaffMobile, deliveryStartStartTime,
+				deliveryStartEndTime, deliveryEndStartTime, deliveryEndEndTime,
+				"207", deliveryStatusName, sourceId, sourceName,
+				sourceType, sourceTypeName, serNo, sellerId, sellerName, cusId,
+				cusName, orderGoodsRelationPrimaryConfigurationId,"227",
+				primaryConfigurationName, 0, 0, orderField, orderDirection);
+		goodsIdstr="";
+		if(allocationList!=null&&allocationList.size()>0){
+			for(BusinessAllocationVO ba:allocationList){
+				if("".equals(goodsIdstr)){
+					goodsIdstr=ba.getBusinessGoods().getId()+"";
+				}else{
+					goodsIdstr+=","+ba.getBusinessGoods().getId();
+				}
+			}
+		}
+		//FarmerOrderVO farmerOrderVO = new FarmerOrderVO();
+		
+//		FarmerOrderRecord farmerOrder = new FarmerOrderRecord();
+//		
+//		farmerOrder.setOrderRecordId(Long.parseLong(orderRecordId));
+//		
+//		farmerOrderVO.setFarmerOrder(farmerOrder);
+		
+		//farmerOrderList = farmerOrderService.listVO(farmerOrderVO,0,0,null,null);
+		
+		return StrutsResMSG.SUCCESS;
+	}
+
+	/**
+	 * 更新对象接口
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "modify", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String modify() throws Exception {
+		log.debug("modif action!");
+		log.debug("modify orderRecord: " + orderRecordId);
+		// 取得当前登录人信息
+		currentStaff = super.getCurrentStaff();
+		// 批量增加菜品
+		if (allocationList == null) {
+			super.error("未填写商品");
+		} else {
+			log.debug("start:::");
+			// 修改订单所有商品  标记为已分配
+//			orderGoodsRelationService.removeOrderRecordId(Long
+//					.valueOf(orderRecordId));
+			
+			// 为新订单添加商品
+			for(BusinessAllocationVO ba:allocationList){
+				String[] orderRelations = ba.getBusinessOrder().split(",");
+				for(String s:orderRelations){
+					orderGoodsRelationService.removeOrderRecordById(Long.parseLong(s));
+				}
+			}
+			log.debug("end:::");
+		}
+		AllocationData ad = new AllocationData();
+		ad.setAllocationUser(currentStaff.getId()+"");
+		ad.setAllocationTime(new Timestamp(System.currentTimeMillis()));
+		ad.setEndTimeCondition(Timestamp.valueOf(createStartTime));
+		ad.setStartTimeCondition(Timestamp.valueOf(createEndTime));
+		allocationService.save(ad);
+		
+		//保存分配信息  先删除在添加
+		//farmerOrderService.delByOrderId(Long.parseLong(orderRecordId));
+		
+		if(items!=null){
+			Iterator<String> item = items.keySet().iterator();
+			
+			while (item.hasNext()) {
+				String key = item.next();
+				FarmerOrderRecord farmerOrder = items.get(key);
+				
+				OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+				
+				farmerOrder.setFarmerUserId(plan.getUserId());
+				farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
+				farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
+				farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
+				farmerOrder.setStaffId(this.getCurrentStaff().getId());
+				plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
+				plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
+				plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
+				planService.modify(plan);
+				farmerOrderService.save(farmerOrder);				
+			}	
+		}
+		
+		super.success(null, null,
+				"goodsAllocation", null);
+		return null;
+	}
+	
+	
 	private void findPageInfo() {
 		// 设置排序
 		findDateTime();
@@ -1277,40 +1504,48 @@ public class OrderRecordStatAction extends ParentAction {
 	 * 加载所有支付状态
 	 */
 	private void findPaymentStatusList() {
-		this.paymentStatusList = statusService.find(OrderRecord.class,
-				"paymentStatus");
+		this.paymentStatusList = statusService.find(BusinessOrderRecord.class,
+				"businessPaymentStatus");
 	}
 
 	/**
 	 * 加载所有支付提供者类型
 	 */
 	private void findPaymentProviderList() {
-		this.paymentProviderList = statusService.find(OrderRecord.class,
-				"paymentProvider");
+		this.paymentProviderList = statusService.find(BusinessOrderRecord.class,
+				"businessPaymentProvider");
 	}
 
 	/**
 	 * 加载所有订单处理状态
 	 */
 	private void findOperateStatusList() {
-		this.operateStatusList = statusService.find(OrderRecord.class,
-				"operateStatus");
+		this.operateStatusList = statusService.find(BusinessOrderRecord.class,
+				"businessOperateStatus");
 	}
 
 	/**
 	 * 加载所有订单派送状态
 	 */
 	private void findDeliveryStatus() {
-		this.deliveryStatusList = statusService.find(OrderRecord.class,
-				"deliveryStatus");
+		this.deliveryStatusList = statusService.find(BusinessOrderRecord.class,
+				"businessDeliveryStatus");
 	}
 
 	/**
 	 * 加载所有支付类型
 	 */
 	private void findPaymentTypeList() {
-		this.paymentTypeList = statusService.find(OrderRecord.class,
-				"paymentType");
+		this.paymentTypeList = statusService.find(BusinessOrderRecord.class,
+				"businessPaymentType");
+	}
+	
+	/**
+	 * 加载所有分配状态
+	 */
+	private void findAllocationStatus() {
+		this.allocationStatusList = statusService.find(BusinessOrderRecord.class,
+				"businessAllocationStatus");
 	}
 
 	private void findDateTime() {
@@ -1323,7 +1558,7 @@ public class OrderRecordStatAction extends ParentAction {
 			createEndTime = createEndTime + " 23:59:59";
 		}
 		if (StringHelper.isNull(operateStatus)) {
-			this.operateStatus = "169";
+			this.operateStatus = "204";
 		}
 	}
 

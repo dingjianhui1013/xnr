@@ -11,7 +11,7 @@
  </script> 
 <script type="text/javascript">
  $(function() {
- setInterval("checkPay()", 30000);//每30秒查询一次
+ setInterval("checkPay()", 20000);//每20秒查询一次
  });
  function checkPay() {
 		$

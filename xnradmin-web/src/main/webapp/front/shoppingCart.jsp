@@ -45,13 +45,13 @@ function onSubmit(){
 
 function add(a, b) {
 	var  c=a+b;
-	var d=c.toFixed(1);	
+	var d=c.toFixed(2);	
 	return Number(d);
 }
 
 function sub(a, b) {
 	var  c=a-b;
-	var d=c.toFixed(1);	
+	var d=c.toFixed(2);	
 	return Number(d);
 }
 
@@ -66,7 +66,7 @@ function plusNum(id)
 		$("#xiaoji"+id).html(xiaojiNew);
 		var index = $("#count"+id).val();
 		index++;
-		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+Number(price)).toFixed(1));
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+Number(price)).toFixed(2));
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(1)));
 		$("#count"+id).val(index);
 		if(userId!=null&&userId!=""){
@@ -99,7 +99,7 @@ function minusNum(id)
 				var xiaojiNew = sub(xiaoji,price);
 				$("#xiaoji"+id).html(xiaojiNew);
 				$("#count"+id).val(index);
-				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(1));
+				$("#simpleCart_total").html((Number($("#simpleCart_total").html())-Number(price)).toFixed(2));
 				$("#simpleCart_number").html((Number($("#simpleCart_number").html())-Number(1)));
 				if(userId!=null&&userId!=""){
 					modefyToCart(id);
@@ -328,10 +328,10 @@ function modefyToCart(id){
 								</li>
 								<li>
 									<c:if test="${!empty cartVo.cart.id }">
-										<span id="price${cartVo.cart.id }">${cartVo.goods.goodsOriginalPrice}</span>
+										<span id="price${cartVo.cart.id }">${cartVo.goods.goodsOriginalPriceStr}</span>
 									</c:if>
 									<c:if test="${empty cartVo.cart.id }">
-										<span id="price${cartVo.cart.cookieCartId }">${cartVo.goods.goodsOriginalPrice}</span>
+										<span id="price${cartVo.cart.cookieCartId }">${cartVo.goods.goodsOriginalPriceStr}</span>
 									</c:if>
 								</li>
 								<li class="cart-num">
@@ -459,7 +459,7 @@ function modefyToCart(id){
 			 		
 			 			
 			 			<div class="pull-right totalMoney">
-				 			<p>总价:￥<span class="t-money" id="totalprices"> 0</span></p>
+				 			<p>总价:￥<span class="t-money" id="totalprices"> 0.00</span></p>
 				 			
 			 			</div>
 			 		</li>

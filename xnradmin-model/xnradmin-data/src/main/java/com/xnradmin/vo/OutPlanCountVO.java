@@ -7,6 +7,7 @@ public class OutPlanCountVO {
 	private String outPutSum;
 	private String goodsId;
 	private String goodsName;
+	private String sendoutAmount;
 	public String getOccupyAmountSum() {
 		return occupyAmountSum;
 	}
@@ -36,6 +37,12 @@ public class OutPlanCountVO {
 	}
 	public void setOutPutSum(String outPutSum) {
 		this.outPutSum = outPutSum;
+	}
+	public String getSendoutAmount() {
+		return sendoutAmount;
+	}
+	public void setSendoutAmount(String sendoutAmount) {
+		this.sendoutAmount = sendoutAmount;
 	}
 	
 	

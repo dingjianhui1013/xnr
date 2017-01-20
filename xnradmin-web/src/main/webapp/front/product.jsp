@@ -34,7 +34,7 @@ function addToCart(obj,money){
 	var userId = $("#userId").val();
 	var id = $(obj).attr("id").substring(3);
 	var count = $("#count"+id).val();
-	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(1));
+	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
 	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
 	if(userId!=null&&userId!=""){
 		$.ajax({
@@ -109,7 +109,7 @@ function getUuid(){
 					 <div class="product-grid love-grid">	
 				 		<a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">				
 							<div class="product-img b-link-stripe b-animate-go  thickbox">
-								<img src="${basePath }${product.businessGoods.goodsLogo}" class="img-responsive" alt=""/>
+								<img src="${basePath }${product.businessGoods.goodsLogo}" class="img-responsive" alt="" style="height: 250px"/>
 								<div class="b-wrapper">
 									<h4 class="b-animate b-from-left  b-delay03">							
 										<button class="btns"><span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>查看详情</button>
@@ -122,7 +122,7 @@ function getUuid(){
 								<h4><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">${product.businessGoods.goodsName} </a></h4>
 								<p><a href="<%=basePath%>/front/productDetail.action?goodsId=${product.businessGoods.id}">农场出品，清脆爽口</a></p>
 								<input id="price${product.businessGoods.id}" type="hidden" value="${product.businessGoods.goodsOriginalPrice }"/>
-								<p class="item_price">￥${product.businessGoods.goodsOriginalPrice }/${product.businessWeight.weightName }</p>
+								<p class="item_price">￥${product.businessGoods.goodsOriginalPriceStr }/${product.businessWeight.weightName }</p>
 								<div class="addCartBox">	
 									<div class="addNum">						
 										<span><input id="count${product.businessGoods.id }" type="text" class="item_quantity" value="1"/></span>

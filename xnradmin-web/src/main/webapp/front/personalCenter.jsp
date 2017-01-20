@@ -196,7 +196,7 @@
 				success:function(msg){
 					if(msg.res==0)
 						{
-					 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+msg.totalMoney*Number(msg.totalCount)).toFixed(1));
+					 		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+msg.totalMoney*Number(msg.totalCount)).toFixed(2));
 					 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(msg.totalCount)));
 							layer.msg("加入成功");
 						}
@@ -219,6 +219,28 @@
 // 			layer.msg("加入成功");
 // 			}
 		
+	}
+	function toPage(){
+		var pageN = $("#pageNum").val();
+		if(pageN>${totalCount})
+			{
+				pageN = ${totalCount};
+			}else if(pageN<1)
+				{
+					pageN = 1;
+				}
+		window.location.href="${basePath}front/personalCenter.action?pageNum="+pageN+"&flag=myorder";
+	}
+	function toRPage(){
+		var pageN = $("#RPageNum").val();
+		if(pageN>${RTotalPage})
+			{
+				pageN = ${RTotalPage};
+			}else if(pageN<1)
+				{
+					pageN = 1;
+				}
+		window.location.href="${basePath}front/personalCenter.action?RPageNum="+pageN+"&flag=address";
 	}
 </script>
 </head>
@@ -290,10 +312,21 @@
 	                    			<li>收货人</li>
 	                    			<li>金额</li>
 	                    			<li>状态</li>
+	                    			<li>派送状态</li>
 	                    			<li>操作</li>
 	                    		</ul>
 	                    	</div>
 	                    </div>
+	                    <c:if test="${empty voList}">
+	                    	<div class="searchTips">
+					 			<p>暂时您还没有购买我们的商品</p>
+					 			<p>建议您：</p>
+				 				<a href="<%=basePath%>front/index.action">前去购买>></a>
+			 				</div>
+	                    </c:if>
+	                    <c:if test="${not empty voList}">
+	                    
+	                    
 	                    <c:forEach items="${voList}" var="loop">
 	                     <div class="orderList">
 	                    	<div class="orderTit">
@@ -306,10 +339,10 @@
 	                    		<ul>
 	                    			<li class="ordercol-d">
 		                    			<div class="pull-left  productListShow">
-		                    			<c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations"> 
+		                    			<c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations" begin="0" end="2"> 
 			                    			<a href="#"><img src="${basePath}${businessOrderRelations.businessGoods.goodsLogo}"></a>
 		                    			</c:forEach>
-		                    			<c:if test="${loop.businessOrderRecord.totalCount>4}"><em>...</em></c:if>
+		                    			<c:if test="${loop.businessOrderRecord.totalCount>3}"><em>...</em></c:if>
 		                    		 	</div>
 		                    		 	<div class="pull-right  productListNum">
 		                    		 		<a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">共${loop.businessOrderRecord.totalCount}件></a>
@@ -333,8 +366,8 @@
 				                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='微信支付'}">
 						                   	<a href="${basePath}front/orderrecord/wxPayAgain.action?businessOrderRecodeId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
 				                   		</c:if>
-				                   		
 				                    </c:if>
+				                    <li><span>${loop.businessOrderRecord.deliveryStatusName}</span></li>
 	                    			<li><span><a href="javascript:addToCart('${loop.businessOrderRecord.id }')">再次购买</a></span><a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">查看详情</a></li>
 	                    		</ul>
 	                    	</div>
@@ -348,34 +381,48 @@
 							 <li class="disabled"><a>«</a></li>
 						</c:when>
 						<c:otherwise>	
-							<li><a href="${basePath}front/personalCenter.action?pageNum=1&flag=myorder">«</a></li>
+							<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum-1}&flag=myorder">«</a></li>
 						</c:otherwise>
 					</c:choose>
-						<c:forEach begin="1" end="${totalCount}" var="numpage">
-							<c:choose>
-								<c:when test="${numpage==pageNum}">
-									<li class="active"><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li>
-								</c:when>
-								<c:otherwise>	
-									<li><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-						<c:choose>
+					<li class="active"><a>${pageNum}</a></li>
+<%-- 						<c:forEach begin="1" end="${totalCount}" var="numpage"> --%>
+<%-- 							<c:choose> --%>
+<%-- 								<c:when test="${numpage==pageNum}"> --%>
+<%-- 									<li class="active"><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li> --%>
+<%-- 								</c:when> --%>
+<%-- 								<c:otherwise>	 --%>
+<%-- 									<li><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li> --%>
+<%-- 								</c:otherwise> --%>
+<%-- 							</c:choose> --%>
+<%-- 						</c:forEach> --%>
+						<c:choose> 
 							<c:when test="${pageNum==totalCount}">
 								 <li class="disabled"><a>»</a></li>
 							</c:when>
 							<c:otherwise>	
-								<li><a href="${basePath}front/personalCenter.action?pageNum=${totalCount}&flag=myorder">»</a></li>
+								<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum+1}&flag=myorder">»</a></li>
 							</c:otherwise>
 						</c:choose>
+					<li><a>共${totalCount}页</a></li>
+					<li><a>跳转至</a></li>
+					<li><a><input type="text" value="" id="pageNum" onkeyup="if(/\D/.test(this.value)){this.value='';}" style="width:25px;height:20px"/></a></li>
+				    <li><a href="javascript:toPage()">»</a></li>
 				    </ul>
    				</nav>
+   				</c:if>
 				<!--分页end-->
                 </div>
                 <div class="p-orderList editList">
 					<h3 class="titBox">地址管理</h3>
                 	<a href="javascript:;" class="btn btn-default add-address" id="addAddressBtn">新增收货地址</a>
+                	<c:if test="${empty receiptAddressList }">
+                		<div class="searchTips">
+					 			<p>暂时您还没有添加收货地址</p>
+					 			<p>建议您：</p>
+				 				<p>点击上方“新增收货地址”进行添加地址</p>
+			 			</div>
+                	</c:if>
+                	<c:if test="${not empty receiptAddressList}">
                 	<div class="addressBox">
                 	<c:forEach items="${receiptAddressList}" var = "address">
 	                	 <div class="addressList">
@@ -413,31 +460,37 @@
 							 <li class="disabled"><a>«</a></li>
 						</c:when>
 						<c:otherwise>	
-							<li><a href="${basePath}front/personalCenter.action?RPageNum=1&flag=address">«</a></li>
+							<li><a href="${basePath}front/personalCenter.action?RPageNum=${RPageNum-1}&flag=address">«</a></li>
 						</c:otherwise>
 					</c:choose>
-						<c:forEach begin="1" end="${RTotalPage}" var="numpage">
-							<c:choose>
-								<c:when test="${numpage==RPageNum}">
-									<li class="active"><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li>
-								</c:when>
-								<c:otherwise>	
-									<li><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
+					<li class="active"><a>${RPageNum}</a></li>
+<%-- 						<c:forEach begin="1" end="${RTotalPage}" var="numpage"> --%>
+<%-- 							<c:choose> --%>
+<%-- 								<c:when test="${numpage==RPageNum}"> --%>
+<%-- 									<li class="active"><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li> --%>
+<%-- 								</c:when> --%>
+<%-- 								<c:otherwise>	 --%>
+<%-- 									<li><a href="${basePath}front/personalCenter.action?RPageNum=${numpage}&flag=address">${numpage}</a></li> --%>
+<%-- 								</c:otherwise> --%>
+<%-- 							</c:choose> --%>
+<%-- 						</c:forEach> --%>
+						
 						<c:choose>
 							<c:when test="${RPageNum==RTotalPage}">
 								 <li class="disabled"><a>»</a></li>
 							</c:when>
 							<c:otherwise>	
-								<li><a href="${basePath}front/personalCenter.action?RPageNum=${RTotalPage}&flag=address">»</a></li>
+								<li><a href="${basePath}front/personalCenter.action?RPageNum=${RPageNum+1}&flag=address">»</a></li>
 							</c:otherwise>
 						</c:choose>
+					<li><a>共${RTotalPage}页</a></li>
+					<li><a>跳转至</a></li>
+					<li><a><input type="text" value="" id="RPageNum" onkeyup="if(/\D/.test(this.value)){this.value='';}" style="width:25px;height:20px"/></a></li>
+				    <li><a href="javascript:toRPage()">»</a></li>
 				    </ul>
    				</nav>
                 </div>
-                
+                </c:if>
                  <div class="p-orderList editList">
                  		<h3 class="titBox">密码修改</h3>
                 		<form class="form-horizontal" id="submitForm" action="savePassword.action">
@@ -504,18 +557,12 @@
 				   <label for="">地址：</label>
 				    <div class="selAddressBox">
 					    <select class="form-control provinceSel" id="modifyProvince" class="" name="receiptAddress.province">
-					    	<option value="北京市">北京市</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="山东省">山东省</option>
 					    </select>
 					    <select class="form-control citySel" id="modifyCity" name="receiptAddress.city">
-					    	<option value="北京市">北京市</option>
-					    	<option value="三河市">三河市</option>
 					    	<option value="济南市">济南市</option>
 					    </select>
 					    <select class="form-control countrySel" id="modifyCounty" name="receiptAddress.county">
-					    	<option value="燕郊">燕郊</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="济南县区">济南县区</option>
 					    </select>
 					 </div>
@@ -556,18 +603,12 @@
 				    <label for="">地址：</label>
 				    <div class="selAddressBox">
 					    <select class="form-control provinceSel" class="" name="receiptAddress.province">
-					    	<option value="北京市">北京市</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="山东省">山东省</option>
 					    </select>
 					    <select class="form-control citySel" name="receiptAddress.city">
-					    	<option value="北京市">北京市</option>
-					    	<option value="三河市">三河市</option>
 					    	<option value="济南市">济南市</option>
 					    </select>
 					    <select class="form-control countrySel" name="receiptAddress.county">
-					    	<option value="燕郊">燕郊</option>
-					    	<option value="河北省">河北省</option>
 					    	<option value="济南县区">济南县区</option>
 					    </select>
 				    </div>

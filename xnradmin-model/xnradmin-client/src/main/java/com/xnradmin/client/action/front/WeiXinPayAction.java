@@ -2,12 +2,15 @@ package com.xnradmin.client.action.front;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.apache.wicket.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,28 +39,28 @@ import com.xnradmin.vo.business.BusinessOrderRelationVO;
 @Scope("prototype")
 @Namespace("/front/weixinPay")
 @ParentPackage("json-default")
-public class WeiXinPayAction  {
+public class WeiXinPayAction {
 
     private final static Logger LOG = LoggerFactory.getLogger(WeiXinPayAction.class);
 
     @Autowired
     private BusinessOrderRecordService orderRecordService;
-    
+
     @Autowired
-	private GoodsAllocationShowService allocationShowService;
-    
+    private GoodsAllocationShowService allocationShowService;
+
     @Autowired
-	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
-    
-    
+    private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
+
+
     private String outTradeNo;
-    
-    private String reqData;//支付结果通知 的数据 
-    
-    private  String result;//  支付结果通知 返回的结果
-    
-    private String status;//订单查询时返回的 状态
-    private String errMeg;//错误信息
+
+    private String reqData;// 支付结果通知 的数据
+
+    private String result;// 支付结果通知 返回的结果
+
+    private String status;// 订单查询时返回的 状态
+    private String errMeg;// 错误信息
 
     public String getOutTradeNo() {
         return outTradeNo;
@@ -67,7 +70,7 @@ public class WeiXinPayAction  {
         this.outTradeNo = outTradeNo;
     }
 
-    
+
     public String getResult() {
         return result;
     }
@@ -91,8 +94,6 @@ public class WeiXinPayAction  {
     public void setErrMeg(String errMeg) {
         this.errMeg = errMeg;
     }
-    
-    
 
     public String getReqData() {
         return reqData;
@@ -111,52 +112,82 @@ public class WeiXinPayAction  {
      */
     @Action(value = "wechatNotifyURL", results = { @Result(name = StrutsResMSG.SUCCESS, type = "json") })
     public String wechatNotifyURL() {
+        this.weChat_notify();
         LOG.info("------->wechatPay notify:" + reqData);
         ScanPayCallBackRes notifyResData = new ScanPayCallBackRes();
-        try {
-            if (Signature.checkIsSignValidFromResponseString(reqData)) {
-                ScanPayCallBackReq notifyReqData = (ScanPayCallBackReq) Util.getObjectFromXML(reqData, ScanPayCallBackReq.class);
-                if (notifyReqData != null && "SUCCESS".equalsIgnoreCase(notifyReqData.getReturn_code())
-                        && "SUCCESS".equalsIgnoreCase(notifyReqData.getResult_code())) {
-                    BusinessOrderRecord businessOrderRecord =  orderRecordService.findByOutOderNo(notifyReqData.getOut_trade_no());
-                    if (businessOrderRecord != null) {
-                        notifyResData.setReturn_code("SUCCESS");
-                        notifyResData.setReturn_msg("Already Notified!!!!");
-                        //支付成功 保存有用的信息 改变订单状态
-                        businessOrderRecord.setPaymentStatusName("支付完成");
-                        businessOrderRecord.setPaymentStatus(200);
-                        orderRecordService.modify(businessOrderRecord);
-                        //修改库存 查出所有产品
-                        List<BusinessOrderRelationVO> relaions = businessOrderGoodsRelationService.findByOrderRecordId(businessOrderRecord.getId());
-                        for(BusinessOrderRelationVO br:relaions){
-                        	GoodsAllocationShow allocationshow = allocationShowService.findByGoodsidToday(br.getBusinessGoods().getId()+"");
-                        	int using = br.getOrderGoodsRelation().getGoodsCount();
-                        	int surplus = allocationshow.getAllocationCount()-using<0?0:allocationshow.getAllocationCount()-using;
-                        	allocationshow.setSaleCount(using);
-                        	allocationshow.setSurplusCount(surplus);
-                        	allocationShowService.save(allocationshow);
-                        }
-                    } else {
-                        notifyResData.setReturn_code("FAIL");
-                        notifyResData.setReturn_msg("Server Error");
-                    }
-                }
-            } else {
-                notifyResData.setReturn_code("FAIL");
-                notifyResData.setReturn_msg("Sign Error");
-            }
-        } catch (Exception e) {
-            LOG.error("wechatPay notify error:" + e.getMessage());
-            e.printStackTrace();
+        if (StringUtils.isEmpty(reqData)) {
             notifyResData.setReturn_code("FAIL");
-            notifyResData.setReturn_msg(e.getMessage());
+            notifyResData.setReturn_msg("reqData is null ");
+        } else {
+            try {
+                if (Signature.checkIsSignValidFromResponseString(reqData)) {
+                    ScanPayCallBackReq notifyReqData = (ScanPayCallBackReq) Util.getObjectFromXML(reqData, ScanPayCallBackReq.class);
+                    if (notifyReqData != null && "SUCCESS".equalsIgnoreCase(notifyReqData.getReturn_code())
+                            && "SUCCESS".equalsIgnoreCase(notifyReqData.getResult_code())) {
+                        BusinessOrderRecord businessOrderRecord = orderRecordService.findByOutOderNo(notifyReqData.getOut_trade_no());
+                        if (businessOrderRecord != null) {
+                            notifyResData.setReturn_code("SUCCESS");
+                            notifyResData.setReturn_msg("Already Notified!!!!");
+                            // 支付成功 保存有用的信息 改变订单状态
+                            businessOrderRecord.setPaymentStatusName("支付完成");
+                            businessOrderRecord.setPaymentStatus(200);
+                            businessOrderRecord.setOperateStatusName("待处理");
+                            businessOrderRecord.setOperateStatus(203);
+                            orderRecordService.modify(businessOrderRecord);
+                            // 修改库存 查出所有产品
+                            List<BusinessOrderRelationVO> relaions = businessOrderGoodsRelationService.findByOrderRecordId(businessOrderRecord.getId());
+                            for (BusinessOrderRelationVO br : relaions) {
+                                GoodsAllocationShow allocationshow = allocationShowService.findByGoodsidToday(br.getBusinessGoods().getId() + "");
+                                int using = br.getOrderGoodsRelation().getGoodsCount();
+                                int surplus = allocationshow.getAllocationCount() - using < 0 ? 0 : allocationshow.getAllocationCount() - using;
+                                allocationshow.setSaleCount(using);
+                                allocationshow.setSurplusCount(surplus);
+                                allocationShowService.save(allocationshow);
+                            }
+                        } else {
+                            notifyResData.setReturn_code("FAIL");
+                            notifyResData.setReturn_msg("Server Error");
+                        }
+                    }
+                } else {
+                    notifyResData.setReturn_code("FAIL");
+                    notifyResData.setReturn_msg("Sign Error");
+                }
+            } catch (Exception e) {
+                LOG.error("wechatPay notify error:" + e.getMessage());
+                notifyResData.setReturn_code("FAIL");
+                notifyResData.setReturn_msg(e.getMessage());
+            }
         }
+
         XStream xStreamForRequestPostData = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("-_", "_")));
         ServletActionContext.getResponse().setContentType("application/xml");
-       this.result = xStreamForRequestPostData.toXML(notifyResData);
-       this.result = StringUtils.replace(this.result, "com.tencent.protocol.apppay_protocol.NotifyResData", "xml");
+        this.result = xStreamForRequestPostData.toXML(notifyResData);
+        this.result = StringUtils.replace(this.result, "com.tencent.protocol.apppay_protocol.NotifyResData", "xml");
         LOG.info("wechatPay notify response:" + this.result);
         return StrutsResMSG.SUCCESS;
+    }
+
+    private void weChat_notify() {
+        // 获取微信POST过来反馈信息
+        LOG.debug("微信支付回调获取数据开始");
+        HttpServletRequest request = ServletActionContext.getRequest();
+        String inputLine;
+        String notityXml = "";
+        try {
+            while ((inputLine = request.getReader().readLine()) != null) {
+                LOG.info("微信回调：{}", inputLine);
+                notityXml += inputLine;
+            }
+            request.getReader().close();
+        } catch (Exception e) {
+            LOG.debug("xml获取失败：" + e);
+        }
+        LOG.debug("收到微信异步回调：{}", notityXml);
+        if (StringUtils.isEmpty(notityXml)) {
+            LOG.debug("xml为空：");
+        }
+        this.reqData = notityXml;
     }
 
     /**
@@ -180,8 +211,8 @@ public class WeiXinPayAction  {
 
             if (scanPayQueryResData == null || scanPayQueryResData.getReturn_code() == null) {
                 LOG.info("支付订单查询请求逻辑错误，请仔细检测传过去的每一个参数是否合法");
-                   this.status = "-1";
-                   this.errMeg = "支付订单查询请求逻辑错误，请仔细检测传过去的每一个参数是否合法";
+                this.status = "-1";
+                this.errMeg = "支付订单查询请求逻辑错误，请仔细检测传过去的每一个参数是否合法";
             } else {
                 if (scanPayQueryResData.getReturn_code().equals("FAIL")) {
                     // 注意：一般这里返回FAIL是出现系统级参数错误，请检测Post给API的数据是否规范合法
@@ -193,15 +224,15 @@ public class WeiXinPayAction  {
                         if (scanPayQueryResData.getTrade_state().equals("SUCCESS")) {
                             // 表示查单结果为“支付成功”
                             LOG.info("查询到订单支付成功");
-                            BusinessOrderRecord businessOrderRecord =  orderRecordService.findByOutOderNo(scanPayQueryResData.getOut_trade_no());
+                            BusinessOrderRecord businessOrderRecord = orderRecordService.findByOutOderNo(scanPayQueryResData.getOut_trade_no());
                             if (businessOrderRecord != null) {
-                                //支付成功 保存有用的信息 改变订单状态
+                                // 支付成功 保存有用的信息 改变订单状态
                                 businessOrderRecord.setPaymentStatusName("支付完成");
                                 businessOrderRecord.setPaymentStatus(200);
                                 orderRecordService.modify(businessOrderRecord);
-                                
+
                             }
-                            
+
                             this.status = "1";
                             this.errMeg = "查询到订单支付成功";
                         } else {

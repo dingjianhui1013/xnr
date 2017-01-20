@@ -11,7 +11,7 @@
 <script type="text/javascript">
 function addToCart(id,money){
 	var userId = $("#userId").val();
-	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money).toFixed(1));
+	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money).toFixed(2));
 	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+1));
 	if(userId!=null&&userId!=""){
 	$.ajax({
@@ -111,7 +111,7 @@ function getUuid(){
 					  <div class="arrival-info">
 						 <h4>${ good.businessGoods.goodsName} </h4>
 						 <p>约${good.businessGoods.goodsWeight }g</p>
-						 <span class="disc">￥${good.businessGoods.goodsOriginalPrice }/${good.businessWeight.weightName }</span>
+						 <span class="disc">￥${good.businessGoods.goodsOriginalPriceStr }/${good.businessWeight.weightName }</span>
 					 </div>
 					 </a>
 				 </li>
@@ -191,7 +191,7 @@ function getUuid(){
 												 <h4>${ good.businessGoods.goodsName} </h4>
 												 <p>约${good.businessGoods.goodsWeight }g</p>
 												 <input id="price${good.businessGoods.id }" type="hidden" value="${good.businessGoods.goodsOriginalPrice }"/>
-												 <span class="disc">￥${good.businessGoods.goodsOriginalPrice }/${good.businessWeight.weightName }</span>
+												 <span class="disc">￥${good.businessGoods.goodsOriginalPriceStr }/${good.businessWeight.weightName }</span>
 											 </div>
 											 <div class="shrt">
 												<a href="javascript:addToCart(${good.businessGoods.id },${good.businessGoods.goodsOriginalPrice})"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>加入购物车</a>
@@ -210,9 +210,9 @@ function getUuid(){
 					 			</c:if>
 					 		</c:forEach>
 			 			</div>
-			 			<c:if test="${k==1}">
-			 				</div>
-			 			</c:if>
+<%-- 			 			<c:if test="${k==1}"> --%>
+<!-- 			 				</div> -->
+<%-- 			 			</c:if> --%>
 						<c:set var="j" value="${j+1 }" />
 					</c:forEach>
 				</c:forEach>

@@ -326,7 +326,7 @@ public class BusinessGoodsService {
 		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
 			hql = hql + " order by " + orderField + " " + direction;
 		} else {
-			hql += " order by id desc";
+			hql += " order by sortId desc";
 		}
 		List l = commonDao.getEntitiesByPropertiesWithHql(hql, curPage,
 				pageSize);

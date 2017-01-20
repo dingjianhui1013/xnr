@@ -28,6 +28,7 @@ import com.xnradmin.client.service.wx.WeixinUtil;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.po.wx.connect.FarmerImage;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.po.wx.connect.WXurl;
 import com.xnradmin.vo.OutPlanCountVO;
@@ -134,19 +135,26 @@ public class PersonalCenterAction {
 		String userId = userIdObject.getString("openid");
 		List<OutPlanVO> outplans = outPlanService.getListByUserId(userId,0,0);
 		ServletActionContext.getRequest().setAttribute("outplans", outplans);
-		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
+//		List<Map<String, List<Map<String, List<String>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<String>>>>>();
+		List<Map<String, List<Map<String, List<FarmerImage>>>>> date_type_images = new ArrayList<Map<String,List<Map<String,List<FarmerImage>>>>>();
 		List<String> imagedates = farmerImageService.getImageDates(userId);
 		this.status = farmerService.getStatus(userId);
 //		this.userId = userId;
 		session.setAttribute("userId", userId);
 		for (String images : imagedates) {
-			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
-			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
-			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
+//			Map<String, List<Map<String, List<String>>>> date_type_image = new HashMap<String, List<Map<String, List<String>>>>();
+			Map<String, List<Map<String, List<FarmerImage>>>> date_type_image = new HashMap<String, List<Map<String, List<FarmerImage>>>>();
+//			Map<String, List<String>> type_images = new HashMap<String, List<String>>();
+			Map<String, List<FarmerImage>> type_images = new HashMap<String, List<FarmerImage>>();
+			
+//			List<Map<String, List<String>>> type_imagesList= new ArrayList<Map<String,List<String>>>();
+			List<Map<String, List<FarmerImage>>> type_imagesList= new ArrayList<Map<String,List<FarmerImage>>>();
+			
 			List<String> typeList = farmerImageService.findByType(images,userId);
 			for (String type : typeList) {
 			    String	typeName = businessGoodsService.findByid(type).getGoodsName();
-				List<String> imageList = farmerImageService.findByImages(type,images,userId);
+//				List<String> imageList = farmerImageService.findByImages(type,images,userId);
+			    List<FarmerImage> imageList = farmerImageService.findByImagesAndRemarks(type,images,userId);
 				type_images.put(typeName, imageList);
 			}
 			type_imagesList.add(type_images);

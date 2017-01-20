@@ -43,10 +43,10 @@
 					 用户手机号
 					<input type="text" name="clientUserMobile" value="${clientUserMobile}"/>
 				</td>
-				<td>
-					 用户微信ID
-					<input type="text" name="wxOpenId" value="${wxOpenId}"/>
-				</td>
+<!-- 				<td> -->
+<!-- 					 用户微信ID -->
+<%-- 					<input type="text" name="wxOpenId" value="${wxOpenId}"/> --%>
+<!-- 				</td> -->
 				<td>
 					 用户订单ID
 					<input type="text" name="orderRecordId" value="${orderRecordId}"/>
@@ -68,15 +68,25 @@
 		<table class="searchContent">
 			<tr>
 				<td>
-					订单日期（起始结束时间都要选）：从
-					<input type="text" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${orderStartTime}" class="date" readonly="true" />
-					到
-					<input type="text" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${orderEndTime}" class="date" readonly="true" />
+					支付状态：
 				</td>
-			</tr>
-		</table>
-		<table class="searchContent">
-			<tr>
+				<td>
+					<select class="combox" name="paymentStatus">
+					<c:if test="${paymentStatusList!=null}">
+					<option value="" selected>选择</option>
+						<c:forEach items="${paymentStatusList}" var="loop">
+							<c:choose>
+								<c:when test="${loop.id==paymentStatus}">
+									<option value=${loop.id} selected>${loop.statusName}</option>
+   								</c:when>
+   								<c:otherwise>
+   									<option value=${loop.id}>${loop.statusName}</option>
+   								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</c:if>
+					</select>
+				</td>
 				<td>
 					支付渠道：
 				</td>
@@ -98,27 +108,7 @@
 					</select>
 				</td>
 				<td>
-					支付状态：
-				</td>
-				<td>
-					<select class="combox" name="paymentStatus">
-					<c:if test="${paymentStatusList!=null}">
-					<option value="" selected>选择</option>
-						<c:forEach items="${paymentStatusList}" var="loop">
-							<c:choose>
-								<c:when test="${loop.id==paymentStatus}">
-									<option value=${loop.id} selected>${loop.statusName}</option>
-   								</c:when>
-   								<c:otherwise>
-   									<option value=${loop.id}>${loop.statusName}</option>
-   								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</c:if>
-					</select>
-				</td>
-				<td>
-					配送状态：
+					派送状态：
 				</td>
 				<td>
 					<select class="combox" name="deliveryStatus">
@@ -138,7 +128,7 @@
 					</select>
 				</td>
 				<td>
-					订单处理状态：
+					订单状态：
 				</td>
 				<td>
 					<select class="combox" name="operateStatus">
@@ -156,6 +146,16 @@
 						</c:forEach>
 					</c:if>
 					</select>
+				</td>
+			</tr>
+		</table>
+		<table class="searchContent">
+			<tr>
+				<td>
+					订单日期（起始结束时间都要选）：从
+					<input type="text" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createStartTime}" class="date" readonly="true" />
+					到
+					<input type="text" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createEndTime}" class="date" readonly="true" />
 				</td>
 			</tr>
 		</table>

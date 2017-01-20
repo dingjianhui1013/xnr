@@ -6,6 +6,7 @@
 	        + path + "/";
 	
 	String action = basePath+"page/business/admin/commodity/goods/info.action";
+	String saveSort = basePath+"page/business/admin/commodity/goods/sortSave.action";
 	String add = basePath+"page/business/admin/commodity/goods/addinfo.action";
 	String modify = basePath+"page/business/admin/commodity/goods/modifyinfo.action";
 	String del = basePath+"page/business/admin/commodity/goods/del.action";
@@ -16,6 +17,7 @@
 	String uploadGoodsInfo = basePath+"page/business/admin/commodity/goods/uploadGoodsInfo.action";
 	
 	request.setAttribute("action",action);
+	request.setAttribute("saveSort",saveSort);
 	request.setAttribute("add",add);
 	request.setAttribute("modify",modify);
 	request.setAttribute("del",del);
@@ -26,6 +28,89 @@
 	request.setAttribute("uploadGoodsInfo", uploadGoodsInfo);
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<style>
+    tr{cursor: pointer;}
+</style>
+
+<script src="js/jqueryUI/jquery-ui-1.12.0/jquery-ui.min.js"></script>
+<script type="text/javascript">
+var fixHelper = function(e, ui) {  
+    //console.log(ui)  
+    ui.children().each(function() {  
+        $(this).width("900px");     //在拖动时，拖动行的cell（单元格）宽度会发生改变。在这里做了处理就没问题了  
+    });  
+    return ui;  
+};  
+/* var select_sx=0;
+var place_sx=0;
+var flag=false; */
+var newOrder = '';
+$(document).ready(function(){
+    $(".sortable tbody").sortable({                //这里是talbe tbody，绑定 了sortable  
+        helper: fixHelper,                  //调用fixHelper  
+        axis:"y",  
+        start:function(e, ui){  
+            ui.helper.css({"background":"#fff"})     //拖动时的行，要用ui.helper 
+            //console.log(ui);
+            
+            return ui;  
+        },  
+        stop:function(e, ui){  
+            //ui.item.removeClass("ui-state-highlight"); //释放鼠标时，要用ui.item才是释放的行  
+            newOrder='';
+            $(this).find("tr").each(function(i,one){
+		       if(newOrder==''){
+		    	   newOrder+=$(one).attr("order");
+		       }else{
+		    	   newOrder+=","+$(one).attr("order");
+		       }
+            })
+            //console.log(newOrder);
+            return ui;  
+        },  
+        sort:function(e, ui){
+        	/* array = [];                     
+        	select_item = ui.item; //当前拖动的元素
+        	var select_id = select_item.attr("id"); 
+        	var select_sort = select_item.attr("order"); //当前元素的顺序
+        	//console.log("当前id"+select_id);
+        	//console.log("当前排序："+select_sort);
+        	//console.log($(this).find('.ui-sortable-placeholder'));
+        	place_item_next = $(this).find('.ui-sortable-placeholder').next('tr');//新位置下的下一个元素
+        	place_item_prev = $(this).find('.ui-sortable-placeholder').prev('tr');//新位置下的上一个元素
+        	place_sort = place_item_next.attr('order');
+        	place_sort_prev = place_item_prev.attr('order');
+        	place_sx = parseInt(place_sort);
+        	select_sx = parseInt(select_sort);
+        	if(select_sx > place_sx){ //说明是 向上移动
+        		//array.push(select_id);
+        		temp = place_sort;
+        		place_sx = select_sort;//最大
+        		select_sx = temp;//最小
+        		flag = false;
+       		}else{ //向下移动
+       		    place_sx = parseInt(place_sort_prev);
+       		    flag = true;
+       		} */
+        }
+    }).disableSelection();
+});
+
+function saveSort(){
+	if(window.confirm("确定保存排序吗？")){
+	    $.ajax({
+	    	url:'${saveSort}',
+	    	type:'POST',
+	    	async: false,
+	    	data:{'newOrder':newOrder},
+	        datatype:'json',
+	        success:function(data){
+	        	navTabSearch($("#pagerForm")[0]);
+	        }
+	    });
+	 }
+}
+</script>
 <form id="pagerForm" method="post" action="${action}">
 		<input type="hidden" name="goodsName" value="${goodsName}" />
 		<input type="hidden" name="goodsCategoryId" value="${goodsCategoryId}" />
@@ -86,6 +171,7 @@
 		<div class="subBar">
 			<ul>
 				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="saveSort()">保存当前页面排序</button></div></div></li>
 			</ul>
 		</div>
 	</div>
@@ -109,7 +195,7 @@
 			<li><a class="edit" href="${uploadGoodsInfo}" target="navTab" ><span>批量上传更新商品</span></a></li>
 		</ul>
 	</div>
-	<table class="table" width="100%" layoutH="138">
+	<table class="list sortable" width="100%" layoutH="138">
 		<thead>
 			<tr>
 				<th width="125">商品名称</th>
@@ -137,7 +223,7 @@
 		<tbody>
 			<c:if test="${voList!=null}">
 				<c:forEach items="${voList}" var="loop">
-					<tr target="sid_goodsId" rel="${loop.businessGoods.id}">						
+					<tr target="sid_goodsId" rel="${loop.businessGoods.id}" order="${loop.businessGoods.sortId}" id="${loop.businessGoods.id}">						
 						<td>${loop.businessGoods.goodsName}</td>
 						<td>
 							<c:if test="${weightList!=null}">

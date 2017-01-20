@@ -1,5 +1,6 @@
 package com.xnradmin.vo.business;
 
+import com.xnradmin.po.business.AllocationData;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.FarmerOrderRecord;
 import com.xnradmin.po.wx.OutPlan;
@@ -12,12 +13,8 @@ public class FarmerOrderVO {
 	private BusinessGoods businessGoods;
 	
 	private Farmer farmer;
-
 	
-	
-	
-	
-	
+	private AllocationData allocationData;
 	
 	public FarmerOrderVO() {
 		super();
@@ -54,8 +51,13 @@ public class FarmerOrderVO {
 	public void setFarmer(Farmer farmer) {
 		this.farmer = farmer;
 	}
-	
-	
-	
+
+	public AllocationData getAllocationData() {
+		return allocationData;
+	}
+
+	public void setAllocationData(AllocationData allocationData) {
+		this.allocationData = allocationData;
+	}
 	
 }

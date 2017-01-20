@@ -190,6 +190,9 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 				hql.append(" and c.goodsName like '%").append(query.getBusinessGoods().getGoodsName()).append("%'");
 			}
 		}
+		if(query.getExceptIds()!=null&&!query.getExceptIds().equals("")){
+			hql.append(" and c.id in (").append(query.getExceptIds()).append(")");
+		}
 		
 		hql.append(" and a.examine = '1'");
 		hql.append(" order by a.id desc");
@@ -448,7 +451,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 	
 	public List<OutPlanCountVO> findOccupyAmountCount(String userId)
 	{
-		String hql = "select sum(a.occupyAmount),sum(a.validAmount),sum(a.output),a.goodsId,b.goodsName from OutPlan a,BusinessGoods b where a.userId='"+userId+"' and a.examine='1' and a.goodsId=b.id GROUP BY a.goodsId";
+		String hql = "select sum(a.occupyAmount),sum(a.validAmount),sum(a.output),a.goodsId,b.goodsName,sum(a.sendoutAmount) from OutPlan a,BusinessGoods b where a.userId='"+userId+"' and a.examine='1' and a.goodsId=b.id GROUP BY a.goodsId";
 		List list =  commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		List<OutPlanCountVO> opcv = new ArrayList<OutPlanCountVO>();
 		for (int i = 0; i < list.size(); i++) {
@@ -459,6 +462,7 @@ public List<OutPlanVO> getListByUserId(String userId,int pageNo,int pageSize){
 			ov.setOutPutSum(obj[2].toString());
 			ov.setGoodsId((String)obj[3]);
 			ov.setGoodsName(obj[4].toString());
+			ov.setSendoutAmount(obj[5].toString());
 			opcv.add(ov);
 		}
 		return opcv;

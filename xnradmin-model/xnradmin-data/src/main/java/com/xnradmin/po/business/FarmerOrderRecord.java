@@ -28,7 +28,7 @@ public class FarmerOrderRecord implements java.io.Serializable{
 
 	private Integer id;
 
-	private Long orderRecordId; //订单ID
+	private Long orderRecordId; //订单ID--->现改为 分配的ID
     
 	private Long outPlanId; //生成计划id
 	

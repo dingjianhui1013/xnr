@@ -46,12 +46,14 @@ import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.commodity.BusinessWeightService;
 import com.xnradmin.core.service.business.data.ProcessOtherExcel;
+import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.core.util.Log4jUtil;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
@@ -75,6 +77,9 @@ public class BusinessGoodsAction extends ParentAction {
 
 	@Autowired
 	private BusinessCategoryService categoryService;
+	
+	@Autowired
+	private BusinessOrderGoodsRelationService orderGoodsRelationService;
 
 	@Autowired
 	private BusinessWeightService weightService;
@@ -180,6 +185,10 @@ public class BusinessGoodsAction extends ParentAction {
 	private Status isDiscount;
 	private List<Status> buyTeamList;
 	private List<Status> goodsSourceList;
+	
+	//排序的保存
+	private String newOrder;
+	
 
 	private Map<String, BusinessGoodsVO> goodsBuyteamList;
 
@@ -202,7 +211,106 @@ public class BusinessGoodsAction extends ParentAction {
 		setPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
+	
+	/**
+	 * 跳转到未分配的商品页面
+	 * 
+	 * @return
+	 */
+	@Action(value = "toallocationNo", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/commodity/goods/infoAllocation.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/commodity/goods/infoAllocation.jsp") })
+	public String toallocationNo() {
+		// 设置排序
+		findBusinessGoodsStatusList();
+		findBusinessIsDiscountList();
+		//findStaffList();
+		findBusinessCategoryList();
+		findBusinessGoodsList();
+		findBusinessWeightList();
+		findBusinessGoodsBuyteamList();
+		BusinessGoodsVO vo = new BusinessGoodsVO();
+		BusinessGoods po = new BusinessGoods();
+		if (!StringHelper.isNull(goodsCategoryId)) {
+			po.setGoodsCategoryId(goodsCategoryId);
+		}
+		if (!StringHelper.isNull(goodsParentId)) {
+			po.setGoodsParentId(goodsParentId);
+		}
+		if (!StringHelper.isNull(goodsName)) {
+			po.setGoodsName(goodsName);
+		}
+		if (!StringHelper.isNull(goodsBrandId)) {
+			po.setGoodsBrandId(Integer.parseInt(goodsBrandId));
+		}
+		if (!StringHelper.isNull(goodsStatus)) {
+			po.setGoodsStatus(Integer.parseInt(goodsStatus));
+		}
+		if (!StringHelper.isNull(goodsPreferentialPrice)) {
+			po.setGoodsPreferentialPrice(Float.valueOf(goodsPreferentialPrice));
+		}
+		if (!StringHelper.isNull(goodsPurchasePrice)) {
+			po.setGoodsPurchasePrice(Float.valueOf(goodsPurchasePrice));
+		}
+		if (!StringHelper.isNull(isFreeLogistics)) {
+			po.setIsFreeLogistics(Integer.parseInt(isFreeLogistics));
+		}
+		if (!StringHelper.isNull(isNewGoods)) {
+			po.setIsNewGoods(Integer.parseInt(isNewGoods));
+		}
+		if (!StringHelper.isNull(isDiscountGoods)) {
+			po.setIsDiscountGoods(Integer.parseInt(isDiscountGoods));
+		}
+		if (!StringHelper.isNull(isHotSaleGoods)) {
+			po.setIsHotSaleGoods(Integer.parseInt(isHotSaleGoods));
+		}
+		if (!StringHelper.isNull(goodsCreateStaffId)) {
+			po.setCreateStaffId(Integer.parseInt(goodsCreateStaffId));
+		}
+		if (!StringHelper.isNull(goodsModifyStaffId)) {
+			po.setModifyStaffId(Integer.parseInt(goodsModifyStaffId));
+		}
+		vo.setBusinessGoods(po);
+		vo.setCreateStartTime(goodsCreateStartTime);
+		vo.setCreateEndTime(goodsCreateEndTime);
+		vo.setModifyStartTime(goodsModifyStartTime);
+		vo.setModifyEndTime(goodsModifyEndTime);
+		
+		//设置来源列表
+		goodsSourceList = statusService.find(BusinessGoods.class,
+				"businessGoodsSource");
 
+		this.voList = goodsService.listVO(vo, getPageNum(), getNumPerPage(),
+				orderField, orderDirection);
+		this.totalCount = goodsService.getCount(vo);
+		return StrutsResMSG.SUCCESS;
+	}
+
+	/**
+	 * 商品排序保存
+	 * 
+	 * @return
+	 */
+	@Action(value = "sortSave",	results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText")})
+	public String sortSave() throws IOException {
+		if(!StringHelper.isNull(newOrder)){
+			String[] ords = newOrder.split(",");
+			setPageInfo();
+			if(ords.length==voList.size()){
+				int i=0;
+				for(BusinessGoodsVO vo :voList){
+					BusinessGoods bg = vo.getBusinessGoods();
+					bg.setSortId(Integer.parseInt(ords[i]));
+					goodsService.modify(bg);
+					i++;
+				}
+			}
+		}
+		super.success(null, null,"businessGoods", null);
+		return null;
+	}
+
+	
 	/**
 	 * 跳转到信息页。。
 	 * 
@@ -262,7 +370,7 @@ public class BusinessGoodsAction extends ParentAction {
 		// 设置排序
 		findBusinessGoodsStatusList();
 		findBusinessIsDiscountList();
-		findStaffList();
+		//findStaffList();
 		findBusinessCategoryList();
 		findBusinessGoodsList();
 		findBusinessWeightList();
@@ -717,6 +825,9 @@ public class BusinessGoodsAction extends ParentAction {
 		goods.setModifyStaffId(currentStaff.getId());
 		goods.setModifyTime(new Timestamp(System.currentTimeMillis()));
 		goodsService.save(goods);
+		//取出goods 的id 默认做为其排序
+		goods.setSortId(goods.getId());
+		goodsService.modify(goods);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		//保存商品的分配信息
 		for(GoodsAllocationShow allocationShow:allocationShowList){
@@ -912,9 +1023,17 @@ public class BusinessGoodsAction extends ParentAction {
 
 	@Action(value = "del", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
 	public String del() throws IOException, JSONException {
-		goodsService.removeGoodsId(goodsId);
-		allocationShowService.del(goodsId);
-		super.success(null, null, "businessGoods", null);
+		List<BusinessOrderGoodsRelation> list = orderGoodsRelationService.findByGoodsId(goodsId);
+		if(list.isEmpty())
+		{
+			goodsService.removeGoodsId(goodsId);
+			allocationShowService.del(goodsId);
+			super.success(null, null, "businessGoods", null);
+		}else
+		{
+			super.success("商品已经存在订单中不能删除。", null, "businessGoods", null);
+		}
+		
 		return null;
 	}
 
@@ -1634,6 +1753,14 @@ public class BusinessGoodsAction extends ParentAction {
 
 	public void setAllocationShowList(List<GoodsAllocationShow> allocationShowList) {
 		this.allocationShowList = allocationShowList;
+	}
+
+	public String getNewOrder() {
+		return newOrder;
+	}
+
+	public void setNewOrder(String newOrder) {
+		this.newOrder = newOrder;
 	}
 
 }

@@ -1,14 +1,14 @@
 package com.xnradmin.po.business;
 
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -41,6 +41,8 @@ public class BusinessGoods implements java.io.Serializable{
     private String goodsDescription;	//商品描述
     
     private Float goodsOriginalPrice;	//商品原价
+    
+    private String goodsOriginalPriceStr;
     
     private Float goodsPreferentialPrice;	//商品优惠价
     
@@ -164,6 +166,8 @@ public class BusinessGoods implements java.io.Serializable{
 	}
 
 	public void setGoodsOriginalPrice(Float goodsOriginalPrice) {
+		DecimalFormat df = new DecimalFormat("#0.00");
+		this.goodsOriginalPriceStr=df.format(goodsOriginalPrice);
 		this.goodsOriginalPrice = goodsOriginalPrice;
 	}
 
@@ -362,6 +366,14 @@ public class BusinessGoods implements java.io.Serializable{
 
 	public void setSourceId(Integer sourceId) {
 		this.sourceId = sourceId;
+	}
+
+	public String getGoodsOriginalPriceStr() {
+		return goodsOriginalPriceStr;
+	}
+
+	public void setGoodsOriginalPriceStr(String goodsOriginalPriceStr) {
+		this.goodsOriginalPriceStr = goodsOriginalPriceStr;
 	}
 
 	

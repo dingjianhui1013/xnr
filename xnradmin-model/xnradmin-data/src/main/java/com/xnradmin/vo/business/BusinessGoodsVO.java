@@ -3,7 +3,8 @@
 */
 package com.xnradmin.vo.business;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import com.cntinker.util.ReflectHelper;
 import com.xnradmin.po.business.BusinessCategory;
@@ -57,6 +58,10 @@ public class BusinessGoodsVO implements java.io.Serializable{
 	}
 
 	public void setBusinessGoods(BusinessGoods businessGoods) {
+		DecimalFormat df = new DecimalFormat("#.00");
+		BigDecimal   b  =   new  BigDecimal(df.format(businessGoods.getGoodsOriginalPrice()==null?0.00:businessGoods.getGoodsOriginalPrice()));
+		businessGoods.setGoodsOriginalPriceStr(df.format(businessGoods.getGoodsOriginalPrice()==null?0.00:businessGoods.getGoodsOriginalPrice()));
+		businessGoods.setGoodsOriginalPrice(b.setScale(3,  BigDecimal.ROUND_HALF_UP).floatValue());
 		this.businessGoods = businessGoods;
 	}
 

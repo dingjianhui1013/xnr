@@ -57,6 +57,9 @@
 										<div>
 											<img alt="" src="<%=path%>${farmerImages.url}" />
 										</div>
+										<c:if test="${farmerImages.remarks!=null || farmerImages.remarks!=''}">
+											<h3>${farmerImages.remarks}</h3>
+										</c:if>
 									</li>
 								</c:forEach>
 							</ul>

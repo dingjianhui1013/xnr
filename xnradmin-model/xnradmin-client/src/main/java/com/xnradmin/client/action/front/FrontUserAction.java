@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import com.cntinker.security.MD5Encoder;
 import com.cntinker.util.CookieHelper;
 import com.cntinker.util.StringHelper;
+import com.cntinker.util.WebImageHelper;
 import com.xnradmin.client.service.front.FrontUserService;
 import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
@@ -56,6 +58,7 @@ public class FrontUserAction {
     private String message;//登陆信息
     private FrontUser user;//修改用户信息
     private String yuanshimima;//验证原始密码
+    private String valideCode;//验证验证码
     
 	public FrontUser getUser() {
 		return user;
@@ -121,6 +124,14 @@ public class FrontUserAction {
 		this.frontUser = frontUser;
 	}
 
+	public String getValideCode() {
+		return valideCode;
+	}
+
+	public void setValideCode(String valideCode) {
+		this.valideCode = valideCode;
+	}
+
 	/**
      * 登录
      * @return
@@ -168,6 +179,7 @@ public class FrontUserAction {
 	 */
 	@Action(value = "register",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/regSuccess.jsp"),@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp") })
     public String register() {
+		frontUser.setType("1");//暂时不需要审核。
 		boolean save = frontUserService.save(frontUser);
 		if(save){
 			return StrutsResMSG.SUCCESS;
@@ -221,6 +233,36 @@ public class FrontUserAction {
             this.status = "1";
         }
     return StrutsResMSG.SUCCESS;
+	}
+	//验证图型验证码
+	@Action(value = "validateCode" ,results={@Result(name = StrutsResMSG.SUCCESS, type="json")})
+	public String validateCode()
+	{
+        HttpServletResponse resp = ServletActionContext.getResponse();
+        HttpServletRequest req = ServletActionContext.getRequest();
+        // session中的名字为:validateCode
+        try {
+			Object attribute = req.getSession().getAttribute("validateCode");
+			if(attribute.toString()==null||"".equals(attribute.toString()))
+	        {
+	        	status="0";
+	        }else
+	        {
+	        	  if(valideCode.equals(attribute.toString()))
+	        	  {
+	        		  status="1";
+	        	  }else
+	        	  {
+	        		  status ="0";
+	        	  }
+	        }
+			return StrutsResMSG.SUCCESS;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			status="0";
+			return StrutsResMSG.SUCCESS;
+		}
 	}
 	/**
 	 *修改密码
