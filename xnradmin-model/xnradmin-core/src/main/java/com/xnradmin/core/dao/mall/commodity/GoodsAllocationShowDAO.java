@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
-import com.xnradmin.po.mall.commodity.GoodsDishRelation;
 
 
 @Repository("GoodsAllocationShowDAO")
@@ -96,7 +95,7 @@ public class GoodsAllocationShowDAO{
         }
     }
 
-    public GoodsAllocationShow findById(Long id){
+    public GoodsAllocationShow findById(Integer id){
         log.debug("getting GoodsAllocationShow instance with id: " + id);
         try{
 
@@ -153,7 +152,7 @@ public class GoodsAllocationShowDAO{
         log.debug("finding findByOlay "
                 + goodsId + ":" + goodsAllocationShowId);
         try{
-            String queryString = "from GoodsAllocationShow gas where gas.goodsId= "+goodsId +"and gas.startTime<=now() and gas.endTime>now()";
+            String queryString = "from GoodsAllocationShow gas where gas.goodsId= "+goodsId +" and gas.startTime<=now() and gas.endTime>now()";
             if(!StringHelper.isNull(goodsAllocationShowId)){
             	queryString = queryString + " and id!="+goodsAllocationShowId;
             }

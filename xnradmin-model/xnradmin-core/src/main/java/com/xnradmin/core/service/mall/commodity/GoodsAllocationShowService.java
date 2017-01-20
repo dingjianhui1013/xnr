@@ -52,7 +52,7 @@ public class GoodsAllocationShowService {
 	 * @return int
 	 */
 	public int save(GoodsAllocationShow po) {
-		if (this.dao.findById(Long.valueOf(po.getId()))!=null) {
+		if (this.dao.findById(po.getId())!=null) {
 			return 1;
 		}
 		dao.save(po);
@@ -60,7 +60,7 @@ public class GoodsAllocationShowService {
 	}
 
 	public GoodsAllocationShow findByid(String id) {
-		return dao.findById(Long.valueOf(id));
+		return dao.findById(Integer.valueOf(id));
 	}
 	
 	public List<GoodsAllocationShow> findByGoodsid(String goodsId) {
