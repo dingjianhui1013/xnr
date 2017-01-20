@@ -34,7 +34,7 @@ function addToCart(obj,money){
 	var userId = $("#userId").val();
 	var id = $(obj).attr("id").substring(3);
 	var count = $("#count"+id).val();
-	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(1));
+	$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(count)).toFixed(2));
 	$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(count)));
 	if(userId!=null&&userId!=""){
 		$.ajax({

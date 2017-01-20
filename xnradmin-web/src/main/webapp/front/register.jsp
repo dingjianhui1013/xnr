@@ -209,8 +209,8 @@
 				</ul> -->
 				<!--登录后显示-->
 				<ul>
-					<li><a href="login.jsp">登录</a></li>
-					<li><a href="register.jsp">注册</a></li>
+					<li><a href="${basePath}/front/login.jsp">登录</a></li>
+					<li><a href="${basePath}/front/register.jsp">注册</a></li>
 				</ul>
 
 			</div>

@@ -78,7 +78,7 @@ function addToCart(id,money){
 	if(simpleCart_numbertmp>productMaxNum){
 		layer.msg("库存有限，该产品购买量不能超过"+productMaxNum);
 	}else{	
-		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(1));
+		$("#simpleCart_total").html((Number($("#simpleCart_total").html())+money*Number(goodsNumber)).toFixed(2));
 		$("#simpleCart_number").html((Number($("#simpleCart_number").html())+Number(goodsNumber)));
 			
 		if(userId!=null&&userId!=""){

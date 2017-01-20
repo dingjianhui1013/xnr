@@ -120,7 +120,7 @@ public class AlipayAction {
 			
 			if(trade_status.equals("TRADE_FINISHED")){
 				//判断该笔订单是否在商户网站中已经做过处理
-				changePayStatus(out_trade_no, "处理中", total_fee, gmt_payment, "已支付",trade_no,"完成", buyer_id, buyer_email,"yes");
+				changePayStatus(out_trade_no, "待处理", total_fee, gmt_payment, "已支付",trade_no,"完成", buyer_id, buyer_email,"yes");
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 				
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
@@ -134,7 +134,7 @@ public class AlipayAction {
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
 					//如果有做过处理，不执行商户的业务程序
-				changePayStatus(out_trade_no, "处理中", total_fee, gmt_payment, "已完成",trade_no,"完成", buyer_id, buyer_email,"no");
+				changePayStatus(out_trade_no, "待处理", total_fee, gmt_payment, "已完成",trade_no,"完成", buyer_id, buyer_email,"no");
 				//注意：
 				//付款完成后，支付宝系统发送该交易状态通知
 			}else if(trade_status.equals("TRADE_PENDING"))
@@ -208,7 +208,7 @@ public class AlipayAction {
 			
 			if(trade_status.equals("TRADE_FINISHED")){
 				//判断该笔订单是否在商户网站中已经做过处理
-				changePayStatus(out_trade_no, "处理中", total_fee, notify_time, "已支付",trade_no,"完成", buyer_id, buyer_email,"yes");
+				changePayStatus(out_trade_no, "待处理", total_fee, notify_time, "已支付",trade_no,"完成", buyer_id, buyer_email,"yes");
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 				
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
@@ -222,7 +222,7 @@ public class AlipayAction {
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
 					//如果有做过处理，不执行商户的业务程序
-				changePayStatus(out_trade_no, "处理中", total_fee, notify_time, "已支付",trade_no,"完成", buyer_id, buyer_email,"no");
+				changePayStatus(out_trade_no, "待处理", total_fee, notify_time, "已支付",trade_no,"完成", buyer_id, buyer_email,"no");
 				//注意：
 				//付款完成后，支付宝系统发送该交易状态通知
 			}else if(trade_status.equals("TRADE_PENDING"))
@@ -281,6 +281,10 @@ public class AlipayAction {
 			if(orderRecord.getPaymentStatus().equals(201))
 			{
 				orderRecord.setPaymentTime(Timestamp.valueOf(gmt_payment));
+				if(operateStatusName.equals("待处理"))
+				{
+					orderRecord.setOperateStatus(203);
+				}
 				orderRecord.setOperateStatusName(operateStatusName);
 				orderRecord.setPaymentStatusName(paymentName);
 				
