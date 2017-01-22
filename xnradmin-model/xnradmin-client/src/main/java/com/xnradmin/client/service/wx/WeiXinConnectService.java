@@ -212,7 +212,7 @@ public class WeiXinConnectService {
 	  	    	for (BusinessGoods businessGoods : list) {
 	  				me.append("t"+businessGoods.getId()+businessGoods.getGoodsName()+"tm“照片备注：可以为空”\n");
 	  			}
-	  	    	message = "请按顺序回复上传图片分类：\n"+me.toString();
+	  	    	message = "请按顺序回复上传图片分类：\n例如“t菜品编号tm备注”"+me.toString();
   	        }
   	    	respMessage = respfText(FromUserName, ToUserName, message, "1234567890123456");
   	      }

@@ -272,7 +272,7 @@
 		 	</div>
 			<div class="p-contentBox pull-left">
                 <div class="p-orderList editList" style="display:block">
-                 	<h3 class="titBox">账号信息</h3>
+                 	<h3 class="titBox"><span>账号信息</span></h3>
                 	<div class="accountBox">
 							<form action="saveForm.action" class="form-horizontal" role="form">
 								<input type="hidden" name="user.id" value="${user.id }">
@@ -304,7 +304,7 @@
                 	</div>
                 </div>
 						<div class="p-orderList editList" id="p-orderList">
-						<h3 class="titBox">我的订单</h3>
+						<h3 class="titBox"><span>我的订单</span></h3>
 	                    <div class="orderListBox">
 	                    	<div class="orderTitCol">
 	                    		<ul>
@@ -413,7 +413,7 @@
 				<!--分页end-->
                 </div>
                 <div class="p-orderList editList">
-					<h3 class="titBox">地址管理</h3>
+					<h3 class="titBox"><span>地址管理</span></h3>
                 	<a href="javascript:;" class="btn btn-default add-address" id="addAddressBtn">新增收货地址</a>
                 	<c:if test="${empty receiptAddressList }">
                 		<div class="searchTips">
@@ -493,6 +493,7 @@
                 </c:if>
                  <div class="p-orderList editList">
                  		<h3 class="titBox">密码修改</h3>
+                 		<div class="accountBox">
                 		<form class="form-horizontal" id="submitForm" action="savePassword.action">
                 				<input type="hidden" name="user.id" value="${user.id }">
                                   <div class="form-group">
@@ -530,6 +531,7 @@
                                     </div>
                                   </div>
                         </form>
+                 		</div>
                  </div>
 			</div>
 		 </div>
