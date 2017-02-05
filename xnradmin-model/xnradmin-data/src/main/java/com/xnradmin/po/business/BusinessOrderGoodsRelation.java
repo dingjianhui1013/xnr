@@ -54,6 +54,7 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	
     private Timestamp orderGoodsRelationTime; //生成时间 
     
+    private String allocationId;//分配的id
     
     private Integer goodsWeightId; //商品单位
     
@@ -183,6 +184,14 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	@Column(name = "del_flag")
 	public String getDelFlag() {
 		return delFlag;
+	}
+	@Column(name = "allocation_id")
+	public String getAllocationId() {
+		return allocationId;
+	}
+
+	public void setAllocationId(String allocationId) {
+		this.allocationId = allocationId;
 	}
 
 	public void setDelFlag(String delFlag) {

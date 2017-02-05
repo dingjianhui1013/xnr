@@ -1,8 +1,6 @@
 package com.xnradmin.core.service.business.order;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -12,21 +10,16 @@ import org.springframework.stereotype.Service;
 
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.dao.CommonDAO;
-import com.xnradmin.core.dao.CommonJDBCDAO;
 import com.xnradmin.core.dao.business.order.AllocationListDAO;
-import com.xnradmin.core.dao.business.order.BusinessOrderRecordDAO;
-import com.xnradmin.core.dao.business.order.FarmerOrderRecordDAO;
 import com.xnradmin.core.service.StaffService;
+import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.AllocationData;
+import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
-import com.xnradmin.po.business.FarmerOrderRecord;
-import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
-import com.xnradmin.po.wx.OutPlan;
-import com.xnradmin.po.wx.connect.Farmer;
-import com.xnradmin.vo.business.FarmerOrderVO;
-import com.xnradmin.vo.business.OutPlanVO;
+import com.xnradmin.vo.business.AllocationVO;
+import com.xnradmin.vo.business.BusinessOrderVO;
 
 
 /**
@@ -60,11 +53,11 @@ public class AllocationService {
 	}
 
 	public AllocationData findByid(String id) {
-		return dao.findById(Long.valueOf(id));
+		return dao.findById(Integer.valueOf(id));
 	}
 
 	public void del(String id) {
-		AllocationData po = this.dao.findById(Long.valueOf(id));
+		AllocationData po = this.dao.findById(Integer.valueOf(id));
 		this.dao.delete(po);
 	}
 
@@ -92,5 +85,83 @@ public class AllocationService {
 		return  commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 	}
 
+	/**
+	 * 新版info页调用数据
+	 * 
+	 * @param vo
+	 * @param curPage
+	 * @param pageSize
+	 * @param orderField
+	 * @param direction
+	 * @return List<BusinessOrderVO>
+	 */
+	public List<AllocationVO> listVO(AllocationVO vo, int curPage,
+			int pageSize, String orderField, String direction) {
+		String hql = getHql(vo);
+
+		List<Object[]> res = this.commonDao.getEntitiesByPropertiesWithHql(hql,
+				curPage, pageSize);
+		List<AllocationVO> returnList = new ArrayList<AllocationVO>();
+		if(res!=null&&res.size()>0){
+			for (Object[] e : res) {
+				AllocationData allocationData = (AllocationData) e[0];
+				CommonStaff staff = (CommonStaff) e[1];
+				AllocationVO v = new AllocationVO();
+				v.setAllocationData(allocationData);
+				v.setStaff(staff);
+				returnList.add(v);
+			}			
+		}else{
+			returnList=null;
+		}
+
+		return returnList;
+	}
+	
+	private String getHql(AllocationVO query) {
+		StringBuffer hql = new StringBuffer();
+		hql.append("from AllocationData a, CommonStaff b ");
+		hql.append(" where a.allocationUser=b.id ");
+
+		if (query != null) {
+			// 分配日期
+			if (!StringHelper.isNull(query.getCreateStartTime())
+					&& !StringHelper.isNull(query.getCreateEndTime())) {
+				hql.append(" and a.startTimeCondition>=DATE_FORMAT('");
+				hql.append(query.getCreateStartTime());
+				hql.append("','%Y-%m-%d %H:%i:%s')");
+				hql.append(" and a.endTimeCondition<=DATE_FORMAT('");
+				hql.append(query.getCreateEndTime());
+				hql.append("','%Y-%m-%d %H:%i:%s')");
+			}
+
+			// 指定分配人
+			if (query.getStaff() != null) {
+				if (query.getStaff().getStaffName() != null) {
+					hql.append(" and b.staffName like '%").append(query.getStaff().getStaffName()).append("%'");
+				}
+			}
+
+			// group by
+			if (!StringHelper.isNull(query.getGroupBy())) {
+				hql.append(" group by ").append(query.getGroupBy());
+			}
+
+			// order by
+			if (!StringHelper.isNull(query.getOrderBy())
+					&& !StringHelper.isNull(query.getOrderByField())) {
+				hql.append(" order by ").append(query.getOrderBy()).append(" ")
+						.append(query.getOrderByField());
+			}
+		}
+
+		return hql.toString();
+	}
+	
+	public Integer getCount(String select, AllocationVO vo) {
+		String hql = select + getHql(vo);
+
+		return commonDao.getNumberOfEntitiesWithHql(hql);
+	}
 }
 

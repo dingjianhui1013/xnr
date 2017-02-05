@@ -3,10 +3,9 @@
  */
 package com.xnradmin.core.action.stat;
 
-import java.io.FileOutputStream;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -14,12 +13,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -35,6 +28,7 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.order.AllocationService;
+import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.order.OrderGoodsRelationService;
@@ -42,20 +36,15 @@ import com.xnradmin.core.service.mall.order.OrderRecordService;
 import com.xnradmin.core.service.mall.seting.LogisticsCompanyService;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.AllocationData;
-import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.FarmerOrderRecord;
-import com.xnradmin.po.client.ClientUserRegionInfo;
 import com.xnradmin.po.common.status.Status;
-import com.xnradmin.po.mall.commodity.Goods;
-import com.xnradmin.po.mall.order.OrderGoodsRelation;
 import com.xnradmin.po.mall.order.OrderRecord;
 import com.xnradmin.po.mall.seting.LogisticsCompany;
-import com.xnradmin.po.mall.seting.PrimaryConfiguration;
 import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.vo.business.AllocationVO;
 import com.xnradmin.vo.business.BusinessAllocationVO;
-import com.xnradmin.vo.business.BusinessOrderVO;
 import com.xnradmin.vo.business.FarmerOrderVO;
 import com.xnradmin.vo.mall.OrderVO;
 
@@ -65,19 +54,25 @@ import com.xnradmin.vo.mall.OrderVO;
  */
 @Controller
 @Scope("prototype")
-@Namespace("/page/stat/order")
+@Namespace("/page/business/admin/allocation")
 @ParentPackage("json-default")
-public class OrderRecordStatAction extends ParentAction {
-
-	@Autowired
-	private OrderRecordService orderRecordService;
-
-	@Autowired
-	private StatusService statusService;
+public class AllocationAction extends ParentAction {
 
 	@Autowired
 	private OrderGoodsRelationService orderGoodsRelationService;
-
+	
+	@Autowired
+	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
+	
+	@Autowired
+	private OrderRecordService orderRecordService;
+	
+	@Autowired
+	private AllocationService allocationService;
+	
+	@Autowired
+	private OutPlanService planService;
+	
 	@Autowired
 	private LogisticsCompanyService logisticsCompanyService;
 	
@@ -85,11 +80,7 @@ public class OrderRecordStatAction extends ParentAction {
 	private FarmerOrderRecordService farmerOrderService;
 	
 	@Autowired
-	private AllocationService allocationService;
-	
-	@Autowired
-	private OutPlanService planService;
-
+	private StatusService statusService;
 	// orderRecford
 	private String orderRecordId;
 
@@ -268,6 +259,8 @@ public class OrderRecordStatAction extends ParentAction {
 	private List<LogisticsCompany> logisticsCompanyList;
 
 	private List<OrderVO> voList;
+	
+	private List<AllocationVO> allocationVo;
 
 	private List<OrderVO> excelVoList;
 
@@ -283,9 +276,21 @@ public class OrderRecordStatAction extends ParentAction {
 	
 	private CommonStaff currentStaff;//登录用户信息
 	
+	private String allocationId;//分配id
+	
 	private String goodsIdstr;
 	
+	private String pageType;//页面类型 查看1 编辑2 新增3
+	
 	private Map<String, FarmerOrderRecord> items;
+
+	public String getAllocationId() {
+		return allocationId;
+	}
+
+	public void setAllocationId(String allocationId) {
+		this.allocationId = allocationId;
+	}
 
 	public String getGoodsIdstr() {
 		return goodsIdstr;
@@ -293,6 +298,14 @@ public class OrderRecordStatAction extends ParentAction {
 
 	public void setGoodsIdstr(String goodsIdstr) {
 		this.goodsIdstr = goodsIdstr;
+	}
+
+	public String getPageType() {
+		return pageType;
+	}
+
+	public void setPageType(String pageType) {
+		this.pageType = pageType;
 	}
 
 	public String getOrderRecordId() {
@@ -1066,80 +1079,21 @@ public class OrderRecordStatAction extends ParentAction {
 	public void setAllocationStatusList(List<Status> allocationStatusList) {
 		this.allocationStatusList = allocationStatusList;
 	}
+	
+	public List<AllocationVO> getAllocationVo() {
+		return allocationVo;
+	}
+
+	public void setAllocationVo(List<AllocationVO> allocationVo) {
+		this.allocationVo = allocationVo;
+	}
 
 	@Override
 	public boolean isPublic() {
 		return false;
 	};
 
-	static Log log = LogFactory.getLog(OrderRecordStatAction.class);
-
-	/**
-	 * 跳转到信息页。。
-	 * 
-	 * @return
-	 */
-	@Action(value = "orderListStat", results = {
-			@Result(name = StrutsResMSG.SUCCESS, location = "/stat/order/orderListStat.jsp"),
-			@Result(name = StrutsResMSG.FAILED, location = "/stat/order/orderListStat.jsp") })
-	public String info() {
-		findPageInfo();
-		findPageExcel();
-		createExcel();
-		createExcel2();
-		return StrutsResMSG.SUCCESS;
-	}
-
-	/**
-	 * 跳转到信息页。。
-	 * 
-	 * @return
-	 */
-	@Action(value = "orderGoodsCount", results = {
-			@Result(name = StrutsResMSG.SUCCESS, location = "/stat/order/orderGoodsCount.jsp"),
-			@Result(name = StrutsResMSG.FAILED, location = "/stat/order/orderGoodsCount.jsp") })
-	public String orderGoodsCount() {
-		findDateTime();
-		findPaymentStatusList();
-		findPaymentProviderList();
-		findOperateStatusList();
-		findDeliveryStatus();
-		findPaymentTypeList();
-		findAllocationStatus();
-		// 处理订单列表
-		List<Object[]> list = orderRecordService.orderGoodsCount(orderNo,
-				orderRecordId, clientUserId, clientUserName, clientUserMobile,
-				clientUserEmail, clientUserSex, clientUserType,
-				clientUserTypeName, wxOpenId, orderGoodsRelationStaffId,
-				userRealMobile, userRealPlane, userRealName, countryId,
-				countryName, provinceId, provinceName, cityId, cityName,
-				areaId, areaName, userRealAddress, userRealPostcode,
-				userRealStartTime, userRealEndTime, paymentType,
-				paymentTypeName, paymentStatus, paymentStatusName,
-				paymentProvider, paymentProviderName, paymentStartTime,
-				paymentEndTime, operateStartTime, operateEndTime,
-				operateStatus, operateStatusName, createStartTime,
-				createEndTime, originalPrice, totalPrice, logisticsCompanyId,
-				logisticsCompanyName, deliveryStaffId, deliveryStaffName,
-				deliveryStaffMobile, deliveryStartStartTime,
-				deliveryStartEndTime, deliveryEndStartTime, deliveryEndEndTime,
-				deliveryStatus, deliveryStatusName, sourceId, sourceName,
-				sourceType, sourceTypeName, serNo, sellerId, sellerName, cusId,
-				cusName, orderGoodsRelationPrimaryConfigurationId,
-				primaryConfigurationName, 0, 0, orderField, orderDirection);
-		this.totalCount = list.size();
-		orderGoodsCountList = new ArrayList<String[]>();
-		for (int i = 0; i < list.size(); i++) {
-			String[] content = new String[2];
-			Object[] a = list.get(i);
-			if (a == null)
-				continue;
-			content[0] = a[0] == null ? "0" : a[0].toString();
-			content[1] = a[1] == null ? "0" : a[1].toString();
-			orderGoodsCountList.add(content);
-		}
-		return StrutsResMSG.SUCCESS;
-	}
+	static Log log = LogFactory.getLog(AllocationAction.class);
 
 	/**
 	 * 带信息到修改页
@@ -1147,8 +1101,8 @@ public class OrderRecordStatAction extends ParentAction {
 	 * @return String
 	 */
 	@Action(value = "toAllocation", results = {
-			@Result(name = StrutsResMSG.SUCCESS, location = "/stat/order/modify.jsp"),
-			@Result(name = StrutsResMSG.FAILED, location = "/stat/order/modify.jsp" )})
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/allocation/modify.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/allocation/modify.jsp" )})
 	public String toAllocation() {
 		findDateTime();
 		findPaymentStatusList();
@@ -1199,7 +1153,244 @@ public class OrderRecordStatAction extends ParentAction {
 		//farmerOrderList = farmerOrderService.listVO(farmerOrderVO,0,0,null,null);
 		
 		return StrutsResMSG.SUCCESS;
-	}	
+	}
+	
+	/**
+	 * 列表页面
+	 * 
+	 * @return String
+	 */
+	@Action(value = "info", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/allocation/info.jsp")})
+	public String info() {
+		setPageInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+
+	private void setDateTime() {
+		// 设置默认时间
+		if (StringHelper.isNull(createStartTime)
+				&& StringHelper.isNull(createEndTime)) {
+			this.createStartTime = StringHelper.getSystime("yyyy-MM-dd");
+			createStartTime = createStartTime + " 00:00:00";
+			this.createEndTime = StringHelper.getSystime("yyyy-MM-dd");
+			createEndTime = createEndTime + " 23:59:59";
+		}
+	}
+	
+	private void setPageInfo() {
+		// 设置排序
+		findDateTime();
+		AllocationVO vo = new AllocationVO();
+		if(allocationId!=null){
+			vo.setCreateStartTime(createStartTime);
+			vo.setCreateEndTime(createEndTime);			
+		}
+		
+		if(currentStaff!=null){
+			vo.setStaff(currentStaff);
+		}
+		
+		vo.setGroupBy("a.id");
+		vo.setOrderByField("desc");
+		this.allocationVo = allocationService.listVO(vo, getPageNum(),
+				getNumPerPage(), orderField, orderDirection);
+		vo.setGroupBy("");
+		String select = "select count(distinct a.id) ";
+		this.totalCount = allocationService.getCount(select, vo);
+	}
+	
+	/**
+	 * 跳转到修改界面
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "modifyInfo", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/allocation/modify.jsp") })
+	public String modifyInfo() throws Exception {
+		// 取得当前登录人信息
+		currentStaff = super.getCurrentStaff();
+		AllocationData allocationData = allocationService.findByid(allocationId);
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		this.createStartTime = sdf.format(new Date(allocationData.getStartTimeCondition().getTime()));
+		this.createEndTime = sdf.format(new Date(allocationData.getEndTimeCondition().getTime()));
+		findPaymentStatusList();
+		findPaymentProviderList();
+		findOperateStatusList();
+		findDeliveryStatus();
+		findPaymentTypeList();
+		findAllocationStatus();
+		// 处理订单列表 已支付  未派送  待处理 的未分配的订单
+		allocationList = orderRecordService.orderGoodsCountDetail(orderNo,
+				orderRecordId, clientUserId, clientUserName, clientUserMobile,
+				clientUserEmail, clientUserSex, clientUserType,
+				clientUserTypeName, wxOpenId, orderGoodsRelationStaffId,
+				userRealMobile, userRealPlane, userRealName, countryId,
+				countryName, provinceId, provinceName, cityId, cityName,
+				areaId, areaName, userRealAddress, userRealPostcode,
+				userRealStartTime, userRealEndTime, paymentType,
+				paymentTypeName, paymentStatus, paymentStatusName,
+				paymentProvider, paymentProviderName, paymentStartTime,
+				paymentEndTime, operateStartTime, operateEndTime,
+				operateStatus, operateStatusName, createStartTime,
+				createEndTime, originalPrice, totalPrice, logisticsCompanyId,
+				logisticsCompanyName, deliveryStaffId, deliveryStaffName,
+				deliveryStaffMobile, deliveryStartStartTime,
+				deliveryStartEndTime, deliveryEndStartTime, deliveryEndEndTime,
+				deliveryStatus, deliveryStatusName, sourceId, sourceName,
+				sourceType, sourceTypeName, serNo, sellerId, sellerName, cusId,
+				cusName, orderGoodsRelationPrimaryConfigurationId,"227",allocationId,
+				primaryConfigurationName, 0, 0, orderField, orderDirection);
+		goodsIdstr="";
+		if(allocationList!=null&&allocationList.size()>0){
+			for(BusinessAllocationVO ba:allocationList){
+				if("".equals(goodsIdstr)){
+					goodsIdstr=ba.getBusinessGoods().getId()+"";
+				}else{
+					goodsIdstr+=","+ba.getBusinessGoods().getId();
+				}
+			}
+		}
+		
+		FarmerOrderVO farmerOrderVO = new FarmerOrderVO();
+		
+		FarmerOrderRecord farmerOrder = new FarmerOrderRecord();
+		
+		farmerOrder.setOrderRecordId(Long.parseLong(allocationId));
+		
+		farmerOrderVO.setFarmerOrder(farmerOrder);
+		
+		farmerOrderList = farmerOrderService.listVO(farmerOrderVO,0,0,null,null);
+		
+		return StrutsResMSG.SUCCESS;
+	}
+
+	/**
+	 * 更新对象接口
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "modify", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String modify() throws Exception {
+		log.debug("modif action!");
+		log.debug("modify allocationId: " + allocationId);
+		// 取得当前登录人信息
+		currentStaff = super.getCurrentStaff();
+		AllocationData ad = new AllocationData();
+		if(allocationId==null||"".equals(allocationId)){
+			ad.setAllocationUser(currentStaff.getId()+"");
+			ad.setAllocationTime(new Timestamp(System.currentTimeMillis()));
+			ad.setStartTimeCondition(Timestamp.valueOf(createStartTime));
+			ad.setEndTimeCondition(Timestamp.valueOf(createEndTime));
+			allocationService.save(ad);
+		}else{
+			ad = allocationService.findByid(allocationId);
+		}
+		// 批量增加菜品
+		log.debug("start:::");
+		//原来的状态取消
+		if(allocationId!=null&&!"".equals(allocationId)){
+			businessOrderGoodsRelationService.removeAllocation(Integer.parseInt(allocationId));	
+		}
+		// 将ordergoodsrelation 置为分配状态 delflag=1 allocationId 为分配的id 
+		for(BusinessAllocationVO ba:allocationList){
+			String[] orderRelations = ba.getBusinessOrder().split(",");
+			for(String s:orderRelations){
+				orderGoodsRelationService.removeOrderRecordById(Long.parseLong(s),ad.getId());
+			}
+		}
+		log.debug("end:::");
+		
+		//保存分配信息  先删除在添加
+		if(allocationId!=null&&!"".equals(allocationId)){			
+			List<FarmerOrderRecord> listFarmer = farmerOrderService.listByOrderId(Long.parseLong(allocationId));
+			if(listFarmer!=null&&listFarmer.size()>0){
+				for(FarmerOrderRecord farmerOrder:listFarmer){
+					OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+					farmerOrder.setFarmerUserId(plan.getUserId());
+					farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
+					farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
+					farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
+					farmerOrder.setStaffId(super.getCurrentStaff().getId());
+					plan.setOccupyAmount(plan.getOccupyAmount()-farmerOrder.getGoodsCount());
+					plan.setValidAmount(plan.getValidAmount()+farmerOrder.getGoodsCount());
+					plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
+					planService.modify(plan);
+					farmerOrderService.del(farmerOrder.getId()+"");				
+				}	
+			}
+		}
+		
+		if(items!=null){
+			Iterator<String> item = items.keySet().iterator();
+			
+			while (item.hasNext()) {
+				String key = item.next();
+				FarmerOrderRecord farmerOrder = items.get(key);
+				
+				OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+				
+				farmerOrder.setFarmerUserId(plan.getUserId());
+				farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
+				farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
+				farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
+				farmerOrder.setStaffId(this.getCurrentStaff().getId());
+				plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
+				plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
+				plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
+				planService.modify(plan);
+				farmerOrderService.save(farmerOrder);				
+			}	
+		}
+		
+		if(allocationId==null||"".equals(allocationId)){			
+			super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
+					"allocationManager", null);
+		}
+		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
+				"allocationManager", null);
+		
+		return null;
+	}
+	
+	/**
+	 * 更新对象接口
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "delInfo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String delInfo() throws Exception {
+		log.debug("delInfo action!");
+		log.debug("delInfo allocationId: " + allocationId);
+
+		AllocationData ad = allocationService.findByid(allocationId);
+		// 批量增加菜品
+		businessOrderGoodsRelationService.removeAllocation(Integer.parseInt(allocationId));	
+		
+		//恢复分配信息 
+		List<FarmerOrderRecord> listFarmer = farmerOrderService.listByOrderId(Long.parseLong(allocationId));
+		if(listFarmer!=null&&listFarmer.size()>0){
+			for(FarmerOrderRecord farmerOrder:listFarmer){
+				OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+				farmerOrder.setFarmerUserId(plan.getUserId());
+				farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
+				farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
+				farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
+				farmerOrder.setStaffId(super.getCurrentStaff().getId());
+				plan.setOccupyAmount(plan.getOccupyAmount()-farmerOrder.getGoodsCount());
+				plan.setValidAmount(plan.getValidAmount()+farmerOrder.getGoodsCount());
+				plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
+				planService.modify(plan);
+				farmerOrderService.del(farmerOrder.getId()+"");				
+			}	
+		}
+		allocationService.del(allocationId);
+		super.success(null, null,
+				"allocationManager", null);
+		return null;
+	}
 	
 	private void findPageInfo() {
 		// 设置排序
@@ -1251,181 +1442,6 @@ public class OrderRecordStatAction extends ParentAction {
 				sourceType, sourceTypeName, serNo, sellerId, sellerName, cusId,
 				cusName, orderGoodsRelationPrimaryConfigurationId,
 				primaryConfigurationName);
-	}
-
-	private void findPageExcel() {
-		// 设置排序
-		findDateTime();
-		findPaymentStatusList();
-		findPaymentProviderList();
-		findOperateStatusList();
-		findDeliveryStatus();
-		findPaymentTypeList();
-		// 处理订单列表
-		this.excelVoList = orderRecordService.orderListExcel(orderNo,
-				orderRecordId, clientUserId, clientUserName, clientUserMobile,
-				clientUserEmail, clientUserSex, clientUserType,
-				clientUserTypeName, wxOpenId, orderGoodsRelationStaffId,
-				userRealMobile, userRealPlane, userRealName, countryId,
-				countryName, provinceId, provinceName, cityId, cityName,
-				areaId, areaName, userRealAddress, userRealPostcode,
-				userRealStartTime, userRealEndTime, paymentType,
-				paymentTypeName, paymentStatus, paymentStatusName,
-				paymentProvider, paymentProviderName, paymentStartTime,
-				paymentEndTime, operateStartTime, operateEndTime,
-				operateStatus, operateStatusName, createStartTime,
-				createEndTime, originalPrice, totalPrice, logisticsCompanyId,
-				logisticsCompanyName, deliveryStaffId, deliveryStaffName,
-				deliveryStaffMobile, deliveryStartStartTime,
-				deliveryStartEndTime, deliveryEndStartTime, deliveryEndEndTime,
-				deliveryStatus, deliveryStatusName, sourceId, sourceName,
-				sourceType, sourceTypeName, serNo, sellerId, sellerName, cusId,
-				cusName, orderGoodsRelationPrimaryConfigurationId,
-				primaryConfigurationName, 0, 0, orderField, orderDirection);
-	}
-
-	/**
-	 * 带信息到修改页
-	 * 
-	 * @return String
-	 */
-	@Action(value = "detailed", results = {
-			@Result(name = StrutsResMSG.SUCCESS, location = "/stat/order/detailed.jsp"),
-			@Result(name = StrutsResMSG.FAILED, location = "/stat/order/detailed.jsp") })
-	public String modifyinfo() {
-		findPaymentStatusList();
-		findPaymentProviderList();
-		findLogisticsCompanyList();
-		findOperateStatusList();
-		findDeliveryStatus();
-		findPaymentTypeList();
-		// 加载该订单所有商品
-		this.dvList = orderGoodsRelationService.listVO(orderRecordId,
-				clientUserId, "", "", orderGoodsRelationPrimaryConfigurationId,
-				deliveryStaffId, "", createStartTime, createEndTime,
-				getPageNum(), getNumPerPage(), orderField, orderDirection);
-		// 加载该订单信息
-		orderRecord = orderRecordService.findByid(orderRecordId);
-		if (orderRecord.getClientUserId() != null) {
-			this.clientUserId = orderRecord.getClientUserId().toString();
-		}
-		this.clientUserMobile = orderRecord.getClientUserMobile();
-		this.clientUserEmail = orderRecord.getClientUserEmail();
-		this.clientUserName = orderRecord.getClientUserName();
-		this.clientUserSex = orderRecord.getClientUserSex();
-		this.wxOpenId = orderRecord.getWxOpenId();
-		this.staffId = orderRecord.getStaffId();
-		this.userRealMobile = orderRecord.getUserRealMobile();
-		this.userRealPlane = orderRecord.getUserRealPlane();
-		this.userRealName = orderRecord.getUserRealName();
-		this.userRealDescription = orderRecord.getUserRealDescription();
-		if (orderRecord.getCountryId() != null) {
-			this.countryId = orderRecord.getCountryId().toString();
-		}
-		this.countryName = orderRecord.getCountryName();
-		if (orderRecord.getProvinceId() != null) {
-			this.provinceId = orderRecord.getProvinceId().toString();
-		}
-		this.provinceName = orderRecord.getProvinceName();
-		if (orderRecord.getCityId() != null) {
-			this.cityId = orderRecord.getCityId().toString();
-		}
-		this.cityName = orderRecord.getCityName();
-		if (orderRecord.getAreaId() != null) {
-			this.areaId = orderRecord.getAreaId().toString();
-		}
-		this.areaName = orderRecord.getAreaName();
-		this.userRealAddress = orderRecord.getUserRealAddress();
-		this.userRealPostcode = orderRecord.getUserRealPostcode();
-		if (orderRecord.getUserRealTime() != null) {
-			this.userRealTime = orderRecord.getUserRealTime().toString();
-		}
-
-		if (orderRecord.getPaymentType() != null) {
-			this.paymentType = orderRecord.getPaymentType().toString();
-		}
-		this.paymentTypeName = orderRecord.getPaymentTypeName();
-		if (orderRecord.getPaymentStatus() != null) {
-			this.paymentStatus = orderRecord.getPaymentStatus().toString();
-		}
-		this.paymentStatusName = orderRecord.getPaymentStatusName();
-		if (orderRecord.getPaymentProvider() != null) {
-			this.paymentProvider = orderRecord.getPaymentProvider().toString();
-		}
-		this.paymentProviderName = orderRecord.getPaymentProviderName();
-		if (orderRecord.getPaymentTime() != null) {
-			this.paymentTime = StringHelper.getSystime(
-					ViewConstant.PAGE_DATE_FORMAT_SEC, orderRecord
-							.getPaymentTime().getTime());
-		}
-		if (orderRecord.getOperateTime() != null) {
-			this.operateTime = StringHelper.getSystime(
-					ViewConstant.PAGE_DATE_FORMAT_SEC, orderRecord
-							.getOperateTime().getTime());
-		}
-		if (orderRecord.getOperateStatus() != null) {
-			this.operateStatus = orderRecord.getOperateStatus().toString();
-		}
-		this.operateStatusName = orderRecord.getOperateStatusName();
-		if (orderRecord.getCreateTime() != null) {
-			this.createTime = StringHelper.getSystime(
-					ViewConstant.PAGE_DATE_FORMAT_SEC, orderRecord
-							.getCreateTime().getTime());
-		}
-		if (orderRecord.getOriginalPrice() != null) {
-			this.originalPrice = orderRecord.getOriginalPrice().toString();
-		}
-		if (orderRecord.getTotalPrice() != null) {
-			this.totalPrice = orderRecord.getTotalPrice().toString();
-		}
-		if (orderRecord.getLogisticsCompanyId() != null) {
-			this.logisticsCompanyId = orderRecord.getLogisticsCompanyId()
-					.toString();
-		}
-		this.logisticsCompanyName = orderRecord.getLogisticsCompanyName();
-		if (orderRecord.getDeliveryStaffId() != null) {
-			this.deliveryStaffId = orderRecord.getDeliveryStaffId().toString();
-		}
-		this.deliveryStaffName = orderRecord.getDeliveryStaffName();
-		this.deliveryStaffMobile = orderRecord.getDeliveryStaffMobile();
-		if (orderRecord.getDeliveryStartTime() != null) {
-			this.deliveryStartTime = StringHelper.getSystime(
-					ViewConstant.PAGE_DATE_FORMAT_SEC, orderRecord
-							.getDeliveryStartTime().getTime());
-		}
-		if (orderRecord.getDeliveryEndTime() != null) {
-			this.deliveryEndTime = StringHelper.getSystime(
-					ViewConstant.PAGE_DATE_FORMAT_SEC, orderRecord
-							.getDeliveryEndTime().getTime());
-		}
-		if (orderRecord.getDeliveryStatus() != null) {
-			this.deliveryStatus = orderRecord.getDeliveryStatus().toString();
-		}
-		this.deliveryStatusName = orderRecord.getDeliveryStatusName();
-		if (orderRecord.getSourceId() != null) {
-			this.sourceId = orderRecord.getSourceId().toString();
-		}
-		this.sourceName = orderRecord.getSourceName();
-		if (orderRecord.getSourceType() != null) {
-			this.sourceType = orderRecord.getSourceType().toString();
-		}
-		this.sourceTypeName = orderRecord.getSourceTypeName();
-		this.serNo = orderRecord.getSerNo();
-		if (orderRecord.getSellerId() != null) {
-			this.sellerId = orderRecord.getSellerId().toString();
-		}
-		this.sellerName = orderRecord.getSellerName();
-		if (orderRecord.getCusId() != null) {
-			this.cusId = orderRecord.getCusId().toString();
-		}
-		this.cusName = orderRecord.getCusName();
-		if (orderRecord.getPrimaryConfigurationId() != null) {
-			this.primaryConfigurationId = orderRecord
-					.getPrimaryConfigurationId().toString();
-		}
-		this.primaryConfigurationName = orderRecord
-				.getPrimaryConfigurationName();
-		return StrutsResMSG.SUCCESS;
 	}
 
 	private void findLogisticsCompanyList() {
@@ -1494,163 +1510,4 @@ public class OrderRecordStatAction extends ParentAction {
 		}
 	}
 
-	/**
-	 * 生成EXCEL
-	 */
-	public void createExcel() {
-		// 第一步，创建一个webbook，对应一个Excel文件
-		HSSFWorkbook wb = new HSSFWorkbook();
-		// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-		HSSFSheet sheet = wb.createSheet("派送单");
-		// 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-		HSSFRow row = sheet.createRow((int) 0);
-		// 第四步，创建单元格，并设置值表头 设置表头居中
-		HSSFCellStyle style = wb.createCellStyle();
-		style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
-		HSSFCell cell = row.createCell(0);
-		cell.setCellValue("下单日期");
-		cell.setCellStyle(style);
-		cell = row.createCell(1);
-		cell.setCellValue("送货日期");
-		cell.setCellStyle(style);
-		cell = row.createCell(2);
-		cell.setCellValue("客户姓名");
-		cell.setCellStyle(style);
-		cell = row.createCell(3);
-		cell.setCellValue("电话号码");
-		cell.setCellStyle(style);
-		cell = row.createCell(4);
-		cell.setCellValue("送货地址");
-		cell.setCellStyle(style);
-		cell = row.createCell(5);
-		cell.setCellValue("送货时间");
-		cell.setCellStyle(style);
-		cell = row.createCell(6);
-		cell.setCellValue("订单商品");
-		cell.setCellStyle(style);
-		cell = row.createCell(7);
-		cell.setCellValue("支付状态");
-		cell.setCellStyle(style);
-		cell = row.createCell(8);
-		cell.setCellValue("支付金额");
-		cell.setCellStyle(style);
-		cell = row.createCell(9);
-		cell.setCellValue("备注");
-		cell.setCellStyle(style);
-		// 第五步，写入实体数据 实际应用中这些数据从数据库得到，
-		for (int i = 0; i < excelVoList.size(); i++) {
-			row = sheet.createRow((int) i + 1);
-			OrderVO vo = (OrderVO) excelVoList.get(i);
-			// 第四步，创建单元格，并设置值
-			row.createCell(0).setCellValue(vo.getOrderRecordCreateTime());
-			row.createCell(1)
-					.setCellValue(vo.getOrderRecordDeliveryStartTime());
-			row.createCell(2).setCellValue(vo.getOrderRecordUserRealName());
-			row.createCell(3).setCellValue(vo.getOrderRecordUserRealMobile());
-			row.createCell(4).setCellValue(
-					vo.getOrderRecordProvinceName()
-							+ vo.getOrderRecordCityName()
-							+ vo.getOrderRecordAreaName()
-							+ vo.getOrderRecordUserRealAddress());
-			row.createCell(5).setCellValue(vo.getOrderRecordUserRealTime());
-			String tempGoods = "";
-			List<Goods> tempGoodsList = excelVoList.get(i).getGoodsList();
-			List<OrderGoodsRelation> tempGoodsRelationList = excelVoList.get(i)
-					.getOrderGoodsRelationList();
-			for (int j = 0; j < tempGoodsList.size(); j++) {
-				Goods gd = tempGoodsList.get(j);
-				OrderGoodsRelation ogr = tempGoodsRelationList.get(j);
-				tempGoods = tempGoods + gd.getGoodsName() + "X"
-						+ ogr.getGoodsCount() + ",";
-			}
-			row.createCell(6).setCellValue(tempGoods);
-			row.createCell(7).setCellValue(
-					vo.getOrderRecordPaymentProviderName());
-			row.createCell(8).setCellValue(vo.getOrderRecordTotalPrice());
-			row.createCell(9).setCellValue(
-					vo.getOrderRecordUserRealDescription());
-		}
-		// 第六步，将文件存到指定位置
-		try {
-			FileOutputStream fout = new FileOutputStream(ServletActionContext
-					.getServletContext().getRealPath("")
-					+ "/themes/mall/excel/orderListExcel.xls");
-			wb.write(fout);
-			fout.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void createExcel2() {
-		// 第一步，创建一个webbook，对应一个Excel文件
-		HSSFWorkbook wb = new HSSFWorkbook();
-		// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-		HSSFSheet sheet = wb.createSheet("派送单");
-		// 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-		HSSFRow row = sheet.createRow((int) 0);
-		// 第四步，创建单元格，并设置值表头 设置表头居中
-		HSSFCellStyle style = wb.createCellStyle();
-		style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
-		HSSFCell cell = row.createCell(0);
-		cell = row.createCell(1);
-		cell.setCellValue("菜品名称");
-		cell.setCellStyle(style);
-		cell = row.createCell(2);
-		cell.setCellValue("客户姓名");
-		cell.setCellStyle(style);
-		cell = row.createCell(3);
-		cell.setCellValue("电话号码");
-		cell.setCellStyle(style);
-		cell = row.createCell(4);
-		cell.setCellValue("送货地址");
-		cell.setCellStyle(style);
-		cell = row.createCell(5);
-		cell.setCellValue("支付状态");
-		cell.setCellStyle(style);
-		cell = row.createCell(6);
-		cell.setCellValue("送货时间");
-		cell.setCellStyle(style);
-		cell = row.createCell(7);
-		cell.setCellValue("支付金额");
-		cell.setCellStyle(style);
-		// 第五步，写入实体数据 实际应用中这些数据从数据库得到，
-		for (int i = 0; i < excelVoList.size(); i++) {
-			row = sheet.createRow((int) i + 1);
-			OrderVO vo = (OrderVO) excelVoList.get(i);
-			// 第四步，创建单元格，并设置值
-			String tempGoods = "";
-			List<Goods> tempGoodsList = excelVoList.get(i).getGoodsList();
-			List<OrderGoodsRelation> tempGoodsRelationList = excelVoList.get(i)
-					.getOrderGoodsRelationList();
-			for (int j = 0; j < tempGoodsList.size(); j++) {
-				Goods gd = tempGoodsList.get(j);
-				OrderGoodsRelation ogr = tempGoodsRelationList.get(j);
-				tempGoods = tempGoods + gd.getGoodsName() + "X"
-						+ ogr.getGoodsCount() + ",";
-			}
-			row.createCell(1).setCellValue(tempGoods);
-			row.createCell(2).setCellValue(vo.getOrderRecordUserRealName());
-			row.createCell(3).setCellValue(vo.getOrderRecordUserRealMobile());
-			row.createCell(4).setCellValue(
-					vo.getOrderRecordProvinceName()
-							+ vo.getOrderRecordCityName()
-							+ vo.getOrderRecordAreaName()
-							+ vo.getOrderRecordUserRealAddress());
-			row.createCell(5).setCellValue(
-					vo.getOrderRecordPaymentProviderName());
-			row.createCell(6).setCellValue(vo.getOrderRecordUserRealTime());
-			row.createCell(7).setCellValue(vo.getOrderRecordTotalPrice());
-		}
-		// 第六步，将文件存到指定位置
-		try {
-			FileOutputStream fout = new FileOutputStream(ServletActionContext
-					.getServletContext().getRealPath("")
-					+ "/themes/mall/excel/orderListExcel2.xls");
-			wb.write(fout);
-			fout.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

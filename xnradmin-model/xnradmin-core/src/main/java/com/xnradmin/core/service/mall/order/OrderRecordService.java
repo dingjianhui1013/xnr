@@ -2329,7 +2329,7 @@ public class OrderRecordService {
 			String deliveryStatusName, String sourceId, String sourceName,
 			String sourceType, String sourceTypeName, String serNo,
 			String sellerId, String sellerName, String cusId, String cusName,
-			String primaryConfigurationId,String allocationStatus, String primaryConfigurationName,
+			String primaryConfigurationId,String allocationStatus,String allocationId, String primaryConfigurationName,
 			int curPage, int pageSize, String orderField, String direction) {
 		String hql = "from BusinessOrderRecord a, BusinessGoods b,BusinessOrderGoodsRelation c "
 				+ " where c.orderRecordId=a.id and c.goodsId=b.id";
@@ -2373,7 +2373,12 @@ public class OrderRecordService {
 		
 		
 		if (!StringHelper.isNull(allocationStatus)) {
-			hql = hql + " and ( c.delFlag is null or c.delFlag !=1 ) ";
+			//allocationId为空查询未分配的订单 否则查询已分配的
+			if (!StringHelper.isNull(allocationId)) {
+				hql = hql + " and c.allocationId ="+allocationId;
+			}else{
+				hql = hql + " and ( c.delFlag is null or c.delFlag !=1 ) ";
+			}
 		}
 		
 		if (!StringHelper.isNull(countryId)) {
@@ -2593,7 +2598,74 @@ public class OrderRecordService {
 		return null;
 	}
 
-
+	/**
+	 * 分配的详细信息
+	 * @param firstletter
+	 * @param curPage
+	 * @param pageSize
+	 * @param orderField
+	 * @param direction
+	 * @return List<OrderVO>
+	 */
+	public List<BusinessAllocationVO> orderGoodsAllocationDetail(
+			String createStartTime,
+			String createEndTime,
+			String allocationStatus,
+			int curPage, int pageSize, String orderField, String direction) {
+		String hql = "from BusinessOrderRecord a, BusinessGoods b,BusinessOrderGoodsRelation c"
+				+ " where c.orderRecordId=a.id and c.goodsId=b.id";
+		
+		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
+			hql = hql + " order by " + orderField + " " + direction;
+		} else {
+			hql += " order by b.id";
+		}
+		log.debug(hql);
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql,
+				curPage, pageSize);
+		List<BusinessAllocationVO> voList = new ArrayList<>();
+		Map<String,Integer> temMap = new HashMap<>();
+		
+		//对同一商品进行汇总
+		if(l!=null&&l.size()>0){
+			for(int i=0;i<l.size();i++){
+				Object[] obj = (Object[]) l.get(i);
+				BusinessAllocationVO businessAllocationVO =new BusinessAllocationVO();
+				BusinessOrderRecord businessOrderRecord=(BusinessOrderRecord)obj[0];
+				BusinessGoods businessGoods=(BusinessGoods)obj[1];
+				BusinessOrderGoodsRelation businessOrderGoodsRelation=(BusinessOrderGoodsRelation)obj[2];
+				Integer businessGoodsCount=0;
+				if(temMap.get(businessGoods.getId()+"")==null){
+					temMap.put(businessGoods.getId()+"", businessOrderGoodsRelation.getGoodsCount());
+					businessGoodsCount=businessOrderGoodsRelation.getGoodsCount();
+					businessAllocationVO.setBusinessGoods(businessGoods);
+					businessAllocationVO.setBusinessOrderGoodsRelation(businessOrderGoodsRelation);
+					businessAllocationVO.setBusinessOrderRecord(businessOrderRecord);
+					businessAllocationVO.setBusinessGoodsCount(businessGoodsCount);
+					businessAllocationVO.setBusinessOrder(businessOrderGoodsRelation.getId()+"");
+					voList.add(businessAllocationVO);
+				}else{
+					businessGoodsCount=temMap.get(businessGoods.getId()+"")+businessOrderGoodsRelation.getGoodsCount();
+					temMap.put(businessGoods.getId()+"", businessGoodsCount);
+					for(BusinessAllocationVO ba :voList){
+						if(ba.getBusinessGoods().getId()==businessGoods.getId()){
+							ba.setBusinessGoodsCount(businessGoodsCount);
+							String orderStr = ba.getBusinessOrder();
+							String newOrder = businessOrderGoodsRelation.getId()+"";
+							if(newOrder.indexOf(orderStr)==-1){
+								orderStr+=","+newOrder;
+							}
+							ba.setBusinessOrder(orderStr);
+						}
+					}
+				}
+			}
+		}
+		if(voList.size()>0){
+			return voList;
+		}
+		return null;
+	}
 	/**
 	 * @return List<OrderRecord>
 	 */

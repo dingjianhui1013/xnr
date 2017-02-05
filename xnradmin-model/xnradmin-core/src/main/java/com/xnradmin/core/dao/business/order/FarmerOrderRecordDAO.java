@@ -51,7 +51,7 @@ public class FarmerOrderRecordDAO{
         }
     }
 
-    public FarmerOrderRecord findById(Long id){
+    public FarmerOrderRecord findById(Integer id){
         log.debug("getting FarmerOrderRecord instance with id: " + id);
         try{
 

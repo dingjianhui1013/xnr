@@ -9,7 +9,7 @@
 	        + path + "/";
 		
 	String action = basePath+"page/business/admin/allocation/modify.action";
-	String search = basePath+"page/stat/order/toAllocation.action";
+	String search = basePath+"page/business/admin/allocation/toAllocation.action?pageType=3";
 	String outplanLookup = basePath+"/page/wx/outplan/lookup.action";
 	String goodsLookup = basePath+"page/business/admin/commodity/goods/lookup.action";
 	String provinceLookup = basePath + "page/wx/admin/region/province/lookup.action";
@@ -62,12 +62,61 @@ function saveAllocation(){
 			dataType:"json",
 			cache: false,
 			success: function(data){
-				alertMsg.info("保存成功");
-				navTabSearch($("#search")[0]);
+				
+				var pageType = '${pageType}';
+				if(pageType==2){
+					alertMsg.info("修改成功");
+					navTabAjaxDone(data);
+				}else{
+					alertMsg.info("保存成功");
+					navTabSearch($("#search")[0]);
+				}
 			}
 		});
 	}
 }
+$(function(){
+	var pageType = '${pageType}';
+	if(pageType==1){//查看页面 禁用所有input 和button
+		$("#search").find("input").each(function(i,one){
+			$(one).attr("readonly","readonly");
+			$(one).attr("disabled","disabled");
+		})
+		$("#search").find("button").each(function(i,one){
+			$(one).attr("disabled","disabled");
+		})
+		$("#content").find("input").each(function(i,one){
+			$(one).attr("readonly","readonly");
+		})
+		$("#content").find("button").each(function(i,one){
+			$(one).attr("disabled","disabled");
+		})
+		$("#itemDetail1").removeClass("itemDetail");
+		$("#itemDetail2").removeClass("itemDetail");
+	}else if(pageType==2){
+		$("#search").find("input").each(function(i,one){
+			$(one).attr("readonly","readonly");
+			$(one).attr("disabled","disabled");
+		})
+		$("#search").find("button").each(function(i,one){
+			$(one).attr("disabled","disabled");
+		})
+		$("#itemDetail1").find("input").each(function(i,one){
+			$(one).attr("readonly","readonly");
+		})
+		$("#itemDetail1").find("button").each(function(i,one){
+			$(one).attr("disabled","disabled");
+		})
+		$("#itemDetail1").removeClass("itemDetail");
+		$("#itemDetail2").addClass("itemDetail");
+	}else if(pageType==3){
+		$("#itemDetail1").find("input").each(function(i,one){
+			$(one).attr("readonly","readonly");
+		})
+		$("#itemDetail1").removeClass("itemDetail");
+		$("#itemDetail2").addClass("itemDetail");
+	}
+})
 </script>
 <div class="pageHeader">
 <form onsubmit="return navTabSearch(this);" action="${search}" method="post" id="search">
@@ -126,16 +175,20 @@ function saveAllocation(){
 				</td>
 			</tr>
 		</table>
-		<div class="subBar">
-			<ul>
-				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
-			</ul>
-		</div>
+		<c:if test="${pageType==3}">
+			<div class="subBar">
+				<ul>
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
+				</ul>
+			</div>
+		</c:if>
+		
 	</div>
 	</form>
 </div>
 <div class="pageContent">
 	<form method="post" action="${action}" class="pageForm required-validate" onsubmit="" id="content">
+	<input type="hidden" value="${allocationId}" name="allocationId">
 		<div class="pageFormContent" layoutH="165" style="height: 320px">
 			<div class="tabs">
 				<div class="tabsHeader">
@@ -147,7 +200,7 @@ function saveAllocation(){
 				</div>
 				<div class="tabsContent">
 					<div>
-						<table class="list nowrap itemDetail" addButton="添加商品" width="100%">
+						<table class="list nowrap itemDetail" addButton="添加商品" width="100%" id="itemDetail1" >
 							<thead>
 								<tr>
 									<th type="input" name="allocationList[#index#].businessGoods.goodsName" readonly>选择商品</th>
@@ -233,7 +286,7 @@ function saveAllocation(){
 				</div>
 				<div class="tabsContent">
 					<div>
-						<table class="list nowrap itemDetail" addButton="添加分配条目" width="100%">
+						<table class="list nowrap " addButton="添加分配条目" width="100%" id="itemDetail2">
 							<thead>
 								<tr>
 								    <th type="text" name="items[#index#].outPlanId" size="4" readonly="readonly" fieldClass="required digits">序号</th>
@@ -258,7 +311,9 @@ function saveAllocation(){
 											<td>
 												<input type="hidden" name="items[${status.index}].id" value="${loop.businessGoods.id}">
 												<input name="items[${status.index}].userName" type="text" value="${loop.farmer.userName}" >
-												<a class="btnLook" title="查找带回" lookupGroup="items[#index#]" href="${outplanLookup}?goodsIdstr=${goodsIdstr}">查找带回</a>
+												<c:if test="${pageType==2}">
+													<a class="btnLook" title="查找带回" lookupGroup="items[#index#]" href="${outplanLookup}?goodsIdstr=${goodsIdstr}">查找带回</a>
+												</c:if>
 											</td>
 											<td>
 											 	<input name="items[${status.index}].validAmount" type="text" value="${loop.outPlan.validAmount}" >
@@ -285,16 +340,16 @@ function saveAllocation(){
 		</div>
 		<input type="hidden" id="createStartTime1" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createStartTime}" class="date" readonly="true" />
 		<input type="hidden" id="createEndTime1" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createEndTime}" class="date" readonly="true" />
-	
-			<div class="formBar">
-				<ul>				
-					<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="saveAllocation()">保存</button></div></div></li>
-					<li>
-						<div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
-					</li>
-				</ul>
-			</div>
-		
+			<c:if test="${pageType!=1}">
+				<div class="formBar">
+					<ul>				
+						<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="saveAllocation()">保存</button></div></div></li>
+						<li>
+							<div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
+						</li>
+					</ul>
+				</div>
+			</c:if>
 	</form>
 
 </div>
