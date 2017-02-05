@@ -63,7 +63,16 @@ public class BusinessOrderGoodsRelationService {
 	public BusinessOrderGoodsRelation findByid(String id) {
 		return dao.findById(Long.valueOf(id));
 	}
+	
+	public List<BusinessOrderGoodsRelation> findByExample(BusinessOrderGoodsRelation instance) {
+		return dao.findByExample(instance);
+	}
 
+	
+	public int removeAllocation(Integer id) {
+		String hql = "update BusinessOrderGoodsRelation br set br.delFlag=null , br.allocationId=null where br.allocationId='"+id+"'";
+		return commonDao.executeUpdateOrDelete(hql);
+	}
 	/**
 	 * @param po
 	 * @return int

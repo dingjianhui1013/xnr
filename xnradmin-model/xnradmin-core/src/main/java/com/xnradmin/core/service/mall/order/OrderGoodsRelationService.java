@@ -54,6 +54,10 @@ public class OrderGoodsRelationService {
 		return 0;
 	}
 
+	public List<OrderGoodsRelation> findByExample(OrderGoodsRelation exam){
+	    return dao.findByExample(exam);
+	}
+	
 	public OrderGoodsRelation findByid(String id) {
 		return dao.findById(Long.valueOf(id));
 	}
@@ -346,14 +350,15 @@ public class OrderGoodsRelationService {
 	
 	/**
 	 * 
+	 * @param integer 
 	 * @param dishId
 	 * @return int
 	 */
-	public int removeOrderRecordById(Long id){
+	public int removeOrderRecordById(Long id, Integer allocationId){
 
         log.debug("setOffOrderRecordId: " + id);
         try{
-            String queryString = "update BusinessOrderGoodsRelation br set br.delFlag=1 where br.id="
+            String queryString = "update BusinessOrderGoodsRelation br set br.delFlag=1 , br.allocationId="+allocationId+" where br.id="
                     + id;
             return commonDao.executeUpdateOrDelete(queryString);
         }catch(RuntimeException re){

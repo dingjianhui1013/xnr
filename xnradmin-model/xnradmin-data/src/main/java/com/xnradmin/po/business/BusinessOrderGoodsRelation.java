@@ -196,6 +196,5 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	public void setGoodsWeightId(Integer goodsWeightId) {
 		this.goodsWeightId = goodsWeightId;
 	}
-	
-	
+
 }

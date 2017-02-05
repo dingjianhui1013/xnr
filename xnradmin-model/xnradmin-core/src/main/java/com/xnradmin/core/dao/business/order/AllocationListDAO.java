@@ -53,7 +53,7 @@ public class AllocationListDAO{
         }
     }
 
-    public AllocationData findById(Long id){
+    public AllocationData findById(Integer id){
         log.debug("getting AllocationData instance with id: " + id);
         try{
 

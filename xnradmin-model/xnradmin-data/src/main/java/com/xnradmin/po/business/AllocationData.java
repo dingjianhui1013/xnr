@@ -35,6 +35,8 @@ public class AllocationData implements java.io.Serializable{
 	
 	private Timestamp endTimeCondition; //分配结束条件    
     
+	private Integer allocationStatus;//分配状态
+	
     /** default constructor */
     public AllocationData(){
     }
@@ -83,5 +85,14 @@ public class AllocationData implements java.io.Serializable{
 	public void setEndTimeCondition(Timestamp endTimeCondition) {
 		this.endTimeCondition = endTimeCondition;
 	}
+	@Column(name = "allocation_status")
+	public Integer getAllocationStatus() {
+		return allocationStatus;
+	}
 
+	public void setAllocationStatus(Integer allocationStatus) {
+		this.allocationStatus = allocationStatus;
+	}
+
+	
 }
