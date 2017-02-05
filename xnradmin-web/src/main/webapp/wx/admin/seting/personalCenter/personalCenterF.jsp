@@ -16,6 +16,13 @@
 	<title>个人中心页</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <style type="text/css">
+    	.gallery{width:214px;margin:10px auto 0 auto;}
+		.gallery li{display:block;float:left;height:120px;margin-bottom:6px;margin-right:6px;width:100px;}
+		.gallery li a{height:100px;width:200px;}
+		.imageRemarks{font-size:12px};
+/* 		.gallery li a img{/* max-width:100px; */width: 150px; height:100px} */
+    </style>
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/mobiscroll_date.css">
@@ -23,23 +30,41 @@
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/site.css">
     <link rel="stylesheet" type="text/css" href="<%=path %>/css/photoswipe.css">
 	<link rel="stylesheet" type="text/css" href="<%=path %>/css/default-skin.css">
-	
+	<link rel="stylesheet" type="text/css" href="<%=path %>/css/lightGallery.css">
 	<script type="text/javascript" src="<%=path %>/js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll_date.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/mobiscroll.js"></script>
 	<script type="text/javascript" src="<%=path %>/js/common.js"></script>
+	<script type="text/javascript" src="<%=path %>/js/lightGallery/lightGallery.min.js"></script>
 	<script src="<%=path %>/js/layer/layer.js"></script>
-	<script src="<%=path %>/js/photoswipe.min.js"></script>
-    <script src="<%=path %>/js/photoswipe-ui-default.min.js"></script>
-    <script type="text/javascript">
-    </script>
+<%-- 	<script src="<%=path %>/js/photoswipe.min.js"></script> --%>
+<%--     <script src="<%=path %>/js/photoswipe-ui-default.min.js"></script> --%>
+	
 	<script type="text/javascript" >
 	$(function(){
 		//调用示例
-		layer.photos({
-		  photos: '.layer-photos-demo'
-		  ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
-		}); 
+// 		layer.photos({
+// 		  photos: '.layer-photos-demo'
+// 		  ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+// 		}); 
+		$(".auto-loop").lightGallery({
+			loop:true,
+			auto:true,
+			pause:4000
+		});
+// 		var w = $("#auto-loop li").width();
+// 		var imageLength = $("#auto-loop .img");
+// 		$(imageLength).each(function(){//如果有很多图片，我们可以使用each()遍历 
+// 			var img_w = $(this).width();//图片宽度 
+// 			alert(img_w);
+// 			var img_h = $(this).height();//图片高度 
+// 			alert(img_h);
+// 			if(img_w>=w){//如果图片宽度超出容器宽度--要撑破了 
+// 			var height = (w*img_h)/img_w; //高度等比缩放 
+// 			alert(w+":"+height);
+// 			$(this).css({"width":w,"height":height});//设置缩放后的宽度和高度 
+// 			} 
+// 			});
 		var farmerId = '${userId}';
 		if("${status}"==null||"${status}"==""||"${status}"=="0")
 		{
@@ -193,15 +218,17 @@
 <!-- 					        										</a> -->
 <%-- 															</c:forEach> --%>
 <!-- 														</div> -->
-														<div class="layer-photos-demo uploadImgList layer-photos-demo">
-															<c:forEach items="${ditvs.value }" var="images"> 
-															<p class="closeIcon" onclick="deleteImgae('${images.url}','${i}','${count}','${typeCount}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p>
-															<img  layer-pid="${ii }" layer-src="<%=path %>${images.url}" src="<%=path %>${images.url}" alt="${images.remarks}" id="image${i}">
-															<br/><h3><span>图片描述：${images.remarks}</span></h3><br/>
-															<c:set var="i" value="${i+1}"/>
-<!--					          											类型下的图片数量 -->
-		          											<input type="hidden" value="${fn:length(ditvs.value)}" class="typecount${count}${typeCount}"/>
+														<div class="uploadImgList">
+															<ul class="gallery auto-loop">
+																<c:forEach items="${ditvs.value }" var="images"> 
+<%-- 																<p class="closeIcon" onclick="deleteImgae('${images.url}','${i}','${count}','${typeCount}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p> --%>
+<%-- 																<img  layer-pid="${ii }" layer-src="<%=path %>${images.url}" src="<%=path %>${images.url}" alt="${images.remarks}" id="image${i}"> --%>
+																<li data-src="<%=path %>${images.url}" id="image${i}"><p class="closeIcon" onclick="deleteImgae('${images.url}','${i}','${count}','${typeCount}')" style="display: none"><span class="glyphicon glyphicon-remove"></span></p> <a href="http://sc.chinaz.com"><img src="<%=path %>${images.url}"/></a><p class="imageRemarks">${images.remarks}</p></li>
+																<c:set var="i" value="${i+1}"/>
 															</c:forEach> 
+															</ul>
+	<!--					          											类型下的图片数量 -->
+			          											<input type="hidden" value="${fn:length(ditvs.value)}" class="typecount${count}${typeCount}"/>
 														</div>
 														<c:set var="typeCount" value="${typeCount+1}"/>
 													</c:forEach>
@@ -319,42 +346,5 @@
 				  </div>
 		</div>
 	</div>
-	<div id="gallery" class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="pswp__bg"></div>
-        <div class="pswp__scroll-wrap">
-          <div class="pswp__container">
-			<div class="pswp__item"></div>
-			<div class="pswp__item"></div>
-			<div class="pswp__item"></div>
-          </div>
-          <div class="pswp__ui pswp__ui--hidden">
-            <div class="pswp__top-bar">
-
-				<div class="pswp__counter"></div>
-				<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-				<div class="pswp__preloader">
-					<div class="pswp__preloader__icn">
-					  <div class="pswp__preloader__cut">
-					    <div class="pswp__preloader__donut"></div>
-					  </div>
-					</div>
-				</div>
-            </div>
-			<!-- <div class="pswp__loading-indicator"><div class="pswp__loading-indicator__line"></div></div> -->
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-	            <div class="pswp__share-tooltip">
-	            </div>
-	        </div>
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-            <div class="pswp__caption">
-              <div class="pswp__caption__center">
-              </div>
-            </div>
-          </div>
-        </div>
-	</div>
-    <script src="<%=path %>/js/viewPhoto.js"></script>
 </body>
 </html>

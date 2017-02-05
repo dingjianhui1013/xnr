@@ -39,7 +39,7 @@ li,ul{margin:0;padding:0;list-style:none}
 .circleIcon{ position: absolute; left: -21px; top:2px; background:#666; width: 10px; height: 10px; border-radius: 50%;}
 .uploadImgBox ul li h3{ font-size: 1.4rem; font-weight:bold;}
 .uploadImgList{overflow: hidden;}
-.uploadImgList ul li{ width: 33%; float: left; padding:0.5rem; position: relative; }
+.uploadImgList ul li{ width: 47%; float: left; padding:0.5rem; position: relative; }
 .planListBox .form-group{padding-bottom: 0; }
 .planListCon{margin: 0px 1rem;}
 .outputDate span{ padding: 0 1rem;}
