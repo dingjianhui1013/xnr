@@ -26,7 +26,7 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	private Integer id;
 
 	private Long orderRecordId; //订单ID
     
@@ -54,6 +54,7 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	
     private Timestamp orderGoodsRelationTime; //生成时间 
     
+    private String allocationId;//分配的id
     
     private Integer goodsWeightId; //商品单位
     
@@ -65,11 +66,11 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
-    public Long getId(){
+    public Integer getId(){
         return this.id;
     }
 
-    public void setId(Long id){
+    public void setId(Integer id){
         this.id = id;
     }
 
@@ -184,6 +185,14 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	public String getDelFlag() {
 		return delFlag;
 	}
+	@Column(name = "allocation_id")
+	public String getAllocationId() {
+		return allocationId;
+	}
+
+	public void setAllocationId(String allocationId) {
+		this.allocationId = allocationId;
+	}
 
 	public void setDelFlag(String delFlag) {
 		this.delFlag = delFlag;
@@ -196,5 +205,6 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	public void setGoodsWeightId(Integer goodsWeightId) {
 		this.goodsWeightId = goodsWeightId;
 	}
-
+	
+	
 }

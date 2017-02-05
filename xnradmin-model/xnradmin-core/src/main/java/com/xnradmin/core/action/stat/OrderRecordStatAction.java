@@ -35,8 +35,6 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.order.AllocationService;
-import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
-import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.order.OrderGoodsRelationService;
@@ -91,12 +89,6 @@ public class OrderRecordStatAction extends ParentAction {
 	
 	@Autowired
 	private OutPlanService planService;
-	
-	@Autowired
-	private BusinessOrderRecordService businessOrderRecordService;
-	
-	@Autowired
-	private BusinessOrderGoodsRelationService orderGoodsRService;
 
 	// orderRecford
 	private String orderRecordId;
@@ -1184,7 +1176,7 @@ public class OrderRecordStatAction extends ParentAction {
 				deliveryStartEndTime, deliveryEndStartTime, deliveryEndEndTime,
 				"207", deliveryStatusName, sourceId, sourceName,
 				sourceType, sourceTypeName, serNo, sellerId, sellerName, cusId,
-				cusName, orderGoodsRelationPrimaryConfigurationId,"227",
+				cusName, orderGoodsRelationPrimaryConfigurationId,"227",null,
 				primaryConfigurationName, 0, 0, orderField, orderDirection);
 		goodsIdstr="";
 		if(allocationList!=null&&allocationList.size()>0){
@@ -1207,83 +1199,7 @@ public class OrderRecordStatAction extends ParentAction {
 		//farmerOrderList = farmerOrderService.listVO(farmerOrderVO,0,0,null,null);
 		
 		return StrutsResMSG.SUCCESS;
-	}
-
-	/**
-	 * 更新对象接口
-	 * 
-	 * @return String
-	 * @throws Exception
-	 */
-	@Action(value = "modify", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
-	public String modify() throws Exception {
-		log.debug("modif action!");
-		log.debug("modify orderRecord: " + orderRecordId);
-		// 取得当前登录人信息
-		currentStaff = super.getCurrentStaff();
-		// 批量增加菜品
-		if (allocationList == null) {
-			super.error("未填写商品");
-		} else {
-			log.debug("start:::");
-			// 修改订单所有商品  标记为已分配
-//			orderGoodsRelationService.removeOrderRecordId(Long
-//					.valueOf(orderRecordId));
-			
-			// 为新订单添加商品
-			for(BusinessAllocationVO ba:allocationList){
-				String[] orderRelations = ba.getBusinessOrder().split(",");
-				for(String s:orderRelations){
-					orderGoodsRelationService.removeOrderRecordById(Long.parseLong(s));
-					BusinessOrderGoodsRelation ordergoodsRelat = orderGoodsRService.findByid(s);
-					if(ordergoodsRelat!=null)
-					{
-						BusinessOrderRecord br = businessOrderRecordService.findByid(ordergoodsRelat.getOrderRecordId().toString());
-						br.setOperateStatusName("处理中");
-						br.setOperateStatus(204);
-						businessOrderRecordService.modify(br);
-					}
-				}
-			}
-			log.debug("end:::");
-		}
-		AllocationData ad = new AllocationData();
-		ad.setAllocationUser(currentStaff.getId()+"");
-		ad.setAllocationTime(new Timestamp(System.currentTimeMillis()));
-		ad.setEndTimeCondition(Timestamp.valueOf(createStartTime));
-		ad.setStartTimeCondition(Timestamp.valueOf(createEndTime));
-		allocationService.save(ad);
-		
-		//保存分配信息  先删除在添加
-		//farmerOrderService.delByOrderId(Long.parseLong(orderRecordId));
-		
-		if(items!=null){
-			Iterator<String> item = items.keySet().iterator();
-			
-			while (item.hasNext()) {
-				String key = item.next();
-				FarmerOrderRecord farmerOrder = items.get(key);
-				
-				OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
-				
-				farmerOrder.setFarmerUserId(plan.getUserId());
-				farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
-				farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
-				farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
-				farmerOrder.setStaffId(this.getCurrentStaff().getId());
-				plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
-				plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
-				plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
-				planService.modify(plan);
-				farmerOrderService.save(farmerOrder);				
-			}	
-		}
-		
-		super.success(null, null,
-				"goodsAllocation", null);
-		return null;
-	}
-	
+	}	
 	
 	private void findPageInfo() {
 		// 设置排序
