@@ -242,6 +242,39 @@
 				}
 		window.location.href="${basePath}front/personalCenter.action?RPageNum="+pageN+"&flag=address";
 	}
+	//确认收货
+	function Confirmreceipt(id)
+	{
+		//询问框
+		layer.confirm('请确认收到商品，避免造成您的经济损失？', {
+		  btn: ['确认收货','取消'] //按钮
+		}, function(){
+			layer.confirm('再次确认收货', {
+				btn: ['是的', '取消'],
+			},function(){
+				$.ajax({
+					type : 'POST',
+					url : '${basePath}front/confirmReceipt.action?_' + new Date(),
+					data : {
+						"businessOrderRecordId" : id
+					},
+					dataType : 'JSON',
+					success : function(data) {
+						if (data.status == 1) {
+							layer.msg('确认成功');
+							window.location.href="${basePath}front/personalCenter.action?pageNum="+${pageNum}+"&flag=myorder";
+						} else {
+							layer.msg('确认失败，系统错误');
+						}
+					}
+				});
+			}, function(){
+				layer.close();
+			});
+		}, function(){
+			layer.close();
+		});
+	}
 </script>
 </head>
 <body> 
@@ -367,7 +400,17 @@
 						                   	<a href="${basePath}front/orderrecord/wxPayAgain.action?businessOrderRecodeId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
 				                   		</c:if>
 				                    </c:if>
-				                    <li><span>${loop.businessOrderRecord.deliveryStatusName}</span></li>
+				                    <li><span>
+				                    		<c:if test="${loop.businessOrderRecord.deliveryStatus==207}">
+				                    			${loop.businessOrderRecord.deliveryStatusName}
+				                    		</c:if>
+				                    		<c:if test="${loop.businessOrderRecord.deliveryStatus==208}">
+				                    			<a href="javascript:Confirmreceipt('${loop.businessOrderRecord.id}')">${loop.businessOrderRecord.deliveryStatusName}</a>
+				                    		</c:if>
+				                    		<c:if test="${loop.businessOrderRecord.deliveryStatus==209}">
+				                    			${loop.businessOrderRecord.deliveryStatusName}
+				                    		</c:if>
+				                    	</span></li>
 	                    			<li><span><a href="javascript:addToCart('${loop.businessOrderRecord.id }')">再次购买</a></span><a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">查看详情</a></li>
 	                    		</ul>
 	                    	</div>

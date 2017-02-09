@@ -134,7 +134,7 @@ public class AlipayAction {
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
 					//如果有做过处理，不执行商户的业务程序
-				changePayStatus(out_trade_no, "待处理", total_fee, gmt_payment, "已完成",trade_no,"完成", buyer_id, buyer_email,"no");
+				changePayStatus(out_trade_no, "待处理", total_fee, gmt_payment, "已支付",trade_no,"完成", buyer_id, buyer_email,"no");
 				//注意：
 				//付款完成后，支付宝系统发送该交易状态通知
 			}else if(trade_status.equals("TRADE_PENDING"))
@@ -147,10 +147,12 @@ public class AlipayAction {
 
 			//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
 			out.getWriter().print("success");	//请不要修改或删除
+			log.debug("alipay notify success");
 			return StrutsResMSG.SUCCESS;
 			//////////////////////////////////////////////////////////////////////////////////////////
 		}else{//验证失败
 			out.getWriter().print("fail");
+			log.debug("alipay notify fail");
 			return StrutsResMSG.FAILED;
 		}
 	}
@@ -234,10 +236,11 @@ public class AlipayAction {
 			}
 
 			//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+			log.debug("alipay notify success");
 			return StrutsResMSG.SUCCESS;
-
 			//////////////////////////////////////////////////////////////////////////////////////////
 		}else{//验证失败
+			log.debug("alipay notify failed");
 			return StrutsResMSG.FAILED;
 		}
 	}

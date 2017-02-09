@@ -48,28 +48,24 @@
 					分配人：
 					<input type="text" name="currentStaff.staffName" value="${currentStaff.staffName}"/>
 				</td>
-				<td>
-					<label>分配状态：</label>
-					<select class="combox" name="deliveryStatus">
-					<c:if test="${deliveryStatusList!=null}">
-						<option value="" selected>选择</option>
-						<c:forEach items="${deliveryStatusList}" var="loop">
-							<c:choose>
-								<c:when test="${loop.id==deliveryStatus}">
-									<option value=${loop.id} selected>${loop.statusName}</option>
-   								</c:when>
-   								<c:otherwise>
-   									<option value=${loop.id}>${loop.statusName}</option>
-   								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</c:if>
-					</select>
-				</td>
-			</tr>
-		</table>
-		<table>
-			<tr>
+<!-- 				<td> -->
+<!-- 					<label>分配状态：</label> -->
+<!-- 					<select class="combox" name="deliveryStatus"> -->
+<%-- 					<c:if test="${deliveryStatusList!=null}"> --%>
+<!-- 						<option value="" selected>选择</option> -->
+<%-- 						<c:forEach items="${deliveryStatusList}" var="loop"> --%>
+<%-- 							<c:choose> --%>
+<%-- 								<c:when test="${loop.id==deliveryStatus}"> --%>
+<%-- 									<option value=${loop.id} selected>${loop.statusName}</option> --%>
+<%--    								</c:when> --%>
+<%--    								<c:otherwise> --%>
+<%--    									<option value=${loop.id}>${loop.statusName}</option> --%>
+<%--    								</c:otherwise> --%>
+<%-- 							</c:choose> --%>
+<%-- 						</c:forEach> --%>
+<%-- 					</c:if> --%>
+<!-- 					</select> -->
+<!-- 				</td> -->
 				<td>
 					分配日期（起始结束时间都要选）：从
 					<input type="text" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createStartTime}" class="date" readonly="true" />
@@ -78,6 +74,16 @@
 				</td>
 			</tr>
 		</table>
+<!-- 		<table> -->
+<!-- 			<tr> -->
+<!-- 				<td> -->
+<!-- 					分配日期（起始结束时间都要选）：从 -->
+<%-- 					<input type="text" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createStartTime}" class="date" readonly="true" /> --%>
+<!-- 					到 -->
+<%-- 					<input type="text" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createEndTime}" class="date" readonly="true" /> --%>
+<!-- 				</td> -->
+<!-- 			</tr> -->
+<!-- 		</table> -->
 		<div class="subBar">
 			<ul>
 				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>

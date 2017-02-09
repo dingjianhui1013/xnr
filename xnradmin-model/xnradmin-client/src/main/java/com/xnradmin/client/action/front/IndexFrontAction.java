@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
@@ -19,6 +20,7 @@ import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
+import com.xnradmin.core.action.alipay.AlipayAction;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
@@ -42,6 +44,7 @@ import com.xnradmin.vo.front.ProductDetailVo;
 @Namespace("/front")
 @ParentPackage("json-default")
 public class IndexFrontAction  extends ParentAction{
+	private static Logger log = Logger.getLogger(IndexFrontAction.class);
 	private String productCategoryId;//产品列表，分类id（三级）
 	private String first;//产品列表，一级菜单名称
 	private String three;//产品列表，三级菜单名称
@@ -70,7 +73,7 @@ public class IndexFrontAction  extends ParentAction{
 	private String businessOrderRecordId;
 	private BusinessOrderVO businessOrderVO;
 	private GoodsAllocationShow goodsAllocationShow;//该商品被今天被分配的数量
-	
+	private String status;
 	public BusinessOrderVO getBusinessOrderVO() {
 		return businessOrderVO;
 	}
@@ -210,6 +213,13 @@ public class IndexFrontAction  extends ParentAction{
 	public void setDeliveryStatusList(List<Status> deliveryStatusList) {
 		this.deliveryStatusList = deliveryStatusList;
 	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 
 	@Autowired
 	private BusinessCategoryService businessCategoryService;
@@ -231,6 +241,7 @@ public class IndexFrontAction  extends ParentAction{
 	
 	@Action(value = "index", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/index.jsp") })
 	public String info() {
+		log.debug("success==============================");
 		HttpSession session = ServletActionContext.getRequest().getSession();
 //		FrontUser user = (FrontUser)session.getAttribute("alipayToIndex_user");
 //		if(user!=null)
@@ -393,6 +404,22 @@ public class IndexFrontAction  extends ParentAction{
 		return StrutsResMSG.SUCCESS;
 	}
 	
+	@Action(value="confirmReceipt",results = {@Result(name=StrutsResMSG.SUCCESS,type="json")})
+	public String confirmReceipt()
+	{
+		try {
+			BusinessOrderRecord businessOrderRecord = orderRecordService.findByid(businessOrderRecordId);
+			businessOrderRecord.setDeliveryStatus(209);
+			businessOrderRecord.setDeliveryStatusName("已完成");
+			orderRecordService.modify(businessOrderRecord);
+			status = "1";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			status = "0";
+		}
+		return StrutsResMSG.SUCCESS;
+	}
 	private void setFrontPageInfo()
 	{
 		setDateTime();
