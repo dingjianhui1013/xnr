@@ -29,6 +29,7 @@ import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.business.order.AllocationService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
+import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.business.order.FarmerOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
 import com.xnradmin.core.service.mall.order.OrderGoodsRelationService;
@@ -66,6 +67,9 @@ public class AllocationAction extends ParentAction {
 	
 	@Autowired
 	private OrderRecordService orderRecordService;
+	
+	@Autowired
+	private BusinessOrderRecordService businessOrderRecordService;
 	
 	@Autowired
 	private AllocationService allocationService;
@@ -1278,70 +1282,82 @@ public class AllocationAction extends ParentAction {
 		// 取得当前登录人信息
 		currentStaff = super.getCurrentStaff();
 		AllocationData ad = new AllocationData();
-		if(allocationId==null||"".equals(allocationId)){
-			ad.setAllocationUser(currentStaff.getId()+"");
-			ad.setAllocationTime(new Timestamp(System.currentTimeMillis()));
-			ad.setStartTimeCondition(Timestamp.valueOf(createStartTime));
-			ad.setEndTimeCondition(Timestamp.valueOf(createEndTime));
-			allocationService.save(ad);
-		}else{
-			ad = allocationService.findByid(allocationId);
-		}
-		// 批量增加菜品
-		log.debug("start:::");
-		//原来的状态取消
-		if(allocationId!=null&&!"".equals(allocationId)){
-			businessOrderGoodsRelationService.removeAllocation(Integer.parseInt(allocationId));	
-		}
-		// 将ordergoodsrelation 置为分配状态 delflag=1 allocationId 为分配的id 
-		for(BusinessAllocationVO ba:allocationList){
-			String[] orderRelations = ba.getBusinessOrder().split(",");
-			for(String s:orderRelations){
-				orderGoodsRelationService.removeOrderRecordById(Long.parseLong(s),ad.getId());
+		if(allocationList!=null&&allocationList.size()>0){
+			if(allocationId==null||"".equals(allocationId)){
+				ad.setOrderRecord(allocationList.get(0).getBusinessOrderRecordStr());
+				ad.setAllocationUser(currentStaff.getId()+"");
+				ad.setAllocationTime(new Timestamp(System.currentTimeMillis()));
+				ad.setStartTimeCondition(Timestamp.valueOf(createStartTime));
+				ad.setEndTimeCondition(Timestamp.valueOf(createEndTime));
+				ad.setAllocationStatus(0);
+				allocationService.save(ad);
+			}else{
+				ad = allocationService.findByid(allocationId);
 			}
-		}
-		log.debug("end:::");
-		
-		//保存分配信息  先删除在添加
-		if(allocationId!=null&&!"".equals(allocationId)){			
-			List<FarmerOrderRecord> listFarmer = farmerOrderService.listByOrderId(Long.parseLong(allocationId));
-			if(listFarmer!=null&&listFarmer.size()>0){
-				for(FarmerOrderRecord farmerOrder:listFarmer){
+			// 批量增加菜品
+			log.debug("start:::");
+			//原来的状态取消
+			if(allocationId!=null&&!"".equals(allocationId)){
+				businessOrderGoodsRelationService.removeAllocation(Integer.parseInt(allocationId));	
+			}
+			// 将ordergoodsrelation 置为分配状态 delflag=1 allocationId 为分配的id 
+			for(BusinessAllocationVO ba:allocationList){
+				String[] orderRelations = ba.getBusinessOrder().split(",");
+				for(String s:orderRelations){
+					orderGoodsRelationService.removeOrderRecordById(Long.parseLong(s),ad.getId());
+				}
+			}
+			log.debug("end:::");
+			
+			//保存分配信息  先删除在添加
+			if(allocationId!=null&&!"".equals(allocationId)){			
+				List<FarmerOrderRecord> listFarmer = farmerOrderService.listByOrderId(Long.parseLong(allocationId));
+				if(listFarmer!=null&&listFarmer.size()>0){
+					for(FarmerOrderRecord farmerOrder:listFarmer){
+						OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+						farmerOrder.setFarmerUserId(plan.getUserId());
+						farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
+						farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
+						farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
+						farmerOrder.setStaffId(super.getCurrentStaff().getId());
+						plan.setOccupyAmount(plan.getOccupyAmount()-farmerOrder.getGoodsCount());
+						plan.setValidAmount(plan.getValidAmount()+farmerOrder.getGoodsCount());
+						plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
+						planService.modify(plan);
+						farmerOrderService.del(farmerOrder.getId()+"");				
+					}	
+				}
+			}
+			
+			if(items!=null){
+				Iterator<String> item = items.keySet().iterator();
+				
+				while (item.hasNext()) {
+					String key = item.next();
+					FarmerOrderRecord farmerOrder = items.get(key);
+					
 					OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
+					
 					farmerOrder.setFarmerUserId(plan.getUserId());
 					farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
 					farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
 					farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
-					farmerOrder.setStaffId(super.getCurrentStaff().getId());
-					plan.setOccupyAmount(plan.getOccupyAmount()-farmerOrder.getGoodsCount());
-					plan.setValidAmount(plan.getValidAmount()+farmerOrder.getGoodsCount());
+					farmerOrder.setStaffId(this.getCurrentStaff().getId());
+					plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
+					plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
 					plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
 					planService.modify(plan);
-					farmerOrderService.del(farmerOrder.getId()+"");				
+					farmerOrderService.save(farmerOrder);				
 				}	
 			}
-		}
-		
-		if(items!=null){
-			Iterator<String> item = items.keySet().iterator();
-			
-			while (item.hasNext()) {
-				String key = item.next();
-				FarmerOrderRecord farmerOrder = items.get(key);
-				
-				OutPlan plan = planService.findById(farmerOrder.getOutPlanId().toString());
-				
-				farmerOrder.setFarmerUserId(plan.getUserId());
-				farmerOrder.setGoodsId(Integer.parseInt(plan.getGoodsId()));
-				farmerOrder.setOrderRecordId(Long.valueOf(ad.getId()));
-				farmerOrder.setCreateTime(new Timestamp(new Date().getTime()));
-				farmerOrder.setStaffId(this.getCurrentStaff().getId());
-				plan.setOccupyAmount(plan.getOccupyAmount()+farmerOrder.getGoodsCount());
-				plan.setValidAmount(plan.getValidAmount()-farmerOrder.getGoodsCount());
-				plan.setSendoutAmount(plan.getSendoutAmount()+farmerOrder.getGoodsCount());
-				planService.modify(plan);
-				farmerOrderService.save(farmerOrder);				
-			}	
+			//修改分配的订单状态 为 订单处理中
+			String[] orderArray = ad.getOrderRecord().split(",");
+			for(String s:orderArray){
+				BusinessOrderRecord bor = businessOrderRecordService.findByid(s);
+				bor.setOperateStatus(204);
+				bor.setOperateStatusName("处理中");
+				businessOrderRecordService.modify(bor);
+			}
 		}
 		
 		if(allocationId==null||"".equals(allocationId)){			
@@ -1349,6 +1365,35 @@ public class AllocationAction extends ParentAction {
 					"allocationManager", null);
 		}
 		super.success(null, AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,
+				"allocationManager", null);
+		
+		return null;
+	}
+	
+	/**
+	 * 配送接口
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "send", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String send() throws Exception {
+		log.debug("send action!");
+		log.debug("send allocationId: " + allocationId);
+		AllocationData ad = allocationService.findByid(allocationId);
+
+		//修改分配的订单状态 为 订单配送中
+		String[] orderArray = ad.getOrderRecord().split(",");
+		for(String s:orderArray){
+			BusinessOrderRecord bor = businessOrderRecordService.findByid(s);
+			bor.setDeliveryStatus(173);
+			bor.setDeliveryStatusName("配送中");
+			businessOrderRecordService.modify(bor);
+		}
+		//分配状态改为不可修改
+		ad.setAllocationStatus(1);
+		allocationService.modify(ad);
+		super.success(null, null,
 				"allocationManager", null);
 		
 		return null;
@@ -1386,6 +1431,15 @@ public class AllocationAction extends ParentAction {
 				farmerOrderService.del(farmerOrder.getId()+"");				
 			}	
 		}
+		//修改分配的订单状态 为 订单待处理
+		String[] orderArray = ad.getOrderRecord().split(",");
+		for(String s:orderArray){
+			BusinessOrderRecord bor = businessOrderRecordService.findByid(s);
+			bor.setOperateStatus(203);
+			bor.setOperateStatusName("待处理");
+			businessOrderRecordService.modify(bor);
+		}
+		
 		allocationService.del(allocationId);
 		super.success(null, null,
 				"allocationManager", null);

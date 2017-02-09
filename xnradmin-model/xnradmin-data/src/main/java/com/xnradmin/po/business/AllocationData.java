@@ -37,6 +37,8 @@ public class AllocationData implements java.io.Serializable{
     
 	private Integer allocationStatus;//分配状态
 	
+	private String orderRecord;//分配涉及到的订单
+	
     /** default constructor */
     public AllocationData(){
     }
@@ -92,6 +94,14 @@ public class AllocationData implements java.io.Serializable{
 
 	public void setAllocationStatus(Integer allocationStatus) {
 		this.allocationStatus = allocationStatus;
+	}
+	@Column(name = "order_record")
+	public String getOrderRecord() {
+		return orderRecord;
+	}
+
+	public void setOrderRecord(String orderRecord) {
+		this.orderRecord = orderRecord;
 	}
 
 	

@@ -2556,7 +2556,8 @@ public class OrderRecordService {
 				curPage, pageSize);
 		List<BusinessAllocationVO> voList = new ArrayList<>();
 		Map<String,Integer> temMap = new HashMap<>();
-		
+		Map<String,BusinessOrderRecord> orderRecordMap = new HashMap<>();
+		String tempStr = "";//汇总订单临时变量
 		//对同一商品进行汇总
 		if(l!=null&&l.size()>0){
 			for(int i=0;i<l.size();i++){
@@ -2566,6 +2567,13 @@ public class OrderRecordService {
 				BusinessGoods businessGoods=(BusinessGoods)obj[1];
 				BusinessOrderGoodsRelation businessOrderGoodsRelation=(BusinessOrderGoodsRelation)obj[2];
 				Integer businessGoodsCount=0;
+				if(orderRecordMap.get(businessOrderRecord.getId()+"")==null){
+					if("".equals(tempStr)){
+						tempStr+=businessOrderRecord.getId();
+					}else{
+						tempStr+=","+businessOrderRecord.getId();
+					}
+				}
 				if(temMap.get(businessGoods.getId()+"")==null){
 					temMap.put(businessGoods.getId()+"", businessOrderGoodsRelation.getGoodsCount());
 					businessGoodsCount=businessOrderGoodsRelation.getGoodsCount();
@@ -2593,6 +2601,7 @@ public class OrderRecordService {
 			}
 		}
 		if(voList.size()>0){
+			voList.get(0).setBusinessOrderRecordStr(tempStr);
 			return voList;
 		}
 		return null;

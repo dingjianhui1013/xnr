@@ -9,6 +9,7 @@
 	String add = basePath+"page/business/admin/allocation/toAllocation.action";
 	String modify = basePath+"page/business/admin/allocation/modifyInfo.action";
 	String del = basePath+"page/business/admin/allocation/delInfo.action";
+	String send = basePath+"page/business/admin/allocation/send.action";
 	String businessLookup = basePath + "page/staff/lookup.action?queryOrgid=16";
 	
 	request.setAttribute("action",action);
@@ -39,6 +40,20 @@
 		<input type="hidden" name="staff.staffName" value="${staff.staffName}" />
 		<input type="hidden" name="productName" value="${productName}" />
 </form>
+<script type="text/javascript">
+	function send(id){
+		$.ajax({
+			url:'<%= basePath%>page/business/admin/allocation/send.action?allocationId='+id,
+			type:'POST',
+			data:{},
+			dataType:'JSON',
+			success:function(data){
+				navTabSearch(data);
+			}
+			
+		});
+	}
+</script>
 <div class="pageHeader">
 	<form onsubmit="return navTabSearch(this);" action="" method="post">
 	<div class="searchBar">
@@ -48,12 +63,12 @@
 					分配人：
 					<input type="text" name="currentStaff.staffName" value="${currentStaff.staffName}"/>
 				</td>
-				<td>
+				<%-- <td>
 					<label>分配状态：</label>
 					<select class="combox" name="deliveryStatus">
-					<c:if test="${deliveryStatusList!=null}">
+					<c:if test="${allocationStatusList!=null}">
 						<option value="" selected>选择</option>
-						<c:forEach items="${deliveryStatusList}" var="loop">
+						<c:forEach items="${allocationStatusList}" var="loop">
 							<c:choose>
 								<c:when test="${loop.id==deliveryStatus}">
 									<option value=${loop.id} selected>${loop.statusName}</option>
@@ -65,7 +80,7 @@
 						</c:forEach>
 					</c:if>
 					</select>
-				</td>
+				</td> --%>
 			</tr>
 		</table>
 		<table>
@@ -112,8 +127,11 @@
 						<td>${loop.allocationData.allocationTime}</td>
 						<td>					
 							<a title="查看" target="navTab" href="${modify}?allocationId=${loop.allocationData.id}&pageType=1" class="btnLook">查看</a>
-							<a title="编辑" target="navTab" href="${modify}?allocationId=${loop.allocationData.id}&pageType=2" class="btnEdit">编辑</a>
-							<a title="删除" target="ajaxTodo" href="${del}?allocationId=${loop.allocationData.id}" class="btnDel" title="确认删除？" >删除</a>
+							<c:if test="${loop.allocationData.allocationStatus == 0}">
+								<a title="编辑" target="navTab" href="${modify}?allocationId=${loop.allocationData.id}&pageType=2" class="btnEdit">编辑</a>
+								<a title="删除" target="ajaxTodo" href="${del}?allocationId=${loop.allocationData.id}" class="btnDel" title="确认删除？" >删除</a>
+								<a title="配送" href="javascript:send(${loop.allocationData.id})" class="btnSelect" >配送</a>
+							</c:if>
 						</td>	
 					</tr>				
 				</c:forEach>
