@@ -9,7 +9,8 @@ public class BusinessAllocationVO {
 	private BusinessGoods businessGoods;
 	private BusinessOrderGoodsRelation businessOrderGoodsRelation;
 	private Integer businessGoodsCount;//同一个商品的统计信息
-	private String businessOrder;//该分配的产品包含的订单号
+	private String businessOrder;//该分配的产品包含的订单-商品号
+	private String businessOrderRecordStr;//该分配的产品包含的订单号
 	
 	public Integer getBusinessGoodsCount() {
 		return businessGoodsCount;
@@ -48,6 +49,14 @@ public class BusinessAllocationVO {
 
 	public void setBusinessOrder(String businessOrder) {
 		this.businessOrder = businessOrder;
+	}
+
+	public String getBusinessOrderRecordStr() {
+		return businessOrderRecordStr;
+	}
+
+	public void setBusinessOrderRecordStr(String businessOrderRecordStr) {
+		this.businessOrderRecordStr = businessOrderRecordStr;
 	}
 	
 }

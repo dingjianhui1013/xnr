@@ -163,5 +163,9 @@ public class AllocationService {
 
 		return commonDao.getNumberOfEntitiesWithHql(hql);
 	}
+
+	public void modify(AllocationData ad) {
+		commonDao.modify(ad);
+	}
 }
 

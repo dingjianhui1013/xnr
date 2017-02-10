@@ -212,6 +212,7 @@ $(function(){
 							</thead>
 							<tbody id="goodsTable">
 							<c:if test="${allocationList!=null}">
+									<input type="hidden" value="${allocationList[0].businessOrderRecordStr}" name="allocationList[0].businessOrderRecordStr">
 									<c:forEach items="${allocationList}" var="loop" varStatus="status">
 									<tr class="unitBox">
 											<td>
