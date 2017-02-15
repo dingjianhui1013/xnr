@@ -1,0 +1,142 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+	        + request.getServerName() + ":" + request.getServerPort()
+	        + path + "/";
+	
+	String action = basePath+"page/business/admin/combo/info.action";
+	String modify = basePath+"page/business/admin/combo/modifyInfo.action";
+	String del = basePath+"page/business/admin/combo/delInfo.action";
+	String send = basePath+"page/business/admin/combo/send.action";
+	
+	request.setAttribute("action",action);
+	request.setAttribute("modify",modify);
+	request.setAttribute("del",del);
+%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<form id="pagerForm" method="post" action="${action}">
+		<input type="hidden" name="orderNo" value="${orderNo}" />
+		<input type="hidden" name="createStartTime" value="${createStartTime}" />
+		<input type="hidden" name="createEndTime" value="${createEndTime}" />
+		<input type="hidden" name="pageNum" value="${pageNum}" />
+		<input type="hidden" name="numPerPage" value="${numPerPage}" />
+		<input type="hidden" name="orderField" value="${orderField}" />
+		<input type="hidden" name="orderDirection" value="${orderDirection}" />		
+		<input type="hidden" name="staff.staffName" value="${staff.staffName}" />
+</form>
+<script type="text/javascript">
+	function send(id){
+		$.ajax({
+			url:'<%= basePath%>page/business/admin/allocation/send.action?allocationId='+id,
+			type:'POST',
+			data:{},
+			dataType:'JSON',
+			success:function(data){
+				navTabSearch(data);
+			}
+			
+		});
+	}
+</script>
+<div class="pageHeader">
+	<form onsubmit="return navTabSearch(this);" action="" method="post">
+	<div class="searchBar">
+		<table class="searchContent">
+			<tr>
+				<td>
+					套餐名称：
+					<input type="text" name="comboVo.combo.comboName" value="${comboVo.combo.comboName}"/>
+				</td>
+				<%-- <td>
+					<label>分配状态：</label>
+					<select class="combox" name="deliveryStatus">
+					<c:if test="${allocationStatusList!=null}">
+						<option value="" selected>选择</option>
+						<c:forEach items="${allocationStatusList}" var="loop">
+							<c:choose>
+								<c:when test="${loop.id==deliveryStatus}">
+									<option value=${loop.id} selected>${loop.statusName}</option>
+   								</c:when>
+   								<c:otherwise>
+   									<option value=${loop.id}>${loop.statusName}</option>
+   								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</c:if>
+					</select>
+				</td> --%>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td>
+					分配日期（起始结束时间都要选）：从
+					<input type="text" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createStartTime}" class="date" readonly="true" />
+					到
+					<input type="text" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createEndTime}" class="date" readonly="true" />
+				</td>
+			</tr>
+		</table>
+		<div class="subBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+	</form>
+</div>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li>
+			<a class="add" href="${modify}?pageType=3" target="navTab" title="新增"><span>新增分配</span></a>
+			</li>
+		</ul>
+	</div>
+	<table class="table" width="100%" layoutH="225">
+		<thead>
+			<tr>
+				<th width="45">套餐名称</th>
+				<th width="40">套餐价格</th>
+				<th width="100">套餐状态</th>
+				<th width="100">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:if test="${allocationVo!=null}">
+				<c:forEach items="${allocationVo}" var="loop">
+					<tr target="sid_orderRecordId" rel="${loop.allocationData.id}">						
+						<td>${loop.allocationData.id}</td>
+						<td>${loop.staff.loginId}</td>	
+						<td>${loop.allocationData.allocationTime}</td>
+						<td>					
+							<a title="查看" target="navTab" href="${modify}?allocationId=${loop.allocationData.id}&pageType=1" class="btnLook">查看</a>
+							<c:if test="${loop.allocationData.allocationStatus == 0}">
+								<a title="编辑" target="navTab" href="${modify}?allocationId=${loop.allocationData.id}&pageType=2" class="btnEdit">编辑</a>
+								<a title="删除" target="ajaxTodo" href="${del}?allocationId=${loop.allocationData.id}" class="btnDel" title="确认删除？" >删除</a>
+								<a title="配送" href="javascript:send(${loop.allocationData.id})" class="btnSelect" >配送</a>
+							</c:if>
+						</td>	
+					</tr>				
+				</c:forEach>
+			</c:if>			
+		</tbody>
+	</table>
+	<div class="panelBar">
+		<div class="pages">
+			<span>显示</span>
+			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="4">4</option>
+				<option value="20">20</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+				<option value="200">200</option>
+			</select>			
+			<span>条，共${totalCount}条</span>
+		</div>		
+		<div class="pagination" targetType="navTab" totalCount="${totalCount}" numPerPage="${numPerPage}" pageNumShown="10" currentPage="${pageNum}"></div>
+	</div>
+</div>
