@@ -3,9 +3,19 @@
  */
 package com.xnradmin.core.action.business.combo;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,14 +30,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.business.combo.ComboService;
 import com.xnradmin.core.service.common.status.StatusService;
+import com.xnradmin.po.business.AllocationData;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.Combo;
+import com.xnradmin.po.business.ComboPlan;
+import com.xnradmin.po.business.FarmerOrderRecord;
 import com.xnradmin.po.common.status.Status;
+import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.vo.business.ComboUserVO;
 import com.xnradmin.vo.business.ComboVO;
 
 /**
@@ -52,10 +68,19 @@ public class ComboAction extends ParentAction {
 	
 	private List<Combo> comboList;
 	
+	private ComboUserVO comboUserVo;
+	
+	private List<ComboUserVO> comboUserVOList;
+	
 	private String pageType;//页面类型 查看1 编辑2 新增3
 	
-	private List<Status> comboCycleStatusList;
-	
+	private List<Status> comboCycleStatusList;//套餐周期
+	private List<Status> comboCycleList;//固定周期
+	private List<StatusBlock> comboFixedStatusList;//固定周期固定时间
+	private File comboImgSmallFile; // 套餐小图片上传文件
+	private File comboImgBigFile; // 套餐大图片上传文件
+	private String comboImgSmallPath = "/themes/business/goodsLogo/"; // 套餐小图片上传文件路径
+	private String comboImgBigPath= "/themes/business/goodsBigLogo/"; // 套餐大图片上传文件路径
 	@Override
 	public boolean isPublic() {
 		return false;
@@ -77,6 +102,19 @@ public class ComboAction extends ParentAction {
 	}
 	
 	/**
+	 * 跳转到用户套餐页面。。
+	 * 
+	 * @return
+	 */
+	@Action(value = "userInfo", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/combo/userInfo.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/combo/userInfo.jsp") })
+	public String userInfo() {
+		setPageUserInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	/**
 	 * 跳转到信息页。。
 	 * 
 	 * @return
@@ -86,11 +124,15 @@ public class ComboAction extends ParentAction {
 			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/combo/modify.jsp") })
 	public String modifyInfo() {
 		//初始化comboVo
-		initComboVo();
-		findComboCycleStatusList();
 		if(!pageType.equals("3")){
-			
+			//查出套餐，套餐商品，套餐计划信息 赋给 comboVo
+			comboVo = comboService.getComboVOById(comboVo);
+		}else{
+			initComboVo();
 		}
+		findComboCycleStatusList();
+		findComboFixedStatusList();
+		findComboCycleList();
 		return StrutsResMSG.SUCCESS;
 	}
 	
@@ -100,14 +142,116 @@ public class ComboAction extends ParentAction {
 	 * @return
 	 * @throws IOException 
 	 */
+	@Action(value = "delInfo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String delInfo() throws IOException {
+		log.debug("delInfo action!");
+		if(comboService.delComboVOById(comboVo)){
+			super.success("删除成功", null,"comboManager", null);
+		}else{
+			super.success("删除失败，套餐使用中", null,"comboManager", null);			
+		}
+		return null;
+	}
+	
+	/**
+	 * 跳转到信息页。。
+	 * 
+	 * @return
+	 * @throws Exception 
+	 */
 	@Action(value = "modify", results = {
 			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/combo/modify.jsp"),
 			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/combo/modify.jsp") })
-	public String modify() throws IOException {
+	public String modify() throws Exception {
+		String comboName = "";
+		if(comboVo!=null&&comboVo.getCombo()!=null){
+			if(comboVo.getCombo().getComboName()!=null){
+				comboName=comboVo.getCombo().getComboName()+".jpg";
+			}
+			//先上传保存两张图片
+			String newGoodsLogo = "";
+			if (comboImgSmallFile != null) {
+				String fileName = UUID.randomUUID().toString() + comboName;
+				newGoodsLogo = getGoodsLogoSavePath() + "/" + fileName;
+				File fopath = new File(getGoodsLogoSavePath());
+				if(!fopath.exists()){
+					fopath.mkdirs();
+				}
+				FileOutputStream fos = new FileOutputStream(newGoodsLogo);
+				FileInputStream fis = new FileInputStream(comboImgSmallFile);
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				while ((len = fis.read(buffer)) > 0) {
+					fos.write(buffer, 0, len);
+				}
+				fos.close();
+				fis.close();
+				comboVo.getCombo().setComboImgSmall(comboImgSmallPath + fileName);
+			}
+			String newGoodsBigLogo = "";
+			if (comboImgBigFile != null) {
+				String fileName = UUID.randomUUID().toString() + comboName;
+				newGoodsBigLogo = getGoodsBigLogoSavePath() + "/" + fileName;
+				File fopath = new File(getGoodsBigLogoSavePath());
+				if(!fopath.exists()){
+					fopath.mkdirs();
+				}
+				FileOutputStream fos = new FileOutputStream(newGoodsBigLogo);
+				FileInputStream fis = new FileInputStream(comboImgBigFile);
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				while ((len = fis.read(buffer)) > 0) {
+					fos.write(buffer, 0, len);
+				}
+				fos.close();
+				fis.close();
+				comboVo.getCombo().setComboImgBig(comboImgBigPath + fileName);
+			}
+			comboService.modify(comboVo);
+			super.success("套餐保存成功", AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,"comboManager", null);
+		}else{
+			super.success("套餐保存失败", null,"comboManager", null);
+		}
+		return null;
+	}
+	
+	/*
+	 * 加载商品图片上传路径
+	 */
+	public String getGoodsLogoSavePath() throws Exception {
+		// return
+		// "C:/work/eclipse-jee-kepler-R-win32-x86_64/eclipse/javaworkspace/xnradmin/xnradmin-web"
+		// + "/src/main/webapp/themes/business/goodsLogo";
+		return ServletActionContext.getServletContext().getRealPath("")
+				+ comboImgSmallPath;
+	}
+
+	/*
+	 * 加载商品大图片上传路径
+	 */
+	public String getGoodsBigLogoSavePath() throws Exception {
+		// return
+		// "C:/work/eclipse-jee-kepler-R-win32-x86_64/eclipse/javaworkspace/xnradmin/xnradmin-web"
+		// + "/src/main/webapp/themes/business/goodsBigLogo";
+		return ServletActionContext.getServletContext().getRealPath("")
+				+ comboImgBigPath;
+	}
+	
+	/**
+	 * 修改状态接口
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "send", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String send() throws Exception {
+		log.debug("send action!");
+		if(comboService.modifyCombo(comboVo)){
+			super.success("状态修改成功", null,"comboManager", null);
+		}else{
+			super.success("状态修改失败，套餐使用中", null,"comboManager", null);			
+		}
 		
-		
-		comboService.modify(comboVo);
-		super.success(null, null,"allocationManager", null);
 		return null;
 	}
 	
@@ -174,6 +318,15 @@ public class ComboAction extends ParentAction {
 
 	}
 	
+	private void setPageUserInfo() {
+		// 设置排序
+		
+		this.comboUserVOList = comboService.findComboUsesrByPage(comboUserVo, getPageNum(), getNumPerPage(),
+				orderField, orderDirection);
+		this.totalCount = comboService.getComboUserCount(comboUserVo);
+
+	}
+	
 	private void initComboVo() {
 		//初始化套餐默认周期为一个月
 		this.comboVo = new ComboVO();
@@ -190,6 +343,60 @@ public class ComboAction extends ParentAction {
 				"comboCycleStatus");
 	}
 	
+	/**
+	 * 加载所有套餐固定周期
+	 */
+	private void findComboCycleList() {
+		this.comboCycleList = statusService.find(Combo.class,
+				"fixedCycle");
+	}
+	
+	
+	/**
+	 * 加载所有套餐周期类型
+	 */
+	private void findComboFixedStatusList() {
+		List<Status> statusList = statusService.find(ComboPlan.class);
+		List<Status> tempstatusList = new ArrayList<>();
+		tempstatusList.addAll(statusList);
+		List<StatusBlock> tempList = new ArrayList<>();
+		Iterator<Status> it = statusList.iterator();
+		while(it.hasNext()){
+			Status s = it.next();
+			if(s.getParentId()==null){
+				StatusBlock sb = new StatusBlock();
+				sb.setStatus(s);
+				List<StatusBlock> list = getChildList(tempstatusList,s.getId()); 
+				sb.setStatusChildList(list);
+				tempList.add(sb);
+			}
+		}
+		this.comboFixedStatusList = tempList;
+	}
+	
+	private List<StatusBlock> getChildList(List<Status> stautsList, Integer parentId) {
+		List<StatusBlock> list = new ArrayList<>();
+		List<Status> tempList = new ArrayList<>();
+		tempList.addAll(stautsList);
+		Iterator<Status> it = stautsList.iterator();
+		while(it.hasNext()){
+			Status s = it.next();
+			if(parentId.equals(s.getParentId())){
+				StatusBlock sb = new StatusBlock();
+				sb.setStatus(s);
+				List<StatusBlock> child = getChildList(tempList,s.getId());
+				sb.setStatusChildList(child);
+				list.add(sb);
+				it.remove();
+			}
+		}
+		stautsList.retainAll(tempList);
+		if(list.size()>0){
+			return list;
+		}
+		return null;
+	}
+
 	public ComboVO getComboVo() {
 		return comboVo;
 	}
@@ -221,6 +428,72 @@ public class ComboAction extends ParentAction {
 	public void setComboCycleStatusList(List<Status> comboCycleStatusList) {
 		this.comboCycleStatusList = comboCycleStatusList;
 	}
-	
+
+	public List<StatusBlock> getComboFixedStatusList() {
+		return comboFixedStatusList;
+	}
+
+	public void setComboFixedStatusList(List<StatusBlock> comboFixedStatusList) {
+		this.comboFixedStatusList = comboFixedStatusList;
+	}
+
+	public List<Status> getComboCycleList() {
+		return comboCycleList;
+	}
+
+	public void setComboCycleList(List<Status> comboCycleList) {
+		this.comboCycleList = comboCycleList;
+	}
+
+	public File getComboImgSmallFile() {
+		return comboImgSmallFile;
+	}
+
+	public void setComboImgSmallFile(File comboImgSmallFile) {
+		this.comboImgSmallFile = comboImgSmallFile;
+	}
+
+	public File getComboImgBigFile() {
+		return comboImgBigFile;
+	}
+
+	public void setComboImgBigFile(File comboImgBigFile) {
+		this.comboImgBigFile = comboImgBigFile;
+	}
+
+	public String getComboImgSmallPath() {
+		return comboImgSmallPath;
+	}
+
+	public void setComboImgSmallPath(String comboImgSmallPath) {
+		this.comboImgSmallPath = comboImgSmallPath;
+	}
+
+	public String getComboImgBigPath() {
+		return comboImgBigPath;
+	}
+
+	public void setComboImgBigPath(String comboImgBigPath) {
+		this.comboImgBigPath = comboImgBigPath;
+	}
 	
 }
+
+class StatusBlock{
+	Status status;
+	List<StatusBlock> statusChildList;
+	
+	public Status getStatus() {
+		return status;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	public List<StatusBlock> getStatusChildList() {
+		return statusChildList;
+	}
+	public void setStatusChildList(List<StatusBlock> statusChildList) {
+		this.statusChildList = statusChildList;
+	}
+}
+

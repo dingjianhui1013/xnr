@@ -5,7 +5,7 @@
 	        + request.getServerName() + ":" + request.getServerPort()
 	        + path + "/";
 	
-	String action = basePath+"page/business/admin/combo/info.action";
+	String action = basePath+"page/business/admin/combo/userInfo.action";
 	String modify = basePath+"page/business/admin/combo/modifyInfo.action";
 	String del = basePath+"page/business/admin/combo/delInfo.action";
 	
@@ -44,9 +44,14 @@
 		<table class="searchContent">
 			<tr>
 				<td>
-					套餐名称：
+					用户名：
 					<input type="text" name="comboVo.combo.comboName" value="${comboVo.combo.comboName}"/>
 				</td>
+				<td>
+					套餐名：
+					<input type="text" name="comboVo.combo.comboName" value="${comboVo.combo.comboName}"/>
+				</td>
+				
 				<%-- <td>
 					<label>分配状态：</label>
 					<select class="combox" name="deliveryStatus">
@@ -67,16 +72,16 @@
 				</td> --%>
 			</tr>
 		</table>
-		<%-- <table>
+		<table>
 			<tr>
 				<td>
-					分配日期（起始结束时间都要选）：从
+					起止日期（起始结束时间都要选）：从
 					<input type="text" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createStartTime}" class="date" readonly="true" />
 					到
 					<input type="text" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createEndTime}" class="date" readonly="true" />
 				</td>
 			</tr>
-		</table> --%>
+		</table>
 		<div class="subBar">
 			<ul>
 				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
@@ -89,33 +94,40 @@
 	<div class="panelBar">
 		<ul class="toolBar">
 			<li>
-			<a class="add" href="${modify}?pageType=3" target="navTab" title="新增"><span>新增套餐</span></a>
+			<a class="add" href="${modify}?pageType=3" target="navTab" title="新增"><span>新增用户套餐</span></a>
 			</li>
 		</ul>
 	</div>
 	<table class="table" width="100%" layoutH="225">
 		<thead>
 			<tr>
-				<th width="45">套餐名称</th>
-				<th width="40">套餐价格</th>
-				<th width="100">套餐状态</th>
+				<th width="45">用户名</th>
+				<th width="40">套餐名</th>
+				<th width="40">套餐金额</th>
+				<th width="40">已配送金额</th>
+				<th width="100">用户套餐状态</th>
+				<th width="100">用户套餐开始时间</th>
+				<th width="100">用户套餐结束时间</th>
 				<th width="100">操作</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:if test="${comboList!=null}">
-				<c:forEach items="${comboList}" var="loop">
-					<tr target="sid_orderRecordId" rel="${loop.id}">						
-						<td>${loop.comboName}</td>
-						<td>${loop.comboPrice}</td>	
-						<td>
-							<c:if test="${loop.comboStatus == 0}">启用</c:if>
-							<c:if test="${loop.comboStatus == 1}">禁用</c:if>
-						</td>
+			<c:if test="${comboUserVOList!=null}">
+				<c:forEach items="${comboUserVOList}" var="loop">
+					<tr target="sid_orderRecordId" rel="${loop.comboUser.id}">						
+						<td>${loop.frontUser.userName}</td>
+						<td>${loop.combo.comboName}</td>	
+						<td>${loop.combo.comboPrice}</td>
+						<td>${loop.comboUser.usingMoney}</td>
+						<td>${loop.comboUser.comboStartTime}</td>
+						<td>${loop.comboUser.comboEndTime}</td>
 						<td>					
-							<a title="查看" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
-							<a title="编辑" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=2" class="btnEdit">编辑</a>
-							<a title="删除" target="ajaxTodo" href="${del}?comboVo.combo.id=${loop.id}" class="btnDel" title="确认删除？" >删除</a>
+							<a title="查看订单详情" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
+							<a title="查看商品详情" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
+							<a title="查看以后的配送计划" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
+							<a title="计划外调整订单" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
+							<%-- <a title="编辑" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=2" class="btnEdit">编辑</a>
+							<a title="删除" target="ajaxTodo" href="${del}?comboVo.combo.id=${loop.id}" class="btnDel" title="确认删除？" >删除</a> --%>
 							<c:if test="${loop.comboStatus == 0}">
 								<a title="禁用" href="javascript:send(${loop.id})" class="btnSelect" >禁用</a>
 							</c:if>

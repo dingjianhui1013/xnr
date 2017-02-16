@@ -30,11 +30,11 @@ public class ComboPlan implements java.io.Serializable{
 
 	private Integer id;
 
-    private String comboPlanType;  //计划类型 0--固定时间 1--固定周期 2--固定周期固定时间
+    private String comboPlanType;  //计划类型 固定时间 固定周期 固定周期固定时间
 
-    private String comboPlanDate;  //固定时间 type=1时 固定时间如2017-03-01日期的秒值    type=2时 固定时间为一个周期长度 单位秒 表示从现在开始 每一个周期长度配送一次 type=3时  固定时间是一个周期长度内的相对时间如每周周三 该值为周三开始那天相对于周一的相对时间两天的秒数
+    private String comboPlanDate;  //时间
     
-    private String comboPlanCycle;  //周期长度 秒
+    private String comboPlanCycle;  //周期长度
     
     private Timestamp comboPlanCreatTime;	//计划生成时间
     

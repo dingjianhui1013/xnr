@@ -33,6 +33,10 @@ public class Status implements java.io.Serializable{
     private String statusCode;
     
     private String readme;
+    
+    private String remark;
+    
+    private Integer parentId;
 
     public String toString() {
 		String res = "";
@@ -123,6 +127,23 @@ public class Status implements java.io.Serializable{
 
 	public void setReadme(String readme) {
 		this.readme = readme;
+	}
+	
+	@Column(name = "remark")
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	@Column(name = "parent_id")
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
 	}
 
 }

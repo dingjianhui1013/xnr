@@ -44,6 +44,10 @@ public class Combo implements java.io.Serializable{
     
     private Integer comboTimes;//套餐总次数
     
+    private String comboImgSmall;//套餐小图
+    
+    private String comboImgBig;//套餐大图
+    
     /** default constructor */
     public Combo(){
     }
@@ -126,5 +130,24 @@ public class Combo implements java.io.Serializable{
 	public void setComboCycleStatus(String comboCycleStatus) {
 		this.comboCycleStatus = comboCycleStatus;
 	}
+	
+	@Column(name = "combo_img_small")
+	public String getComboImgSmall() {
+		return comboImgSmall;
+	}
+
+	public void setComboImgSmall(String comboImgSmall) {
+		this.comboImgSmall = comboImgSmall;
+	}
+	
+	@Column(name = "combo_img_big")
+	public String getComboImgBig() {
+		return comboImgBig;
+	}
+
+	public void setComboImgBig(String comboImgBig) {
+		this.comboImgBig = comboImgBig;
+	}
     
+	
 }
