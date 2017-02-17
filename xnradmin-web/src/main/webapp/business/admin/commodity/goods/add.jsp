@@ -75,7 +75,8 @@ function checkTime(){
 </script>
 
 <div class="pageContent">
-	<form id="checkTimeFormADD" method="post" action="${action}" enctype="multipart/form-data" class="pageForm required-validate" onsubmit="return iframeCallback(this)">
+	<form id="checkTimeFormADD" method="post" action="${action}" enctype="multipart/form-data" 
+	class="pageForm required-validate" onsubmit="return iframeCallback(this)">
 		<div class="pageFormContent" layoutH="56">
 			<fieldset>
 				<label>商品名称：</label>

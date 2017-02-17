@@ -8,7 +8,6 @@
 	String action = basePath+"page/business/admin/combo/info.action";
 	String modify = basePath+"page/business/admin/combo/modifyInfo.action";
 	String del = basePath+"page/business/admin/combo/delInfo.action";
-	String send = basePath+"page/business/admin/combo/send.action";
 	
 	request.setAttribute("action",action);
 	request.setAttribute("modify",modify);
@@ -28,7 +27,7 @@
 <script type="text/javascript">
 	function send(id){
 		$.ajax({
-			url:'<%= basePath%>page/business/admin/allocation/send.action?allocationId='+id,
+			url:'<%= basePath%>page/business/admin/combo/send.action?comboVo.combo.id='+id,
 			type:'POST',
 			data:{},
 			dataType:'JSON',
@@ -68,7 +67,7 @@
 				</td> --%>
 			</tr>
 		</table>
-		<table>
+		<%-- <table>
 			<tr>
 				<td>
 					分配日期（起始结束时间都要选）：从
@@ -77,7 +76,7 @@
 					<input type="text" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createEndTime}" class="date" readonly="true" />
 				</td>
 			</tr>
-		</table>
+		</table> --%>
 		<div class="subBar">
 			<ul>
 				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
@@ -90,7 +89,7 @@
 	<div class="panelBar">
 		<ul class="toolBar">
 			<li>
-			<a class="add" href="${modify}?pageType=3" target="navTab" title="新增"><span>新增分配</span></a>
+			<a class="add" href="${modify}?pageType=3" target="navTab" title="新增"><span>新增套餐</span></a>
 			</li>
 		</ul>
 	</div>
@@ -104,18 +103,24 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:if test="${allocationVo!=null}">
-				<c:forEach items="${allocationVo}" var="loop">
-					<tr target="sid_orderRecordId" rel="${loop.allocationData.id}">						
-						<td>${loop.allocationData.id}</td>
-						<td>${loop.staff.loginId}</td>	
-						<td>${loop.allocationData.allocationTime}</td>
+			<c:if test="${comboList!=null}">
+				<c:forEach items="${comboList}" var="loop">
+					<tr target="sid_orderRecordId" rel="${loop.id}">						
+						<td>${loop.comboName}</td>
+						<td>${loop.comboPrice}</td>	
+						<td>
+							<c:if test="${loop.comboStatus == 0}">启用</c:if>
+							<c:if test="${loop.comboStatus == 1}">禁用</c:if>
+						</td>
 						<td>					
-							<a title="查看" target="navTab" href="${modify}?allocationId=${loop.allocationData.id}&pageType=1" class="btnLook">查看</a>
-							<c:if test="${loop.allocationData.allocationStatus == 0}">
-								<a title="编辑" target="navTab" href="${modify}?allocationId=${loop.allocationData.id}&pageType=2" class="btnEdit">编辑</a>
-								<a title="删除" target="ajaxTodo" href="${del}?allocationId=${loop.allocationData.id}" class="btnDel" title="确认删除？" >删除</a>
-								<a title="配送" href="javascript:send(${loop.allocationData.id})" class="btnSelect" >配送</a>
+							<a title="查看" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
+							<a title="编辑" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=2" class="btnEdit">编辑</a>
+							<a title="删除" target="ajaxTodo" href="${del}?comboVo.combo.id=${loop.id}" class="btnDel" title="确认删除？" >删除</a>
+							<c:if test="${loop.comboStatus == 0}">
+								<a title="禁用" href="javascript:send(${loop.id})" class="btnSelect" >禁用</a>
+							</c:if>
+							<c:if test="${loop.comboStatus == 1}">
+								<a title="启用" href="javascript:send(${loop.id})" class="btnSelect" >启用</a>
 							</c:if>
 						</td>	
 					</tr>				

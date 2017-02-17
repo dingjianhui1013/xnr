@@ -29,6 +29,8 @@ public class ComboPlanVO implements java.io.Serializable{
 	
 	private ComboPlan comboPlan;
 	
+	private String comboCycleStr;//套餐的计划时间周期 #隔开 status表里的id值
+	
 	public String toString() {
 		String res = "";
 		try {
@@ -53,6 +55,14 @@ public class ComboPlanVO implements java.io.Serializable{
 
 	public void setComboPlan(ComboPlan comboPlan) {
 		this.comboPlan = comboPlan;
+	}
+
+	public String getComboCycleStr() {
+		return comboCycleStr;
+	}
+
+	public void setComboCycleStr(String comboCycleStr) {
+		this.comboCycleStr = comboCycleStr;
 	}
 
 }

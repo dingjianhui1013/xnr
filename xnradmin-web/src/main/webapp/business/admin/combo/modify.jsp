@@ -20,7 +20,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <script type="text/javascript">
+
 function saveCombo(){
 	//form 表单参数验证
 	/* if(!$("#content").valid()){
@@ -31,9 +33,25 @@ function saveCombo(){
 		alertMsg.error("套餐必须有商品和分配计划");
 		return false;
 	};
+	//计划时间没有选
 	
-	//配送计划里面的时间验证 不能是过去时间
 	var flag=true;
+	$("#farmeTable").find("tr").each(function(i,one){
+		//修改时间的name 
+		var comboCycleStr = $(one).find("input[name$='.comboCycleStr']");
+		var date = $(one).find("input[name$='comboCycleDate']");
+		var input = comboCycleStr.val();
+		var name = $(one).find("input[name$='.comboPlan.goodsNumber']").attr("name");
+		name = name.substring(0,name.lastIndexOf('.comboPlan.goodsNumber'))+".comboCycleStr";
+		var dateName = name.substring(0,name.lastIndexOf('.comboPlan.goodsNumber'))+".comboPlan.comboPlanDate";
+		comboCycleStr.attr("name",name);
+		date.attr("name",dateName);
+		if(input==undefined){
+			alertMsg.error("套餐配送 计划时间必选");
+			flag=false;
+		}
+	})
+	//配送计划里面的时间验证 不能是过去时间
 	var today = new Date();
 	var date = new Date(today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate());
 	$("#farmeTable").find("input[id='comboCycleDate'").each(function(i,one){
@@ -52,24 +70,7 @@ function saveCombo(){
 	if(count!=comboCount){
 		alertMsg.confirm("套餐价格与商品总价格不符，确定要保存吗？",{
 			okCall:	function(){
-				$.ajax({
-					type: 'POST',
-					url:$("#content").attr("action"),
-					data:$("#content").serializeArray(),
-					dataType:"json",
-					cache: false,
-					success: function(data){
-						alert(data);
-						/* var pageType = '${pageType}';
-						if(pageType==2){
-							alertMsg.info("修改成功");
-							navTabAjaxDone(data);
-						}else{
-							alertMsg.info("保存成功");
-							navTabSearch($("#search")[0]);
-						} */
-					}
-				}); 
+				$("#content").submit();
 			}
 		});
 	}
@@ -80,28 +81,31 @@ function changeComboType(obj){
 	var tr=$(obj).closest("tr");
 	tr.find("span").each(function(i,one){
 		$(one).remove();
-	})
+	});
+	tr.find("input[name$='.comboCycleStr']").remove();
 	if(val==0){
-		var comboCycleDate =$('<span id="comboCycleDateSpan"><input type="text" id="comboCycleDate" name="comboCycleDate" class="date required number textInput" dateFmt="yyyy-MM-dd" size="20"/><a class="inputDateButton" href="javascript:void(0)">选择</a></span>');
+		var comboCycleDate =$('<span id="comboCycleDateSpan"><input type="text" id="comboCycleDate" name="comboCycleDate" class="date required textInput" dateFmt="yyyy-MM-dd" size="20"/><a class="inputDateButton" href="javascript:void(0)">选择</a></span>');
 		comboCycleDate.insertAfter($(obj));
 		$('#comboCycleDate').datepicker();
-		
+		tr.append("<input type='hidden' name='.comboCycleStr' value=''>");
 	}else if(val==1){
-		var comboCycle =$("<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle'>"
-						+ "		<option value=''>请选择</option>"
-						+ "		<option value='0'>每三天</option>"
-						+ "		<option value='1'>每一周</option>"
-						+ "		<option value='2'>每两周</option>"
-						+ "  <select></span>");
+		var html = "<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle' onchange='writeTime(this,2)'>";
+			html+= "		<option value=''>请选择</option>";
+		<s:iterator value="#request.comboCycleList" id="item">
+			html+= '		<option value="<s:property value="#item.id" />"><s:property value="#item.statusName" /></option>'
+		</s:iterator>
+			html+= "  <select></span>"
+		var comboCycle =$(html);
 		comboCycle.insertAfter($(obj));
 		
 	}else if(val==2){
-		var comboCycle =$("<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle' onchange='changeComboCycle(this)'>"
-						+ "		<option value=''>请选择</option>"
-						+ "		<option value='1'>每一周</option>"
-						+ "		<option value='2'>每两周</option>"
-						+ "		<option value='3'>每一月</option>"
-						+ "  <select></span>");
+		var html = "<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle' onchange='changeComboCycle(this)'>";
+		html+= "		<option value=''>请选择</option>";
+		<s:iterator value="#request.comboFixedStatusList" id="item">
+		html+= '		<option value="<s:property value="#item.status.id" />"><s:property value="#item.status.statusName" /></option>'
+		</s:iterator>
+		html+= "  <select></span>";
+		var comboCycle =$(html);
 		comboCycle.insertAfter($(obj));
 	}
 }
@@ -111,40 +115,32 @@ function changeComboCycle(obj){
 	tr.find("span[id='comboCycleDateSpan']").each(function(i,one){
 		$(one).remove();
 	})
-	if(val==1){
-		var comboCycleDate =$("<span id='comboCycleDateSpan'><select id='comboCycleDate' name='comboCycleDate' >"
-				+ "		<option value=''>请选择</option>"
-				+ "		<option value='1'>周一</option>"
-				+ "		<option value='2'>周二</option>"
-				+ "		<option value='3'>周三</option>"
-				+ "		<option value='4'>周四</option>"
-				+ "		<option value='5'>周五</option>"
-				+ "  <select></span>");
-		comboCycleDate.insertAfter($(obj));
-	}else if(val==2){
-		var comboCycleDate =$("<span id='comboCycleDateSpan'><select id='comboCycleDate' name='comboCycleDate' >"
-				+ "		<option value=''>请选择</option>"
-				+ "		<option value='11'>第一周周一</option>"
-				+ "		<option value='12'>第一周周二</option>"
-				+ "		<option value='13'>第一周周三</option>"
-				+ "		<option value='14'>第一周周四</option>"
-				+ "		<option value='15'>第一周周五</option>"
-				+ "		<option value='21'>第二周周一</option>"
-				+ "		<option value='22'>第二周周二</option>"
-				+ "		<option value='23'>第二周周三</option>"
-				+ "		<option value='24'>第二周周四</option>"
-				+ "		<option value='25'>第二周周五</option>"
-				+ "  <select></span>");
-		comboCycleDate.insertAfter($(obj));
-		
-	}else if(val==3){
-		var comboCycleDate =$("<span id='comboCycleDateSpan'><select id='comboCycleDate' name='comboCycleDate' >"
-				+ "		<option value=''>请选择</option>"
-				+ "		<option value='1'>月初</option>"
-				+ "		<option value='2'>月中</option>"
-				+ "		<option value='3'>月末</option>"
-				+ "  <select></span>");
-		comboCycleDate.insertAfter($(obj));
+	tr.find("input[name$='.comboCycleStr']").remove();
+	for(var i=0;i<cycleStatus.length;i++){
+		if(cycleStatus[i].id==val){
+			var html = "<span id='comboCycleDateSpan'><select id='comboCycleDate' name='comboCycleDate' onchange='writeTime(this,3)'>";
+			html+= "		<option value=''>请选择</option>";
+			for(var j=0;j<cycleStatus[i].list.length;j++){
+				html+= "	<option value="+cycleStatus[i].list[j].id+">"+cycleStatus[i].list[j].name+"</option>";
+			}
+			html+= "  <select></span>";
+			var comboCycleDate =$(html);
+			comboCycleDate.insertAfter($(obj));
+		}
+	}
+}
+function writeTime(obj,type){
+	var tr=$(obj).closest("tr");
+	var name = tr.find("input[name$='.comboPlan.goodsNumber']").attr("name");
+	var comboType = tr.find("select[id='comboType']").val();
+	var comboCycle = tr.find("select[id='comboCycle']").val();
+	var comboDate = tr.find("select[id='comboCycleDate']").val();
+	name = name.substring(0,name.lastIndexOf('.comboPlan.goodsNumber'))+".comboCycleStr";
+	
+	if(type==2){
+		tr.append("<input type='hidden' name="+name+" value="+comboType+"#"+comboCycle+">");
+	}else if(type==3){
+		tr.append("<input type='hidden' name="+name+" value="+comboType+"#"+comboCycle+"#"+comboDate+">");
 	}
 }
 function countPrice(obj){
@@ -164,16 +160,32 @@ function countPrice(obj){
 	});
 	$("#goodsTotalCount").val(count.toFixed(2));
 }
+var cycleStatus=[];
+var comboCycleStr=[]
 $(function(){
+	//初始化下拉选
+	<s:iterator value="#request.comboFixedStatusList" id="item">
+		var struct ={
+				id:'<s:property value="#item.status.id" />',
+				name:'<s:property value="#item.status.statusName" />'
+		};
+		var list=[];
+		<s:iterator value="#item.statusChildList" id="item1">
+			var child ={
+					id:'<s:property value="#item1.status.id" />',
+					name:'<s:property value="#item1.status.statusName" />'
+			};
+			list[list.length]=child;
+		</s:iterator>
+		struct.list=list;
+		cycleStatus[cycleStatus.length]=struct;
+	</s:iterator>
+	//初始化下拉选的值
+	<s:iterator value="#request.comboVo.comboPlanList" id="item">
+		comboCycleStr[comboCycleStr.length]='<s:property value="#item.comboCycleStr" />';
+	</s:iterator>
 	var pageType = '${pageType}';
 	if(pageType==1){//查看页面 禁用所有input 和button
-		$("#search").find("input").each(function(i,one){
-			$(one).attr("readonly","readonly");
-			$(one).attr("disabled","disabled");
-		})
-		$("#search").find("button").each(function(i,one){
-			$(one).attr("disabled","disabled");
-		})
 		$("#content").find("input").each(function(i,one){
 			$(one).attr("readonly","readonly");
 		})
@@ -182,22 +194,62 @@ $(function(){
 		})
 		$("#itemDetail1").removeClass("itemDetail");
 		$("#itemDetail2").removeClass("itemDetail");
+		//计算商品价格
+		countPrice();
+		$("#farmeTable").find("tr").each(function(i,one){
+			var str = comboCycleStr[i];
+			if(str!=''){
+				var strs = str.split("#");
+				if(strs[0]==1){
+					var comboPlanType = $(one).find("select[id$='comboType']");
+					comboPlanType.val(strs[0]);
+					comboPlanType.trigger("change");
+					var comboCycle = $(one).find("select[id$='comboCycle']");
+					comboCycle.val(strs[1]);
+					comboCycle.trigger("change");
+				}else if(strs[0]==2){
+					var comboPlanType = $(one).find("select[id$='comboType']");
+					comboPlanType.val(strs[0]);
+					comboPlanType.trigger("change");
+					var comboCycle = $(one).find("select[id$='comboCycle']");
+					comboCycle.val(strs[1]);
+					comboCycle.trigger("change");
+					var comboCycle = $(one).find("select[id$='comboCycleDate']");
+					comboCycle.val(strs[2]);
+					comboCycle.trigger("change");
+				}
+			}
+		})
+		
 	}else if(pageType==2){
-		$("#search").find("input").each(function(i,one){
-			$(one).attr("readonly","readonly");
-			$(one).attr("disabled","disabled");
-		})
-		$("#search").find("button").each(function(i,one){
-			$(one).attr("disabled","disabled");
-		})
-		$("#itemDetail1").find("input").each(function(i,one){
-			$(one).attr("readonly","readonly");
-		})
-		$("#itemDetail1").find("button").each(function(i,one){
-			$(one).attr("disabled","disabled");
-		})
-		$("#itemDetail1").removeClass("itemDetail");
+		$("#itemDetail1").addClass("itemDetail");
 		$("#itemDetail2").addClass("itemDetail");
+		//计算商品价格
+		countPrice();
+		$("#farmeTable").find("tr").each(function(i,one){
+			var str = comboCycleStr[i];
+			if(str!=''){
+				var strs = str.split("#");
+				if(strs[0]==1){
+					var comboPlanType = $(one).find("select[id$='comboType']");
+					comboPlanType.val(strs[0]);
+					comboPlanType.trigger("change");
+					var comboCycle = $(one).find("select[id$='comboCycle']");
+					comboCycle.val(strs[1]);
+					comboCycle.trigger("change");
+				}else if(strs[0]==2){
+					var comboPlanType = $(one).find("select[id$='comboType']");
+					comboPlanType.val(strs[0]);
+					comboPlanType.trigger("change");
+					var comboCycle = $(one).find("select[id$='comboCycle']");
+					comboCycle.val(strs[1]);
+					comboCycle.trigger("change");
+					var comboCycle = $(one).find("select[id$='comboCycleDate']");
+					comboCycle.val(strs[2]);
+					comboCycle.trigger("change");
+				}
+			}
+		})
 	}else if(pageType==3){
 		$("#itemDetail1").addClass("itemDetail");
 		$("#itemDetail2").addClass("itemDetail");
@@ -211,19 +263,21 @@ $(function(){
 		alert($(one).html());
 	}) */
 	
+	
 })
 </script>
 <div class="pageContent">
-	<form method="post" action="${action}" class="pageForm required-validate" onsubmit="" id="content">
+	<form method="post" action="${action}" class="pageForm required-validate" enctype="multipart/form-data"
+		onsubmit="return iframeCallback(this)" id="content">
 	
-	<div class="pageFormContent" layoutH="699" style="height: 70px">
+	<div class="pageFormContent" layoutH="649" style="height: 70px">
 			<fieldset>
 				<label>套餐名称：</label>
-				<input name="comboVo.combo.comboName" type="text" size="25" class="required"/>			
+				<input name="comboVo.combo.comboName" type="text" size="25" class="required" value="${comboVo.combo.comboName }"/>			
 			</fieldset>
 			<fieldset>
 				<label>套餐价格：</label>
-				<input name="comboVo.combo.comboPrice" type="text" size="25" class="required number"/>			
+				<input name="comboVo.combo.comboPrice" type="text" size="25" class="required number" value="${comboVo.combo.comboPrice}"/>			
 			</fieldset>
 			<fieldset>
 				<label>套餐周期时间：</label>
@@ -243,6 +297,14 @@ $(function(){
 					</c:if>
 				</select>		
 			</fieldset>
+			<fieldset>
+				<label>商品小图片：</label>
+				<input name="comboImgSmallFile" type="file">
+			</fieldset>
+			<fieldset>
+				<label>商品大图片：</label>
+				<input name="comboImgBigFile" type="file">
+			</fieldset>
 			<%-- <fieldset>
 				<label>商品类型：</label>
 				<input class="readonly" name="category.id" readonly="readonly" type="hidden"/>
@@ -254,7 +316,7 @@ $(function(){
 	
 	<input type="hidden" value="${comboVo.combo.id}" name="comboVo.combo.id">
 		<h3 class="contentTitle">套餐商品列表</h3>
-		<div class="pageFormContent" layoutH="245" style="height: 320px">
+		<div class="pageFormContent" layoutH="345" style="height: 320px">
 			<div class="tabs">
 				<div class="tabsHeader">
 					<div class="tabsHeaderContent">
@@ -284,7 +346,9 @@ $(function(){
 											<td>
 												<input type="hidden" value="${loop.businessGoods.id}" name="comboVo.comboGoodsList[${status.index}].businessGoods.id">
 												<input type="text" value="${loop.businessGoods.goodsName}" name="comboVo.comboGoodsList[${status.index}].businessGoods.goodsName">
-												<a class="btnLook" title="查找带回" lookupgroup="comboVo.comboGoodsList[${loop.businessGoods.id}].businessGoods" href="${goodsLookup}">查找带回</a>
+												<c:if test="${pageType!=1}">
+													<a class="btnLook" title="查找带回" lookupgroup="comboVo.comboGoodsList[${status.index}].businessGoods" href="${goodsLookup}">查找带回</a>
+												</c:if>
 											</td>
 											<td>
 												<input id="" class="required number" type="text" maxlength="" onafterpaste="" onkeyup="" onkeydown=""
@@ -339,7 +403,9 @@ $(function(){
 			<div class="divider"></div>
 			<div><fieldset>
 				<label>商品总价：</label>
-				<button type="button" onclick="countPrice()">计算总价</button>
+				<c:if test="${pageType!=1}">
+					<button type="button" onclick="countPrice()">计算总价</button>
+				</c:if>
 				<input id="goodsTotalCount" name="goodsTotalCount" type="text" size="25" class="required number"/>	
 			</fieldset> </div>
 			<h3 class="contentTitle">套餐配送计划列表</h3>
@@ -368,20 +434,18 @@ $(function(){
 									<tr class="unitBox">
 									
 									        <td>
-									        	<select id='comboVo.comboPlanList[${status.index}].comboPlan.comboPlanType' name='comboPlanType' onchange='changeComboType(this)'>
+									        	<select id='comboType' name='comboType' onchange='changeComboType(this)'>
 													<option value=''>请选择</option>
 													<option value='0'>固定时间</option>
 													<option value='1'>固定周期</option>
 													<option value='2'>固定周期固定时间</option>
-												<select>"
+												<select>
 									        </td>
 											<td>
-											    <input name="comboVo.comboPlanList[${status.index}].comboPlan.goodsName" type="text" value="${loop.comboPlan.goodsName}" >
-											</td>
-											<td>
 												<input type="hidden" name="comboVo.comboPlanList[${status.index}].businessGoods.id" value="${loop.businessGoods.id}">
+											    <input type="text"   name="comboVo.comboPlanList[${status.index}].businessGoods.goodsName"  value="${loop.businessGoods.goodsName}" >
 												<c:if test="${pageType==2}">
-													<a class="btnLook" title="查找带回" lookupGroup="comboVo.comboPlanList[#index#].businessGoods" href="${goodsLookup}?goodsIdstr=${goodsIdstr}">查找带回</a>
+													<a class="btnLook" title="查找带回" lookupGroup="comboVo.comboPlanList[${status.index}].businessGoods" href="${goodsLookup}?goodsIdstr=${goodsIdstr}">查找带回</a>
 												</c:if>
 											</td>
 											<td>

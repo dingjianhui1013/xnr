@@ -16,7 +16,11 @@ import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboGoods;
 import com.xnradmin.po.business.ComboPlan;
+import com.xnradmin.po.business.ComboUser;
 import com.xnradmin.po.common.status.Status;
+import com.xnradmin.vo.business.ComboGoodsVO;
+import com.xnradmin.vo.business.ComboPlanVO;
+import com.xnradmin.vo.business.ComboUserVO;
 import com.xnradmin.vo.business.ComboVO;
 
 
@@ -46,10 +50,21 @@ public class ComboDAO{
         return cls;
     }
 
-    public void delete(BusinessGoods businessGoods){
-        log.debug("deleting BusinessGoods instance");
+    public void delete(Combo combo){
+        log.debug("deleting Combo instance");
         try{
-            commonDao.delete(businessGoods);
+            commonDao.delete(combo);
+            log.debug("delete successful");
+        }catch(RuntimeException re){
+            log.error("delete failed",re);
+            throw re;
+        }
+    }
+    
+    public void deleteComboGoods(ComboGoods comboGoods){
+        log.debug("deleting ComboGoods instance");
+        try{
+            commonDao.delete(comboGoods);
             log.debug("delete successful");
         }catch(RuntimeException re){
             log.error("delete failed",re);
@@ -58,57 +73,46 @@ public class ComboDAO{
     }
 
     public ComboVO findById(Integer id){
-    	/*String hql = "from Combo c,ComboGoods cg "
-    			+ " where c.id = cg.comboId and  c.id = "+id;
+    	String hql = "from Combo c,ComboGoods cg,BusinessGoods bg "
+    			+ " where c.id = cg.comboId and bg.id=cg.goodsId and  c.id = "+id;
 
 		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
-		List<ComboGoods> comboGoodsList = new ArrayList<>();
-		List<ComboPlan> comboPlanList = new ArrayList<>();
+		List<ComboGoodsVO> comboGoodsList = new ArrayList<>();
+		List<ComboPlanVO> comboPlanList = new ArrayList<>();
 		ComboVO resVo = new ComboVO();
 		for (int i = 0; i < l.size(); i++) {
 			Object[] obj = l.get(i);
-			if(i==1){
+			if(i==0){
 				resVo.setCombo((Combo)obj[0]);
 			}
-			//ComboGoodsVO cgo
-			comboGoodsList.add((ComboGoods)obj[1]);
+			ComboGoodsVO cgo = new ComboGoodsVO();
+			cgo.setComboGoods((ComboGoods)obj[1]);
+			cgo.setBusinessGoods((BusinessGoods)obj[2]);
+			comboGoodsList.add(cgo);
 		}
 		resVo.setComboGoodsList(comboGoodsList);
 		
-		hql = "from Combo c, ComboPlan cp "
-    			+ " where c.id = cp.comboId and  c.id = "+id;
+		hql = "from Combo c, ComboPlan cp,BusinessGoods bg "
+    			+ " where c.id = cp.comboId and bg.id=cp.goodsId and  c.id = "+id;
 
 		l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		for (int i = 0; i < l.size(); i++) {
 			Object[] obj = l.get(i);
-			comboPlanList.add((ComboPlan)obj[1]);
+			ComboPlanVO cpo = new ComboPlanVO();
+			ComboPlan cp = (ComboPlan)obj[1];
+			cpo.setComboPlan(cp);
+			cpo.setBusinessGoods(((BusinessGoods)obj[2]));
+			if(cp.getComboPlanType().equals("0")){//固定时间
+				cpo.setComboCycleStr("");
+			}else if(cp.getComboPlanType().equals("1")){//固定周期
+				cpo.setComboCycleStr(cp.getComboPlanType()+"#"+cp.getComboPlanCycle());
+			}else{
+				cpo.setComboCycleStr(cp.getComboPlanType()+"#"+cp.getComboPlanCycle()+"#"+cp.getComboPlanDate());
+			}
+			comboPlanList.add(cpo);
 		}
 		resVo.setComboPlanList(comboPlanList);
-		return resVo;*/
-        return null;
-    }
-    public ComboVO findById(String comboId)
-    {
-    	String hql = "from Combo c , Status s where c.id="+comboId+" and s.id=c.comboCycleStatus";
-    	List list=commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
-    	List<ComboVO> comboVOs = new ArrayList<ComboVO>();
-    	for (int i = 0; i < list.size(); i++) {
-			ComboVO comboVo = new ComboVO();
-			Object[] object = (Object[])list.get(i);
-			Combo combo = (Combo)object[0];
-			Status status = (Status)object[1];
-			comboVo.setCombo(combo);
-			comboVo.setStatus(status);
-			comboVOs.add(comboVo);
-		}
-    	if(!comboVOs.isEmpty())
-    	{
-    		
-    		return comboVOs.get(0);
-    	}else {
-			return null;
-		}
-    	
+		return resVo;
     }
 
     public List<BusinessGoods> findByExample(BusinessGoods instance){
@@ -146,10 +150,10 @@ public class ComboDAO{
         }
     }
 
-    public BusinessGoods merge(BusinessGoods detachedInstance){
-        log.debug("merging BusinessGoods instance");
+    public Combo mergeCombo(Combo detachedInstance){
+        log.debug("merging Combo instance");
         try{
-        	BusinessGoods result = (BusinessGoods) commonDao
+        	Combo result = (Combo) commonDao
                     .merge(detachedInstance);
             log.debug("merge successful");
             return result;
@@ -273,7 +277,147 @@ public class ComboDAO{
         return cls;
 	}
 
-	public List<ComboVO> findAllCombo() {
+	public Combo findOneComboById(Integer id) {
+		log.debug("getting Combo instance with id: " + id);
+        try{
+
+            return (Combo) commonDao.findById(
+            		Combo.class,id);
+        }catch(RuntimeException re){
+            log.error("get failed",re);
+            throw re;
+        }
+	}
+
+	public int deleteComboGoodsByComboId(Integer id) {
+		log.debug("delete ComboGoods ComboId is "
+                + id);
+        try{
+            String queryString = "delete from ComboGoods where comboId= '"+id+"'";
+            return commonDao.executeUpdateOrDelete(queryString);
+        }catch(RuntimeException re){
+            log.error("find by property name failed",re);
+            throw re;
+        }
+		
+	}
+
+	public int deleteComboPlanByComboId(Integer id) {
+		log.debug("delete ComboPlan ComboId is "
+                + id);
+        try{
+            String queryString = "delete from ComboPlan where comboId= '"+id+"'";
+            return commonDao.executeUpdateOrDelete(queryString);
+        }catch(RuntimeException re){
+            log.error("find by property name failed",re);
+            throw re;
+        }
+	}
+
+	public ComboUser findComboUserByComboId(Integer id) {
+		log.debug("getting ComboUser instance with id: " + id);
+        try{
+
+            return (ComboUser) commonDao.findById(
+            		ComboUser.class,id);
+        }catch(RuntimeException re){
+            log.error("get failed",re);
+            throw re;
+        }
+	}
+
+	public List<ComboUserVO> findComboUsesrByPage(ComboUserVO comboUserVo,
+			int pageNum, int numPerPage, String orderField,
+			String direction) {
+		String hql = "from FrontUser fu, ComboUser cu,Combo c where cu.userId=fu.id and cu.comboId=c.id ";
+		//查询条件有 用户姓名，套餐名称，时间
+		if (comboUserVo!=null && comboUserVo.getCombo() != null) {
+			if (!StringHelper.isNull(comboUserVo.getCombo().getComboName())) {
+				hql = hql + " and c.comboName like '%"
+						+ comboUserVo.getCombo().getComboName() + "%'";
+			}
+		}
+		if (comboUserVo!=null && comboUserVo.getFrontUser() != null) {
+			if (!StringHelper.isNull(comboUserVo.getFrontUser().getUserName())) {
+				hql = hql + " and fu.userName like '%"
+						+ comboUserVo.getFrontUser().getUserName() + "%'";
+			}
+		}
+		if (comboUserVo!=null && comboUserVo.getComboUser() != null) {
+			if (!StringHelper.isNull(comboUserVo.getComboStartTime())) {
+				hql = hql + " and cu.comboStartTime >='"
+						+ comboUserVo.getComboStartTime() + "'";
+			}
+		}
+		if (comboUserVo!=null && comboUserVo.getComboUser() != null) {
+			if (!StringHelper.isNull(comboUserVo.getComboEndTime())) {
+				hql = hql + " and cu.comboEndTime <='"
+						+ comboUserVo.getComboEndTime() + "'";
+			}
+		}
+		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
+			hql = hql + " order by " + orderField + " " + direction;
+		} else {
+			hql += " order by c.id desc";
+		}
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, pageNum,
+				numPerPage);
+		return l;
+	}
+
+	public int getComboUserCount(ComboUserVO comboUserVo) {
+		String hql = "select count(*) from FrontUser fu, ComboUser cu,Combo c where cu.userId=fu.id and cu.comboId=c.id ";
+		//查询条件有 用户姓名，套餐名称，时间
+		if (comboUserVo!=null && comboUserVo.getCombo() != null) {
+			if (!StringHelper.isNull(comboUserVo.getCombo().getComboName())) {
+				hql = hql + " and c.comboName like '%"
+						+ comboUserVo.getCombo().getComboName() + "%'";
+			}
+		}
+		if (comboUserVo!=null && comboUserVo.getFrontUser() != null) {
+			if (!StringHelper.isNull(comboUserVo.getFrontUser().getUserName())) {
+				hql = hql + " and fu.userName like '%"
+						+ comboUserVo.getFrontUser().getUserName() + "%'";
+			}
+		}
+		if (comboUserVo!=null && comboUserVo.getComboUser() != null) {
+			if (!StringHelper.isNull(comboUserVo.getComboStartTime())) {
+				hql = hql + " and cu.comboStartTime >='"
+						+ comboUserVo.getComboStartTime() + "'";
+			}
+		}
+		if (comboUserVo!=null && comboUserVo.getComboUser() != null) {
+			if (!StringHelper.isNull(comboUserVo.getComboEndTime())) {
+				hql = hql + " and cu.comboEndTime <='"
+						+ comboUserVo.getComboEndTime() + "'";
+			}
+		}
+		return this.commonDao.getNumberOfEntitiesWithHql(hql);
+	}
+    public ComboVO findById(String comboId)
+    {
+    	String hql = "from Combo c , Status s where c.id="+comboId+" and s.id=c.comboCycleStatus";
+    	List list=commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+    	List<ComboVO> comboVOs = new ArrayList<ComboVO>();
+    	for (int i = 0; i < list.size(); i++) {
+			ComboVO comboVo = new ComboVO();
+			Object[] object = (Object[])list.get(i);
+			Combo combo = (Combo)object[0];
+			Status status = (Status)object[1];
+			comboVo.setCombo(combo);
+			comboVo.setStatus(status);
+			comboVOs.add(comboVo);
+		}
+    	if(!comboVOs.isEmpty())
+    	{
+    		
+    		return comboVOs.get(0);
+    	}else {
+			return null;
+		}
+    	
+    }
+    public List<ComboVO> findAllCombo() {
 		String hql = "from Combo c , Status s where c.comboStatus = 0 and s.id=c.comboCycleStatus";
 		List list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		List<ComboVO> comboVo = new ArrayList<ComboVO>();
