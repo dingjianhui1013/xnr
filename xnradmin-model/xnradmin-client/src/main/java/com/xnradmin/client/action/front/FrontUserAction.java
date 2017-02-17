@@ -1,23 +1,22 @@
 package com.xnradmin.client.action.front;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.sql.Timestamp;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +25,10 @@ import org.springframework.stereotype.Controller;
 
 import com.cntinker.security.MD5Encoder;
 import com.cntinker.util.CookieHelper;
-import com.cntinker.util.StringHelper;
-import com.cntinker.util.WebImageHelper;
 import com.xnradmin.client.service.front.FrontUserService;
-import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
-import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.mall.order.ShoppingCartService;
-import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.front.FrontUser;
-import com.xnradmin.vo.business.BusinessGoodsVO;
 
 @Controller
 @Scope("prototype")
@@ -156,7 +149,61 @@ public class FrontUserAction {
 				String cookieCart = cookieByName.getValue();
 				if(null!=cookieCart&&!"".equals(cookieCart)){
 					cookieCart = URLDecoder.decode(cookieCart);
-					shoppingCartService.saveCookieCart(cookieCart,frontUser);
+					JSONArray json = JSONArray.fromObject(cookieCart);
+					Set<String> idSet = new HashSet<String>();
+					for (int i = 0; i < json.size(); i++) {
+						JSONObject job = json.getJSONObject(i);
+						if(!job.get("goodsId").toString().equals("null"))
+						{
+							idSet.add(job.get("goodsId").toString());
+						}
+						if(!job.get("comboId").toString().equals("null"))
+						{
+							idSet.add(job.get("comboId").toString());
+						}
+					}
+					JSONArray carsaArray = new JSONArray();
+					JSONObject carts = new JSONObject();
+					Object[] idsObject = idSet.toArray();
+					for (int i = 0; i < idsObject.length; i++) {
+						int goodsCount = 0;
+						String cookieId = "";
+						String goodsId = "";
+						String price = "";
+						String comboId = "";
+						for (int j = 0; j < json.size(); j++) {
+							JSONObject job = json.getJSONObject(j);
+							if(!job.get("goodsId").toString().equals("null"))
+							{
+								if(idsObject[i].toString().equals(job.get("goodsId").toString())){
+									goodsCount++;
+									cookieId=job.get("cookieId").toString();
+									goodsId = idsObject[i].toString();
+									price = job.get("price").toString();
+								}
+							}else {
+								goodsId="null";
+							}
+							if(!job.get("comboId").toString().equals("null"))
+							{
+								if(idsObject[i].toString().equals(job.get("comboId").toString())){
+									goodsCount++;
+									cookieId=job.get("cookieId").toString();
+									comboId = idsObject[i].toString();
+									price = job.get("price").toString();
+								}
+							}else {
+								comboId ="null";
+							}
+						}
+						carts.put("cookieId",cookieId);
+						carts.put("goodsId", goodsId);
+						carts.put("comboId", comboId);
+						carts.put("goodsCount", goodsCount);
+						carts.put("price", price);
+						carsaArray.add(carts);
+					}
+					shoppingCartService.saveCookieCart(carsaArray.toString(),frontUser);
 				}
 			}
 			

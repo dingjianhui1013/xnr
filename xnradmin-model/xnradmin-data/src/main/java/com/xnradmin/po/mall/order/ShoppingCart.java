@@ -50,6 +50,7 @@ public class ShoppingCart implements java.io.Serializable{
 	
     private Timestamp shoppingCartTime; //生成时间 
     private String cookieCartId;//cookie
+    private Integer comboId;
     
     /** default constructor */
     public ShoppingCart(){
@@ -172,6 +173,15 @@ public class ShoppingCart implements java.io.Serializable{
 
 	public void setCookieCartId(String cookieCartId) {
 		this.cookieCartId = cookieCartId;
+	}
+
+	@Column(name = "combo_id")
+	public Integer getComboId() {
+		return comboId;
+	}
+
+	public void setComboId(Integer comboId) {
+		this.comboId = comboId;
 	}
 	
 	

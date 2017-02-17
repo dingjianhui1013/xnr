@@ -100,6 +100,7 @@ function addToCart(id,money){
 			var item=new Object();
 			item.cookieId = getUuid();
 			item.goodsId = id;
+			item.comboId = null;
 			item.goodsCount = goodsNumber;
 			item.price = Number($("#price"+id).val());
 			cart.push(item);
@@ -245,7 +246,7 @@ function getUuid(){
 									</span>
 								</p>
 								<p>
-									发货地<span> 北京</span>
+									发货地<span> 济南</span>
 								</p>
 								<p>
 									建议储藏方法：<span>常温通风处，长期存储需冷藏</span>

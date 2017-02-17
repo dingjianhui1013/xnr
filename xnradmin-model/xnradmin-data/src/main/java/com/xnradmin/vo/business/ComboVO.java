@@ -3,19 +3,13 @@
 */
 package com.xnradmin.vo.business;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
 
 import com.cntinker.util.ReflectHelper;
-import com.xnradmin.po.business.BusinessCategory;
-import com.xnradmin.po.business.BusinessGoods;
-import com.xnradmin.po.business.BusinessUserFavorite;
-import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.business.Combo;
-import com.xnradmin.po.business.ComboGoods;
-import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.business.ComboUser;
+import com.xnradmin.po.common.status.Status;
+import com.xnradmin.po.mall.order.ShoppingCart;
 
 /**
  * @author: liubin
@@ -33,6 +27,9 @@ public class ComboVO implements java.io.Serializable{
 	
 	private ComboUser comboUser;
 	
+	private Status status;
+	
+	private ShoppingCart shoppingCart;
 	public String toString() {
 		String res = "";
 		try {
@@ -75,4 +72,19 @@ public class ComboVO implements java.io.Serializable{
 		this.comboUser = comboUser;
 	}
 
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public ShoppingCart getShoppingCart() {
+		return shoppingCart;
+	}
+
+	public void setShoppingCart(ShoppingCart shoppingCart) {
+		this.shoppingCart = shoppingCart;
+	}
 }

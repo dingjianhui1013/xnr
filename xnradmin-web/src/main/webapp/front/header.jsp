@@ -155,6 +155,7 @@ function getCartCookie(){
 				</c:forEach>
 			</li>
 			</c:forEach>
+			<li class="grid"><a href="<%=basePath%>/front/packageProduce.action">周期商品</a></li>
 			<li class="grid"><a href="<%=basePath%>/front/contact.action">关于我们</a></li>
 			<input type="hidden" id="userId" value="${user.id}"/>
 		</ul>

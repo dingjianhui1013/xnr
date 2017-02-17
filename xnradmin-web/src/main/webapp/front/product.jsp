@@ -55,6 +55,7 @@ function addToCart(obj,money){
 		var item=new Object();
 		item.cookieId = getUuid();
 		item.goodsId = id;
+		item.comboId = null;
 		item.goodsCount = count;
 		item.price = Number($("#price"+id).val());
 		cart.push(item);

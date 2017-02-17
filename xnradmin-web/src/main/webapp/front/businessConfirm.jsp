@@ -390,6 +390,19 @@ var url = '<%=basePath%>front/receiptAddress/deleteReceiptAddress.action';
 										<div class="clearfix"></div>
 									</ul>
 								</c:forEach>
+								<c:forEach items="${comboVOs}" var="comboVOs">
+									<ul class="cart-header" id="test">
+										<li class="productCol"><a href="productDetail.html">
+												<img src="${basePath }${cartVo.goods.goodsLogo}"
+												class="pull-left img-responsive" alt="">
+										</a> <span class="pull-left cart-pDetail">${comboVOs.combo.comboName}</span></li>
+										<li><span>${comboVOs.combo.comboPrice}</span></li>
+										<li class="cart-num"><span class="chooseNum">${comboVOs.shoppingCart.goodsCount}</span>
+										</li>
+										<li><span>${comboVOs.shoppingCart.totalPrice}</span></li>
+										<div class="clearfix"></div>
+									</ul>
+								</c:forEach>
 
 							</div>
 						</div>

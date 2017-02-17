@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.cntinker.json.JSONArray;
+import com.cntinker.json.JSONObject;
 import com.cntinker.util.CookieHelper;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
@@ -31,6 +33,7 @@ import com.xnradmin.constant.AjaxResult;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.StaffService;
+import com.xnradmin.core.service.business.combo.ComboService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.common.status.StatusService;
@@ -42,6 +45,7 @@ import com.xnradmin.core.service.mall.seting.PrimaryConfigurationService;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
@@ -51,6 +55,7 @@ import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.mall.seting.PrimaryConfiguration;
 import com.xnradmin.vo.StaffVO;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
+import com.xnradmin.vo.business.ComboVO;
 import com.xnradmin.vo.front.BusinessGoodsCartVo;
 import com.xnradmin.vo.mall.OrderVO;
 /**
@@ -79,6 +84,8 @@ public class CartAction extends ParentAction {
 	@Autowired
 	private BusinessOrderGoodsRelationService businessOrderGoodsRelationService;
 	
+	@Autowired
+	private ComboService comboService;
     private FrontUser user;
 	private String shoppingCartId;
 	private String clientUserId; //用户ID
@@ -106,7 +113,8 @@ public class CartAction extends ParentAction {
 	private int totalCount;
 	private Float totalMoney;
 	private GoodsAllocationShow goodsAllocationShow;//该商品被今天被分配的数量
-
+	private String comboId;
+	private List<ComboVO> comboVOs;
 	public String getCartId() {
 		return cartId;
 	}
@@ -347,6 +355,20 @@ public class CartAction extends ParentAction {
 	public void setOrderRecordId(String orderRecordId) {
 		this.orderRecordId = orderRecordId;
 	}
+	public String getComboId() {
+		return comboId;
+	}
+
+	public void setComboId(String comboId) {
+		this.comboId = comboId;
+	}
+	public List<ComboVO> getComboVOs() {
+		return comboVOs;
+	}
+
+	public void setComboVOs(List<ComboVO> comboVOs) {
+		this.comboVOs = comboVOs;
+	}
 
 	@Override
 	public boolean isPublic() {
@@ -372,11 +394,39 @@ public class CartAction extends ParentAction {
 				if(null!=cookieCart&&!"".equals(cookieCart)){
 					cookieCart = URLDecoder.decode(cookieCart);
 					cartVoList = shoppingCartService.cookieToVo(cookieCart);
+					comboVOs = shoppingCartService.cookieToComboVo(cookieCart);
+//					JSONArray jsonArrays = new JSONArray();
+//					try {
+//						for (int i = 0; i < cartVoList.size(); i++) { 
+//							JSONObject json = new JSONObject();
+//							json.put("cookieId", cartVoList.get(i).getCart().getCookieCartId());
+//							json.put("goodsId", cartVoList.get(i).getGoods().getId());
+//							json.put("comboId", "null");
+//							json.put("goodsCount", cartVoList.get(i).getCart().getGoodsCount());
+//							json.put("price", cartVoList.get(i).getGoods().getGoodsOriginalPriceStr());
+//							jsonArrays.put(json);
+//						}
+//						for (int i = 0; i < comboVOs.size(); i++) {
+//							JSONObject json = new JSONObject();
+//							json.put("cookieId", comboVOs.get(i).getShoppingCart().getCookieCartId());
+//							json.put("goodsId", "null");
+//							json.put("comboId", comboVOs.get(i).getCombo().getId());
+//							json.put("goodsCount", comboVOs.get(i).getShoppingCart().getGoodsCount());
+//							json.put("price", comboVOs.get(i).getCombo().getComboPrice());
+//							jsonArrays.put(json);
+//						}
+//						cookieByName.setMaxAge(0);
+//						CookieHelper.addCookie(ServletActionContext.getResponse(), cookieByName.getName(), jsonArrays.toString(), -1);
+//					} catch (com.cntinker.json.JSONException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 			}
 		return StrutsResMSG.SUCCESS;
 		}
 		 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
+		 comboVOs = shoppingCartService.findByUserIdAndComboId(Integer.parseInt(user.getId().toString()));
 		 this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
 		 
 		
@@ -465,6 +515,56 @@ public class CartAction extends ParentAction {
 						}
 					}
 				}*/
+			}
+		}
+		if(!StringHelper.isNull(clientUserId) && !StringHelper.isNull(comboId) &&!StringHelper.isNull(goodsCount.toString()))
+		{
+			FrontUser frontUser = userService.findByid(clientUserId);
+			Combo combo = comboService.findById(comboId).getCombo();
+			if(frontUser!=null && combo!=null && frontUser.getId()!=null)
+			{
+				List<ShoppingCart> list = shoppingCartService.findBycomboCount(comboId, Integer.parseInt(frontUser.getId().toString()));
+				if(!list.isEmpty())
+				{
+					int count = list.get(0).getGoodsCount();
+					ShoppingCart po = list.get(0);
+					po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
+					po.setComboId(combo.getId());
+					po.setGoodsCount(goodsCount+count);
+					
+					
+					po.setCurrentPrice(combo.getComboPrice());
+					po.setTotalPrice(list.get(0).getTotalPrice()+(combo.getComboPrice()*goodsCount));
+					po.setCurrentPriceType(121);
+					
+					po.setOriginalPrice(combo.getComboPrice());
+					po.setOriginalTotalPrice(combo.getComboPrice()*goodsCount);
+					po.setPrimaryConfigurationId(1);
+					po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
+					int res = shoppingCartService.modify(po);
+				}else
+				{
+					ShoppingCart po = new ShoppingCart();
+					po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
+					po.setComboId(combo.getId());
+					po.setGoodsCount(goodsCount);
+					
+					
+					po.setCurrentPrice(combo.getComboPrice());
+					po.setTotalPrice(combo.getComboPrice()*goodsCount);
+					po.setCurrentPriceType(121);
+					
+					po.setOriginalPrice(combo.getComboPrice());
+					po.setOriginalTotalPrice(combo.getComboPrice()*goodsCount);
+					po.setPrimaryConfigurationId(1);
+					po.setShoppingCartTime(new Timestamp(System.currentTimeMillis()));
+					try {
+						int res = shoppingCartService.save(po);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		return StrutsResMSG.SUCCESS;

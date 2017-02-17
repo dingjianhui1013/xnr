@@ -72,4 +72,15 @@ public class ComboService {
 		
 	}
 
+	public List<ComboVO> findAll() {
+		List<ComboVO> list = dao.findAllCombo();
+		return list;
+	}
+
+	public ComboVO findById(String comboId) {
+		// TODO Auto-generated method stub
+		return dao.findById(comboId);
+		 
+	}
+
 }

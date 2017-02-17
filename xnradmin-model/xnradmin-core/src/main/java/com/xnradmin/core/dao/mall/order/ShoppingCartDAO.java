@@ -112,6 +112,17 @@ public class ShoppingCartDAO{
             throw re;
         }
     }
+    public List findByOlayC(String comboId, String clientUserId){
+        log.debug("finding findByOlay "
+                + comboId + ":" + clientUserId);
+        try{
+            String queryString = "from ShoppingCart where comboId= "+comboId+" and clientUserId="+clientUserId;
+            return commonDao.getEntitiesByPropertiesWithHql(queryString,0,0);
+        }catch(RuntimeException re){
+            log.error("find by property name failed",re);
+            throw re;
+        }
+    }
     /**
      * 
      * @param cookieId

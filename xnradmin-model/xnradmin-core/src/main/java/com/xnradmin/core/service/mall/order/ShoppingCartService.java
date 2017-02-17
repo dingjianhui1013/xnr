@@ -8,15 +8,18 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.quartz.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +32,13 @@ import com.xnradmin.core.dao.mall.order.ShoppingCartDAO;
 import com.xnradmin.constant.ViewConstant;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessWeight;
+import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.mall.commodity.Goods;
 import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.po.wx.OutPlan;
 import com.xnradmin.po.wx.connect.Farmer;
+import com.xnradmin.vo.business.ComboVO;
 import com.xnradmin.vo.business.OutPlanVO;
 import com.xnradmin.vo.front.BusinessGoodsCartVo;
 import com.xnradmin.vo.mall.OrderVO;
@@ -65,8 +70,17 @@ public class ShoppingCartService {
 	 * @return int
 	 */
 	public int save(ShoppingCart po) {
-		if (this.dao.findByOlay(po.getGoodsId().toString(), po.getClientUserId().toString()).size() > 0) {
-			return 1;
+		if(po.getGoodsId()!=null)
+		{
+			if (this.dao.findByOlay(po.getGoodsId().toString(), po.getClientUserId().toString()).size() > 0) {
+				return 1;
+			}
+		}
+		if(po.getComboId()!=null)
+		{
+			if (this.dao.findByOlayC(po.getComboId().toString(), po.getClientUserId().toString()).size() > 0) {
+				return 1;
+			}
 		}
 		dao.save(po);
 		return 0;
@@ -85,7 +99,14 @@ public class ShoppingCartService {
 				   }
 				   ShoppingCart po = new ShoppingCart();
 					po.setClientUserId(Integer.parseInt(frontUser.getId().toString()));
-					po.setGoodsId(Integer.parseInt(job.get("goodsId").toString()));
+					if(!job.get("goodsId").toString().equals("null"))
+					{
+						po.setGoodsId(Integer.parseInt(job.get("goodsId").toString()));
+					}
+					if(!job.get("comboId").toString().equals("null"))
+					{
+						po.setComboId(Integer.parseInt(job.get("comboId").toString()));
+					}
 					po.setGoodsCount(Integer.parseInt(job.get("goodsCount").toString()));
 					po.setCookieCartId(job.get("cookieId").toString());
 					
@@ -118,7 +139,7 @@ public class ShoppingCartService {
 	
 	
 	public List<BusinessGoodsCartVo>findByUserId(Integer userId){
-		String hql = "from ShoppingCart cart , BusinessGoods good  where cart.goodsId = good.id and cart.clientUserId = " + userId;
+		String hql = "from ShoppingCart cart , BusinessGoods good  where cart.goodsId = good.id and cart.clientUserId = " + userId+" and cart.comboId=null";
 		List<Object[]> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		List<BusinessGoodsCartVo> resList = new LinkedList<BusinessGoodsCartVo>();
 		for (int i = 0; i < list.size(); i++) {
@@ -135,43 +156,162 @@ public class ShoppingCartService {
 		return resList;
 
 	}
-	
-	public List<BusinessGoodsCartVo> cookieToVo(String cookie){
-		List<BusinessGoodsCartVo> resList = new LinkedList<BusinessGoodsCartVo>();
-		JSONArray json = JSONArray.fromObject(cookie );
-		if(json.size()>0){
-		   for(int i=0;i<json.size();i++){
-		    JSONObject job = json.getJSONObject(i);  // 
-		    BusinessGoodsCartVo businessGoodsCartVo = new BusinessGoodsCartVo();
-		    ShoppingCart shoppingCart = new ShoppingCart();
-		    shoppingCart.setGoodsId(Integer.parseInt(job.get("goodsId").toString()));
-		    shoppingCart.setGoodsCount(Integer.parseInt(job.get("goodsCount").toString()));
-		    shoppingCart.setCookieCartId(job.get("cookieId").toString());
-		    String hql = "from BusinessGoods good  where id= "+job.get("goodsId");
-		    List<BusinessGoods> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
-		    BusinessGoods businessGoods = list.get(0);
-		    BigDecimal price = new BigDecimal(businessGoods.getGoodsOriginalPrice().toString());
-		    BigDecimal totalprice = price.multiply(new BigDecimal(job.get("goodsCount").toString()));
-//		    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
-		    shoppingCart.setTotalPrice(totalprice.floatValue());
-		    businessGoodsCartVo.setCart(shoppingCart);
-		    businessGoodsCartVo.setGoods(businessGoods);
-		    resList.add(businessGoodsCartVo);
-		  }
+	public List<ComboVO> findByUserIdAndComboId(Integer userId){
+		String hql = "from ShoppingCart cart , Combo combo  where cart.comboId = combo.id and cart.clientUserId = " + userId;
+		List<Object[]> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<ComboVO> resList = new LinkedList<ComboVO>();
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			ShoppingCart cart = (ShoppingCart) obj[0];
+			Combo combo = (Combo) obj[1];
+			
+			ComboVO comboVO = new ComboVO();
+			comboVO.setCombo(combo);
+			comboVO.setShoppingCart(cart);
+			resList.add(comboVO);
 		}
-		
 		return resList;
 
 	}
 	
-	
+	public List<BusinessGoodsCartVo> cookieToVo(String cookie){
+		List<BusinessGoodsCartVo> resList = new LinkedList<BusinessGoodsCartVo>();
+		List<BusinessGoodsCartVo> resLists = new ArrayList<BusinessGoodsCartVo>();
+		Set<String> goodId = new HashSet<String>();
+		JSONArray json = JSONArray.fromObject(cookie);
+		if(json.size()>0){
+		   for(int i=0;i<json.size();i++){
+		    JSONObject job = json.getJSONObject(i);  // 
+		    BusinessGoodsCartVo businessGoodsCartVo = new BusinessGoodsCartVo();
+		    if(!(job.get("goodsId").toString()).equals("null"))
+		    {
+		    	goodId.add(job.get("goodsId").toString());
+		    	businessGoodsCartVo = addBgcv(job);
+		    	resList.add(businessGoodsCartVo);
+		    }
+		  }
+		  Object[] goodIds = goodId.toArray();
+		  for (int i = 0; i < goodIds.length; i++) {
+			int goodsCount = 0;
+			Float totalPrice = 0F;
+			String cookieId  = "";
+			BusinessGoodsCartVo bgcv= new BusinessGoodsCartVo();
+			ShoppingCart sCart = new ShoppingCart();
+			BusinessGoods goods = new BusinessGoods();
+			for (int j = 0; j < resList.size(); j++) {
+				if(goodIds[i].toString().equals(resList.get(j).getCart().getGoodsId().toString()))
+				{
+					goodsCount++;
+					totalPrice+=resList.get(j).getCart().getTotalPrice();
+					goods = resList.get(j).getGoods();
+					cookieId = resList.get(j).getCart().getCookieCartId();
+				}
+			}
+			sCart.setGoodsCount(goodsCount);
+			sCart.setTotalPrice(totalPrice);
+			sCart.setCookieCartId(cookieId);
+			bgcv.setCart(sCart);
+			bgcv.setGoods(goods);
+			resLists.add(bgcv);
+		}
+		}
+		return resLists;
+
+	}
+	public List<ComboVO> cookieToComboVo(String cookie){
+		List<ComboVO> resList = new LinkedList<ComboVO>();
+		List<ComboVO> resLists = new LinkedList<ComboVO>();
+		Set<String> comboId = new HashSet<String>();
+		JSONArray json = JSONArray.fromObject(cookie );
+		if(json.size()>0){
+		   for(int i=0;i<json.size();i++){
+		    JSONObject job = json.getJSONObject(i);  // 
+		    ComboVO comboVO = new ComboVO();
+		    if(!(job.get("comboId").toString()).equals("null"))
+		    {
+		    	comboId.add(job.get("comboId").toString());
+    			comboVO = addComboVo(job);
+			    resList.add(comboVO);
+		    }
+		  }
+		  Object[] comboIds = comboId.toArray();
+		  for (int i = 0; i < comboIds.length; i++) {
+			    int goodsCount = 0;
+				Float totalPrice = 0F;
+				String cookieId  = "";
+				ComboVO cv= new ComboVO();
+				ShoppingCart sCart = new ShoppingCart();
+				Combo combo = new Combo();
+			for (int j = 0; j < resList.size(); j++) {
+				if(comboIds[i].toString().equals(resList.get(j).getCombo().getId().toString()))
+				{
+					goodsCount++;
+					totalPrice+=resList.get(j).getShoppingCart().getTotalPrice();
+					combo = resList.get(j).getCombo();
+					cookieId = resList.get(j).getShoppingCart().getCookieCartId();
+				}
+			}
+			sCart.setGoodsCount(goodsCount);
+			sCart.setCookieCartId(cookieId);
+			sCart.setTotalPrice(totalPrice);
+			cv.setShoppingCart(sCart);
+			cv.setCombo(combo);
+			resLists.add(cv);
+		}
+		  
+		   
+		}
+		return resLists;
+
+	}
+	public BusinessGoodsCartVo addBgcv(JSONObject job)
+	{
+		BusinessGoodsCartVo businessGoodsCartVo = new BusinessGoodsCartVo();
+		ShoppingCart shoppingCart = new ShoppingCart();
+	    shoppingCart.setGoodsId(Integer.parseInt(job.get("goodsId").toString()));
+	    shoppingCart.setGoodsCount(Integer.parseInt(job.get("goodsCount").toString()));
+	    shoppingCart.setCookieCartId(job.get("cookieId").toString());
+	    String hql = "from BusinessGoods good  where id= "+job.get("goodsId");
+	    List<BusinessGoods> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+	    BusinessGoods businessGoods = list.get(0);
+	    BigDecimal price = new BigDecimal(businessGoods.getGoodsOriginalPrice().toString());
+	    BigDecimal totalprice = price.multiply(new BigDecimal(job.get("goodsCount").toString()));
+//	    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+	    shoppingCart.setTotalPrice(totalprice.floatValue());
+	    businessGoodsCartVo.setCart(shoppingCart);
+	    businessGoodsCartVo.setGoods(businessGoods);
+	    return businessGoodsCartVo;
+	}
+	public ComboVO addComboVo(JSONObject job)
+	{
+		ComboVO comboVO = new ComboVO();
+		ShoppingCart shoppingCart = new ShoppingCart();
+	    shoppingCart.setComboId(Integer.parseInt(job.get("comboId").toString()));
+	    shoppingCart.setGoodsCount(Integer.parseInt(job.get("goodsCount").toString()));
+	    shoppingCart.setCookieCartId(job.get("cookieId").toString());
+	    String hql = "from Combo  where id= "+job.get("comboId");
+	    List<Combo> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+	    Combo combo = list.get(0);
+	    BigDecimal price = new BigDecimal(combo.getComboPrice().toString());
+	    BigDecimal totalprice = price.multiply(new BigDecimal(job.get("goodsCount").toString()));
+//	    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+	    shoppingCart.setTotalPrice(totalprice.floatValue());
+	    comboVO.setShoppingCart(shoppingCart);
+	    comboVO.setCombo(combo);
+	    return comboVO;
+	}
 	public List<ShoppingCart> findBygoodsCount(String goodsId,Integer userId){
 		String hql = "from ShoppingCart cart  where cart.goodsId = '"+goodsId+"' and cart.clientUserId = " + userId;
 		List<ShoppingCart> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
 		return list;
 
 	}
-	
+	public List<ShoppingCart> findBycomboCount(String comboId,Integer userId){
+		String hql = "from ShoppingCart cart  where cart.comboId = '"+comboId+"' and cart.clientUserId = " + userId;
+		List<ShoppingCart> list =commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		return list;
+
+	}
 	
 	
 

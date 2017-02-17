@@ -21,6 +21,7 @@ import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.action.alipay.AlipayAction;
+import com.xnradmin.core.service.business.combo.ComboService;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
@@ -30,6 +31,7 @@ import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
@@ -37,6 +39,7 @@ import com.xnradmin.po.mall.commodity.GoodsAllocationShow;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.ComboVO;
 import com.xnradmin.vo.front.ProductDetailVo;
 
 @Controller
@@ -74,6 +77,10 @@ public class IndexFrontAction  extends ParentAction{
 	private BusinessOrderVO businessOrderVO;
 	private GoodsAllocationShow goodsAllocationShow;//该商品被今天被分配的数量
 	private String status;
+	private List<Status> comboCycleStatusList;
+	private List<ComboVO> comboList;
+	private String comboId;
+	private ComboVO comboVO;  
 	public BusinessOrderVO getBusinessOrderVO() {
 		return businessOrderVO;
 	}
@@ -219,6 +226,30 @@ public class IndexFrontAction  extends ParentAction{
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public List<Status> getComboCycleStatusList() {
+		return comboCycleStatusList;
+	}
+	public void setComboCycleStatusList(List<Status> comboCycleStatusList) {
+		this.comboCycleStatusList = comboCycleStatusList;
+	}
+	public List<ComboVO> getComboList() {
+		return comboList;
+	}
+	public void setComboList(List<ComboVO> comboList) {
+		this.comboList = comboList;
+	}
+	public String getComboId() {
+		return comboId;
+	}
+	public void setComboId(String comboId) {
+		this.comboId = comboId;
+	}
+	public ComboVO getComboVO() {
+		return comboVO;
+	}
+	public void setComboVO(ComboVO comboVO) {
+		this.comboVO = comboVO;
+	}
 
 
 	@Autowired
@@ -229,7 +260,8 @@ public class IndexFrontAction  extends ParentAction{
 	private BusinessGoodsService businessGoodsService;
 	@Autowired
 	private StatusService statusService;
-	
+	@Autowired
+	private ComboService comboService;
 	@Autowired
 	private GoodsAllocationShowService allocationShowService;
 	
@@ -366,6 +398,26 @@ public class IndexFrontAction  extends ParentAction{
 		indexFrontService.saveAddress(receiptAddress);
 		return StrutsResMSG.SUCCESS;
 	}
+	
+	@Action(value="commodityCycle",results={@Result(name=StrutsResMSG.SUCCESS,location="/front/PackageOrderDetail.jsp")})
+	public String commodityCycle()
+	{
+		
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="packageProduce",results={@Result(name=StrutsResMSG.SUCCESS,location="/front/packageProduct.jsp")})
+	public String packageProduce()
+	{
+		comboList = comboService.findAll();
+		return StrutsResMSG.SUCCESS;
+	}
+	@Action(value="packageProductDetail",results={@Result(name=StrutsResMSG.SUCCESS,location="/front/packageProductDetail.jsp")})
+	public String packageProductDetail()
+	{
+		comboVO = comboService.findById(comboId);
+		return StrutsResMSG.SUCCESS;
+	}
+	
 	@Action(value="setDefault",results = {@Result(name = StrutsResMSG.SUCCESS,type="redirect", location = "/front/personalCenter.action",params = {"flag", "address" })})
 	public String setDefault()
 	{

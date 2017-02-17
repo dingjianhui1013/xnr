@@ -2,7 +2,6 @@ package com.xnradmin.core.dao.business.combo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,8 +16,7 @@ import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboGoods;
 import com.xnradmin.po.business.ComboPlan;
-import com.xnradmin.vo.business.BusinessGoodsVO;
-import com.xnradmin.vo.business.ComboGoodsVO;
+import com.xnradmin.po.common.status.Status;
 import com.xnradmin.vo.business.ComboVO;
 
 
@@ -88,6 +86,29 @@ public class ComboDAO{
 		resVo.setComboPlanList(comboPlanList);
 		return resVo;*/
         return null;
+    }
+    public ComboVO findById(String comboId)
+    {
+    	String hql = "from Combo c , Status s where c.id="+comboId+" and s.id=c.comboCycleStatus";
+    	List list=commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+    	List<ComboVO> comboVOs = new ArrayList<ComboVO>();
+    	for (int i = 0; i < list.size(); i++) {
+			ComboVO comboVo = new ComboVO();
+			Object[] object = (Object[])list.get(i);
+			Combo combo = (Combo)object[0];
+			Status status = (Status)object[1];
+			comboVo.setCombo(combo);
+			comboVo.setStatus(status);
+			comboVOs.add(comboVo);
+		}
+    	if(!comboVOs.isEmpty())
+    	{
+    		
+    		return comboVOs.get(0);
+    	}else {
+			return null;
+		}
+    	
     }
 
     public List<BusinessGoods> findByExample(BusinessGoods instance){
@@ -250,6 +271,22 @@ public class ComboDAO{
             throw re;
         }
         return cls;
+	}
+
+	public List<ComboVO> findAllCombo() {
+		String hql = "from Combo c , Status s where c.comboStatus = 0 and s.id=c.comboCycleStatus";
+		List list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		List<ComboVO> comboVo = new ArrayList<ComboVO>();
+		for (int i = 0; i < list.size(); i++) {
+			ComboVO combov = new ComboVO();
+			Object[] obj = (Object[]) list.get(i);
+			Combo  combo = (Combo)obj[0];
+			Status status = (Status)obj[1];
+			combov.setCombo(combo);
+			combov.setStatus(status);
+			comboVo.add(combov);
+		}
+		return comboVo;
 	}
 	
 }

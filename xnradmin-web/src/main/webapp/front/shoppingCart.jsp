@@ -377,7 +377,82 @@ function modefyToCart(id){
 										<a href="javascript:delfromCart('${cartVo.cart.cookieCartId }')" class="delBtn1">删除</a>
 									</c:if>
 									</span></li>
-								<div class="clearfix"> </div>
+								<div class="clearfix"></div>
+								</ul>
+							</c:forEach>
+							<c:forEach items="${comboVOs}" var="comboVOs" varStatus="status">
+						  		<c:if test="${!empty comboVOs.shoppingCart.id }">
+								<ul class="cart-header" id="ul${comboVOs.shoppingCart.id }">
+
+								</c:if>
+								<c:if test="${empty comboVOs.shoppingCart.id }">
+								<ul class="cart-header" id="ul${comboVOs.shoppingCart.cookieCartId }">
+								</c:if>
+								<li class="checkCol">
+								<c:if test="${!empty comboVOs.shoppingCart.id }">
+								<input type="checkbox" value="${comboVOs.shoppingCart.id }" cartId="${comboVOs.shoppingCart.id }" onclick="totalprice(this)"/>
+								</c:if>
+								<c:if test="${empty comboVOs.shoppingCart.id }">
+								<input type="checkbox" value="${comboVOs.shoppingCart.id }" cartId="${comboVOs.shoppingCart.cookieCartId }" onclick="totalprice(this)"/>
+								</c:if>
+
+								<li class="productCol">
+									<a href="<%=basePath%>/front/packageProductDetail.action?comboId=${comboVOst.combo.id}" >
+										<img src="http://localhost:8080//themes/business/goodsLogo/34d15d23-62c7-4eef-95dd-63e158da3173sc-img3.jpg" class="pull-left img-responsive" alt=""></a>
+										<span class="pull-left cart-pDetail">${comboVOs.combo.comboName}</span>
+								</li>
+								<li>
+									<c:if test="${!empty comboVOs.shoppingCart.id }">
+										<span id="price${comboVOs.shoppingCart.id }">${comboVOs.combo.comboPrice}</span>
+									</c:if>
+									<c:if test="${empty comboVOs.shoppingCart.id }">
+										<span id="price${comboVOs.shoppingCart.cookieCartId }">${comboVOs.combo.comboPrice}</span>
+									</c:if>
+								</li>
+								<li class="cart-num">
+									<div class="addNum">						
+										<span>
+											<c:if test="${!empty comboVOs.shoppingCart.id }">
+												<input type="text" id="count${comboVOs.shoppingCart.id }" class="item_quantity" value="${comboVOs.shoppingCart.goodsCount}" readonly="readonly"/>
+											</c:if>
+											<c:if test="${empty comboVOs.shoppingCart.id }">
+												<input type="text" id="count${comboVOs.shoppingCart.cookieCartId }" class="item_quantity" value="${comboVOs.shoppingCart.goodsCount}" readonly="readonly"/>
+											</c:if>
+										</span>
+										<span>
+											<c:if test="${!empty comboVOs.shoppingCart.id }">
+												<a id="plus${comboVOs.shoppingCart.id }" href="javascript:plusNum(${comboVOs.shoppingCart.id })" class="plusNum">+</a>
+											</c:if>
+											<c:if test="${empty comboVOs.shoppingCart.id }">
+												<a id="plus${comboVOs.shoppingCart.cookieCartId }" href="javascript:plusNum('${comboVOs.shoppingCart.cookieCartId }')" class="plusNum">+</a>
+											</c:if>
+											<c:if test="${!empty comboVOs.shoppingCart.id }">
+												<a id="mimus${comboVOs.shoppingCart.id }" href="javascript:minusNum(${comboVOs.shoppingCart.id })" class="minus-Num">-</a>
+											</c:if>
+											<c:if test="${empty comboVOs.shoppingCart.id }">
+												<a id="mimus${comboVOs.shoppingCart.cookieCartId }" href="javascript:minusNum('${comboVOs.shoppingCart.cookieCartId }')" class="minus-Num">-</a>
+											</c:if>
+											
+										</span>
+									</div>
+								</li>
+								<li>
+									<c:if test="${!empty comboVOs.shoppingCart.id }">
+									<span id="xiaoji${comboVOs.shoppingCart.id }">${comboVOs.shoppingCart.totalPrice}</span>
+									</c:if>
+									<c:if test="${empty comboVOs.shoppingCart.id }">
+									<span id="xiaoji${comboVOs.shoppingCart.cookieCartId }">${comboVOs.shoppingCart.totalPrice}</span>
+									</c:if>
+								</li>
+								<li><span>
+									<c:if test="${!empty comboVOs.shoppingCart.id }">
+										<a href="javascript:delfromCart(${comboVOs.shoppingCart.id})" class="delBtn1">删除</a>
+									</c:if>
+									<c:if test="${empty comboVOs.shoppingCart.id }">
+										<a href="javascript:delfromCart('${comboVOs.shoppingCart.cookieCartId }')" class="delBtn1">删除</a>
+									</c:if>
+									</span></li>
+								<div class="clearfix"></div>
 								</ul>
 							</c:forEach>	
 						  </div>

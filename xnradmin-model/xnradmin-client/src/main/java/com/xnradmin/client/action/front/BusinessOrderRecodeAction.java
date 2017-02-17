@@ -66,6 +66,7 @@ import com.xnradmin.po.pay.protocol.pay_protocol.ScanPayReqData;
 import com.xnradmin.po.wx.connect.WXfInit;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.ComboVO;
 import com.xnradmin.vo.front.BusinessGoodsCartVo;
 
 /**
@@ -169,7 +170,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private String cartidcount;//订单每一项的订单数目
 	private Map<String,Integer> goodsCountMap = new HashMap<String,Integer>();//每一个产品的订单数
 	private String msg;//库存不足的提示信息
-	
+	private List<ComboVO> comboVOs;
 
 	
 	public String getMsg() {
@@ -460,6 +461,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		this.cartVoList = cartVoList;
 	}
 
+	public List<ComboVO> getComboVOs() {
+		return comboVOs;
+	}
+
+	public void setComboVOs(List<ComboVO> comboVOs) {
+		this.comboVOs = comboVOs;
+	}
+
 	@Override
 	public boolean isPublic() {
 		return true;
@@ -483,7 +492,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		
 		 
          if(cartids.equals("all")){
-        	 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));	 
+        	 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
+        	 comboVOs = shoppingCartService.findByUserIdAndComboId(Integer.parseInt(user.getId().toString()));
          }else{
         	 
         	 cartVoList = new ArrayList<BusinessGoodsCartVo>();
