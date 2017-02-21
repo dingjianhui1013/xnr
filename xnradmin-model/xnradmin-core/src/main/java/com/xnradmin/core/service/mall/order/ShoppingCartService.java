@@ -202,7 +202,8 @@ public class ShoppingCartService {
 				if(goodIds[i].toString().equals(resList.get(j).getCart().getGoodsId().toString()))
 				{
 					goodsCount++;
-					totalPrice+=resList.get(j).getCart().getTotalPrice();
+					
+					totalPrice=new BigDecimal(Float.toString(totalPrice)).add(new BigDecimal(Float.toString(resList.get(j).getCart().getTotalPrice()))).floatValue();
 					goods = resList.get(j).getGoods();
 					cookieId = resList.get(j).getCart().getCookieCartId();
 				}
@@ -246,7 +247,7 @@ public class ShoppingCartService {
 				if(comboIds[i].toString().equals(resList.get(j).getCombo().getId().toString()))
 				{
 					goodsCount++;
-					totalPrice+=resList.get(j).getShoppingCart().getTotalPrice();
+					totalPrice=new BigDecimal(Float.toString(totalPrice)).add(new BigDecimal(Float.toString(resList.get(j).getShoppingCart().getTotalPrice()))).floatValue();
 					combo = resList.get(j).getCombo();
 					cookieId = resList.get(j).getShoppingCart().getCookieCartId();
 				}

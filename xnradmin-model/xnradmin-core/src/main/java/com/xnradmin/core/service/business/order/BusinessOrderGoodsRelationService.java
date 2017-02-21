@@ -22,6 +22,7 @@ import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.Combo;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
@@ -297,6 +298,18 @@ public class BusinessOrderGoodsRelationService {
 		return goods;
 	}
 
+	public List<Combo> findComboName(Long id)
+	{
+		String hql = "from BusinessOrderGoodsRelation a ,Combo c where a.comboId=c.id and a.orderRecordId='"+id+"'";
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<Combo> combo  = new ArrayList<Combo>();
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = (Object[]) l.get(i);
+			combo.add((Combo) obj[1]);
+		}
+		return combo;
+	}
+	
 	public List<BusinessOrderRelationVO> findByOrderRecordId(Long borId) {
 		String hql = "from BusinessOrderGoodsRelation a ,BusinessGoods b where a.goodsId=b.id and a.orderRecordId='"+borId+"'";
 		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);

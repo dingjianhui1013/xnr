@@ -64,8 +64,8 @@ public class ComboUser implements java.io.Serializable{
 
     // Property accessors
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "ID", unique = true, nullable = false)
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
     public Integer getId(){
         return this.id;
     }

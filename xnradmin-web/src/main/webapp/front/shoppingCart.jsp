@@ -124,7 +124,7 @@ function minusNum(id)
 
 
 
-function delfromCart(id){
+function delfromCart(id,goodsId){
 	var userId = $("#userId").val();
 	var totalpriceAll = 0;
 	if(userId!=null&&userId!=""){
@@ -140,13 +140,38 @@ function delfromCart(id){
 	}else{
 		var cart = getCartCookie();
 		var x;
-		for (x in cart)
-		{
-			var item = cart[x];
-			if(item.cookieId==id){
-				cart.splice($.inArray(item,cart),1);
+		var cartCopy = getCartCookie();
+		var count = cart.length;
+		for (var i=0;i<count;i++ )
+			{
+				var item = cartCopy[i];
+	// 			if(item.cookieId==id){
+	// 				cart.splice($.inArray(item,cart),1);
+	// 			}
+				if(item.goodsId==goodsId)
+					{
+						cart.splice($.inArray(item,cart),1);
+					}
+				if(item.comboId==goodsId)
+					{
+						cart.splice($.inArray(item,cart),1);
+					}
 			}
-		}
+// 		for (x in cart)
+// 		{
+// 			var item = cart[x];
+// // 			if(item.cookieId==id){
+// // 				cart.splice($.inArray(item,cart),1);
+// // 			}
+// 			if(item.goodsId==goodsId)
+// 				{
+// 					cart.splice($.inArray(item,cart),1);
+// 				}
+// 			if(item.comboId==goodsId)
+// 				{
+// 					cart.splice($.inArray(item,cart),1);
+// 				}
+// 		}
 	$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
 	}
 	var price = Number($("#price"+id).html());
@@ -169,6 +194,7 @@ function delfromCart(id){
 //计算总价格
 function totalprice(obj){
 	var totalprice = 0;
+	totalComboMoney(obj);
 	$("#cartidcount").val("");
 	$('input:checkbox:checked').each(function(i){
 		if($(this).attr("id")!="checkAll"){
@@ -219,6 +245,7 @@ function totalpriceAll(obj){
 
 	
 	var totalprice = 0;
+	var totalComboMoney = 0;
 	//alert(obj.checked);
 	if(obj.checked==true){
 		$('input:checkbox').each(function(i){
@@ -226,6 +253,12 @@ function totalpriceAll(obj){
 			var cartId = ($(this).attr("cartId"));
 			var xiaoji = Number($("#xiaoji"+cartId).html());
 			totalprice = add(totalprice,xiaoji);
+			if($(this).attr("comboId")!=null&&$(this).attr("comboId")!="")
+				{
+					var cartId = ($(this).attr("cartId"));
+					var xiaoji = Number($("#xiaoji"+cartId).html());
+					totalComboMoney =add(totalComboMoney,xiaoji);
+				}
 			}
 		});	
 	}
@@ -234,6 +267,7 @@ function totalpriceAll(obj){
 	
 	$("#totalMoney").val(totalprice);
 	
+	$("#totalComboMoney").val(totalComboMoney);
 	
 	var cartids = "";
 	
@@ -276,6 +310,23 @@ function modefyToCart(id){
 		setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
 	}
 }
+function totalComboMoney(obj)
+{
+	var totalComboPrice = 0;
+	$('input:checkbox:checked').each(function(i){
+		if($(this).attr("id")!="checkAll")
+			{
+				var comboId = $(this).attr("comboId");
+				var cartId = $(this).attr("cartId");
+				if(comboId!=""&&comboId!=null)
+					{
+					   var xiaoji = Number($("#xiaoji"+cartId).html());
+						totalComboPrice=add(totalComboPrice,xiaoji);
+					}
+			}
+	})
+	 $("#totalComboMoney").val(totalComboPrice);
+	}
 </script>
 
 <body> 
@@ -318,7 +369,7 @@ function modefyToCart(id){
 								<input type="checkbox" value="${cartVo.cart.id }" cartId="${cartVo.cart.id }" onclick="totalprice(this)"/>
 								</c:if>
 								<c:if test="${empty cartVo.cart.id }">
-								<input type="checkbox" value="${cartVo.cart.id }" cartId="${cartVo.cart.cookieCartId }" onclick="totalprice(this)"/>
+								<input type="checkbox" value="${cartVo.cart.cookieCartId }" cartId="${cartVo.cart.cookieCartId }" onclick="totalprice(this)"/>
 								</c:if>
 
 								<li class="productCol">
@@ -374,7 +425,7 @@ function modefyToCart(id){
 										<a href="javascript:delfromCart(${cartVo.cart.id})" class="delBtn1">删除</a>
 									</c:if>
 									<c:if test="${empty cartVo.cart.id }">
-										<a href="javascript:delfromCart('${cartVo.cart.cookieCartId }')" class="delBtn1">删除</a>
+										<a href="javascript:delfromCart('${cartVo.cart.cookieCartId }','${cartVo.goods.id}')" class="delBtn1">删除</a>
 									</c:if>
 									</span></li>
 								<div class="clearfix"></div>
@@ -390,10 +441,10 @@ function modefyToCart(id){
 								</c:if>
 								<li class="checkCol">
 								<c:if test="${!empty comboVOs.shoppingCart.id }">
-								<input type="checkbox" value="${comboVOs.shoppingCart.id }" cartId="${comboVOs.shoppingCart.id }" onclick="totalprice(this)"/>
+								<input type="checkbox" value="${comboVOs.shoppingCart.id }" cartId="${comboVOs.shoppingCart.id }" comboId="${comboVOs.combo.id}" onclick="totalprice(this)"/>
 								</c:if>
 								<c:if test="${empty comboVOs.shoppingCart.id }">
-								<input type="checkbox" value="${comboVOs.shoppingCart.id }" cartId="${comboVOs.shoppingCart.cookieCartId }" onclick="totalprice(this)"/>
+								<input type="checkbox" value="${comboVOs.shoppingCart.cookieCartId }" cartId="${comboVOs.shoppingCart.cookieCartId }" comboId="${comboVOs.combo.id}" onclick="totalprice(this)"/>
 								</c:if>
 
 								<li class="productCol">
@@ -449,7 +500,7 @@ function modefyToCart(id){
 										<a href="javascript:delfromCart(${comboVOs.shoppingCart.id})" class="delBtn1">删除</a>
 									</c:if>
 									<c:if test="${empty comboVOs.shoppingCart.id }">
-										<a href="javascript:delfromCart('${comboVOs.shoppingCart.cookieCartId }')" class="delBtn1">删除</a>
+										<a href="javascript:delfromCart('${comboVOs.shoppingCart.cookieCartId }','${comboVOs.combo.id}')" class="delBtn1">删除</a>
 									</c:if>
 									</span></li>
 								<div class="clearfix"></div>
@@ -528,7 +579,10 @@ function modefyToCart(id){
 			 		    <form id="inputMoney" method="post" action="${basePath}/front/orderrecord/businessConfirm.action">
 			 		    	<input type="hidden" id="cartids" name="cartids"/>
 			 		    	<input type="hidden" id="cartidcount" name="cartidcount"/>
-			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/> <input type="button" onclick="return onSubmit()"
+			 		    	<input type="hidden" id="totalMoney" name="totalMoney"/> 
+<!-- 			 		    	套餐商品总价格 -->
+			 		    	<input type="hidden" id="totalComboMoney" name="totalComboMoney"/>
+			 		    	<input type="button" onclick="return onSubmit()"
 									class="pull-right cartSubmitBtn" value="去结算">
 							</form>
 			 		

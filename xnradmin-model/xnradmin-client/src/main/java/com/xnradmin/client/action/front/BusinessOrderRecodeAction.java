@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -35,6 +36,8 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.pay.wxpay.util.QRcodeUtils;
 import com.xnradmin.core.service.StaffService;
+import com.xnradmin.core.service.business.combo.ComboService;
+import com.xnradmin.core.service.business.combo.ComboUserService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
@@ -53,6 +56,8 @@ import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.Combo;
+import com.xnradmin.po.business.ComboUser;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
@@ -121,6 +126,12 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	@Autowired
 	private GoodsAllocationShowService allocationShowService;
 	
+	@Autowired
+	private ComboService comboService;
+	
+	@Autowired
+	private ComboUserService comboUserService;
+	
 	private Log exLog = Log4jUtil.getLog("ex");
 
 	private Log coopLog = Log4jUtil.getLog("coopLog");
@@ -171,7 +182,8 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	private Map<String,Integer> goodsCountMap = new HashMap<String,Integer>();//每一个产品的订单数
 	private String msg;//库存不足的提示信息
 	private List<ComboVO> comboVOs;
-
+	
+	
 	
 	public String getMsg() {
 		return msg;
@@ -469,6 +481,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		this.comboVOs = comboVOs;
 	}
 
+
 	@Override
 	public boolean isPublic() {
 		return true;
@@ -483,7 +496,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	@Action(value = "businessConfirm",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/businessConfirm.jsp"),
 			@Result(name = StrutsResMSG.FAILED, location = "/front/register.jsp"),@Result(name = StrutsResMSG.ERROR, type = "json") })
     public String businessConfirm() {
-		
+		log.debug("总价格"+totalMoney);
 		 user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
 		 addrs = addressService.findListByUserId(user.getId());
 		 
@@ -492,26 +505,43 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		
 		 
          if(cartids.equals("all")){
-        	 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
         	 comboVOs = shoppingCartService.findByUserIdAndComboId(Integer.parseInt(user.getId().toString()));
+        	 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
          }else{
         	 
         	 cartVoList = new ArrayList<BusinessGoodsCartVo>();
-        	 
+        	 List<ComboVO> comboVOlist = new ArrayList<ComboVO>();
         	 String[] cartIdArray = cartids.split(",");
         	 for(int i=0;i<cartIdArray.length;i++){
         		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
-        		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
-        		 if(goodsCountMap.get(goods.getId()+"")==null){
-        			 goodsCountMap.put(goods.getId()+"", cart.getGoodsCount());        			 
-        		 }else{
-        			 goodsCountMap.put(goods.getId()+"", goodsCountMap.get(goods.getId()+"")+cart.getGoodsCount());
-        		 }
-        		 BusinessGoodsCartVo vo = new BusinessGoodsCartVo();
-        		 vo.setCart(cart);
-        		 vo.setGoods(goods);
-        		 cartVoList.add(vo);
+        		 if(cart.getGoodsId()!=null)
+        		 {
+        			 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
+        			 if(goodsCountMap.get(goods.getId()+"")==null){
+        				 goodsCountMap.put(goods.getId()+"", cart.getGoodsCount());        			 
+        			 }else{
+        				 goodsCountMap.put(goods.getId()+"", goodsCountMap.get(goods.getId()+"")+cart.getGoodsCount());
+        			 }
+        			 BusinessGoodsCartVo vo = new BusinessGoodsCartVo();
+        			 vo.setCart(cart);
+        			 vo.setGoods(goods);
+        			 cartVoList.add(vo);
+        		 }else {
+        			 Combo combo  = comboService.findByCombo(cart.getComboId().toString());
+					if(goodsCountMap.get(combo.getId()+"")==null)
+					{
+						goodsCountMap.put(combo.getId()+"", cart.getGoodsCount());
+					}else
+					{
+						goodsCountMap.put(combo.getId()+"", goodsCountMap.get(combo.getId()+"")+cart.getGoodsCount());
+					}
+					    ComboVO comboVO = new ComboVO();
+					    comboVO.setShoppingCart(cart);
+					    comboVO.setCombo(combo);
+					    comboVOlist.add(comboVO);
+				}
         	 }
+        	 comboVOs = comboVOlist;
          }
 		
 		 return StrutsResMSG.SUCCESS;
@@ -524,7 +554,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	 */
 	@Action(value = "businessConfirmCheck",results = { @Result(name = StrutsResMSG.SUCCESS, type = "json")})
     public String businessConfirmCheck() {
-
+		log.debug("总价格"+totalMoney);
 		user = (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
 		
 		 List<BusinessGoodsCartVo> newcartVoList=null;
@@ -545,11 +575,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
         	 String[] cartIdArray = cartids.split(",");
         	 for(int i=0;i<cartIdArray.length;i++){
         		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
-        		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
-        		 if(goodsCountMap.get(goods.getId()+"")==null){
-        			 goodsCountMap.put(goods.getId()+"", cart.getGoodsCount());        			 
-        		 }else{
-        			 goodsCountMap.put(goods.getId()+"", goodsCountMap.get(goods.getId()+"")+cart.getGoodsCount());
+        		 if(cart.getGoodsId()!=null)
+        		 {
+        			 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
+        			 if(goodsCountMap.get(goods.getId()+"")==null){
+        				 goodsCountMap.put(goods.getId()+"", cart.getGoodsCount());        			 
+        			 }else{
+        				 goodsCountMap.put(goods.getId()+"", goodsCountMap.get(goods.getId()+"")+cart.getGoodsCount());
+        			 }
         		 }
         	 }
          }
@@ -562,6 +595,10 @@ public class BusinessOrderRecodeAction extends ParentAction {
         	 }else{
         		 msg="";
         	 }
+         }
+         if(goodsCountMap.isEmpty())
+         {
+        	 msg="";
          }
          return StrutsResMSG.SUCCESS;
 		
@@ -702,15 +739,14 @@ public class BusinessOrderRecodeAction extends ParentAction {
 			orderRecord.setUserRealDescription(userDesc);
 			Long newOrderRecordId = orderRecordService.save(orderRecord);
 			orderRecordId = String.valueOf(newOrderRecordId);
-			
+			Long newComboRecordId = 0L;
 			Integer totalCount = 0;
-			
 			String goodDetail = "";
 			
 			 if(cartids.equals("all")){
 	        	 
 				 cartVoList = shoppingCartService.findByUserId(Integer.parseInt(user.getId().toString()));
-				 
+				 comboVOs = shoppingCartService.findByUserIdAndComboId(Integer.parseInt(user.getId().toString()));
 				 for(BusinessGoodsCartVo vo:cartVoList){
 					 ShoppingCart cart = vo.getCart();
 	        		 BusinessGoods goods = vo.getGoods();
@@ -734,6 +770,43 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        		 orderGoodsRelationService.save(relation);
 	        		 shoppingCartService.del(cart.getId().toString());
 				 }
+				
+				 for (ComboVO cvos : comboVOs) {
+					 
+					 ShoppingCart cart = cvos.getShoppingCart();
+					 
+					 Combo combo  = cvos.getCombo();
+        			
+        			 goodDetail += combo.getComboName()+" ";
+        			 
+        			 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
+        			 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
+        			 relation.setCurrentPrice(cart.getCurrentPrice());
+        			 relation.setCurrentPriceType(cart.getCurrentPriceType());
+        			 relation.setGoodsCount(cart.getGoodsCount());
+        			 relation.setComboId(cart.getComboId());
+//        			 relation.setGoodsWeightId(goods.getGoodsWeightId());
+        			 relation.setOrderGoodsRelationTime(new Timestamp(new Date().getTime()));
+        			 relation.setOrderRecordId(orderRecord.getId());
+        			 relation.setOriginalPrice(Float.parseFloat(totalMoney));
+        			 relation.setPurchasePrice(Float.parseFloat(totalMoney));
+        			 
+        			 
+        			 totalCount += cart.getGoodsCount();
+        			 
+        			 ComboUser comboUser = new ComboUser();
+        			 comboUser.setUserId(Integer.parseInt(user.getId().toString()));
+        			 comboUser.setComboId(cart.getComboId().toString());
+        			 comboUser.setOrderId(newOrderRecordId);
+        			 comboUser.setComboUserStatus(0);
+        			 comboUser.setUsingMoney(0F);
+        			 comboUser.setUsingTimes(0);
+        			 String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime());
+        			 comboUser.setCreateTime(Timestamp.valueOf(time));
+        			 comboUserService.save(comboUser);
+        			 orderGoodsRelationService.save(relation);
+        			 shoppingCartService.del(cart.getId().toString());
+				}
 				 
 	         }else{
 	        	 
@@ -743,27 +816,66 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        	 
 	        	 for(int i=0;i<cartIdArray.length;i++){
 	        		 ShoppingCart cart = shoppingCartService.findByid(cartIdArray[i]);
-	        		 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
-	        		 
-	        		 goodDetail += goods.getGoodsName()+" ";
-	        		 
-	        		 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
-	        		 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
-	        		 relation.setCurrentPrice(cart.getCurrentPrice());
-	        		 relation.setCurrentPriceType(cart.getCurrentPriceType());
-	        		 relation.setGoodsCount(cart.getGoodsCount());
-	        		 relation.setGoodsId(cart.getGoodsId());
-	        		 relation.setGoodsWeightId(goods.getGoodsWeightId());
-	        		 relation.setOrderGoodsRelationTime(new Timestamp(new Date().getTime()));
-	        		 relation.setOrderRecordId(orderRecord.getId());
-	        		 relation.setOriginalPrice(Float.parseFloat(totalMoney));
-	        		 relation.setPurchasePrice(Float.parseFloat(totalMoney));
-	        		 
-	        		 
-	        		 totalCount += cart.getGoodsCount();
-	        		 
-	        		 orderGoodsRelationService.save(relation);
-	        		 shoppingCartService.del(cart.getId().toString());
+	        		 if(cart.getGoodsId()!=null)
+	        		 {
+	        			 
+	        			 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
+	        			 
+	        			 goodDetail += goods.getGoodsName()+" ";
+	        			 
+	        			 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
+	        			 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
+	        			 relation.setCurrentPrice(cart.getCurrentPrice());
+	        			 relation.setCurrentPriceType(cart.getCurrentPriceType());
+	        			 relation.setGoodsCount(cart.getGoodsCount());
+	        			 relation.setGoodsId(cart.getGoodsId());
+	        			 relation.setGoodsWeightId(goods.getGoodsWeightId());
+	        			 relation.setOrderGoodsRelationTime(new Timestamp(new Date().getTime()));
+	        			 relation.setOrderRecordId(orderRecord.getId());
+	        			 relation.setOriginalPrice(Float.parseFloat(totalMoney));
+	        			 relation.setPurchasePrice(Float.parseFloat(totalMoney));
+	        			 
+	        			 
+	        			 totalCount += cart.getGoodsCount();
+	        			 
+	        			 orderGoodsRelationService.save(relation);
+	        			 shoppingCartService.del(cart.getId().toString());
+	        		 }
+	        		 if(cart.getComboId()!=null)
+	        		 {
+//	        			 BusinessGoods goods = goodsService.findByid(cart.getGoodsId().toString());
+	        			 Combo combo  = comboService.findByCombo(cart.getComboId().toString());
+	        			 
+	        			 goodDetail += combo.getComboName()+" ";
+	        			 
+	        			 BusinessOrderGoodsRelation relation = new BusinessOrderGoodsRelation();
+	        			 relation.setClientUserId(Integer.parseInt(user.getId().toString()));
+	        			 relation.setCurrentPrice(cart.getCurrentPrice());
+	        			 relation.setCurrentPriceType(cart.getCurrentPriceType());
+	        			 relation.setGoodsCount(cart.getGoodsCount());
+	        			 relation.setComboId(cart.getComboId());
+//	        			 relation.setGoodsWeightId(goods.getGoodsWeightId());
+	        			 relation.setOrderGoodsRelationTime(new Timestamp(new Date().getTime()));
+	        			 relation.setOrderRecordId(orderRecord.getId());
+	        			 relation.setOriginalPrice(Float.parseFloat(totalMoney));
+	        			 relation.setPurchasePrice(Float.parseFloat(totalMoney));
+	        			 
+	        			 
+	        			 totalCount += cart.getGoodsCount();
+	        			 
+	        			 ComboUser comboUser = new ComboUser();
+	        			 comboUser.setUserId(Integer.parseInt(user.getId().toString()));
+	        			 comboUser.setComboId(cart.getComboId().toString());
+	        			 comboUser.setOrderId(newComboRecordId);
+	        			 comboUser.setComboUserStatus(0);
+	        			 comboUser.setUsingMoney(0F);
+	        			 comboUser.setUsingTimes(0);
+	        			 String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime());
+	        			 comboUser.setCreateTime(Timestamp.valueOf(time));
+	        			 comboUserService.save(comboUser);
+	        			 orderGoodsRelationService.save(relation);
+	        			 shoppingCartService.del(cart.getId().toString());
+	        		 }
 	        	 }
 	        	 
 	         }

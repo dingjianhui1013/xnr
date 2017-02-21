@@ -181,4 +181,9 @@ public class ComboService {
 		return dao.getComboUserCount(comboUserVo);
 	}
 
+	public Combo findByCombo(String id) {
+		Combo combo = dao.findOneComboById(Integer.parseInt(id));
+		return combo;
+	}
+
 }

@@ -33,6 +33,8 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	private Integer clientUserId; //用户ID
 	
 	private Integer goodsId; //商品Id
+	
+	private Integer comboId; //套餐商品Id
     
     private Integer goodsCount; //商品数量
     
@@ -205,6 +207,16 @@ public class BusinessOrderGoodsRelation implements java.io.Serializable{
 	public void setGoodsWeightId(Integer goodsWeightId) {
 		this.goodsWeightId = goodsWeightId;
 	}
+
+	public Integer getComboId() {
+		return comboId;
+	}
+
+	@Column(name="combo_id")
+	public void setComboId(Integer comboId) {
+		this.comboId = comboId;
+	}
+	
 	
 	
 }

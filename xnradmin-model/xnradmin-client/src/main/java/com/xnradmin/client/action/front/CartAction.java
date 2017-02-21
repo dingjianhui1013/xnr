@@ -187,7 +187,6 @@ public class CartAction extends ParentAction {
 	public void setGoodsId(String goodsId) {
 		this.goodsId = goodsId;
 	}
-
 	public Integer getGoodsCount() {
 		return goodsCount;
 	}
@@ -395,32 +394,6 @@ public class CartAction extends ParentAction {
 					cookieCart = URLDecoder.decode(cookieCart);
 					cartVoList = shoppingCartService.cookieToVo(cookieCart);
 					comboVOs = shoppingCartService.cookieToComboVo(cookieCart);
-//					JSONArray jsonArrays = new JSONArray();
-//					try {
-//						for (int i = 0; i < cartVoList.size(); i++) { 
-//							JSONObject json = new JSONObject();
-//							json.put("cookieId", cartVoList.get(i).getCart().getCookieCartId());
-//							json.put("goodsId", cartVoList.get(i).getGoods().getId());
-//							json.put("comboId", "null");
-//							json.put("goodsCount", cartVoList.get(i).getCart().getGoodsCount());
-//							json.put("price", cartVoList.get(i).getGoods().getGoodsOriginalPriceStr());
-//							jsonArrays.put(json);
-//						}
-//						for (int i = 0; i < comboVOs.size(); i++) {
-//							JSONObject json = new JSONObject();
-//							json.put("cookieId", comboVOs.get(i).getShoppingCart().getCookieCartId());
-//							json.put("goodsId", "null");
-//							json.put("comboId", comboVOs.get(i).getCombo().getId());
-//							json.put("goodsCount", comboVOs.get(i).getShoppingCart().getGoodsCount());
-//							json.put("price", comboVOs.get(i).getCombo().getComboPrice());
-//							jsonArrays.put(json);
-//						}
-//						cookieByName.setMaxAge(0);
-//						CookieHelper.addCookie(ServletActionContext.getResponse(), cookieByName.getName(), jsonArrays.toString(), -1);
-//					} catch (com.cntinker.json.JSONException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
 				}
 			}
 		return StrutsResMSG.SUCCESS;

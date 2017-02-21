@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -206,7 +207,6 @@ public class FrontUserAction {
 					shoppingCartService.saveCookieCart(carsaArray.toString(),frontUser);
 				}
 			}
-			
 			return StrutsResMSG.SUCCESS;
 		}
     }

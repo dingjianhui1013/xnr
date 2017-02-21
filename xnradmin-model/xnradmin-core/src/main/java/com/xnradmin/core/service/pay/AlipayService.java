@@ -9,6 +9,7 @@ import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
 import com.xnradmin.core.service.mall.order.OrderGoodsRelationService;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.pay.Alipay;
 import com.xnradmin.po.pay.Reconciliation;
 
@@ -29,6 +30,7 @@ public class AlipayService {
 	public Alipay payInfo(String outTradeNo,Long id,String totalMoney)
 	{
 		List<BusinessGoods> goodsNames = orderGoodsRelationService.findGoodsName(id);
+		List<Combo> combos  = orderGoodsRelationService.findComboName(id);
 		String subject = "";
 		int index=0;
 		if(goodsNames.size()>3){
@@ -39,6 +41,9 @@ public class AlipayService {
 		}
 		for (int i = 0; i < index; i++) {
 			subject+="  "+goodsNames.get(i).getGoodsName();
+		}
+		for (Combo combo : combos) {
+			subject+=" "+combo.getComboName();
 		}
 		Alipay ali = new Alipay();
 		ali.setSubject("康源公社["+subject+"]");
