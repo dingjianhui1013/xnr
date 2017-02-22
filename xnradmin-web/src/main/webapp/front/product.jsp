@@ -31,6 +31,7 @@ function minusNum(id)
 }
 
 function addToCart(obj,money){
+	$("#add"+$(obj).id).removeAttr("onclick");
 	var userId = $("#userId").val();
 	var id = $(obj).attr("id").substring(3);
 	var count = $("#count"+id).val();
@@ -44,6 +45,7 @@ function addToCart(obj,money){
 			dataType:"json",
 			success:function(msg){
 				layer.msg("加入成功");
+				$("#add"+$(obj).id).attr("onclick","javascript:addToCart(this,${product.businessGoods.goodsOriginalPrice })");
 				}
 			});
 	}else

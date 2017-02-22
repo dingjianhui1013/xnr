@@ -449,7 +449,7 @@ function totalComboMoney(obj)
 
 								<li class="productCol">
 									<a href="<%=basePath%>/front/packageProductDetail.action?comboId=${comboVOst.combo.id}" >
-										<img src="http://localhost:8080//themes/business/goodsLogo/34d15d23-62c7-4eef-95dd-63e158da3173sc-img3.jpg" class="pull-left img-responsive" alt=""></a>
+										<img src="${comboVOs.combo.comboImgSmall}" class="pull-left img-responsive" alt=""></a>
 										<span class="pull-left cart-pDetail">${comboVOs.combo.comboName}</span>
 								</li>
 								<li>

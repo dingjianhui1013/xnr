@@ -145,9 +145,9 @@ function getUuid(){
 					<div class="single_left">
 						<div class="flexslider">
 							<ul class="slides">
-								<li data-thumb="http://localhost:8080//themes/business/goodsLogo/a0d46bc5-b0f8-4968-a5e7-c83eb523840fr-img6.jpg">
+								<li data-thumb="${comboVO.combo.comboImgSmall }">
 									<div class="thumb-image">
-										<img src="http://localhost:8080//themes/business/goodsLogo/a0d46bc5-b0f8-4968-a5e7-c83eb523840fr-img6.jpg" data-imagezoom="true"
+										<img src="${comboVO.combo.comboImgBig }" data-imagezoom="true"
 											class="img-responsive">
 									</div>
 								</li>

@@ -127,7 +127,7 @@ function getUuid(){
 					<div class="product-grid love-grid">	
 				 		<a href="<%=basePath%>/front/packageProductDetail.action?comboId=${combolist.combo.id}">	
 							<div class="product-img b-link-stripe b-animate-go  thickbox">
-								<img src="http://localhost:8080//themes/business/goodsLogo/34d15d23-62c7-4eef-95dd-63e158da3173sc-img3.jpg" class="img-responsive" alt="" style="height: 250px"/>
+								<img src="${combolist.combo.comboImgSmall}" class="img-responsive" alt="" style="height: 250px"/>
 								<div class="b-wrapper">
 									<h4 class="b-animate b-from-left  b-delay03">							
 										<button class="btns"><span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>查看详情</button>

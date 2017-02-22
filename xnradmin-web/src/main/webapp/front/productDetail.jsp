@@ -71,6 +71,7 @@ function minusNum()
 		}
 	}
 function addToCart(id,money){
+	$("#add"+$(obj).id).removeAttr("onclick");
 	var userId = $("#userId").val()
 	var goodsNumber = $("#goodsNumber").val();
 	//购物车里面的数量
@@ -89,6 +90,7 @@ function addToCart(id,money){
 				dataType:"json",
 				success:function(msg){
 					layer.msg("加入成功");
+					$("#add"+$(obj).id).attr("onclick","javascript:addToCart(this,${product.businessGoods.goodsOriginalPrice })");
 					}
 				});
 		}else
