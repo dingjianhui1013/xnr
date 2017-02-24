@@ -21,6 +21,8 @@ public class ComboVO implements java.io.Serializable{
 
 	private Combo combo;
 	
+	private Status status;
+	
 	private List<ComboGoodsVO> comboGoodsList;
 	
 	private List<ComboPlanVO> comboPlanList;

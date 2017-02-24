@@ -48,6 +48,14 @@ public class ComboUser implements java.io.Serializable{
     
     private Timestamp createTime; //用户套餐创建时间
     
+    private Timestamp firstDay; //套餐配送第一天
+    
+    private Timestamp firstWeek; //套餐配送第一周
+    
+    private Timestamp firstMonth; //套餐配送第一月
+    
+    private Timestamp firstYear; //套餐配送第一年
+    
     /** default constructor */
     public ComboUser(){
     }
@@ -146,5 +154,38 @@ public class ComboUser implements java.io.Serializable{
 	public void setCreateTime(Timestamp createTime) {
 		this.createTime = createTime;
 	}
+	@Column(name = "first_day")
+	public Timestamp getFirstDay() {
+		return firstDay;
+	}
+
+	public void setFirstDay(Timestamp firstDay) {
+		this.firstDay = firstDay;
+	}
+	@Column(name = "first_week")
+	public Timestamp getFirstWeek() {
+		return firstWeek;
+	}
+
+	public void setFirstWeek(Timestamp firstWeek) {
+		this.firstWeek = firstWeek;
+	}
+	@Column(name = "first_month")
+	public Timestamp getFirstMonth() {
+		return firstMonth;
+	}
+
+	public void setFirstMonth(Timestamp firstMonth) {
+		this.firstMonth = firstMonth;
+	}
+	@Column(name = "first_year")
+	public Timestamp getFirstYear() {
+		return firstYear;
+	}
+
+	public void setFirstYear(Timestamp firstYear) {
+		this.firstYear = firstYear;
+	}
   
+	
 }

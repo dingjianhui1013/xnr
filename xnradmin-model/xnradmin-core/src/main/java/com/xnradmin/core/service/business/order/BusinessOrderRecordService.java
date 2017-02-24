@@ -680,6 +680,11 @@ public class BusinessOrderRecordService {
 				hql = hql + " and cusName like '%"
 						+ vo.getBusinessOrderRecord().getCusName() + "%'";
 			}
+			if (vo.getBusinessOrderRecord().getIsChild()!=null) {
+				hql = hql + " and isChild = '"
+						+ vo.getBusinessOrderRecord().getIsChild()
+						+ "'";
+			}
 		}
 		return this.commonDao.getNumberOfEntitiesWithHql(hql);
 	}
@@ -1371,6 +1376,11 @@ public class BusinessOrderRecordService {
 			if (!StringHelper.isNull(vo.getBusinessOrderRecord().getCusName())) {
 				hql = hql + " and cusName like '%"
 						+ vo.getBusinessOrderRecord().getCusName() + "%'";
+			}
+			if (vo.getBusinessOrderRecord().getIsChild()!=null) {
+				hql = hql + " and isChild = '"
+						+ vo.getBusinessOrderRecord().getIsChild()
+						+ "'";
 			}
 		}
 		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
