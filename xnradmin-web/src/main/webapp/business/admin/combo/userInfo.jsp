@@ -8,10 +8,13 @@
 	String action = basePath+"page/business/admin/combo/userInfo.action";
 	String modify = basePath+"page/business/admin/combo/modifyInfo.action";
 	String del = basePath+"page/business/admin/combo/delInfo.action";
-	
+	String order = basePath+"page/business/admin/combo/orderInfo.action";
+	String goodsInfo = basePath+"page/business/admin/combo/goodsInfo.action";
 	request.setAttribute("action",action);
 	request.setAttribute("modify",modify);
+	request.setAttribute("order",order);
 	request.setAttribute("del",del);
+	request.setAttribute("goodsInfo",goodsInfo);
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <form id="pagerForm" method="post" action="${action}">
@@ -27,7 +30,7 @@
 <script type="text/javascript">
 	function send(id){
 		$.ajax({
-			url:'<%= basePath%>page/business/admin/combo/send.action?comboVo.combo.id='+id,
+			url:'<%= basePath%>page/business/admin/combo/changeComboUserStatus.action?comboUserVo.comboUser.id='+id,
 			type:'POST',
 			data:{},
 			dataType:'JSON',
@@ -51,25 +54,6 @@
 					套餐名：
 					<input type="text" name="comboVo.combo.comboName" value="${comboVo.combo.comboName}"/>
 				</td>
-				
-				<%-- <td>
-					<label>分配状态：</label>
-					<select class="combox" name="deliveryStatus">
-					<c:if test="${allocationStatusList!=null}">
-						<option value="" selected>选择</option>
-						<c:forEach items="${allocationStatusList}" var="loop">
-							<c:choose>
-								<c:when test="${loop.id==deliveryStatus}">
-									<option value=${loop.id} selected>${loop.statusName}</option>
-   								</c:when>
-   								<c:otherwise>
-   									<option value=${loop.id}>${loop.statusName}</option>
-   								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</c:if>
-					</select>
-				</td> --%>
 			</tr>
 		</table>
 		<table>
@@ -112,32 +96,36 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:if test="${comboUserVOList!=null}">
-				<c:forEach items="${comboUserVOList}" var="loop">
-					<tr target="sid_orderRecordId" rel="${loop.comboUser.id}">						
+			 <c:if test="${comboUserVOList!=null}">
+				<c:forEach items="${comboUserVOList}" var="loop" varStatus="status">
+					<tr target="sid_comboUserId" rel="${loop.comboUser.id}">
 						<td>${loop.frontUser.userName}</td>
 						<td>${loop.combo.comboName}</td>	
 						<td>${loop.combo.comboPrice}</td>
 						<td>${loop.comboUser.usingMoney}</td>
+						<td>
+							<c:if test="${loop.comboUser.comboUserStatus == 0}">启用</c:if>
+							<c:if test="${loop.comboUser.comboUserStatus == 1}">禁用</c:if>
+						</td>
 						<td>${loop.comboUser.comboStartTime}</td>
 						<td>${loop.comboUser.comboEndTime}</td>
 						<td>					
-							<a title="查看订单详情" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
-							<a title="查看商品详情" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
-							<a title="查看以后的配送计划" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
-							<a title="计划外调整订单" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=1" class="btnLook">查看</a>
-							<%-- <a title="编辑" target="navTab" href="${modify}?comboVo.combo.id=${loop.id}&pageType=2" class="btnEdit">编辑</a>
-							<a title="删除" target="ajaxTodo" href="${del}?comboVo.combo.id=${loop.id}" class="btnDel" title="确认删除？" >删除</a> --%>
-							<c:if test="${loop.comboStatus == 0}">
-								<a title="禁用" href="javascript:send(${loop.id})" class="btnSelect" >禁用</a>
+							<a title="查看订单详情" target="dialog" href="${order}?comboUserVo.comboUser.orderId=${loop.comboUser.orderId}" class="btnLook">查看订单详情</a>
+							<a title="查看商品详情" target="dialog" href="${goodsInfo}?comboUserVo.comboUser.orderId=${loop.comboUser.orderId}&comboUserVo.combo.id=${loop.combo.id}" class="btnLook">查看</a>
+							<%-- <a title="查看以后的配送计划" target="dialog" href="${modify}?comboVo.combo.id=${loop.comboUser.id}&pageType=1" class="btnLook">查看</a>
+							<a title="计划外调整订单" target="navTab" href="${modify}?comboVo.combo.id=${loop.comboUser.id}&pageType=1" class="btnLook">查看</a>
+							<a title="编辑" target="navTab" href="${modify}?comboVo.combo.id=${loop.comboUser.id}&pageType=2" class="btnEdit">编辑</a> --%>
+							<%-- <a title="删除" target="ajaxTodo" href="${del}?comboUserVo.comboUser.id=${loop.comboUser.id}" class="btnDel" title="确认删除？" >删除</a> --%>
+							<c:if test="${loop.comboUser.comboUserStatus == 0}">
+								<a title="禁用" href="javascript:send(${loop.comboUser.id})" class="btnSelect" >禁用</a>
 							</c:if>
-							<c:if test="${loop.comboStatus == 1}">
-								<a title="启用" href="javascript:send(${loop.id})" class="btnSelect" >启用</a>
+							<c:if test="${loop.comboUser.comboUserStatus == 1}">
+								<a title="启用" href="javascript:send(${loop.comboUser.id})" class="btnSelect" >启用</a>
 							</c:if>
 						</td>	
-					</tr>				
+					</tr>
 				</c:forEach>
-			</c:if>			
+			</c:if>		 
 		</tbody>
 	</table>
 	<div class="panelBar">

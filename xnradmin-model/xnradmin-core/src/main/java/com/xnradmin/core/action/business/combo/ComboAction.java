@@ -8,13 +8,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,14 +34,15 @@ import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
 import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.business.combo.ComboService;
+import com.xnradmin.core.service.business.order.BusinessOrderRecordService;
 import com.xnradmin.core.service.common.status.StatusService;
-import com.xnradmin.po.business.AllocationData;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboPlan;
-import com.xnradmin.po.business.FarmerOrderRecord;
 import com.xnradmin.po.common.status.Status;
-import com.xnradmin.po.wx.OutPlan;
+import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.ComboGoodsVO;
+import com.xnradmin.vo.business.ComboUserGoodsVO;
 import com.xnradmin.vo.business.ComboUserVO;
 import com.xnradmin.vo.business.ComboVO;
 
@@ -63,7 +63,10 @@ public class ComboAction extends ParentAction {
 	
 	@Autowired
 	private ComboService comboService;
-
+	
+	@Autowired
+	BusinessOrderRecordService businessOrderRecordService;
+	
 	private ComboVO comboVo;
 	
 	private List<Combo> comboList;
@@ -71,6 +74,10 @@ public class ComboAction extends ParentAction {
 	private ComboUserVO comboUserVo;
 	
 	private List<ComboUserVO> comboUserVOList;
+	
+	private List<BusinessOrderVO> businessOrderVOList;
+	
+	private List<ComboUserGoodsVO> comboUserGoodsVOList;
 	
 	private String pageType;//页面类型 查看1 编辑2 新增3
 	
@@ -115,6 +122,32 @@ public class ComboAction extends ParentAction {
 	}
 	
 	/**
+	 * 跳转到订单详情页面
+	 * 
+	 * @return
+	 */
+	@Action(value = "orderInfo", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/combo/orderInfo.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/combo/orderInfo.jsp") })
+	public String orderInfo() {
+		setPageOrderInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	/**
+	 * 跳转到订单详情页面
+	 * 
+	 * @return
+	 */
+	@Action(value = "goodsInfo", results = {
+			@Result(name = StrutsResMSG.SUCCESS, location = "/business/admin/combo/goodsInfo.jsp"),
+			@Result(name = StrutsResMSG.FAILED, location = "/business/admin/combo/goodsInfo.jsp") })
+	public String goodsInfo() {
+		setPageGoodsInfo();
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	/**
 	 * 跳转到信息页。。
 	 * 
 	 * @return
@@ -150,6 +183,24 @@ public class ComboAction extends ParentAction {
 		}else{
 			super.success("删除失败，套餐使用中", null,"comboManager", null);			
 		}
+		return null;
+	}
+	
+	/**
+	 * 修改状态接口
+	 * 
+	 * @return String
+	 * @throws Exception
+	 */
+	@Action(value = "changeComboUserStatus", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String changeComboUserStatus() throws Exception {
+		log.debug("send action!");
+		if(comboService.modifyComboUser(comboUserVo)){
+			super.success("状态修改成功", null,"userCombo", null);
+		}else{
+			super.success("状态修改失败，套餐使用中", null,"userCombo", null);			
+		}
+		
 		return null;
 	}
 	
@@ -207,7 +258,11 @@ public class ComboAction extends ParentAction {
 				fis.close();
 				comboVo.getCombo().setComboImgBig(comboImgBigPath + fileName);
 			}
-			comboService.modify(comboVo);
+			
+			//查询出所有状态 以备使用
+			List<Status> statusList = statusService.find(Combo.class,"comboCycleStatus");
+			statusList.addAll(statusService.find(ComboPlan.class));
+			comboService.modify(comboVo,statusList);
 			super.success("套餐保存成功", AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,"comboManager", null);
 		}else{
 			super.success("套餐保存失败", null,"comboManager", null);
@@ -325,6 +380,41 @@ public class ComboAction extends ParentAction {
 				orderField, orderDirection);
 		this.totalCount = comboService.getComboUserCount(comboUserVo);
 
+	}
+	
+	private void setPageOrderInfo() {
+		BusinessOrderVO businessOrderVO = new BusinessOrderVO();
+		BusinessOrderRecord bor = new BusinessOrderRecord();
+		bor.setIsChild(comboUserVo.getComboUser().getOrderId());
+		businessOrderVO.setBusinessOrderRecord(bor);
+		this.businessOrderVOList = businessOrderRecordService.listVO(businessOrderVO, getPageNum(), getNumPerPage(),
+				orderField, orderDirection);
+		this.totalCount = businessOrderRecordService.getCount(businessOrderVO);
+	}
+	
+	private void setPageGoodsInfo() {
+		//一件商品一条数据 商品名，商品总数，配送总数，剩余配送数 
+		//根据用户套餐查询出套餐商品  查询该用户套餐所有子订单 汇总商品数量
+		//商品的ID 
+		Map<Integer,ComboUserGoodsVO> goodsMap = comboService
+				.findComboGoodsByComboUserId(comboUserVo.getCombo().getId());
+		List<BusinessOrderVO> borList = comboService
+				.findBusinessOrderRelationVOByOrderId(comboUserVo.getComboUser().getOrderId());
+		List<ComboUserGoodsVO> cugVO = new ArrayList<ComboUserGoodsVO>();
+		for(BusinessOrderVO vo:borList){
+			ComboUserGoodsVO cgv = goodsMap.get(vo.getBusinessGoods().getId());
+			//配送数计算
+			if(cgv.getHasAllocateNumber()==null){
+				cgv.setHasAllocateNumber(vo.getBusinessOrderGoodsRelation().getGoodsCount());
+			}else{
+				cgv.setHasAllocateNumber(cgv.getHasAllocateNumber()+vo.getBusinessOrderGoodsRelation().getGoodsCount());
+			}
+		}
+		for(Entry<Integer, ComboUserGoodsVO> s:goodsMap.entrySet()){
+			cugVO.add(s.getValue());
+		}
+		this.comboUserGoodsVOList = cugVO;
+		this.totalCount = cugVO.size();
 	}
 	
 	private void initComboVo() {
@@ -475,6 +565,38 @@ public class ComboAction extends ParentAction {
 
 	public void setComboImgBigPath(String comboImgBigPath) {
 		this.comboImgBigPath = comboImgBigPath;
+	}
+
+	public ComboUserVO getComboUserVo() {
+		return comboUserVo;
+	}
+
+	public void setComboUserVo(ComboUserVO comboUserVo) {
+		this.comboUserVo = comboUserVo;
+	}
+
+	public List<ComboUserVO> getComboUserVOList() {
+		return comboUserVOList;
+	}
+
+	public void setComboUserVOList(List<ComboUserVO> comboUserVOList) {
+		this.comboUserVOList = comboUserVOList;
+	}
+
+	public List<BusinessOrderVO> getBusinessOrderVOList() {
+		return businessOrderVOList;
+	}
+
+	public void setBusinessOrderVOList(List<BusinessOrderVO> businessOrderVOList) {
+		this.businessOrderVOList = businessOrderVOList;
+	}
+
+	public List<ComboUserGoodsVO> getComboUserGoodsVOList() {
+		return comboUserGoodsVOList;
+	}
+
+	public void setComboUserGoodsVOList(List<ComboUserGoodsVO> comboUserGoodsVOList) {
+		this.comboUserGoodsVOList = comboUserGoodsVOList;
 	}
 	
 }

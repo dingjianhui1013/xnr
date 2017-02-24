@@ -165,7 +165,8 @@ public class BusinessOrderRecord implements java.io.Serializable{
     private Float purchasePrice; 
     /** 当前用户折扣 */
     private Float discount; 
-    
+    /** 是否是子订单 当是子订单的时候 存放 父级订单ID*/
+    private Long isChild;
     
     //该订单商品总数量
     private Integer totalCount;
@@ -792,12 +793,15 @@ public class BusinessOrderRecord implements java.io.Serializable{
 	public void setTotalCount(Integer totalCount) {
 		this.totalCount = totalCount;
 	}
-	
-	
-	
-	
-	
-	
 
+	@Column(name = "IS_CHILD")
+	public Long getIsChild() {
+		return isChild;
+	}
+
+	public void setIsChild(Long isChild) {
+		this.isChild = isChild;
+	}
+	
 	
 }

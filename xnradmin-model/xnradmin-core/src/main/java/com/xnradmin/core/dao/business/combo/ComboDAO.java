@@ -1,7 +1,9 @@
 package com.xnradmin.core.dao.business.combo;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,10 +15,15 @@ import org.springframework.stereotype.Repository;
 import com.cntinker.util.StringHelper;
 import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.po.business.BusinessGoods;
+import com.xnradmin.po.business.BusinessOrderGoodsRelation;
+import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboGoods;
 import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.business.ComboUser;
+import com.xnradmin.po.business.PseudoOrders;
+import com.xnradmin.po.front.FrontUser;
+import com.xnradmin.vo.business.BusinessOrderVO;
 import com.xnradmin.vo.business.ComboGoodsVO;
 import com.xnradmin.vo.business.ComboPlanVO;
 import com.xnradmin.vo.business.ComboUserVO;
@@ -313,12 +320,11 @@ public class ComboDAO{
         }
 	}
 
-	public ComboUser findComboUserByComboId(Integer id) {
+	public List<ComboUser> findComboUserByComboId(Integer id) {
 		log.debug("getting ComboUser instance with id: " + id);
         try{
 
-            return (ComboUser) commonDao.findById(
-            		ComboUser.class,id);
+            return (List<ComboUser>) commonDao.findByProperty(ComboUser.class, "comboId", id);
         }catch(RuntimeException re){
             log.error("get failed",re);
             throw re;
@@ -328,6 +334,7 @@ public class ComboDAO{
 	public List<ComboUserVO> findComboUsesrByPage(ComboUserVO comboUserVo,
 			int pageNum, int numPerPage, String orderField,
 			String direction) {
+		List<ComboUserVO> resVo = new ArrayList<>();
 		String hql = "from FrontUser fu, ComboUser cu,Combo c where cu.userId=fu.id and cu.comboId=c.id ";
 		//查询条件有 用户姓名，套餐名称，时间
 		if (comboUserVo!=null && comboUserVo.getCombo() != null) {
@@ -359,9 +366,16 @@ public class ComboDAO{
 		} else {
 			hql += " order by c.id desc";
 		}
-		List l = commonDao.getEntitiesByPropertiesWithHql(hql, pageNum,
-				numPerPage);
-		return l;
+		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql, pageNum,numPerPage);
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = l.get(i);
+			ComboUserVO cuv = new ComboUserVO();
+			cuv.setFrontUser((FrontUser)obj[0]);
+			cuv.setComboUser((ComboUser)obj[1]);
+			cuv.setCombo((Combo)obj[2]);
+			resVo.add(cuv);
+		}
+		return resVo;
 	}
 
 	public int getComboUserCount(ComboUserVO comboUserVo) {
@@ -392,6 +406,123 @@ public class ComboDAO{
 			}
 		}
 		return this.commonDao.getNumberOfEntitiesWithHql(hql);
+	}
+
+	public Serializable savePseudoOrders(PseudoOrders po) {
+		log.debug("saving PseudoOrders instance");
+        Serializable cls;
+        try{
+        	cls = commonDao.save(po);
+            log.debug("save successful");
+        }catch(RuntimeException re){
+            log.error("save failed",re);
+            throw re;
+        }
+        return cls;
+	}
+
+	public List<ComboUserVO> selectUserComboPseudoOrders() {
+		List<ComboUserVO> resVo = new ArrayList<>();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
+		String today = sdf.format(new Date());
+		String hql = "from Combo c, ComboUser cu,PseudoOrders po where cu.comboId=c.id and po.comboId=c.id ";
+		//查询条件  开始时间大于等于今天 结束时间小于等于今天 套餐有效状态
+		hql = hql + " and cu.comboEndTime >='"	+ today + "'";
+		hql = hql + " and cu.comboStartTime <='" + today + "'";
+		hql = hql + " and c.comboStatus ='0'";
+		hql = hql + " and cu.comboUserStatus ='0'";
+		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = l.get(i);
+			ComboUserVO cuv = new ComboUserVO();
+			cuv.setCombo(((Combo)obj[0]));
+			cuv.setComboUser((ComboUser)obj[1]);
+			cuv.setPseudoOrders((PseudoOrders)obj[2]);
+			resVo.add(cuv);
+		}
+		return resVo;
+	}
+
+	public List<ComboPlanVO> findComboPlanByPlanId(Integer id) {
+		List<ComboPlanVO> resVo = new ArrayList<>();
+		String hql = "from ComboPlan cp, BusinessGoods bg where cp.goodsId=bg.id and cp.comboId="+id;
+		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = l.get(i);
+			ComboPlanVO cpv = new ComboPlanVO();
+			cpv.setComboPlan((ComboPlan)obj[0]);
+			cpv.setBusinessGoods((BusinessGoods)obj[1]);
+			resVo.add(cpv);
+		}
+		return resVo;
+	}
+
+	public int deletePseudoOrdersByComboId(Integer id) {
+		log.debug("remove PseudoOrders by ComboId: " + id);
+        try{
+            String queryString = "delete  from PseudoOrders as model where model.comboId = "
+                    + id;
+            return commonDao.executeUpdateOrDelete(queryString);
+        }catch(RuntimeException re){
+            log.error("removeBusinessGoodsId failed",re);
+            throw re;
+        }
+	}
+
+	public List<ComboGoodsVO> findComboGoodsByComboUserId(Integer id) {
+		List<ComboGoodsVO> resVo = new ArrayList<>();
+		String hql = "from ComboGoods cg, BusinessGoods bg where cg.goodsId=bg.id and cg.comboId="+id;
+		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = l.get(i);
+			ComboGoodsVO cgv = new ComboGoodsVO();
+			cgv.setComboGoods((ComboGoods)obj[0]);
+			cgv.setBusinessGoods((BusinessGoods)obj[1]);
+			resVo.add(cgv);
+		}
+		return resVo;
+	}
+
+	public List<BusinessOrderVO> findBusinessOrderRelationVOByOrderId(
+			Long orderId) {
+		List<BusinessOrderVO> resVo = new ArrayList<>();
+		String hql = "from BusinessOrderRecord bor, BusinessOrderGoodsRelation bogr,"
+				+ " BusinessGoods bg where bor.id = bogr.orderRecordId and bg.id = bogr.goodsId"
+				+ " and bor.isChild = "+orderId;
+		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = l.get(i);
+			BusinessOrderVO bov = new BusinessOrderVO();
+			bov.setBusinessOrderRecord((BusinessOrderRecord)obj[0]);
+			bov.setBusinessOrderGoodsRelation((BusinessOrderGoodsRelation)obj[1]);
+			bov.setBusinessGoods((BusinessGoods)obj[2]);
+			resVo.add(bov);
+		}
+		return resVo;
+	}
+
+	public ComboUser findComboUserById(Integer id) {
+		log.debug("getting ComboUser instance with id: " + id);
+        try{
+            return (ComboUser) commonDao.findById(
+            		ComboUser.class,id);
+        }catch(RuntimeException re){
+            log.error("get failed",re);
+            throw re;
+        }
+	}
+
+	public ComboUser mergeComboUser(ComboUser comboUser) {
+		log.debug("merging mergeComboUser instance");
+        try{
+        	ComboUser result = (ComboUser) commonDao
+                    .merge(comboUser);
+            log.debug("merge successful");
+            return result;
+        }catch(RuntimeException re){
+            log.error("merge failed",re);
+            throw re;
+        }
 	}
 	
 }

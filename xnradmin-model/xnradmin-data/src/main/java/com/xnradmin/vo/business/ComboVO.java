@@ -16,6 +16,7 @@ import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboGoods;
 import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.business.ComboUser;
+import com.xnradmin.po.common.status.Status;
 
 /**
  * @author: liubin
@@ -26,6 +27,8 @@ public class ComboVO implements java.io.Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private Combo combo;
+	
+	private Status status;
 	
 	private List<ComboGoodsVO> comboGoodsList;
 	
@@ -73,6 +76,14 @@ public class ComboVO implements java.io.Serializable{
 
 	public void setComboUser(ComboUser comboUser) {
 		this.comboUser = comboUser;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 }

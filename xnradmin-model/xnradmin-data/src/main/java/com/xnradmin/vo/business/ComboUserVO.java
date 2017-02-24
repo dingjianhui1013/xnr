@@ -3,26 +3,17 @@
 */
 package com.xnradmin.vo.business;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.List;
-
 import com.cntinker.util.ReflectHelper;
-import com.xnradmin.po.business.BusinessCategory;
-import com.xnradmin.po.business.BusinessGoods;
-import com.xnradmin.po.business.BusinessUserFavorite;
-import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.business.Combo;
-import com.xnradmin.po.business.ComboGoods;
-import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.business.ComboUser;
+import com.xnradmin.po.business.PseudoOrders;
 import com.xnradmin.po.front.FrontUser;
 
 /**
  * @author: liubin
  *
  */
-public class ComboUserVO implements java.io.Serializable{
+public class ComboUserVO implements java.io.Serializable, Cloneable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +26,20 @@ public class ComboUserVO implements java.io.Serializable{
 	private String comboStartTime;
 	
 	private String comboEndTime;
+	
+	private PseudoOrders pseudoOrders;//一条伪订单
+	
+	@Override
+	public ComboUserVO clone() {
+		ComboUserVO vo = null;
+		try {
+			vo = (ComboUserVO) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return vo;
+	}
+
 	
 	public String toString() {
 		String res = "";
@@ -86,4 +91,12 @@ public class ComboUserVO implements java.io.Serializable{
 		this.comboEndTime = comboEndTime;
 	}
 
+	public PseudoOrders getPseudoOrders() {
+		return pseudoOrders;
+	}
+
+	public void setPseudoOrders(PseudoOrders pseudoOrders) {
+		this.pseudoOrders = pseudoOrders;
+	}
+	
 }
