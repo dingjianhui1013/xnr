@@ -143,14 +143,14 @@ public class MakeOrderTask {
     			chileRecord.setPaymentProviderName(statusCode.getStatusName());
     			chileRecord.setPaymentProviderName(statusCode.getStatusName());
     			
-    			// 状态为处理中
-    			chileRecord.setOperateStatus(204);
-    			statusCode = statusService.findByid("204");
+    			// 状态为待处理
+    			chileRecord.setOperateStatus(203);
+    			statusCode = statusService.findByid("203");
     			chileRecord.setOperateStatusName(statusCode.getStatusName());
     			chileRecord.setLogisticsCompanyId(1);
     			chileRecord.setLogisticsCompanyName(olde.getLogisticsCompanyName());
-    			chileRecord.setPaymentStatus(201);
-    			statusCode = statusService.findByid("201");
+    			chileRecord.setPaymentStatus(200);
+    			statusCode = statusService.findByid("200");
     			chileRecord.setPaymentStatusName(statusCode.getStatusName());
     			chileRecord
     					.setOperateTime(new Timestamp(System.currentTimeMillis()));

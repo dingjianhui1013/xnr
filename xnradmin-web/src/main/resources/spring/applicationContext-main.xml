@@ -19,8 +19,8 @@
 	<import resource="applicationContext-mysql-dao-master.xml" />		
 	<import resource="applicationContext-mysql-dao-slave01.xml" />
 		
-	<!-- <task:scheduled-tasks>
+	<task:scheduled-tasks>
 				<task:scheduled ref="autoMakeOrder" method="process"
-				cron="0 0/1 * * * ? "/>
-	</task:scheduled-tasks>  -->
+				cron="0 0 1 * * ? "/>
+	</task:scheduled-tasks>
 </beans>

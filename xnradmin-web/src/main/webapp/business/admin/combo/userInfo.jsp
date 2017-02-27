@@ -48,11 +48,11 @@
 			<tr>
 				<td>
 					用户名：
-					<input type="text" name="comboVo.combo.comboName" value="${comboVo.combo.comboName}"/>
+					<input type="text" name="comboUserVo.frontUser.userName" value="${comboUserVo.frontUser.userName}"/>
 				</td>
 				<td>
 					套餐名：
-					<input type="text" name="comboVo.combo.comboName" value="${comboVo.combo.comboName}"/>
+					<input type="text" name="comboUserVo.combo.comboName" value="${comboUserVo.combo.comboName}"/>
 				</td>
 			</tr>
 		</table>
@@ -60,9 +60,9 @@
 			<tr>
 				<td>
 					起止日期（起始结束时间都要选）：从
-					<input type="text" name="createStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createStartTime}" class="date" readonly="true" />
+					<input type="text" name="comboUserVo.comboStartTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${comboUserVo.comboStartTime}" class="date" readonly="true" />
 					到
-					<input type="text" name="createEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${createEndTime}" class="date" readonly="true" />
+					<input type="text" name="comboUserVo.comboEndTime" yearstart="-80" yearend="1"  dateFmt="yyyy-MM-dd HH:mm:ss" value="${comboUserVo.comboEndTime}" class="date" readonly="true" />
 				</td>
 			</tr>
 		</table>

@@ -117,6 +117,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 
 	private CommonStaff leaderStaff;
 	
+	private String ifChild;
 	
 	private Map<String, FarmerOrderRecord> items;
 	
@@ -636,6 +637,9 @@ public class BusinessOrderRecordAction extends ParentAction {
 					.parseInt(orderGoodsRelationPrimaryConfigurationId));
 		}
 		po.setPrimaryConfigurationName(primaryConfigurationName);
+		if(!"0".equals(ifChild)){//是子订单
+			po.setIsChild(0L);
+		}
 		vo.setBusinessOrderRecord(po);
 		vo.setUserRealStartTime(userRealStartTime);
 		vo.setUserRealEndTime(userRealEndTime);
@@ -3027,4 +3031,11 @@ public class BusinessOrderRecordAction extends ParentAction {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
+	public String getIfChild() {
+		return ifChild;
+	}
+	public void setIfChild(String ifChild) {
+		this.ifChild = ifChild;
+	}
+	
 }

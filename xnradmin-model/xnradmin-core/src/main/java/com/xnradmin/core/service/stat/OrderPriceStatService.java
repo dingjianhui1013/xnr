@@ -96,7 +96,7 @@ public class OrderPriceStatService {
 	public List<Object[]> findOrderPrice(String createStartTime, String createEndTime,
 			BusinessOrderRecord po, int curPage, int pageSize,String orderField, String direction) {
 		String hql = "select sum(originalPrice) as originalPrice,sum(totalPrice) as totalPrice from BusinessOrderRecord "
-				+ " where 1=1 ";
+				+ " where 1=1 and isChild is null ";
 		if (!StringHelper.isNull(createStartTime)
 				&& !StringHelper.isNull(createEndTime)) {
 			hql = hql + " and createTime > '" + createStartTime + "' "

@@ -350,13 +350,13 @@ public class ComboDAO{
 						+ comboUserVo.getFrontUser().getUserName() + "%'";
 			}
 		}
-		if (comboUserVo!=null && comboUserVo.getComboUser() != null) {
+		if (comboUserVo!=null) {
 			if (!StringHelper.isNull(comboUserVo.getComboStartTime())) {
 				hql = hql + " and cu.comboStartTime >='"
 						+ comboUserVo.getComboStartTime() + "'";
 			}
 		}
-		if (comboUserVo!=null && comboUserVo.getComboUser() != null) {
+		if (comboUserVo!=null) {
 			if (!StringHelper.isNull(comboUserVo.getComboEndTime())) {
 				hql = hql + " and cu.comboEndTime <='"
 						+ comboUserVo.getComboEndTime() + "'";

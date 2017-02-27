@@ -29,8 +29,6 @@ public class ComboVO implements java.io.Serializable{
 	
 	private ComboUser comboUser;
 	
-	private Status status;
-	
 	private ShoppingCart shoppingCart;
 	public String toString() {
 		String res = "";

@@ -151,6 +151,19 @@
 					</c:if>
 					</select>
 				</td>
+				<td>
+					<label>是否是套餐订单：</label>
+					<select class="combox" name="ifChild">
+						<c:if test="${ ifChild == '1' }">
+							<option value='0' >否</option>
+							<option value='1' selected>是</option>
+						</c:if>
+						<c:if test="${ ifChild == null || ifChild == '0'}">
+							<option value='0' selected>否</option>
+							<option value='1' >是</option>
+						</c:if>
+					</select>
+				</td>
 			</tr>
 		</table>
 		<table>
