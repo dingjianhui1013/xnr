@@ -2593,6 +2593,12 @@ public class BusinessOrderRecordService {
 				{
 					hql.append(" and record.orderNo = '").append(query.getBusinessOrderRecord().getOrderNo()+"'");
 				}
+				//是否是子订单
+				if(query.getBusinessOrderRecord().getIsChild()==null){
+					hql.append(" and record.isChild is null ");
+				}else{
+					hql.append(" and record.isChild !=null ");
+				}
 			}
 
 			// 复选
