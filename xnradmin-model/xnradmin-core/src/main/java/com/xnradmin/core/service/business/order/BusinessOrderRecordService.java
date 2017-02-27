@@ -991,9 +991,9 @@ public class BusinessOrderRecordService {
 		for (Object[] e : res) {
 			BusinessOrderRecord record = (BusinessOrderRecord) e[0];
 			BusinessOrderGoodsRelation rel = (BusinessOrderGoodsRelation) e[1];
-			BusinessGoods goods = (BusinessGoods) e[2];
-			BusinessCategory cate = (BusinessCategory) e[3];
-			CommonStaff staff = (CommonStaff) e[4];
+			//BusinessGoods goods = (BusinessGoods) e[2];
+			//BusinessCategory cate = (BusinessCategory) e[3];
+			CommonStaff staff = (CommonStaff) e[2];
 
 			
 			CommonStaff leadStaff = new CommonStaff();
@@ -1005,8 +1005,8 @@ public class BusinessOrderRecordService {
 			BusinessOrderVO v = new BusinessOrderVO();
 			v.setBusinessOrderRecord(record);
 			v.setBusinessOrderGoodsRelation(rel);
-			v.setBusinessGoods(goods);
-			v.setBusinessCategory(cate);
+			//v.setBusinessGoods(goods);
+			//v.setBusinessCategory(cate);
 			v.setStaff(staff);
 			v.setLeaderStaff(leadStaff);
 
@@ -2478,9 +2478,10 @@ public class BusinessOrderRecordService {
 
 	private String getHql(BusinessOrderVO query) {
 		StringBuffer hql = new StringBuffer();
-		hql.append("from BusinessOrderRecord record,BusinessOrderGoodsRelation rel,BusinessGoods goods,BusinessCategory cate,CommonStaff staff");
-		hql.append(" where rel.goodsId=goods.id and record.id=rel.orderRecordId");
-		hql.append(" and cate.id=goods.goodsCategoryId");
+		hql.append("from BusinessOrderRecord record,BusinessOrderGoodsRelation rel,"
+				+ " CommonStaff staff");
+		
+		hql.append(" where record.id=rel.orderRecordId");
 		hql.append(" and staff.id=record.staffId");
 
 		if (query != null) {

@@ -637,7 +637,7 @@ public class BusinessOrderRecordAction extends ParentAction {
 					.parseInt(orderGoodsRelationPrimaryConfigurationId));
 		}
 		po.setPrimaryConfigurationName(primaryConfigurationName);
-		if(!"0".equals(ifChild)){//是子订单
+		if(ifChild!=null&&"1".equals(ifChild)){//是子订单
 			po.setIsChild(0L);
 		}
 		vo.setBusinessOrderRecord(po);
