@@ -866,7 +866,7 @@ public class BusinessOrderRecodeAction extends ParentAction {
 	        			 ComboUser comboUser = new ComboUser();
 	        			 comboUser.setUserId(Integer.parseInt(user.getId().toString()));
 	        			 comboUser.setComboId(cart.getComboId().toString());
-	        			 comboUser.setOrderId(newComboRecordId);
+	        			 comboUser.setOrderId(newOrderRecordId);
 	        			 comboUser.setComboUserStatus(0);
 	        			 comboUser.setUsingMoney(0F);
 	        			 comboUser.setUsingTimes(0);
