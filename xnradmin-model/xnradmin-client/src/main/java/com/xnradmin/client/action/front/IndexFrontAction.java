@@ -20,8 +20,8 @@ import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.IndexFrontService;
 import com.xnradmin.constant.StrutsResMSG;
 import com.xnradmin.core.action.ParentAction;
-import com.xnradmin.core.action.alipay.AlipayAction;
 import com.xnradmin.core.service.business.combo.ComboService;
+import com.xnradmin.core.service.business.combo.ComboUserService;
 import com.xnradmin.core.service.business.commodity.BusinessCategoryService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
@@ -31,7 +31,6 @@ import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderRecord;
-import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
@@ -73,6 +72,8 @@ public class IndexFrontAction  extends ParentAction{
 	private Integer clientUserId;
 	private Integer RPageNum =0;
 	private Integer RTotalPage;
+	private Integer CPageNum =0;
+	private Integer CTotalPage;
 	private String businessOrderRecordId;
 	private BusinessOrderVO businessOrderVO;
 	private GoodsAllocationShow goodsAllocationShow;//该商品被今天被分配的数量
@@ -81,6 +82,7 @@ public class IndexFrontAction  extends ParentAction{
 	private List<ComboVO> comboList;
 	private String comboId;
 	private ComboVO comboVO;  
+	private String comboSign;
 	public BusinessOrderVO getBusinessOrderVO() {
 		return businessOrderVO;
 	}
@@ -251,6 +253,32 @@ public class IndexFrontAction  extends ParentAction{
 		this.comboVO = comboVO;
 	}
 
+	public Integer getCPageNum() {
+		if(this.CPageNum <= 0)
+            return 1;
+        else
+            return CPageNum;
+	}
+	public void setCPageNum(Integer cPageNum) {
+		if(cPageNum <= 0)
+            this.CPageNum = 1;
+        else
+            this.CPageNum = cPageNum;
+	}
+	public Integer getCTotalPage() {
+		return CTotalPage;
+	}
+	public void setCTotalPage(Integer cTotalPage) {
+		CTotalPage = cTotalPage;
+	}
+	public String getComboSign() {
+		return comboSign;
+	}
+	public void setComboSign(String comboSign) {
+		this.comboSign = comboSign;
+	}
+
+
 
 	@Autowired
 	private BusinessCategoryService businessCategoryService;
@@ -264,7 +292,8 @@ public class IndexFrontAction  extends ParentAction{
 	private ComboService comboService;
 	@Autowired
 	private GoodsAllocationShowService allocationShowService;
-	
+	@Autowired
+	private ComboUserService comboUserService;
 	@Autowired
 	private BusinessOrderRecordService orderRecordService;    
 	private List<Map<BusinessCategory, List<Map<BusinessCategory, List<BusinessCategory>>>>> allBusinessCategorys;
@@ -332,6 +361,15 @@ public class IndexFrontAction  extends ParentAction{
 			this.RTotalPage =count/numPerPage +1 ;
 		}
 		this.clientUserId = clientUserId = Integer.parseInt(user.getId().toString());
+		comboList = comboUserService.findByComboVOs(user.getId(),CPageNum,numPerPage);
+		int comboCount = comboUserService.getCount(user.getId());
+		if(comboCount%numPerPage==0)
+		{
+			this.CTotalPage = comboCount/numPerPage;
+		}else
+		{
+			this.CTotalPage =comboCount/numPerPage +1 ;
+		}
 		setFrontPageInfo();
 		return StrutsResMSG.SUCCESS;
 	}
@@ -362,6 +400,8 @@ public class IndexFrontAction  extends ParentAction{
 		this.indexGoods = indexFrontService.listBusinessGoodsVO();
 		BusinessOrderRecord orderRecord = orderRecordService.findByid(businessOrderRecordId);
 		List<BusinessOrderRelationVO> bogr = businessOrderGoodsRelationService.findByOrderRecordId(Long.parseLong(businessOrderRecordId));
+		List<BusinessOrderRelationVO> combo = businessOrderGoodsRelationService.findByComboOrderRecordId(Long.parseLong(businessOrderRecordId));
+		bogr.addAll(combo);
 		BusinessOrderVO orderVOList = new BusinessOrderVO();
 		orderVOList.setBusinessOrderRecord(orderRecord);
 		orderVOList.setBusinessOrderRelationVO(bogr);
@@ -472,6 +512,12 @@ public class IndexFrontAction  extends ParentAction{
 		}
 		return StrutsResMSG.SUCCESS;
 	}
+	
+	/**
+	 * 查看周期订单配送详情
+	 */
+	@Action(value="comboDeail")
+	
 	private void setFrontPageInfo()
 	{
 		setDateTime();

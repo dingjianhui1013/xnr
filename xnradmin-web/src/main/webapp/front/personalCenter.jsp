@@ -19,7 +19,13 @@
 		   backdrop: "static"
 		})
 		})
-	
+		if('${comboSign}'!='' && '${comboSign}'!=null)
+			{
+				$("#myOrderTab1").hide();
+				$("#myOrderTab2").show();
+				$("#myOrderSign").removeClass('cur');
+				$("#myComboSign").addClass('cur');
+			}
 	})
 	// 验证原始密码
 	var phoneFlag = false;
@@ -242,6 +248,17 @@
 				}
 		window.location.href="${basePath}front/personalCenter.action?RPageNum="+pageN+"&flag=address";
 	}
+	function toCPage(){
+		var pageN = $("#CPageNum").val();
+		if(pageN>${CTotalPage})
+			{
+				pageN = ${CTotalPage};
+			}else if(pageN<1)
+				{
+					pageN = 1;
+				}
+		window.location.href="${basePath}front/personalCenter.action?CPageNum="+pageN+"&flag=myorder&comboSign=1";
+	}
 	//确认收货
 	function Confirmreceipt(id)
 	{
@@ -308,7 +325,7 @@
                  	<h3 class="titBox"><span>账号信息</span></h3>
                 	<div class="accountBox">
 							<form action="saveForm.action" class="form-horizontal" role="form">
-								<input type="hidden" name="user.id" value="${user.id }">
+								<input type="hidden" name="user.id" value="${user.id }" />
 							  <div class="form-group">
 							    <label class="col-sm-2 control-label">账号：</label>
 							    <div class="r-userNameBox">
@@ -336,8 +353,13 @@
 							</form>
                 	</div>
                 </div>
-						<div class="p-orderList editList" id="p-orderList">
-						<h3 class="titBox"><span>我的订单</span></h3>
+				<div class="p-orderList editList" id="p-orderList">
+						<h3 class="titBox tab-titBox">
+							<span class="cur" id="myOrderSign">我的订单</span>
+							<span id="myComboSign">周期订单</span>
+						</h3>
+						<div class="myOrderListCon">
+						<div class="myorderTabCon" style="display:block" id="myOrderTab1">
 	                    <div class="orderListBox">
 	                    	<div class="orderTitCol">
 	                    		<ul>
@@ -358,9 +380,7 @@
 			 				</div>
 	                    </c:if>
 	                    <c:if test="${not empty voList}">
-	                    
-	                    
-	                    <c:forEach items="${voList}" var="loop">
+	                     <c:forEach items="${voList}" var="loop">
 	                     <div class="orderList">
 	                    	<div class="orderTit">
 		                                                              订单号：<span>${loop.businessOrderRecord.orderNo}</span> 
@@ -372,9 +392,18 @@
 	                    		<ul>
 	                    			<li class="ordercol-d">
 		                    			<div class="pull-left  productListShow">
-		                    			<c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations" begin="0" end="2"> 
-			                    			<a href="#"><img src="${basePath}${businessOrderRelations.businessGoods.goodsLogo}"></a>
-		                    			</c:forEach>
+			                    		<c:forEach items="${loop.businessOrderRelationVO}" var="businessOrderRelations" begin="0" end="2"> 
+			                    			<c:if test="${not empty businessOrderRelations.businessGoods}">
+				                    			<a href="#">
+					                    			<img src="${basePath}${businessOrderRelations.businessGoods.goodsLogo}" />
+				                    			</a>
+				                    		</c:if>
+				                    		<c:if test="${not empty businessOrderRelations.combo}">
+				                    			<a href="#">
+					                    			<img src="${basePath}${businessOrderRelations.combo.comboImgSmall}" />
+				                    			</a>
+				                    		</c:if>
+			                    		</c:forEach>
 		                    			<c:if test="${loop.businessOrderRecord.totalCount>3}"><em>...</em></c:if>
 		                    		 	</div>
 		                    		 	<div class="pull-right  productListNum">
@@ -392,15 +421,19 @@
 				                   		<li><span>${loop.businessOrderRecord.paymentStatusName}</span></li>
 				                    </c:if>
 				                    <c:if test="${loop.businessOrderRecord.paymentStatusName=='未支付'}">
-				                   		<li><span>${loop.businessOrderRecord.paymentStatusName}<br>
-				                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='支付宝支付'}">
-						                   	<a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
-				                   		</c:if>
-				                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='微信支付'}">
-						                   	<a href="${basePath}front/orderrecord/wxPayAgain.action?businessOrderRecodeId=${loop.businessOrderRecord.id}">前往支付</a></span></li>
-				                   		</c:if>
+				                   		<li>
+				                   			<span>${loop.businessOrderRecord.paymentStatusName}<br>
+						                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='支付宝支付'}">
+								                   	<a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.businessOrderRecord.id}">前往支付</a>
+						                   		</c:if>
+						                   		<c:if test="${loop.businessOrderRecord.paymentProviderName=='微信支付'}">
+								                   	<a href="${basePath}front/orderrecord/wxPayAgain.action?businessOrderRecodeId=${loop.businessOrderRecord.id}">前往支付</a>
+						                   		</c:if>
+					                   		</span>
+				                   		</li>
 				                    </c:if>
-				                    <li><span>
+				                    <li>
+				                    	<span>
 				                    		<c:if test="${loop.businessOrderRecord.deliveryStatus==207}">
 				                    			${loop.businessOrderRecord.deliveryStatusName}
 				                    		</c:if>
@@ -410,50 +443,148 @@
 				                    		<c:if test="${loop.businessOrderRecord.deliveryStatus==209}">
 				                    			${loop.businessOrderRecord.deliveryStatusName}
 				                    		</c:if>
-				                    	</span></li>
+				                    	</span>
+				                    </li>
 	                    			<li><span><a href="javascript:addToCart('${loop.businessOrderRecord.id }')">再次购买</a></span><a href="${basePath}front/orderDetail.action?businessOrderRecordId=${loop.businessOrderRecord.id}">查看详情</a></li>
 	                    		</ul>
 	                    	</div>
 	                    </div>
 	             </c:forEach>
-                <!--分页-->
-   				<nav class="text-center">
-				      <ul class="pagination">
-				      <c:choose>
-						<c:when test="${pageNum==1}">
-							 <li class="disabled"><a>«</a></li>
-						</c:when>
-						<c:otherwise>	
-							<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum-1}&flag=myorder">«</a></li>
-						</c:otherwise>
-					</c:choose>
-					<li class="active"><a>${pageNum}</a></li>
-<%-- 						<c:forEach begin="1" end="${totalCount}" var="numpage"> --%>
-<%-- 							<c:choose> --%>
-<%-- 								<c:when test="${numpage==pageNum}"> --%>
-<%-- 									<li class="active"><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li> --%>
-<%-- 								</c:when> --%>
-<%-- 								<c:otherwise>	 --%>
-<%-- 									<li><a href="${basePath}front/personalCenter.action?pageNum=${numpage}&flag=myorder">${numpage}</a></li> --%>
-<%-- 								</c:otherwise> --%>
-<%-- 							</c:choose> --%>
-<%-- 						</c:forEach> --%>
-						<c:choose> 
-							<c:when test="${pageNum==totalCount}">
-								 <li class="disabled"><a>»</a></li>
+		             <!--分页-->
+	   				<nav class="text-center">
+					      <ul class="pagination">
+					      <c:choose>
+							<c:when test="${pageNum==1}">
+								 <li class="disabled"><a>«</a></li>
 							</c:when>
 							<c:otherwise>	
-								<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum+1}&flag=myorder">»</a></li>
+								<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum-1}&flag=myorder">«</a></li>
 							</c:otherwise>
 						</c:choose>
-					<li><a>共${totalCount}页</a></li>
-					<li><a>跳转至</a></li>
-					<li><a><input type="text" value="" id="pageNum" onkeyup="if(/\D/.test(this.value)){this.value='';}" style="width:25px;height:20px"/></a></li>
-				    <li><a href="javascript:toPage()">»</a></li>
-				    </ul>
-   				</nav>
+						<li class="active"><a>${pageNum}</a></li>
+							<c:choose> 
+								<c:when test="${pageNum==totalCount}">
+									 <li class="disabled"><a>»</a></li>
+								</c:when>
+								<c:otherwise>	
+									<li><a href="${basePath}front/personalCenter.action?pageNum=${pageNum+1}&flag=myorder">»</a></li>
+								</c:otherwise>
+							</c:choose>
+						<li><a>共${totalCount}页</a></li>
+						<li><a>跳转至</a></li>
+						<li><a class="writeNum"><input type="text" value="" id="pageNum" onkeyup="if(/\D/.test(this.value)){this.value='';}" style="width:25px;height:20px"/></a></li>
+					    <li><a href="javascript:toPage()">»</a></li>
+					    </ul>
+	   				</nav>
    				</c:if>
 				<!--分页end-->
+				</div>
+<!-- 				周期商品订单   -->
+	             <div class="myorderTabCon" id="myOrderTab2">
+	             		<c:if test="${empty comboList}">
+	             			<div class="searchTips">
+					 			<p>暂时您还没有购买我们的周期商品</p>
+					 			<p>建议您：</p>
+				 				<a href="<%=basePath%>/front/packageProduce.action">前去购买>></a>
+			 				</div>
+	             		</c:if>
+	             		<c:if test="${not empty comboList}">
+		             		<div class="orderListBox">
+		                    	<div class="orderTitCol">
+		                    		<ul>
+		                    			<li class="ordercol-d" style="width:30%">订单详情</li>
+		                    			<li>收货人</li>
+		                    			<li>金额</li>
+		                    			<li>状态</li>
+		                    			<li>总配送数</li>
+		                    			<li>已配送数</li>
+		                    			<li>操作</li>
+		                    		</ul>
+		                    	</div>
+		                    	<c:forEach items="${comboList}" var="loop">
+			                    	<div class="orderList">
+				                    	<div class="orderTit">
+					                                                         订单号：<span>${loop.orderRecord.orderNo}</span> 
+				                    		<span class="orderTime">
+					                          	${loop.orderRecord.createTime} 
+					                        </span>
+				                    	</div>
+				                    	<div class="orderTitCol">
+				                    		<ul>
+				                    			<li class="ordercol-d" style="width:30%">
+					                    			<div class="pull-left  productListShow">
+															<a href="#">
+								                    			<img src="${basePath}${loop.combo.comboImgSmall}" />
+								                    			<span>${loop.combo.comboName}</span>
+							                    			</a>
+<%-- 					                    			<c:if test="${loop.businessOrderRecord.totalCount>3}"><em>...</em></c:if> --%>
+					                    		 	</div>
+					                    		 	<div class="pull-right  productListNum">
+					                    		 		<a href="#">共${loop.orderRecord.totalCount}件</a>
+					                    		 	</div>
+				                    			</li>
+				                    			<li>
+				                    				<span>${loop.orderRecord.userRealName}</span>
+				                    			</li>
+				                    			<li> 
+							                          <span class="orderMoney">总额：<em>${loop.orderRecord.totalPrice}</em></span>
+							                          <p>${loop.orderRecord.paymentProviderName}</p>
+							                    </li>
+							                    <c:if test="${loop.orderRecord.paymentStatusName!='未支付'}">
+							                   		<li><span>${loop.orderRecord.paymentStatusName}</span></li>
+							                    </c:if>
+							                    <c:if test="${loop.orderRecord.paymentStatusName=='未支付'}">
+							                   		<li>
+							                   			<span>${loop.orderRecord.paymentStatusName}<br>
+									                   		<c:if test="${loop.orderRecord.paymentProviderName=='支付宝支付'}">
+											                   	<a href="${basepath}/page/alipay/againPayment.action?orderId=${loop.orderRecord.id}">前往支付</a>
+									                   		</c:if>
+									                   		<c:if test="${loop.orderRecord.paymentProviderName=='微信支付'}">
+											                   	<a href="${basePath}front/orderrecord/wxPayAgain.action?businessOrderRecodeId=${loop.orderRecord.id}">前往支付</a>
+									                   		</c:if>
+								                   		</span>
+							                   		</li>
+							                    </c:if>
+							                    <li><span>${loop.combo.comboTimes}</span></li>
+							                    <li><span>${loop.comboUser.usingTimes}</span></li>
+				                    			<li style="margin-left: 2%;"><a href="#"><span>查看配送详情</span></a></li>
+				                    		</ul>
+				                    	</div>
+				                    </div>
+		                    	</c:forEach>
+		                    </div>
+	             		</c:if>
+<!-- 	             分页开始 -->
+						<nav class="text-center">
+						      <ul class="pagination">
+						      <c:choose>
+								<c:when test="${CPageNum==1}">
+									 <li class="disabled"><a>«</a></li>
+								</c:when>
+								<c:otherwise>	
+									<li><a href="${basePath}front/personalCenter.action?CPageNum=${CPageNum-1}&flag=myorder&comboSign=1">«</a></li>
+								</c:otherwise>
+							</c:choose>
+							<li class="active"><a>${CPageNum}</a></li>
+								<c:choose>
+									<c:when test="${CPageNum==CTotalPage}">
+										 <li class="disabled"><a>»</a></li>
+									</c:when>
+									<c:otherwise>	
+										<li><a href="${basePath}front/personalCenter.action?CPageNum=${CPageNum+1}&flag=myorder&comboSign=1">»</a></li>
+									</c:otherwise>
+								</c:choose>
+							<li><a>共${CTotalPage}页</a></li>
+							<li><a>跳转至</a></li>
+							<li><a><input type="text" value="" id="CPageNum" onkeyup="if(/\D/.test(this.value)){this.value='';}" style="width:25px;height:20px"/></a></li>
+						    <li><a href="javascript:toCPage()">»</a></li>
+						    </ul>
+		   				</nav>
+<!-- 		     分页结束 -->
+	             </div>
+<!-- 	             周期商品订单结束 -->
+	             </div>
+                
                 </div>
                 <div class="p-orderList editList">
 					<h3 class="titBox"><span>地址管理</span></h3>
@@ -535,7 +666,7 @@
                 </div>
                 </c:if>
                  <div class="p-orderList editList">
-                 		<h3 class="titBox">密码修改</h3>
+                 		<h3 class="titBox"><span>密码修改</span></h3>
                  		<div class="accountBox">
                 		<form class="form-horizontal" id="submitForm" action="savePassword.action">
                 				<input type="hidden" name="user.id" value="${user.id }">

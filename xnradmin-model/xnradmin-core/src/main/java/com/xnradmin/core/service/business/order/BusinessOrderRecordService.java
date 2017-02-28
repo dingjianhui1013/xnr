@@ -24,14 +24,19 @@ import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.CommonJDBCDAO;
 import com.xnradmin.core.dao.business.order.BusinessOrderRecordDAO;
 import com.xnradmin.core.service.StaffService;
+import com.xnradmin.core.service.business.combo.ComboService;
+import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
+import com.xnradmin.core.service.mall.commodity.GoodsService;
 import com.xnradmin.po.CommonStaff;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.ComboVO;
 
 /**
  * @autohr: xiang_liu
@@ -54,7 +59,13 @@ public class BusinessOrderRecordService {
 
 	@Autowired
 	private StaffService staffService;
-
+	
+	@Autowired
+	private BusinessGoodsService goodsService;
+	
+	@Autowired
+	private ComboService comboService;
+	
 	static Log log = LogFactory.getLog(BusinessOrderRecordService.class);
 
 	public void syncPrice(String startTime, String endTime) {
@@ -1025,12 +1036,23 @@ public class BusinessOrderRecordService {
 		for (Object[] e : res) {
 			BusinessOrderRecord record = (BusinessOrderRecord) e[0];
 			BusinessOrderGoodsRelation rel = (BusinessOrderGoodsRelation) e[1];
-			BusinessGoods goods = (BusinessGoods) e[2];
-			BusinessCategory cate = (BusinessCategory) e[3];
-			CommonStaff staff = (CommonStaff) e[4];
-
+//			BusinessGoods goods = (BusinessGoods) e[2];
+//			BusinessCategory cate = (BusinessCategory) e[3];
+			CommonStaff staff = (CommonStaff) e[2];
 			Long borId = record.getId();
-			List<BusinessOrderRelationVO> bogr = businessOrderGoodsRelationService.findByOrderRecordId(borId);
+			List<BusinessOrderRelationVO> bogr = new ArrayList<BusinessOrderRelationVO>();
+			BusinessGoods goods = null;
+			Combo combo = null;
+			if(rel.getGoodsId()!=null)
+			{
+				goods = goodsService.findByid(rel.getGoodsId().toString());
+				bogr = businessOrderGoodsRelationService.findByOrderRecordId(borId);
+			}
+			if(rel.getComboId()!=null)
+			{
+				combo = comboService.findByCombo(rel.getComboId().toString());
+				bogr = businessOrderGoodsRelationService.findByComboOrderRecordId(borId);
+			}
 			CommonStaff leadStaff = new CommonStaff();
 			leadStaff.setId(staff.getLeadStaffId());
 			leadStaff.setStaffName(staff.getLeadStaffName());
@@ -1042,7 +1064,8 @@ public class BusinessOrderRecordService {
 			v.setBusinessOrderRecord(record);
 			v.setBusinessOrderGoodsRelation(rel);
 			v.setBusinessGoods(goods);
-			v.setBusinessCategory(cate);
+//			v.setBusinessCategory(cate);
+			v.setCombo(combo);
 			v.setStaff(staff);
 			v.setLeaderStaff(leadStaff);
 
@@ -2477,6 +2500,11 @@ public class BusinessOrderRecordService {
 	}
 
 	private String getHql(BusinessOrderVO query) {
+//		StringBuffer hql = new StringBuffer();
+//		hql.append("from BusinessOrderRecord record,BusinessOrderGoodsRelation rel,BusinessGoods goods,BusinessCategory cate,CommonStaff staff");
+//		hql.append(" where rel.goodsId=goods.id and record.id=rel.orderRecordId");
+//		hql.append(" and cate.id=goods.goodsCategoryId");
+//		hql.append(" and staff.id=record.staffId");
 		StringBuffer hql = new StringBuffer();
 		hql.append("from BusinessOrderRecord record,BusinessOrderGoodsRelation rel,"
 				+ " CommonStaff staff");
@@ -2625,7 +2653,6 @@ public class BusinessOrderRecordService {
 
 		return hql.toString();
 	}
-
 	/**
 	 * @return List<BusinessOrderRecord>
 	 */

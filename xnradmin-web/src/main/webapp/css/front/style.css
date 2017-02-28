@@ -2063,7 +2063,7 @@ a.cpns:hover{
 .orderList a:hover{ text-decoration: underline;}
 .orderTime{padding-left:3rem; display: inline-block; color: #666} 
 
-.orderListBox .orderTitCol{overflow: hidden;margin-bottom: 1rem;border-bottom: 1px solid #fff; background: #f6f6f6}
+.orderListBox .orderTitCol{clear:both;overflow: hidden;margin-bottom: 1rem;border-bottom: 1px solid #fff; background: #f6f6f6}
 .orderTitCol ul li{ float: left;width:11%; text-align: center; padding:1rem 0.5rem;}
 .orderListBox .orderTitCol ul li{font-weight: bold}
 .orderTitCol ul li.ordercol-d{width:45%;}
@@ -2107,7 +2107,12 @@ a.cpns:hover{
 .accountEditBox{text-align: left; padding-left:16%;}
 .accountEditBox .btn-primary{ width:10%;}
 .editList h3.titBox{ font-weight: bold; font-size: 1.6rem;background:#f9f9f9; padding-top:0.6rem;padding: 0}
-.editList h3 span{border-bottom: 3px solid #629715; display: block; width: 12%;padding:1rem 0  0.6rem 1rem;}
+.editList h3 span{border-bottom: 3px solid #629715; display: block; width: 12%;padding:1rem 0  0.6rem 1rem; text-align:center}
+.editList h3.tab-titBox{overflow:hidden;clear:both;}
+.editList h3.tab-titBox span{float:left;margin-right:10px;cursor:pointer;border:none;}
+.editList h3.tab-titBox span.cur{border-bottom: 3px solid #629715;}
+.myOrderListCon .myorderTabCon{display:none;}
+.pagination > li > a.writeNum{padding:5px 6px 4px;}
 .noDataBox{ background:url(../images/tips.png) no-repeat; width: 280px; height:200px; text-align: center;padding:4rem 2rem;margin:10rem auto;}
 .editUserInput .saveUserName{ width:10%;padding: 0.6rem 1rem; color:#629715; font-weight: bold;background:none;border:none; }
 .editUserName:hover,.editUserName:visited,.saveUserName:hover,.saveUserName:visited{color:#629715;}

@@ -6,6 +6,7 @@ package com.xnradmin.vo.business;
 import java.util.List;
 
 import com.cntinker.util.ReflectHelper;
+import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboUser;
 import com.xnradmin.po.common.status.Status;
@@ -30,6 +31,8 @@ public class ComboVO implements java.io.Serializable{
 	private ComboUser comboUser;
 	
 	private ShoppingCart shoppingCart;
+	
+	private BusinessOrderRecord orderRecord;
 	public String toString() {
 		String res = "";
 		try {
@@ -86,5 +89,13 @@ public class ComboVO implements java.io.Serializable{
 
 	public void setShoppingCart(ShoppingCart shoppingCart) {
 		this.shoppingCart = shoppingCart;
+	}
+
+	public BusinessOrderRecord getOrderRecord() {
+		return orderRecord;
+	}
+
+	public void setOrderRecord(BusinessOrderRecord orderRecord) {
+		this.orderRecord = orderRecord;
 	}
 }

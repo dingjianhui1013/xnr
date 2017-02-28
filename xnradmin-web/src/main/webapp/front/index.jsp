@@ -75,13 +75,13 @@ function getUuid(){
 		    <div class="item active">
 		      <img src="${basePath }images/front/banner1.jpg" alt="...">
 		      <div class="carousel-caption">
-		        ...
+<!-- 		        ... -->
 		      </div>
 		    </div>
 		    <div class="item">
 		      <img src="${basePath }images/front/banner2.jpg" alt="...">
 		      <div class="carousel-caption">
-		        ...
+<!-- 		        ... -->
 		      </div>
 		    </div>
 		  </div>

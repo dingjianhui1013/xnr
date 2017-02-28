@@ -21,7 +21,13 @@ $(function(){
          $('.commentBox div.commentCon').eq(_index).show().siblings().hide();
 	})
 	
+	/*my order*/
 	
+	$('.tab-titBox span').click(function(){
+		 _index=$(this).index();
+		 $(this).addClass('cur').siblings().removeClass('cur');
+        $('.myOrderListCon .myorderTabCon').eq(_index).show().siblings().hide();
+	})
 			
 		/*鍒嗙被JS*/	
 			$(".tab1 .single-bottom").hide();
