@@ -36,7 +36,7 @@ public class PseudoOrders implements java.io.Serializable{
     
     private String dayKey;//周期的key combo_plan_type#combo_plan_cycle#combo_plan_date
     
-    private Integer orderUnit;//周期单位 1--周，2--月，3--季，4--年
+    private Integer orderUnit;//周期单位0--天  1--周，2--月，3--季，4--年
     
     private Integer comboId;//套餐id
     

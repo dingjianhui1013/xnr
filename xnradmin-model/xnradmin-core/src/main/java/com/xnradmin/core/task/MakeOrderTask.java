@@ -1,6 +1,8 @@
 package com.xnradmin.core.task;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,6 +67,10 @@ public class MakeOrderTask {
 //    	int week = calendar.get(Calendar.DAY_OF_WEEK);
 //    	int DAY_OF_MONTH = calendar.get(Calendar.DAY_OF_MONTH); //本月几号
 //    	int DAY_OF_YEAR = calendar.get(Calendar.DAY_OF_YEAR);  //今年第几天
+    	calendar.setTime(new Date());
+    	calendar.set(Calendar.HOUR_OF_DAY, 0);
+    	calendar.set(Calendar.SECOND,0);
+    	calendar.set(Calendar.MINUTE,0);
     	long todyTime = calendar.getTimeInMillis();
     	
     	int dayDiff = 0;
@@ -102,6 +108,26 @@ public class MakeOrderTask {
     			if(po.getOrderDay()==monthDiff){
     				isMake=true;
     			}
+			}else if(unit==0){//天
+				//此处有两种 1 固定日期情况 OrderDay==null  固定周期（如每3天）
+				if(po.getOrderDay()==null){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					//判断时间是不是明天 
+					
+					try {
+						if(sdf.parse(po.getDayKey()).getTime()==(todyTime+(1000*3600*24))){
+							isMake=true;
+						}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else{
+					if(po.getOrderDay()==dayDiff){
+	    				isMake=true;
+	    			}
+				}
+				
 			}
     		
     		if(isMake){
