@@ -43,7 +43,7 @@ function saveCombo(){
 		var input = comboCycleStr.val();
 		var name = $(one).find("input[name$='.comboPlan.goodsNumber']").attr("name");
 		name = name.substring(0,name.lastIndexOf('.comboPlan.goodsNumber'))+".comboCycleStr";
-		var dateName = name.substring(0,name.lastIndexOf('.comboPlan.goodsNumber'))+".comboPlan.comboPlanDate";
+		var dateName = name.substring(0,name.lastIndexOf('.comboCycleStr'))+".comboPlan.comboPlanDate";
 		comboCycleStr.attr("name",name);
 		date.attr("name",dateName);
 		if(input==undefined){
@@ -161,7 +161,8 @@ function countPrice(obj){
 	$("#goodsTotalCount").val(count.toFixed(2));
 }
 var cycleStatus=[];
-var comboCycleStr=[]
+var comboCycleStr=[];
+var comboPlanDate=[];
 $(function(){
 	//初始化下拉选
 	<s:iterator value="#request.comboFixedStatusList" id="item">
@@ -183,6 +184,7 @@ $(function(){
 	//初始化下拉选的值
 	<s:iterator value="#request.comboVo.comboPlanList" id="item">
 		comboCycleStr[comboCycleStr.length]='<s:property value="#item.comboCycleStr" />';
+		comboPlanDate[comboPlanDate.length]='<s:property value="#item.comboPlan.comboPlanDate" />';
 	</s:iterator>
 	var pageType = '${pageType}';
 	if(pageType==1){//查看页面 禁用所有input 和button
@@ -218,6 +220,11 @@ $(function(){
 					comboCycle.val(strs[2]);
 					comboCycle.trigger("change");
 				}
+			}else{
+				var comboPlanType = $(one).find("select[id$='comboType']");
+				comboPlanType.val(0);
+				comboPlanType.trigger("change");
+				$('#comboCycleDate').val(comboPlanDate[i]);
 			}
 		})
 		
@@ -248,6 +255,11 @@ $(function(){
 					comboCycle.val(strs[2]);
 					comboCycle.trigger("change");
 				}
+			}else{
+				var comboPlanType = $(one).find("select[id$='comboType']");
+				comboPlanType.val(0);
+				comboPlanType.trigger("change");
+				$('#comboCycleDate').val(comboPlanDate[i]);
 			}
 		})
 	}else if(pageType==3){

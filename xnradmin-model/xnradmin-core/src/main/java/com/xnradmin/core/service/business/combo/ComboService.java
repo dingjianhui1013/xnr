@@ -6,6 +6,7 @@ package com.xnradmin.core.service.business.combo;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -161,12 +162,33 @@ public class ComboService {
 			dao.deletePseudoOrdersByComboId(combo.getId());
 		}
 		int timesTotal=0;
-		for(int i=0;i<totalDay;i++){
-			for(String s:tempPlan.keySet()){
+		Iterator<String> it = tempPlan.keySet().iterator();
+		while(it.hasNext()){
+			String s = it.next();
+			for(int i=0;i<totalDay;i++){
 				if(s.contains("#")){
 					String[] statusArray = s.split("#");
 					if("1".equals(statusArray[0])){//固定周期
-						
+						int parentCicle = Integer.parseInt(statusMap.get(Integer.parseInt(statusArray[1])).getRemark());//每3天
+						if(i%parentCicle==(parentCicle-1)){
+							PseudoOrders po = new PseudoOrders();
+							List<ComboPlan> planList = tempPlan.get(s);
+							String planIds = "";
+							for(ComboPlan c:planList){
+								if("".equals(planIds)){
+									planIds+=c.getId();
+								}else{
+									planIds+=","+c.getId();
+								}
+							}
+							po.setComboPlanIds(planIds);
+							po.setDayKey(s);
+							po.setOrderUnit(0);
+							po.setOrderDay(i);
+							po.setComboId(combo.getId());
+							dao.savePseudoOrders(po);
+							timesTotal++;
+						}
 					}else if("2".equals(statusArray[0])){//固定周期固定时间
 						int parentCicle = Integer.parseInt(statusMap.get(Integer.parseInt(statusArray[1])).getRemark());//一周 7  一月  30
 						int chileCicle = Integer.parseInt(statusMap.get(Integer.parseInt(statusArray[2])).getRemark());//周二  2   月初   1
@@ -175,45 +197,52 @@ public class ComboService {
 						
 						if(i%parentCicle==(chileCicle-1)){
 							PseudoOrders po = new PseudoOrders();
-							if(parentCicle==7){
-								List<ComboPlan> planList = tempPlan.get(s);
-								String planIds = "";
-								for(ComboPlan c:planList){
-									if("".equals(planIds)){
-										planIds+=c.getId();
-									}else{
-										planIds+=","+c.getId();
-									}
+							List<ComboPlan> planList = tempPlan.get(s);
+							String planIds = "";
+							for(ComboPlan c:planList){
+								if("".equals(planIds)){
+									planIds+=c.getId();
+								}else{
+									planIds+=","+c.getId();
 								}
-								po.setComboPlanIds(planIds);
-								po.setDayKey(s);
-								po.setOrderUnit(1);
-								po.setOrderDay(i);
-								po.setComboId(combo.getId());
-								dao.savePseudoOrders(po);
-								timesTotal++;
-							}else if(parentCicle==30){
-								List<ComboPlan> planList = tempPlan.get(s);
-								String planIds = "";
-								for(ComboPlan c:planList){
-									if("".equals(planIds)){
-										planIds+=c.getId();
-									}else{
-										planIds+=","+c.getId();
-									}
-								}
-								po.setComboPlanIds(planIds);
-								po.setDayKey(s);
-								po.setOrderUnit(2);
-								po.setOrderDay(i);
-								po.setComboId(combo.getId());
-								dao.savePseudoOrders(po);
-								timesTotal++;
 							}
+							po.setComboPlanIds(planIds);
+							po.setDayKey(s);
+							if(parentCicle>=7&&parentCicle<30){
+								po.setOrderUnit(1);
+							}else if(parentCicle>=30&&parentCicle<90){
+								po.setOrderUnit(2);
+							}else if(parentCicle>=90&&parentCicle<360){
+								po.setOrderUnit(3);
+							}else if(parentCicle==365){
+								po.setOrderUnit(4);
+							}
+							po.setOrderDay(i);
+							po.setComboId(combo.getId());
+							dao.savePseudoOrders(po);
+							timesTotal++;
 						}
 					}
-				}else{//固定时间类型
+				}else{//固定时间类型  直接添加一条伪订单
 					
+					PseudoOrders po = new PseudoOrders();
+					List<ComboPlan> planList = tempPlan.get(s);
+					String planIds = "";
+					for(ComboPlan c:planList){
+						if("".equals(planIds)){
+							planIds+=c.getId();
+						}else{
+							planIds+=","+c.getId();
+						}
+					}
+					po.setComboPlanIds(planIds);
+					po.setDayKey(s);
+					po.setOrderUnit(0);
+					po.setComboId(combo.getId());
+					dao.savePseudoOrders(po);
+					timesTotal++;
+					it.remove();
+					break;
 				}
 			}
 		}

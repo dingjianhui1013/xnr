@@ -260,7 +260,7 @@ public class ComboAction extends ParentAction {
 			}
 			
 			//查询出所有状态 以备使用
-			List<Status> statusList = statusService.find(Combo.class,"comboCycleStatus");
+			List<Status> statusList = statusService.find(Combo.class);
 			statusList.addAll(statusService.find(ComboPlan.class));
 			comboService.modify(comboVo,statusList);
 			super.success("套餐保存成功", AjaxResult.CALL_BACK_TYPE_CLOSECURRENT,"comboManager", null);
