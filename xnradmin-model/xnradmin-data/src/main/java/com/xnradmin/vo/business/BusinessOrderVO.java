@@ -11,6 +11,8 @@ import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.Combo;
+import com.xnradmin.po.business.ComboUser;
 import com.xnradmin.po.client.ClientUserInfo;
 
 /**
@@ -29,7 +31,7 @@ public class BusinessOrderVO implements java.io.Serializable, Cloneable {
 	private BusinessOrderRecord businessOrderRecord;
 
 	private BusinessOrderGoodsRelation businessOrderGoodsRelation;
-
+	
 	private ClientUserInfo clientUserInfo;
 
 	private CommonStaff staff;
@@ -39,6 +41,8 @@ public class BusinessOrderVO implements java.io.Serializable, Cloneable {
 	private BusinessCategory businessCategory;
 
 	private BusinessGoods businessGoods;
+	
+	private Combo combo;
 
 	private String createStartTime;
 
@@ -341,6 +345,14 @@ public class BusinessOrderVO implements java.io.Serializable, Cloneable {
 
 	public void setBusinessGoods(BusinessGoods businessGoods) {
 		this.businessGoods = businessGoods;
+	}
+
+	public Combo getCombo() {
+		return combo;
+	}
+
+	public void setCombo(Combo combo) {
+		this.combo = combo;
 	}
 
 	public String[] getQueryCateList() {

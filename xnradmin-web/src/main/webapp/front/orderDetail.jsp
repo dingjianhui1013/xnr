@@ -87,16 +87,30 @@ function addToCart(id){
 								  <div class="cartListBox">
 								  <c:forEach items="${businessOrderVO.businessOrderRelationVO }" var="brv">
 								  	<ul class="cart-header"id="test">
-											<li class="productCol">
-												<a href="productDetail.html" >
-													<img src="${basePath }${brv.businessGoods.goodsLogo}" class="pull-left img-responsive" alt=""></a>
-													<span class="pull-left cart-pDetail">${brv.businessGoods.goodsName }</span>
-											</li>
-											<li><span>${brv.businessGoods.goodsOriginalPrice}</span></li>
+											<c:if test="${not empty brv.businessGoods}">
+												<li class="productCol">
+													<a href="#" >
+														<img src="${basePath }${brv.businessGoods.goodsLogo}" class="pull-left img-responsive" alt=""></a>
+														<span class="pull-left cart-pDetail">${brv.businessGoods.goodsName }</span>
+												</li>
+												<li><span>${brv.businessGoods.goodsOriginalPrice}</span></li>
+											</c:if>
+											<c:if test="${not empty brv.combo}">
+												<li class="productCol">
+												<a href="#" >
+													<img src="${basePath}${brv.combo.comboImgSmall}" class="pull-left img-responsive" alt=""></a>
+													<span class="pull-left cart-pDetail">${brv.combo.comboName }</span>
+												</li>
+												<li><span>${brv.combo.comboPrice}</span></li>
+											</c:if>
 											<li class="cart-num">						
 												<span class="chooseNum">${brv.orderGoodsRelation.goodsCount}</span>
 											</li>
-											<li><span>${brv.businessGoods.goodsOriginalPrice*brv.orderGoodsRelation.goodsCount}</span></li>
+											<li>
+												<span>
+													<fmt:formatNumber type="number" value="${(brv.combo.comboPrice)*(brv.orderGoodsRelation.goodsCount)}" maxFractionDigits="2"/>
+												</span>
+											</li>
 											<div class="clearfix"> </div>
 										</ul>
 								  </c:forEach>
@@ -104,23 +118,35 @@ function addToCart(id){
 							 </div>
 							  <div class="in-check-mobile" >
 								  <div class="cartListBox">
-								   <c:forEach items="${businessOrderVO.businessOrderRelationVO }" var="brv">
-										<ul class="cart-header">
-											<li class="productCol">
-												<a href="productDetail.html" >
-													<img src="${basePath }${brv.businessGoods.goodsLogo}" class="pull-left img-responsive" alt="">
-												</a>
-												<div class="pull-left cart-pDetail">
-													<span class="">${brv.businessGoods.goodsName }</span>
-													<div class="priceLine">
-														<p class="m-price redColor">${brv.businessGoods.goodsOriginalPrice}</p>
-														<span class="chooseNum">${brv.orderGoodsRelation.goodsCount}</span>
-													</div>
-											  </div>
+								  <c:forEach items="${businessOrderVO.businessOrderRelationVO }" var="brv">
+								  	<ul class="cart-header"id="test">
+											<c:if test="${not empty brv.businessGoods}">
+												<li class="productCol">
+													<a href="#" >
+														<img src="${basePath }${brv.businessGoods.goodsLogo}" class="pull-left img-responsive" alt=""></a>
+														<span class="pull-left cart-pDetail">${brv.businessGoods.goodsName }</span>
+												</li>
+												<li><span>${brv.businessGoods.goodsOriginalPrice}</span></li>
+											</c:if>
+											<c:if test="${not empty brv.combo}">
+												<li class="productCol">
+												<a href="#" >
+													<img src="${basePath}${brv.combo.comboImgSmall}" class="pull-left img-responsive" alt=""></a>
+													<span class="pull-left cart-pDetail">${brv.combo.comboName }</span>
+												</li>
+												<li><span>${brv.combo.comboPrice}</span></li>
+											</c:if>
+											<li class="cart-num">						
+												<span class="chooseNum">${brv.orderGoodsRelation.goodsCount}</span>
+											</li>
+											<li>
+												<span>
+													<fmt:formatNumber type="number" value="${(brv.combo.comboPrice)*(brv.orderGoodsRelation.goodsCount)}" maxFractionDigits="2"/>
+												</span>
 											</li>
 											<div class="clearfix"> </div>
 										</ul>
-									</c:forEach>
+								  </c:forEach>
 								  </div>
 					 		</div>
 						 </div>
@@ -133,7 +159,7 @@ function addToCart(id){
 			 	<ul class="cart-con">
 			 		<li class="pull-right totalCol">
 			 			<div class=" totalMoney orderDetailMoney">
-				 			<p>应付金额:<span class="t-money">${businessOrderVO.businessOrderRecord.totalPrice}</span></p>
+				 			<p>总金额:<span class="t-money">${businessOrderVO.businessOrderRecord.totalPrice}</span></p>
 			 			</div>
 			 		</li>
 			 	</ul>

@@ -325,7 +325,26 @@ public class BusinessOrderGoodsRelationService {
 		}
 		return borvo;
 	}
-
+	public List<BusinessOrderRelationVO> findByComboOrderRecordId(Long borId) {
+		String hql = "from BusinessOrderGoodsRelation a ,Combo c where a.comboId=c.id and a.orderRecordId='"+borId+"'";
+		List l = commonDao.getEntitiesByPropertiesWithHql(hql, 0, 0);
+		List<BusinessOrderRelationVO> borvo = new ArrayList<BusinessOrderRelationVO>();
+		for (int i = 0; i < l.size(); i++) {
+			Object[] obj = (Object[]) l.get(i);
+			BusinessOrderRelationVO bo = new BusinessOrderRelationVO();
+			BusinessOrderGoodsRelation bogr = (BusinessOrderGoodsRelation)obj[0];
+			Combo combo = (Combo)obj[1];
+			bo.setOrderGoodsRelation(bogr);
+			bo.setCombo(combo);
+			borvo.add(bo);
+		}
+		return borvo;
+	}
+	public List<BusinessOrderGoodsRelation> findByComboOrderRecordIds(String comboId,Long borId) {
+		String hql = "from BusinessOrderGoodsRelation a where a.orderRecordId='"+borId+"' and a.comboId = "+comboId;
+		List<BusinessOrderGoodsRelation> list = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return list;
+	}
 	
 	public List<BusinessOrderGoodsRelation> findByOrderId(Long orderId){
 		String hql = "from BusinessOrderGoodsRelation where orderRecordId="+orderId;

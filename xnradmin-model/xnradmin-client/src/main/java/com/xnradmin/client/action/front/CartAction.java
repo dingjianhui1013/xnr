@@ -390,7 +390,7 @@ public class CartAction extends ParentAction {
 			Cookie cookieByName = CookieHelper.getCookieByName(ServletActionContext.getRequest(), "cart");
 			if(null != cookieByName){
 				String cookieCart = cookieByName.getValue();
-				if(null!=cookieCart&&!"".equals(cookieCart)){
+				if(null!=cookieCart&&!cookieCart.equals("null")){
 					cookieCart = URLDecoder.decode(cookieCart);
 					cartVoList = shoppingCartService.cookieToVo(cookieCart);
 					comboVOs = shoppingCartService.cookieToComboVo(cookieCart);
