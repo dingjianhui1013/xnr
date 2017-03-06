@@ -1382,6 +1382,11 @@ public class BusinessOrderRecordService {
 						+ vo.getBusinessOrderRecord().getIsChild()
 						+ "'";
 			}
+			if (vo.getBusinessOrderRecord().getComboID()!=null) {
+				hql = hql + " and comboID = '"
+						+ vo.getBusinessOrderRecord().getComboID()
+						+ "'";
+			}
 		}
 		if (!StringHelper.isNull(orderField) && !StringHelper.isNull(direction)) {
 			hql = hql + " order by " + orderField + " " + direction;

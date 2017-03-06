@@ -167,6 +167,8 @@ public class BusinessOrderRecord implements java.io.Serializable{
     private Float discount; 
     /** 是否是子订单 当是子订单的时候 存放 父级订单ID*/
     private Long isChild;
+    /** 如果是子订单 存放子订单的套餐ID  */
+    private Integer comboId;
     
     //该订单商品总数量
     private Integer totalCount;
@@ -801,6 +803,15 @@ public class BusinessOrderRecord implements java.io.Serializable{
 
 	public void setIsChild(Long isChild) {
 		this.isChild = isChild;
+	}
+
+	@Column(name = "COMBO_ID")
+	public Integer getComboID() {
+		return comboId;
+	}
+
+	public void setComboID(Integer comboID) {
+		this.comboId = comboID;
 	}
 	
 	

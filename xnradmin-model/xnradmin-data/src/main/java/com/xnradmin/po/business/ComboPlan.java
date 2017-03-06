@@ -30,7 +30,7 @@ public class ComboPlan implements java.io.Serializable{
 
 	private Integer id;
 
-    private String comboPlanType;  //计划类型 固定时间 固定周期 固定周期固定时间
+    private String comboPlanType;  //计划类型 0--固定时间 1--固定周期 2--固定周期固定时间
 
     private String comboPlanDate;  //时间
     
