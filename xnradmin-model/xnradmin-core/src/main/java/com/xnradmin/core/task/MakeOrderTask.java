@@ -55,6 +55,10 @@ public class MakeOrderTask {
         this.makeOrderTask();
     }
 
+    public void receipt()
+    {
+    	this.confirmReceipt();
+    }
 
     /**
      * 调用log的bash
