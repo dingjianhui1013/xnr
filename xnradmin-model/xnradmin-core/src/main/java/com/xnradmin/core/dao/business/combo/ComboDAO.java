@@ -485,11 +485,11 @@ public class ComboDAO{
 	}
 
 	public List<BusinessOrderVO> findBusinessOrderRelationVOByOrderId(
-			Long orderId) {
+			Long orderId, Integer comboId) {
 		List<BusinessOrderVO> resVo = new ArrayList<>();
 		String hql = "from BusinessOrderRecord bor, BusinessOrderGoodsRelation bogr,"
 				+ " BusinessGoods bg where bor.id = bogr.orderRecordId and bg.id = bogr.goodsId"
-				+ " and bor.isChild = "+orderId;
+				+ " and bor.isChild = "+orderId +" and bor.comboId =" + comboId;
 		List<Object[]> l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		for (int i = 0; i < l.size(); i++) {
 			Object[] obj = l.get(i);

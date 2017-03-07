@@ -386,6 +386,7 @@ public class ComboAction extends ParentAction {
 		BusinessOrderVO businessOrderVO = new BusinessOrderVO();
 		BusinessOrderRecord bor = new BusinessOrderRecord();
 		bor.setIsChild(comboUserVo.getComboUser().getOrderId());
+		bor.setComboID(comboUserVo.getCombo().getId());
 		businessOrderVO.setBusinessOrderRecord(bor);
 		this.businessOrderVOList = businessOrderRecordService.listVO(businessOrderVO, getPageNum(), getNumPerPage(),
 				orderField, orderDirection);
@@ -399,7 +400,7 @@ public class ComboAction extends ParentAction {
 		Map<Integer,ComboUserGoodsVO> goodsMap = comboService
 				.findComboGoodsByComboUserId(comboUserVo.getCombo().getId());
 		List<BusinessOrderVO> borList = comboService
-				.findBusinessOrderRelationVOByOrderId(comboUserVo.getComboUser().getOrderId());
+				.findBusinessOrderRelationVOByOrderId(comboUserVo.getComboUser().getOrderId(),comboUserVo.getCombo().getId());
 		List<ComboUserGoodsVO> cugVO = new ArrayList<ComboUserGoodsVO>();
 		for(BusinessOrderVO vo:borList){
 			ComboUserGoodsVO cgv = goodsMap.get(vo.getBusinessGoods().getId());

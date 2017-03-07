@@ -146,6 +146,7 @@ public class ComboService {
 			cp.setComboPlanCreatTime(new Timestamp(System.currentTimeMillis()));
 			dao.saveComboPlan(cp);
 		}
+		
 		// 最后修改套餐的总次数  生成伪订单  伪订单 主要存储 订单时间 天为单位 相对时间 便于生成用户的伪订单
 		// 循环套餐周期   第一天定义为 周一 
 		int totalDay = 0;
@@ -165,7 +166,13 @@ public class ComboService {
 		Iterator<String> it = tempPlan.keySet().iterator();
 		while(it.hasNext()){
 			String s = it.next();
-			for(int i=0;i<totalDay;i++){
+			/** 方法一 依照套餐计划 按时序 生成一系列的伪订单表 
+			 * 
+			 *  每一条伪订单 含有相对于套餐开始时间的时间差
+			 *  定时任务按照时间差判断 改下哪一条订单
+			 *  问题：订单次数是根据计划生成的 不确定性；必须明确套餐的开始时间 这个要根据周计划月计划固定周期区分 firstDay firstWeek firstMonth
+			 */
+			/*for(int i=0;i<totalDay;i++){
 				if(s.contains("#")){
 					String[] statusArray = s.split("#");
 					if("1".equals(statusArray[0])){//固定周期
@@ -244,8 +251,107 @@ public class ComboService {
 					it.remove();
 					break;
 				}
+			}*/
+			/** 方法二 依照套餐计划 按任务 生成一系列的伪订单表 
+			 * 
+			 *  每一条伪订单 都是一个伪订单任务
+			 *  定时任务按照时间  判断该伪订单是否下订单
+			 *  问题：订单次数是固定的 时间不一定准 完成固定的次数
+			 */
+			int baseTime = 0;//一个月按照4周 一年按照52周 一季按照13周
+			switch (totalDay) {
+			case 30:
+				baseTime=4;
+				break;
+			case 120:
+				baseTime=13;
+				break;
+			case 365:
+				baseTime=52;
+				break;
+			default:
+				break;
 			}
+				
+			if(s.contains("#")){
+				String[] statusArray = s.split("#");
+				if("1".equals(statusArray[0])){//固定周期  不做处理
+						/*int parentCicle = Integer.parseInt(statusMap.get(Integer.parseInt(statusArray[1])).getRemark());//每3天
+						if(i%parentCicle==(parentCicle-1)){
+							PseudoOrders po = new PseudoOrders();
+							List<ComboPlan> planList = tempPlan.get(s);
+							String planIds = "";
+							for(ComboPlan c:planList){
+								if("".equals(planIds)){
+									planIds+=c.getId();
+								}else{
+									planIds+=","+c.getId();
+								}
+							}
+							po.setComboPlanIds(planIds);
+							po.setDayKey(s);
+							po.setOrderUnit(0);
+							po.setOrderDay(i);
+							po.setComboId(combo.getId());
+							dao.savePseudoOrders(po);
+							timesTotal++;
+						}*/
+				}else if("2".equals(statusArray[0])){//固定周期固定时间
+						int parentCicle = Integer.parseInt(statusMap.get(Integer.parseInt(statusArray[1])).getRemark());//一周 7  一月  30
+						int chileCicle = Integer.parseInt(statusMap.get(Integer.parseInt(statusArray[2])).getRemark());//周二  2   月初   1
+						//i%7==1 每一周周二  type 周
+						//i%30==0 月初 type 月
+						PseudoOrders po = new PseudoOrders();
+						List<ComboPlan> planList = tempPlan.get(s);
+						String planIds = "";
+						for(ComboPlan c:planList){
+							if("".equals(planIds)){
+								planIds+=c.getId();
+							}else{
+								planIds+=","+c.getId();
+							}
+						}
+						po.setComboPlanIds(planIds);
+						po.setDayKey(s);
+						if(parentCicle>=7&&parentCicle<30){
+							po.setOrderUnit(1);
+						}else if(parentCicle>=30&&parentCicle<90){
+							po.setOrderUnit(2);
+						}else if(parentCicle>=90&&parentCicle<360){
+							po.setOrderUnit(3);
+						}else if(parentCicle==365){
+							po.setOrderUnit(4);
+						}
+						po.setOrderDay(chileCicle);
+						po.setComboId(combo.getId());
+						dao.savePseudoOrders(po);
+						
+						timesTotal+=baseTime;
+					}
+				}else{//固定时间类型  直接添加一条伪订单
+					
+					PseudoOrders po = new PseudoOrders();
+					List<ComboPlan> planList = tempPlan.get(s);
+					String planIds = "";
+					for(ComboPlan c:planList){
+						if("".equals(planIds)){
+							planIds+=c.getId();
+						}else{
+							planIds+=","+c.getId();
+						}
+					}
+					po.setComboPlanIds(planIds);
+					po.setDayKey(s);
+					po.setOrderUnit(0);
+					po.setComboId(combo.getId());
+					dao.savePseudoOrders(po);
+					timesTotal++;
+					it.remove();
+					break;
+				}
+		
 		}
+	
 		
 		//套餐配送次数修改
 		combo.setComboTimes(timesTotal);
@@ -338,8 +444,8 @@ public class ComboService {
 	}
 
 	public List<BusinessOrderVO> findBusinessOrderRelationVOByOrderId(
-			Long orderId) {
-		return dao.findBusinessOrderRelationVOByOrderId(orderId);
+			Long orderId, Integer comboId) {
+		return dao.findBusinessOrderRelationVOByOrderId(orderId,comboId);
 	}
 
 	public boolean modifyComboUser(ComboUserVO comboUserVo) {
@@ -347,10 +453,15 @@ public class ComboService {
 			//用户套餐存在
 			ComboUser comboUser=dao.findComboUserById(comboUserVo.getComboUser().getId());
 			if(comboUser!=null){
-				if(0==comboUser.getComboUserStatus()){
-					comboUser.setComboUserStatus(1);
-				}else if(1==comboUser.getComboUserStatus()){
-					comboUser.setComboUserStatus(0);
+				//由于更改用户套餐状态也是这个方法 所以一下判断是否为更改用户状态
+				if(comboUserVo.getComboUser().getComboUserStatus()==null){
+					if(0==comboUser.getComboUserStatus()){
+						comboUser.setComboUserStatus(1);
+					}else if(1==comboUser.getComboUserStatus()){
+						comboUser.setComboUserStatus(0);
+					}
+				}else{					
+					comboUser = comboUserVo.getComboUser();
 				}
 				dao.mergeComboUser(comboUser);
 				return true;

@@ -110,7 +110,7 @@
 						<td>${loop.comboUser.comboStartTime}</td>
 						<td>${loop.comboUser.comboEndTime}</td>
 						<td>					
-							<a title="查看订单详情" target="dialog" href="${order}?comboUserVo.comboUser.orderId=${loop.comboUser.orderId}" class="btnLook">查看订单详情</a>
+							<a title="查看订单详情" target="dialog" href="${order}?comboUserVo.comboUser.orderId=${loop.comboUser.orderId}&comboUserVo.combo.id=${loop.combo.id}" class="btnLook">查看订单详情</a>
 							<a title="查看商品详情" target="dialog" href="${goodsInfo}?comboUserVo.comboUser.orderId=${loop.comboUser.orderId}&comboUserVo.combo.id=${loop.combo.id}" class="btnLook">查看</a>
 							<%-- <a title="查看以后的配送计划" target="dialog" href="${modify}?comboVo.combo.id=${loop.comboUser.id}&pageType=1" class="btnLook">查看</a>
 							<a title="计划外调整订单" target="navTab" href="${modify}?comboVo.combo.id=${loop.comboUser.id}&pageType=1" class="btnLook">查看</a>
