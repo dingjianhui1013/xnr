@@ -1386,8 +1386,9 @@ public class AllocationAction extends ParentAction {
 		String[] orderArray = ad.getOrderRecord().split(",");
 		for(String s:orderArray){
 			BusinessOrderRecord bor = businessOrderRecordService.findByid(s);
-			bor.setDeliveryStatus(173);
+			bor.setDeliveryStatus(208);
 			bor.setDeliveryStatusName("配送中");
+			bor.setDeliveryStartTime(new Timestamp(new Date().getTime()));
 			businessOrderRecordService.modify(bor);
 		}
 		//分配状态改为不可修改

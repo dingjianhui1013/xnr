@@ -2660,4 +2660,10 @@ public class BusinessOrderRecordService {
 		return dao.findAll();
 	}
 
+	public List<BusinessOrderRecord> findAlreadyDelivered() {
+		String hql  = "from BusinessOrderRecord where deliveryStatus = 208";
+		List<BusinessOrderRecord> orders = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+		return orders;
+	}
+
 }

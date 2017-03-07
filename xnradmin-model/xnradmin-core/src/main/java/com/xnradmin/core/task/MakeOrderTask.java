@@ -53,6 +53,10 @@ public class MakeOrderTask {
     public void process() {
         this.makeOrderTask();
     }
+    public void receipt()
+    {
+    	this.confirmReceipt();;
+    }
 
 
     /**
@@ -231,5 +235,26 @@ public class MakeOrderTask {
     		}
     		System.out.println("--------------------");
     	}
+    }
+    
+    @Transactional(readOnly=false)
+    private void confirmReceipt()
+    {
+    	
+    	List<BusinessOrderRecord> orders = orderRecordService.findAlreadyDelivered();
+    	Timestamp nowDate = new Timestamp(new Date().getTime());
+    	for (BusinessOrderRecord businessOrderRecord : orders) {
+    		Timestamp deliveryStartTime = businessOrderRecord.getDeliveryStartTime();
+    		Calendar cc = Calendar.getInstance();
+    		cc.setTime(deliveryStartTime);
+    		cc.add(Calendar.DAY_OF_MONTH, 2);
+    		if(cc.getTime().getTime()>=nowDate.getTime())
+    		{
+    			businessOrderRecord.setDeliveryEndTime(nowDate);
+    			businessOrderRecord.setDeliveryStatus(209);
+    			businessOrderRecord.setDeliveryStatusName("已完成");
+    			orderRecordService.modify(businessOrderRecord);
+    		}
+		}
     }
 }

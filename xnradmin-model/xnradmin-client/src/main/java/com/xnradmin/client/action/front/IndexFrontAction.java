@@ -439,12 +439,12 @@ public class IndexFrontAction  extends ParentAction{
 		return StrutsResMSG.SUCCESS;
 	}
 	
-	@Action(value="commodityCycle",results={@Result(name=StrutsResMSG.SUCCESS,location="/front/PackageOrderDetail.jsp")})
-	public String commodityCycle()
-	{
-		
-		return StrutsResMSG.SUCCESS;
-	}
+//	@Action(value="commodityCycle",results={@Result(name=StrutsResMSG.SUCCESS,location="/front/PackageOrderDetail.jsp")})
+//	public String commodityCycle()
+//	{
+//		
+//		return StrutsResMSG.SUCCESS;
+//	}
 	@Action(value="packageProduce",results={@Result(name=StrutsResMSG.SUCCESS,location="/front/packageProduct.jsp")})
 	public String packageProduce()
 	{
@@ -516,7 +516,17 @@ public class IndexFrontAction  extends ParentAction{
 	/**
 	 * 查看周期订单配送详情
 	 */
-	@Action(value="comboDeail")
+	@Action(value="packageOrderDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location="/front/packageOrderDetail.jsp")})
+	public String packageOrderDetail()
+	{
+//		businessOrderRecordId
+//		orderRecordService.findChildOrder(businessOrderRecordId);
+		
+		return StrutsResMSG.SUCCESS;
+	}
+	
+	
+	
 	
 	private void setFrontPageInfo()
 	{
