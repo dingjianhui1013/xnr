@@ -131,6 +131,7 @@ function changeComboCycle(obj){
 }
 function writeTime(obj,type){
 	var tr=$(obj).closest("tr");
+	tr.find("input[name$='.comboCycleStr']").remove();
 	var name = tr.find("input[name$='.comboPlan.goodsNumber']").attr("name");
 	var comboType = tr.find("select[id='comboType']").val();
 	var comboCycle = tr.find("select[id='comboCycle']").val();
