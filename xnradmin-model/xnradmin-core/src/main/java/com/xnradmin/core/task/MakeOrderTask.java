@@ -245,18 +245,19 @@ public class MakeOrderTask {
     	
     	//遍历用户的套餐 如果套餐在时间期内 查看套餐伪订单计划 如果有明天的分配任务 生成一条子订单 
     	List<ComboUserVO> comboUserlist = comboService.selectUserComboPseudoOrders();
-    	int times=0;
+    	int usingtimes=0;
     	Map<Integer,Integer> userMapTemp = new HashMap<Integer, Integer>();
     	for(ComboUserVO cvo:comboUserlist){
     		ComboUser cu = cvo.getComboUser();
+    		int totaltimes = cvo.getCombo().getComboTimes();
     		if(userMapTemp.get(cu.getId())==null){
-    			times = cu.getUsingTimes();
+    			usingtimes = cu.getUsingTimes();
     			userMapTemp.put(cu.getId(), cu.getUsingTimes());
     		}else{
-    			times = userMapTemp.get(cu.getId());
+    			usingtimes = userMapTemp.get(cu.getId());
     		}
     		//判断订单还有没有次数 如果没有修改订单状态 并返回
-    		if(times<=0){
+    		if(totaltimes-usingtimes<=0){
     			cu.setComboUserStatus(1);
     			cvo.setComboUser(cu);
     			comboService.modifyComboUser(cvo);
@@ -280,7 +281,7 @@ public class MakeOrderTask {
     				week+=21;
     			}
     			//这个判断会提前一天下单
-    			if(week==po.getOrderDay()){
+    			if(week==(po.getOrderDay()+1)){
     				isMake=true;    				
     			}
     		}else if(unit==2){//月 月初为1号 月末为28号 月中为15号
@@ -417,14 +418,14 @@ public class MakeOrderTask {
     			orderRecordService.modify(chileRecord);
     			
     			//订单次数减一并保存
-    			times = times - 1;
-    			if(times<=0){
+    			usingtimes = usingtimes + 1;
+    			if(totaltimes-usingtimes<=0){
     				cu.setComboUserStatus(1);
     			}
-    			cu.setUsingTimes(times);
+    			cu.setUsingTimes(usingtimes);
     			cvo.setComboUser(cu);
     			comboService.modifyComboUser(cvo);
-    			userMapTemp.put(cu.getId(), times);
+    			userMapTemp.put(cu.getId(), usingtimes);
     		}
     	}
     	
