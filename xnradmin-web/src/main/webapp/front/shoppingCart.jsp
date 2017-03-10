@@ -55,7 +55,7 @@ function sub(a, b) {
 	return Number(d);
 }
 
-function plusNum(id)
+function plusNum(id,goodsId)
 
 {	
 		var userId = $("#userId").val();
@@ -78,7 +78,10 @@ function plusNum(id)
 			for (x in cart)
 			{
 				var item = cart[x];
-				if(item.cookieId==id){
+				if(item.goodsId==goodsId){
+					item.goodsCount = item.goodsCount+1;
+				}
+				if(item.comboId==goodsId){
 					item.goodsCount = item.goodsCount+1;
 				}
 			}
@@ -86,7 +89,7 @@ function plusNum(id)
 		}
 		totalprice();
 }
-function minusNum(id)
+function minusNum(id,goodsId)
 {		
 		var userId = $("#userId").val();
 		var price = Number($("#price"+id).html());
@@ -109,7 +112,10 @@ function minusNum(id)
 					for (x in cart)
 					{
 						var item = cart[x];
-						if(item.cookieId==id){
+						if(item.goodsId==goodsId){
+							item.goodsCount = item.goodsCount-1;
+						}
+						if(item.comboId==goodsId){
 							item.goodsCount = item.goodsCount-1;
 						}
 					}
@@ -400,13 +406,13 @@ function totalComboMoney(obj)
 												<a id="plus${cartVo.cart.id }" href="javascript:plusNum(${cartVo.cart.id })" class="plusNum">+</a>
 											</c:if>
 											<c:if test="${empty cartVo.cart.id }">
-												<a id="plus${cartVo.cart.cookieCartId }" href="javascript:plusNum('${cartVo.cart.cookieCartId }')" class="plusNum">+</a>
+												<a id="plus${cartVo.cart.cookieCartId }" href="javascript:plusNum('${cartVo.cart.cookieCartId }','${cartVo.goods.id}')" class="plusNum">+</a>
 											</c:if>
 											<c:if test="${!empty cartVo.cart.id }">
 												<a id="mimus${cartVo.cart.id }" href="javascript:minusNum(${cartVo.cart.id })" class="minus-Num">-</a>
 											</c:if>
 											<c:if test="${empty cartVo.cart.id }">
-												<a id="mimus${cartVo.cart.cookieCartId }" href="javascript:minusNum('${cartVo.cart.cookieCartId }')" class="minus-Num">-</a>
+												<a id="mimus${cartVo.cart.cookieCartId }" href="javascript:minusNum('${cartVo.cart.cookieCartId }','${cartVo.goods.id}')" class="minus-Num">-</a>
 											</c:if>
 											
 										</span>
@@ -475,13 +481,13 @@ function totalComboMoney(obj)
 												<a id="plus${comboVOs.shoppingCart.id }" href="javascript:plusNum(${comboVOs.shoppingCart.id })" class="plusNum">+</a>
 											</c:if>
 											<c:if test="${empty comboVOs.shoppingCart.id }">
-												<a id="plus${comboVOs.shoppingCart.cookieCartId }" href="javascript:plusNum('${comboVOs.shoppingCart.cookieCartId }')" class="plusNum">+</a>
+												<a id="plus${comboVOs.shoppingCart.cookieCartId }" href="javascript:plusNum('${comboVOs.shoppingCart.cookieCartId }','${comboVOs.combo.id}')" class="plusNum">+</a>
 											</c:if>
 											<c:if test="${!empty comboVOs.shoppingCart.id }">
 												<a id="mimus${comboVOs.shoppingCart.id }" href="javascript:minusNum(${comboVOs.shoppingCart.id })" class="minus-Num">-</a>
 											</c:if>
 											<c:if test="${empty comboVOs.shoppingCart.id }">
-												<a id="mimus${comboVOs.shoppingCart.cookieCartId }" href="javascript:minusNum('${comboVOs.shoppingCart.cookieCartId }')" class="minus-Num">-</a>
+												<a id="mimus${comboVOs.shoppingCart.cookieCartId }" href="javascript:minusNum('${comboVOs.shoppingCart.cookieCartId }','${comboVOs.combo.id}')" class="minus-Num">-</a>
 											</c:if>
 											
 										</span>

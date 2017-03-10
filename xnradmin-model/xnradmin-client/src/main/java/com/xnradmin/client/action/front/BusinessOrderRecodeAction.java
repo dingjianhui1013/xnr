@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -801,8 +802,40 @@ public class BusinessOrderRecodeAction extends ParentAction {
         			 comboUser.setComboUserStatus(0);
         			 comboUser.setUsingMoney(0F);
         			 comboUser.setUsingTimes(0);
-        			 String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime());
+        			 Date nowDate = new Date();
+        			 String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(nowDate.getTime());
         			 comboUser.setCreateTime(Timestamp.valueOf(time));
+        			 Calendar calendar = Calendar.getInstance();
+        			 calendar.setTime(nowDate);
+        			 calendar.add(Calendar.DATE,1);
+        			 calendar.set(Calendar.HOUR_OF_DAY, 0);
+        			 calendar.set(Calendar.SECOND,0);
+        			 calendar.set(Calendar.MINUTE,0);
+        			 Timestamp startTimestamp = new Timestamp(calendar.getTime().getTime());
+        			 Calendar endTIme = Calendar.getInstance();
+        			 endTIme.setTime(nowDate);
+        			 if(combo.getComboCycleStatus().equals("228"))
+        			 {
+        				 endTIme.add(Calendar.DATE,30);
+        			 }else if (combo.getComboCycleStatus().equals("229")) {
+        				 endTIme.add(Calendar.DATE,60);
+					}else if (combo.getComboCycleStatus().equals("230")) {
+       				 endTIme.add(Calendar.DATE,120);
+					}else if (combo.getComboCycleStatus().equals("231")) {
+       				 endTIme.add(Calendar.DATE,240);
+					}else if (combo.getComboCycleStatus().equals("232")) {
+       				 endTIme.add(Calendar.DATE,365);
+					}
+        			 endTIme.set(Calendar.HOUR_OF_DAY, 23);
+        			 endTIme.set(Calendar.SECOND,59);
+        			 endTIme.set(Calendar.MINUTE,59);
+        			 Timestamp endTimeTamp = new Timestamp(endTIme.getTime().getTime());
+        			 comboUser.setComboStartTime(startTimestamp);
+        			 comboUser.setComboEndTime(endTimeTamp);
+        			 comboUser.setFirstDay(startTimestamp);
+        			 comboUser.setFirstMonth(startTimestamp);
+        			 comboUser.setFirstWeek(startTimestamp);
+        			 comboUser.setFirstYear(startTimestamp);
         			 comboUserService.save(comboUser);
         			 orderGoodsRelationService.save(relation);
         			 shoppingCartService.del(cart.getId().toString());
@@ -921,10 +954,26 @@ public class BusinessOrderRecodeAction extends ParentAction {
 		List<BusinessOrderGoodsRelation> relations = orderGoodsRelationService.findByOrderId(businessOrderRecodeId);
 		
 		for(BusinessOrderGoodsRelation relation:relations){
-			
-			BusinessGoods good = goodsService.findByid(relation.getGoodsId().toString());
-			
-			goodDetail += good.getGoodsName()+" ";
+			BusinessGoods good = new BusinessGoods();
+			Combo combo = new Combo();
+			try {
+				if(relation.getGoodsId()!=null||!relation.getGoodsId().equals("null"))
+				{
+					good = goodsService.findByid(relation.getGoodsId().toString());
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				if (relation.getComboId()!=null||!relation.getComboId().equals("null")) {
+					combo = comboService.findByCombo(relation.getComboId().toString());
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			goodDetail += good.getGoodsName()+" "+combo.getComboName();
 			
 		}
 		

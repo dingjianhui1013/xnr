@@ -384,7 +384,8 @@ public class CartAction extends ParentAction {
 	 */
 	@Action(value = "shoppingCart",results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/shoppingCart.jsp") })
     public String shoppingCart() {
-		
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+//		this.indexGoods = indexFrontService.listBusinessGoodsVO();
 		 user =  (FrontUser)ServletActionContext.getRequest().getSession().getAttribute("user");
 		if(null==user){
 			Cookie cookieByName = CookieHelper.getCookieByName(ServletActionContext.getRequest(), "cart");

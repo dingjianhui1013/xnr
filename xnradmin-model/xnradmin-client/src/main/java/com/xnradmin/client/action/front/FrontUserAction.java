@@ -150,61 +150,61 @@ public class FrontUserAction {
 				String cookieCart = cookieByName.getValue();
 				if(null!=cookieCart&&!"".equals(cookieCart)){
 					cookieCart = URLDecoder.decode(cookieCart);
-					JSONArray json = JSONArray.fromObject(cookieCart);
-					Set<String> idSet = new HashSet<String>();
-					for (int i = 0; i < json.size(); i++) {
-						JSONObject job = json.getJSONObject(i);
-						if(!job.get("goodsId").toString().equals("null"))
-						{
-							idSet.add(job.get("goodsId").toString());
-						}
-						if(!job.get("comboId").toString().equals("null"))
-						{
-							idSet.add(job.get("comboId").toString());
-						}
-					}
-					JSONArray carsaArray = new JSONArray();
-					JSONObject carts = new JSONObject();
-					Object[] idsObject = idSet.toArray();
-					for (int i = 0; i < idsObject.length; i++) {
-						int goodsCount = 0;
-						String cookieId = "";
-						String goodsId = "";
-						String price = "";
-						String comboId = "";
-						for (int j = 0; j < json.size(); j++) {
-							JSONObject job = json.getJSONObject(j);
-							if(!job.get("goodsId").toString().equals("null"))
-							{
-								if(idsObject[i].toString().equals(job.get("goodsId").toString())){
-									goodsCount++;
-									cookieId=job.get("cookieId").toString();
-									goodsId = idsObject[i].toString();
-									price = job.get("price").toString();
-								}
-							}else {
-								goodsId="null";
-							}
-							if(!job.get("comboId").toString().equals("null"))
-							{
-								if(idsObject[i].toString().equals(job.get("comboId").toString())){
-									goodsCount++;
-									cookieId=job.get("cookieId").toString();
-									comboId = idsObject[i].toString();
-									price = job.get("price").toString();
-								}
-							}else {
-								comboId ="null";
-							}
-						}
-						carts.put("cookieId",cookieId);
-						carts.put("goodsId", goodsId);
-						carts.put("comboId", comboId);
-						carts.put("goodsCount", goodsCount);
-						carts.put("price", price);
-						carsaArray.add(carts);
-					}
-					shoppingCartService.saveCookieCart(carsaArray.toString(),frontUser);
+//					JSONArray json = JSONArray.fromObject(cookieCart);
+//					Set<String> idSet = new HashSet<String>();
+//					for (int i = 0; i < json.size(); i++) {
+//						JSONObject job = json.getJSONObject(i);
+//						if(!job.get("goodsId").toString().equals("null"))
+//						{
+//							idSet.add(job.get("goodsId").toString());
+//						}
+//						if(!job.get("comboId").toString().equals("null"))
+//						{
+//							idSet.add(job.get("comboId").toString());
+//						}
+//					}
+//					JSONArray carsaArray = new JSONArray();
+//					JSONObject carts = new JSONObject();
+//					Object[] idsObject = idSet.toArray();
+//					for (int i = 0; i < idsObject.length; i++) {
+//						int goodsCount = 0;
+//						String cookieId = "";
+//						String goodsId = "";
+//						String price = "";
+//						String comboId = "";
+//						for (int j = 0; j < json.size(); j++) {
+//							JSONObject job = json.getJSONObject(j);
+//							if(!job.get("goodsId").toString().equals("null"))
+//							{
+//								if(idsObject[i].toString().equals(job.get("goodsId").toString())){
+//									goodsCount++;
+//									cookieId=job.get("cookieId").toString();
+//									goodsId = idsObject[i].toString();
+//									price = job.get("price").toString();
+//								}
+//							}else {
+//								goodsId="null";
+//							}
+//							if(!job.get("comboId").toString().equals("null"))
+//							{
+//								if(idsObject[i].toString().equals(job.get("comboId").toString())){
+//									goodsCount++;
+//									cookieId=job.get("cookieId").toString();
+//									comboId = idsObject[i].toString();
+//									price = job.get("price").toString();
+//								}
+//							}else {
+//								comboId ="null";
+//							}
+//						}
+//						carts.put("cookieId",cookieId);
+//						carts.put("goodsId", goodsId);
+//						carts.put("comboId", comboId);
+//						carts.put("goodsCount", goodsCount);
+//						carts.put("price", price);
+//						carsaArray.add(carts);
+//					}
+					shoppingCartService.saveCookieCart(cookieCart,frontUser);
 				}
 			}
 			return StrutsResMSG.SUCCESS;

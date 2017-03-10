@@ -547,7 +547,7 @@
 							                    </c:if>
 							                    <li><span>${loop.combo.comboTimes}</span></li>
 							                    <li><span>${loop.comboUser.usingTimes}</span></li>
-				                    			<li style="margin-left: 2%;"><a href="#"><span>查看配送详情</span></a></li>
+				                    			<li style="margin-left: 2%;"><a href="${basePath}front/packageOrderDetail.action?businessOrderRecordId=${loop.orderRecord.id}&comboId=${loop.combo.id}&comboUserId=${loop.comboUser.id}"><span>查看配送详情</span></a></li>
 				                    		</ul>
 				                    	</div>
 				                    </div>

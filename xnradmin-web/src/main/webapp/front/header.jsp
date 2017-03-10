@@ -31,7 +31,7 @@
 $(function(){
 	var userId = $("#userId").val();
 	if(userId!=null&&userId!=""){
-		$.cookie('cart', null); //清除cookie
+		$.cookie('cart',null,{path:'/'});
 		$.ajax({
 			url:"${basePath}/page/wx/admin/order/shoppingCart/getTotalAndNumber.action",
 			type:"POST",
@@ -63,7 +63,7 @@ $(function(){
 })
 function getCartCookie(){
 	var cartCookie = $.cookie('cart')//拿到cookie
-	if(cartCookie==null||cartCookie==""){
+	if(cartCookie==null||cartCookie==""||cartCookie=="null"){
 		var cartCookie = [];
 		return cartCookie;
 	}
