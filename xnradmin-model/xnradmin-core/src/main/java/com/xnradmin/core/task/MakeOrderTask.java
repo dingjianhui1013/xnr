@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cntinker.util.StringHelper;
 import com.xnradmin.client.service.front.ReceiptAddressService;
 import com.xnradmin.core.service.business.combo.ComboService;
 import com.xnradmin.core.service.business.order.BusinessOrderGoodsRelationService;
@@ -248,6 +249,7 @@ public class MakeOrderTask {
     	int usingtimes=0;
     	Map<Integer,Integer> userMapTemp = new HashMap<Integer, Integer>();
     	for(ComboUserVO cvo:comboUserlist){
+    		int weektemp = week;
     		ComboUser cu = cvo.getComboUser();
     		int totaltimes = cvo.getCombo().getComboTimes();
     		if(userMapTemp.get(cu.getId())==null){
@@ -274,14 +276,14 @@ public class MakeOrderTask {
     		if(po.getOrderUnit()==1){//周
     			if(po.getOrderDay()<=7){//一周
     			}else if(7<po.getOrderDay()&&po.getOrderDay()<=14){
-    				week+=7;
+    				weektemp+=7;
     			}else if(14<po.getOrderDay()&&po.getOrderDay()<=21){
-    				week+=14;
+    				weektemp+=14;
     			}else{
-    				week+=21;
+    				weektemp+=21;
     			}
     			//这个判断会提前一天下单
-    			if(week==(po.getOrderDay()+1)){
+    			if(weektemp==(po.getOrderDay()+1)){
     				isMake=true;    				
     			}
     		}else if(unit==2){//月 月初为1号 月末为28号 月中为15号
@@ -370,6 +372,7 @@ public class MakeOrderTask {
     			chileRecord
     					.setCreateTime(new Timestamp(System.currentTimeMillis()));
     			
+    			chileRecord.setOrderNo(StringHelper.getSystime("yyyyMMddHHmmss")+StringHelper.getRandom(5));
     			
     			
     			chileRecord.setDeliveryStatus(207);

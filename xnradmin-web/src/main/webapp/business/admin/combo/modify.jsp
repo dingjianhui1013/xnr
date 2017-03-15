@@ -282,8 +282,7 @@ $(function(){
 <div class="pageContent">
 	<form method="post" action="${action}" class="pageForm required-validate" enctype="multipart/form-data"
 		onsubmit="return iframeCallback(this)" id="content">
-	
-	<div class="pageFormContent" layoutH="649" style="height: 70px">
+	<div class="pageFormContent" style="height: 178px; overflow: auto;">
 			<fieldset>
 				<label>套餐名称：</label>
 				<input name="comboVo.combo.comboName" type="text" size="25" class="required" value="${comboVo.combo.comboName }"/>			
@@ -329,7 +328,7 @@ $(function(){
 	
 	<input type="hidden" value="${comboVo.combo.id}" name="comboVo.combo.id">
 		<h3 class="contentTitle">套餐商品列表</h3>
-		<div class="pageFormContent" layoutH="345" style="height: 320px">
+		<div class="pageFormContent" layoutH="300" style="height: 320px">
 			<div class="tabs">
 				<div class="tabsHeader">
 					<div class="tabsHeaderContent">

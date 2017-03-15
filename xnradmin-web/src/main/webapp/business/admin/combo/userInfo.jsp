@@ -35,7 +35,7 @@
 			data:{},
 			dataType:'JSON',
 			success:function(data){
-				navTabSearch(data);
+				navTabAjaxDone(data);
 			}
 			
 		});
@@ -75,13 +75,13 @@
 	</form>
 </div>
 <div class="pageContent">
-	<div class="panelBar">
+	<%-- <div class="panelBar">
 		<ul class="toolBar">
 			<li>
 			<a class="add" href="${modify}?pageType=3" target="navTab" title="新增"><span>新增用户套餐</span></a>
 			</li>
 		</ul>
-	</div>
+	</div> --%>
 	<table class="table" width="100%" layoutH="225">
 		<thead>
 			<tr>

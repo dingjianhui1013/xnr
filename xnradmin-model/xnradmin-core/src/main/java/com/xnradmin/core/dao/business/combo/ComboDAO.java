@@ -325,7 +325,7 @@ public class ComboDAO{
 		log.debug("getting ComboUser instance with id: " + id);
         try{
 
-            return (List<ComboUser>) commonDao.findByProperty(ComboUser.class, "comboId", id);
+            return (List<ComboUser>) commonDao.findByProperty(ComboUser.class, "comboId", id+"");
         }catch(RuntimeException re){
             log.error("get failed",re);
             throw re;

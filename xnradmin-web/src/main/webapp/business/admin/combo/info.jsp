@@ -32,7 +32,7 @@
 			data:{},
 			dataType:'JSON',
 			success:function(data){
-				navTabSearch(data);
+				navTabAjaxDone(data);
 			}
 			
 		});
