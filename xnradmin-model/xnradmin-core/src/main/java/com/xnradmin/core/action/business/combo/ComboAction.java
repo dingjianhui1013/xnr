@@ -386,7 +386,7 @@ public class ComboAction extends ParentAction {
 		BusinessOrderVO businessOrderVO = new BusinessOrderVO();
 		BusinessOrderRecord bor = new BusinessOrderRecord();
 		bor.setIsChild(comboUserVo.getComboUser().getOrderId());
-		bor.setComboID(comboUserVo.getCombo().getId());
+		bor.setComboId(comboUserVo.getCombo().getId());
 		businessOrderVO.setBusinessOrderRecord(bor);
 		this.businessOrderVOList = businessOrderRecordService.listVO(businessOrderVO, getPageNum(), getNumPerPage(),
 				orderField, orderDirection);

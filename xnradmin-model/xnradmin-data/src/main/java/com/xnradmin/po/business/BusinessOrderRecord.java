@@ -806,12 +806,12 @@ public class BusinessOrderRecord implements java.io.Serializable{
 	}
 
 	@Column(name = "COMBO_ID")
-	public Integer getComboID() {
+	public Integer getComboId() {
 		return comboId;
 	}
 
-	public void setComboID(Integer comboID) {
-		this.comboId = comboID;
+	public void setComboId(Integer comboId) {
+		this.comboId = comboId;
 	}
 	
 	

@@ -382,7 +382,7 @@ public class MakeOrderTask {
     			chileRecord.setPrimaryConfigurationName(olde.getPrimaryConfigurationName());
     			chileRecord.setUserRealDescription(olde.getUserRealDescription());
     			chileRecord.setIsChild(cu.getOrderId());
-    			chileRecord.setComboID(cvo.getCombo().getId());
+    			chileRecord.setComboId(cvo.getCombo().getId());
     			Long newOrderRecordId = orderRecordService.save(chileRecord);
     			
     			String planIds = po.getComboPlanIds();
