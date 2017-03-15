@@ -24,6 +24,7 @@ import com.xnradmin.core.dao.CommonDAO;
 import com.xnradmin.core.dao.CommonJDBCDAO;
 import com.xnradmin.core.dao.business.order.BusinessOrderRecordDAO;
 import com.xnradmin.core.service.StaffService;
+import com.xnradmin.core.service.business.combo.ComboPlanService;
 import com.xnradmin.core.service.business.combo.ComboService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
 import com.xnradmin.core.service.mall.commodity.GoodsService;
@@ -33,6 +34,7 @@ import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.Combo;
+import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
@@ -65,6 +67,10 @@ public class BusinessOrderRecordService {
 	
 	@Autowired
 	private ComboService comboService;
+	
+	@Autowired
+	private ComboPlanService comboPlanService;
+	
 	
 	static Log log = LogFactory.getLog(BusinessOrderRecordService.class);
 
@@ -2669,6 +2675,30 @@ public class BusinessOrderRecordService {
 		String hql  = "from BusinessOrderRecord where deliveryStatus = 208";
 		List<BusinessOrderRecord> orders = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		return orders;
+	}
+
+	public List<ComboVO> findChildOrder(String businessOrderRecordId,
+			String comboId,int pageNum, int pageSize) {
+		String hql = "from BusinessOrderRecord b,Combo c where b.isChild = '"+businessOrderRecordId+"' and b.comboID = '"+ comboId+"' and c.id= '"+ comboId+"'" ;
+		List<Object[]> objects = commonDao.getEntitiesByPropertiesWithHql(hql,pageNum,pageSize);
+		List<ComboVO> comboVOs = new ArrayList<ComboVO>();
+		for (Object[] obj : objects) {
+			ComboVO comboVO = new ComboVO();
+			BusinessOrderRecord bor = (BusinessOrderRecord)obj[0];
+			Combo combo = (Combo) obj[1];
+			List<BusinessGoods> goodsList = comboPlanService.findGoodsBycomboId(combo.getId().toString());
+			comboVO.setCombo(combo);
+			comboVO.setOrderRecord(bor);
+			comboVO.setGoodsList(goodsList);
+			comboVOs.add(comboVO);
+		}
+ 		return comboVOs;
+	}
+	public int findChildOrderCount(String businessOrderRecordId,
+			String comboId) {
+		String hql = "from BusinessOrderRecord b,Combo c where b.isChild = '"+businessOrderRecordId+"' and b.comboID = '"+ comboId+"' and c.id= '"+ comboId+"'" ;
+		List<Object[]> objects = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
+ 		return objects.size();
 	}
 
 }

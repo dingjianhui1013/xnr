@@ -36,4 +36,8 @@ public class ComboUserService {
 		int comboCount = dao.getCount(userId);
 		return comboCount;
 	}
+	public ComboUser findById(String comboUserId) {
+		// TODO Auto-generated method stub
+		return dao.findById(comboUserId);
+	}
 }

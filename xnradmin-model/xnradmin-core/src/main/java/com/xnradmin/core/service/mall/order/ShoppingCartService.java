@@ -176,8 +176,8 @@ public class ShoppingCartService {
 	
 	public List<BusinessGoodsCartVo> cookieToVo(String cookie){
 		List<BusinessGoodsCartVo> resList = new LinkedList<BusinessGoodsCartVo>();
-		List<BusinessGoodsCartVo> resLists = new ArrayList<BusinessGoodsCartVo>();
-		Set<String> goodId = new HashSet<String>();
+//		List<BusinessGoodsCartVo> resLists = new ArrayList<BusinessGoodsCartVo>();
+//		Set<String> goodId = new HashSet<String>();
 		JSONArray json = JSONArray.fromObject(cookie);
 		if(json.size()>0){
 		   for(int i=0;i<json.size();i++){
@@ -185,44 +185,44 @@ public class ShoppingCartService {
 		    BusinessGoodsCartVo businessGoodsCartVo = new BusinessGoodsCartVo();
 		    if(!(job.get("goodsId").toString()).equals("null"))
 		    {
-		    	goodId.add(job.get("goodsId").toString());
+//		    	goodId.add(job.get("goodsId").toString());
 		    	businessGoodsCartVo = addBgcv(job);
 		    	resList.add(businessGoodsCartVo);
 		    }
 		  }
-		  Object[] goodIds = goodId.toArray();
-		  for (int i = 0; i < goodIds.length; i++) {
-			int goodsCount = 0;
-			Float totalPrice = 0F;
-			String cookieId  = "";
-			BusinessGoodsCartVo bgcv= new BusinessGoodsCartVo();
-			ShoppingCart sCart = new ShoppingCart();
-			BusinessGoods goods = new BusinessGoods();
-			for (int j = 0; j < resList.size(); j++) {
-				if(goodIds[i].toString().equals(resList.get(j).getCart().getGoodsId().toString()))
-				{
-					goodsCount++;
-					
-					totalPrice=new BigDecimal(Float.toString(totalPrice)).add(new BigDecimal(Float.toString(resList.get(j).getCart().getTotalPrice()))).floatValue();
-					goods = resList.get(j).getGoods();
-					cookieId = resList.get(j).getCart().getCookieCartId();
-				}
-			}
-			sCart.setGoodsCount(goodsCount);
-			sCart.setTotalPrice(totalPrice);
-			sCart.setCookieCartId(cookieId);
-			bgcv.setCart(sCart);
-			bgcv.setGoods(goods);
-			resLists.add(bgcv);
+//		  Object[] goodIds = goodId.toArray();
+//		  for (int i = 0; i < goodIds.length; i++) {
+//			int goodsCount = 0;
+//			Float totalPrice = 0F;
+//			String cookieId  = "";
+//			BusinessGoodsCartVo bgcv= new BusinessGoodsCartVo();
+//			ShoppingCart sCart = new ShoppingCart();
+//			BusinessGoods goods = new BusinessGoods();
+//			for (int j = 0; j < resList.size(); j++) {
+//				if(goodIds[i].toString().equals(resList.get(j).getCart().getGoodsId().toString()))
+//				{
+//					goodsCount+=resList.get(j).getCart().getGoodsCount();
+//					
+//					totalPrice=new BigDecimal(Float.toString(totalPrice)).add(new BigDecimal(Float.toString(resList.get(j).getCart().getTotalPrice()))).floatValue();
+//					goods = resList.get(j).getGoods();
+//					cookieId = resList.get(j).getCart().getCookieCartId();
+//				}
+//			}
+//			sCart.setGoodsCount(goodsCount);
+//			sCart.setTotalPrice(totalPrice);
+//			sCart.setCookieCartId(cookieId);
+//			bgcv.setCart(sCart);
+//			bgcv.setGoods(goods);
+//			resLists.add(bgcv);
+//		}
 		}
-		}
-		return resLists;
+		return resList;
 
 	}
 	public List<ComboVO> cookieToComboVo(String cookie){
 		List<ComboVO> resList = new LinkedList<ComboVO>();
-		List<ComboVO> resLists = new LinkedList<ComboVO>();
-		Set<String> comboId = new HashSet<String>();
+//		List<ComboVO> resLists = new LinkedList<ComboVO>();
+//		Set<String> comboId = new HashSet<String>();
 		JSONArray json = JSONArray.fromObject(cookie );
 		if(json.size()>0){
 		   for(int i=0;i<json.size();i++){
@@ -230,39 +230,39 @@ public class ShoppingCartService {
 		    ComboVO comboVO = new ComboVO();
 		    if(!(job.get("comboId").toString()).equals("null"))
 		    {
-		    	comboId.add(job.get("comboId").toString());
+//		    	comboId.add(job.get("comboId").toString());
     			comboVO = addComboVo(job);
 			    resList.add(comboVO);
 		    }
 		  }
-		  Object[] comboIds = comboId.toArray();
-		  for (int i = 0; i < comboIds.length; i++) {
-			    int goodsCount = 0;
-				Float totalPrice = 0F;
-				String cookieId  = "";
-				ComboVO cv= new ComboVO();
-				ShoppingCart sCart = new ShoppingCart();
-				Combo combo = new Combo();
-			for (int j = 0; j < resList.size(); j++) {
-				if(comboIds[i].toString().equals(resList.get(j).getCombo().getId().toString()))
-				{
-					goodsCount++;
-					totalPrice=new BigDecimal(Float.toString(totalPrice)).add(new BigDecimal(Float.toString(resList.get(j).getShoppingCart().getTotalPrice()))).floatValue();
-					combo = resList.get(j).getCombo();
-					cookieId = resList.get(j).getShoppingCart().getCookieCartId();
-				}
-			}
-			sCart.setGoodsCount(goodsCount);
-			sCart.setCookieCartId(cookieId);
-			sCart.setTotalPrice(totalPrice);
-			cv.setShoppingCart(sCart);
-			cv.setCombo(combo);
-			resLists.add(cv);
+//		  Object[] comboIds = comboId.toArray();
+//		  for (int i = 0; i < comboIds.length; i++) {
+//			    int goodsCount = 0;
+//				Float totalPrice = 0F;
+//				String cookieId  = "";
+//				ComboVO cv= new ComboVO();
+//				ShoppingCart sCart = new ShoppingCart();
+//				Combo combo = new Combo();
+//			for (int j = 0; j < resList.size(); j++) {
+//				if(comboIds[i].toString().equals(resList.get(j).getCombo().getId().toString()))
+//				{
+//					goodsCount+=resList.get(j).getShoppingCart().getGoodsCount();
+//					totalPrice=new BigDecimal(Float.toString(totalPrice)).add(new BigDecimal(Float.toString(resList.get(j).getShoppingCart().getTotalPrice()))).floatValue();
+//					combo = resList.get(j).getCombo();
+//					cookieId = resList.get(j).getShoppingCart().getCookieCartId();
+//				}
+//			}
+//			sCart.setGoodsCount(goodsCount);
+//			sCart.setCookieCartId(cookieId);
+//			sCart.setTotalPrice(totalPrice);
+//			cv.setShoppingCart(sCart);
+//			cv.setCombo(combo);
+//			resLists.add(cv);
+//		}
+//		  
+//		   
 		}
-		  
-		   
-		}
-		return resLists;
+		return resList;
 
 	}
 	public BusinessGoodsCartVo addBgcv(JSONObject job)
@@ -277,8 +277,8 @@ public class ShoppingCartService {
 	    BusinessGoods businessGoods = list.get(0);
 	    BigDecimal price = new BigDecimal(businessGoods.getGoodsOriginalPrice().toString());
 	    BigDecimal totalprice = price.multiply(new BigDecimal(job.get("goodsCount").toString()));
-//	    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
-	    shoppingCart.setTotalPrice(totalprice.floatValue());
+	    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+//	    shoppingCart.setTotalPrice(totalprice.floatValue());
 	    businessGoodsCartVo.setCart(shoppingCart);
 	    businessGoodsCartVo.setGoods(businessGoods);
 	    return businessGoodsCartVo;
@@ -295,8 +295,8 @@ public class ShoppingCartService {
 	    Combo combo = list.get(0);
 	    BigDecimal price = new BigDecimal(combo.getComboPrice().toString());
 	    BigDecimal totalprice = price.multiply(new BigDecimal(job.get("goodsCount").toString()));
-//	    shoppingCart.setTotalPrice(businessGoods.getGoodsOriginalPrice()*Integer.parseInt(job.get("goodsCount").toString()));
-	    shoppingCart.setTotalPrice(totalprice.floatValue());
+	    shoppingCart.setTotalPrice(combo.getComboPrice()*Integer.parseInt(job.get("goodsCount").toString()));
+//	    shoppingCart.setTotalPrice(totalprice.floatValue());
 	    comboVO.setShoppingCart(shoppingCart);
 	    comboVO.setCombo(combo);
 	    return comboVO;

@@ -1,5 +1,7 @@
 package com.xnradmin.client.action.front;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,8 @@ import com.xnradmin.core.service.mall.commodity.GoodsAllocationShowService;
 import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.Combo;
+import com.xnradmin.po.business.ComboUser;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.FrontUser;
 import com.xnradmin.po.front.ReceiptAddress;
@@ -83,6 +87,10 @@ public class IndexFrontAction  extends ParentAction{
 	private String comboId;
 	private ComboVO comboVO;  
 	private String comboSign;
+	private ComboUser comboUser;
+	private String comboUserId;
+	private Combo combo;
+	private BusinessOrderRecord orderRecord;
 	public BusinessOrderVO getBusinessOrderVO() {
 		return businessOrderVO;
 	}
@@ -277,8 +285,32 @@ public class IndexFrontAction  extends ParentAction{
 	public void setComboSign(String comboSign) {
 		this.comboSign = comboSign;
 	}
+	public ComboUser getComboUser() {
+		return comboUser;
+	}
+	public void setComboUser(ComboUser comboUser) {
+		this.comboUser = comboUser;
+	}
 
+	public BusinessOrderRecord getOrderRecord() {
+		return orderRecord;
+	}
+	public void setOrderRecord(BusinessOrderRecord orderRecord) {
+		this.orderRecord = orderRecord;
+	}
 
+	public String getComboUserId() {
+		return comboUserId;
+	}
+	public void setComboUserId(String comboUserId) {
+		this.comboUserId = comboUserId;
+	}
+	public Combo getCombo() {
+		return combo;
+	}
+	public void setCombo(Combo combo) {
+		this.combo = combo;
+	}
 
 	@Autowired
 	private BusinessCategoryService businessCategoryService;
@@ -302,8 +334,7 @@ public class IndexFrontAction  extends ParentAction{
 	
 	@Action(value = "index", results = { @Result(name = StrutsResMSG.SUCCESS, location = "/front/index.jsp") })
 	public String info() {
-		log.debug("success==============================");
-		HttpSession session = ServletActionContext.getRequest().getSession();
+//		HttpSession session = ServletActionContext.getRequest().getSession();
 //		FrontUser user = (FrontUser)session.getAttribute("alipayToIndex_user");
 //		if(user!=null)
 //		{
@@ -361,7 +392,7 @@ public class IndexFrontAction  extends ParentAction{
 			this.RTotalPage =count/numPerPage +1 ;
 		}
 		this.clientUserId = clientUserId = Integer.parseInt(user.getId().toString());
-		comboList = comboUserService.findByComboVOs(user.getId(),CPageNum,numPerPage);
+		comboList = comboUserService.findByComboVOs(user.getId(),getCPageNum(),numPerPage);
 		int comboCount = comboUserService.getCount(user.getId());
 		if(comboCount%numPerPage==0)
 		{
@@ -502,6 +533,7 @@ public class IndexFrontAction  extends ParentAction{
 		try {
 			BusinessOrderRecord businessOrderRecord = orderRecordService.findByid(businessOrderRecordId);
 			businessOrderRecord.setDeliveryStatus(209);
+			businessOrderRecord.setDeliveryEndTime(new Timestamp(new Date().getTime()));
 			businessOrderRecord.setDeliveryStatusName("已完成");
 			orderRecordService.modify(businessOrderRecord);
 			status = "1";
@@ -516,12 +548,24 @@ public class IndexFrontAction  extends ParentAction{
 	/**
 	 * 查看周期订单配送详情
 	 */
-	@Action(value="packageOrderDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location="/front/packageOrderDetail.jsp")})
+	@Action(value="packageOrderDetail",results = {@Result(name = StrutsResMSG.SUCCESS, location = "/front/packageOrder.jsp")})
 	public String packageOrderDetail()
 	{
-//		businessOrderRecordId
-//		orderRecordService.findChildOrder(businessOrderRecordId);
-		
+		this.allBusinessCategorys = indexFrontService.getAllBusinessCategory();
+		this.indexGoods = indexFrontService.listBusinessGoodsVO();
+		numPerPage = 5;
+		this.comboList = orderRecordService.findChildOrder(businessOrderRecordId,comboId,getPageNum(),numPerPage);
+		this.orderRecord = orderRecordService.findByid(businessOrderRecordId);
+		this.comboUser = comboUserService.findById(comboUserId);
+		this.combo = comboService.findByCombo(comboUser.getComboId());
+		int comboCount = orderRecordService.findChildOrderCount(businessOrderRecordId, comboId);
+		if(comboCount%numPerPage==0)
+		{
+			this.totalCount = comboCount/numPerPage;
+		}else
+		{
+			this.totalCount =comboCount/numPerPage +1 ;
+		}
 		return StrutsResMSG.SUCCESS;
 	}
 	

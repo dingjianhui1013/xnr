@@ -96,15 +96,36 @@ function addToCart(id,money){
 				//layer.msg("请先登录");
 				//setTimeout("window.location.href='<%=basePath%>/front/login.jsp'",1000);
 			var cart = getCartCookie();
-			
-			var item=new Object();
-			item.cookieId = getUuid();
-			item.goodsId = null;
-			item.comboId = id;
-			item.goodsCount = goodsNumber;
-			item.price = Number($("#price"+id).val());
-			cart.push(item);
-			$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
+			var index = 0;
+			for(var i=0;i<cart.length;i++)
+			{
+				if(cart[i].comboId==id)
+					{
+						index++;
+					}
+			}
+			if(index==0)
+				{
+				var item=new Object();
+				item.cookieId = getUuid();
+				item.goodsId = null;
+				item.comboId = id;
+				item.goodsCount = count;
+				item.price = Number($("#price"+id).val());
+				cart.push(item);
+				$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); 
+				}else
+					{
+						for(var i=0;i<cart.length;i++)
+						{
+							item = cart[i];
+							if(item.comboId==id)
+								{
+									item.goodsCount = item.goodsCount+1;
+								}
+						}
+						$.cookie('cart', JSON.stringify(cart), { expires: 7, path: '/' }); //jQstringify
+					}
 			layer.msg("加入成功");
 			}
 // 	}
@@ -113,7 +134,7 @@ function addToCart(id,money){
 }
 function getCartCookie(){
 	var cartCookie = $.cookie('cart')//拿到cookie
-	if(cartCookie==null||cartCookie==""){
+	if(cartCookie==null||cartCookie==""||cartCookie=="null"){
 		var cartCookie = [];
 		return cartCookie;
 	}

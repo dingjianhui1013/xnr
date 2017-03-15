@@ -83,5 +83,8 @@ public class ComboUserDao {
 		Integer count =  commonDao.getNumberOfEntitiesWithHql(hql);
 		return count;
 	}
+	public ComboUser findById(String comboUserId) {
+		return (ComboUser) commonDao.findById(ComboUser.class,Integer.parseInt(comboUserId));
+	}
 	    
 }
