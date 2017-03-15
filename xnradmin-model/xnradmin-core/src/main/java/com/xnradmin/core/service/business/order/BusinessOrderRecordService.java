@@ -1405,9 +1405,9 @@ public class BusinessOrderRecordService {
 						+ vo.getBusinessOrderRecord().getIsChild()
 						+ "'";
 			}
-			if (vo.getBusinessOrderRecord().getComboID()!=null) {
+			if (vo.getBusinessOrderRecord().getComboId()!=null) {
 				hql = hql + " and comboID = '"
-						+ vo.getBusinessOrderRecord().getComboID()
+						+ vo.getBusinessOrderRecord().getComboId()
 						+ "'";
 			}
 		}
