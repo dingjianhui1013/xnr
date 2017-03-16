@@ -70,7 +70,7 @@ public class MakeOrderTask {
     	//取出当天星期 月 年 日
     	int year = calendar.get(Calendar.YEAR);
     	int month = calendar.get(Calendar.MONTH); //从0开始
-    	int week = calendar.get(Calendar.DAY_OF_WEEK);
+    	int week = calendar.get(Calendar.DAY_OF_WEEK);//1为周末
     	int DAY_OF_MONTH = calendar.get(Calendar.DAY_OF_MONTH); //本月几号
     	int DAY_OF_YEAR = calendar.get(Calendar.DAY_OF_YEAR);  //今年第几天
     	
@@ -266,8 +266,6 @@ public class MakeOrderTask {
     			continue ;
     		}
     		//查询套餐伪订单 时间判别   
-    		//根据套餐开始时间  计算第一次周计划时间到现在的天数，第一次月计划时间现在的天数，第一次年计划到现在的天数
-    		// TODO  以后排除节假日 或者周末
     		
     		boolean isMake=false;
     		PseudoOrders po = cvo.getPseudoOrders();

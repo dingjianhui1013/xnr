@@ -76,7 +76,7 @@ public class ComboService {
 			combo.setComboImgSmall(newCombo.getComboImgSmall());
 			dao.mergeCombo(combo);
 		}
-		if(isModify){
+		/*if(isModify){
 			//删除已有的套餐商品
 			dao.deleteComboGoodsByComboId(combo.getId());
 		}
@@ -92,7 +92,7 @@ public class ComboService {
 				goodsCount.put(bg.getId(), goodsCount.get(bg.getId())+cg.getGoodsCount());	
 			}
 			dao.saveComboGoods(cg);
-		}
+		}*/
 		if(isModify){
 			//删除已有的套餐配送计划
 			dao.deleteComboPlanByComboId(combo.getId());

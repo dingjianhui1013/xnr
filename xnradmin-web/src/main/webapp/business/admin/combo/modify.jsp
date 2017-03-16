@@ -29,12 +29,11 @@ function saveCombo(){
 		return false;
 	} */
 	//检测有没有套餐商品 有没有分配计划
-	if($("#goodsTable").find("tr").length==0||$("#farmeTable").find("tr").length==0){
+	/* if($("#goodsTable").find("tr").length==0||$("#farmeTable").find("tr").length==0){
 		alertMsg.error("套餐必须有商品和分配计划");
 		return false;
-	};
+	}; */
 	//计划时间没有选
-	
 	var flag=true;
 	$("#farmeTable").find("tr").each(function(i,one){
 		//修改时间的name 
@@ -65,7 +64,7 @@ function saveCombo(){
 	}
 	
 	//套餐价格与商品总价格不等提醒
-    var count = parseFloat($("#goodsTotalCount").val());
+    /* var count = parseFloat($("#goodsTotalCount").val());
 	var comboCount = parseFloat($("#content").find("input[name='comboVo.combo.comboPrice']").val());
 	if(count!=comboCount){
 		alertMsg.confirm("套餐价格与商品总价格不符，确定要保存吗？",{
@@ -73,7 +72,8 @@ function saveCombo(){
 				$("#content").submit();
 			}
 		});
-	}
+	} */
+	$("#content").submit();
 
 }
 function changeComboType(obj){
@@ -90,7 +90,7 @@ function changeComboType(obj){
 		tr.append("<input type='hidden' name='.comboCycleStr' value=''>");
 	}else if(val==1){
 		var html = "<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle' onchange='writeTime(this,2)'>";
-			html+= "		<option value=''>请选择</option>";
+			/* html+= "		<option value=''>请选择</option>"; */
 		<s:iterator value="#request.comboCycleList" id="item">
 			html+= '		<option value="<s:property value="#item.id" />"><s:property value="#item.statusName" /></option>'
 		</s:iterator>
@@ -100,7 +100,7 @@ function changeComboType(obj){
 		
 	}else if(val==2){
 		var html = "<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle' onchange='changeComboCycle(this)'>";
-		html+= "		<option value=''>请选择</option>";
+		/* html+= "		<option value=''>请选择</option>"; */
 		<s:iterator value="#request.comboFixedStatusList" id="item">
 		html+= '		<option value="<s:property value="#item.status.id" />"><s:property value="#item.status.statusName" /></option>'
 		</s:iterator>
@@ -119,7 +119,7 @@ function changeComboCycle(obj){
 	for(var i=0;i<cycleStatus.length;i++){
 		if(cycleStatus[i].id==val){
 			var html = "<span id='comboCycleDateSpan'><select id='comboCycleDate' name='comboCycleDate' onchange='writeTime(this,3)'>";
-			html+= "		<option value=''>请选择</option>";
+			/* html+= "		<option value=''>请选择</option>"; */
 			for(var j=0;j<cycleStatus[i].list.length;j++){
 				html+= "	<option value="+cycleStatus[i].list[j].id+">"+cycleStatus[i].list[j].name+"</option>";
 			}
@@ -327,9 +327,9 @@ $(function(){
 	</div>
 	
 	<input type="hidden" value="${comboVo.combo.id}" name="comboVo.combo.id">
-		<h3 class="contentTitle">套餐商品列表</h3>
-		<div class="pageFormContent" layoutH="300" style="height: 320px">
-			<div class="tabs">
+		<!--  <h3 class="contentTitle">套餐商品列表</h3> -->
+		<div class="pageFormContent" layoutH="300" style="height: 320px;" >
+			<div class="tabs" style="display: none;">
 				<div class="tabsHeader">
 					<div class="tabsHeaderContent">
 						<ul>
@@ -413,7 +413,7 @@ $(function(){
 			</div>
 			
 			<div class="divider"></div>
-			<div><fieldset>
+			<div style="display: none;"><fieldset>
 				<label>商品总价：</label>
 				<c:if test="${pageType!=1}">
 					<button type="button" onclick="countPrice()">计算总价</button>
