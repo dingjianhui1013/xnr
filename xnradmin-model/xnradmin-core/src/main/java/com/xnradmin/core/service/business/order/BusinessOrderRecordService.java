@@ -32,11 +32,11 @@ import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
 import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.business.Combo;
-import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.client.ClientUserInfo;
 import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.ComboVO;
 import com.xnradmin.vo.business.PrintVO;
 
 /**
