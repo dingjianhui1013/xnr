@@ -13,10 +13,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,10 +42,10 @@ import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.vo.business.BusinessOrderVO;
-import com.xnradmin.vo.business.ComboGoodsVO;
 import com.xnradmin.vo.business.ComboUserGoodsVO;
 import com.xnradmin.vo.business.ComboUserVO;
 import com.xnradmin.vo.business.ComboVO;
+import com.xnradmin.vo.business.PrintVO;
 
 /**
  * @autohr: xiang_liu
@@ -76,6 +77,8 @@ public class ComboAction extends ParentAction {
 	private List<ComboUserVO> comboUserVOList;
 	
 	private List<BusinessOrderVO> businessOrderVOList;
+	
+	private List<PrintVO> printVOList;
 	
 	private List<ComboUserGoodsVO> comboUserGoodsVOList;
 	
@@ -132,6 +135,35 @@ public class ComboAction extends ParentAction {
 	public String orderInfo() {
 		setPageOrderInfo();
 		return StrutsResMSG.SUCCESS;
+	}
+	
+	/**
+	 * 跳转到订单详情页面
+	 * 
+	 * @return
+	 */
+	@Action(value = "printInfo", results = { @Result(name = StrutsResMSG.SUCCESS, type = "plainText") })
+	public String printInfo() {
+		BusinessOrderVO businessOrderVO = new BusinessOrderVO();
+		BusinessOrderRecord bor = new BusinessOrderRecord();
+		bor.setIsChild(comboUserVo.getComboUser().getOrderId());
+		bor.setComboId(comboUserVo.getCombo().getId());
+		businessOrderVO.setBusinessOrderRecord(bor);
+		this.printVOList = businessOrderRecordService.listPrintVO(businessOrderVO);
+
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/plain; charset=UTF-8");    
+        response.setHeader("Content-Disposition", "inline"); 
+		PrintWriter out;
+		try {
+			out = response.getWriter();
+			out.println(JSONArray.fromObject(this.printVOList).toString());//返回的字符串数据  
+			out.flush();
+	        out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
+		return null;
 	}
 	
 	/**

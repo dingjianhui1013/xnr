@@ -27,6 +27,7 @@
 		<input type="hidden" name="orderDirection" value="${orderDirection}" />		
 		<input type="hidden" name="staff.staffName" value="${staff.staffName}" />
 </form>
+<link href="css/print/printShou.css" rel="stylesheet"type="text/css" media="print"/>
 <script type="text/javascript">
 	function send(id){
 		$.ajax({
@@ -40,7 +41,52 @@
 			
 		});
 	}
+	
+	function print(orderId,comboId){
+		//根据用户的订单ID 套餐ID 拼接打印内容
+		var html = "";
+		$.ajax({
+			url:'<%= basePath%>page/business/admin/combo/printInfo.action?comboUserVo.comboUser.orderId='
+					+orderId+'&comboUserVo.combo.id='+comboId,
+			type:'POST',
+			data:{},
+			dataType:'JSON',
+			success:function(data){
+				console.log(data);
+				for(var i=0;i<data.length;i++){
+					html  = '<table class="t1">';
+					html += ' <tr><td>订单号：</td><td>'+data[i].businessOrderRecord.orderNo+' </td></tr>';
+					html += ' <tr><td>收货人信息：</td><td></td></tr>';
+					html += ' <tr><td>收货人姓名：</td><td>'+data[i].businessOrderRecord.userRealName+'</td></tr>';
+					html += ' <tr><td>收货人地址：</td><td>'+data[i].businessOrderRecord.provinceName+' '
+							+data[i].businessOrderRecord.cityName+' '
+							+data[i].businessOrderRecord.countryName+' '+data[i].businessOrderRecord.userRealAddress+'</td></tr>';
+					html += ' <tr><td>收货人手机号：</td><td>'+data[i].businessOrderRecord.userRealMobile+'</td></tr>';
+					html += ' <tr><td>订单信息：</td></tr>';
+					html += ' <tr><td colspan="2">';
+					html += ' 	<table class="table">';
+					html += ' 		<tr><td>商品名称</td><td>商品规格</td><td>商品数量</td><td>备注</td></tr>';
+					for(var j=0;j<data[i].businessOrderVOList.length;j++){
+						html += ' 		<tr><td>'+data[i].businessOrderVOList[j].businessGoodsVO.businessGoods.goodsName+'</td>';
+						html += ' 		<td>'+data[i].businessOrderVOList[j].businessGoodsVO.businessWeight.weightName+'</td>';
+						html += ' 		<td>'+data[i].businessOrderVOList[j].businessOrderGoodsRelation.goodsCount+'</td>';
+						html += ' 		<td><input type="checkbox"></td></tr>';
+					}
+					html += ' 	</table></td>';
+					html += ' </tr>';
+					html += ' <tr><td>配送日期</td><td>'+data[i].businessOrderRecordDeliveryStartTime+'</td></tr>';
+					html += ' </table>';
+				}
+				$("#print").html(html);
+				$("#print").jqprint();
+				$("#print").html("");
+			}
+			
+		});
+	}
 </script>
+
+<script language="javascript" src="js/print/jquery.jqprint-0.3.js"></script>
 <div class="pageHeader">
 	<form onsubmit="return navTabSearch(this);" action="" method="post">
 	<div class="searchBar">
@@ -122,12 +168,14 @@
 							<c:if test="${loop.comboUser.comboUserStatus == 1}">
 								<a title="启用" href="javascript:send(${loop.comboUser.id})" class="btnSelect" >启用</a>
 							</c:if>
+							<a title="打印用户详情" href="javascript:print('${loop.comboUser.orderId}','${loop.combo.id}')" class="btnSelect" >打印用户详情</a>
 						</td>	
 					</tr>
 				</c:forEach>
 			</c:if>		 
 		</tbody>
 	</table>
+	<div id="print"></div>
 	<div class="panelBar">
 		<div class="pages">
 			<span>显示</span>

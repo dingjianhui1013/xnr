@@ -10,7 +10,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,18 +26,18 @@ import com.xnradmin.core.service.StaffService;
 import com.xnradmin.core.service.business.combo.ComboPlanService;
 import com.xnradmin.core.service.business.combo.ComboService;
 import com.xnradmin.core.service.business.commodity.BusinessGoodsService;
-import com.xnradmin.core.service.mall.commodity.GoodsService;
 import com.xnradmin.po.CommonStaff;
-import com.xnradmin.po.business.BusinessCategory;
 import com.xnradmin.po.business.BusinessGoods;
 import com.xnradmin.po.business.BusinessOrderGoodsRelation;
 import com.xnradmin.po.business.BusinessOrderRecord;
+import com.xnradmin.po.business.BusinessWeight;
 import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.client.ClientUserInfo;
+import com.xnradmin.vo.business.BusinessGoodsVO;
 import com.xnradmin.vo.business.BusinessOrderRelationVO;
 import com.xnradmin.vo.business.BusinessOrderVO;
-import com.xnradmin.vo.business.ComboVO;
+import com.xnradmin.vo.business.PrintVO;
 
 /**
  * @autohr: xiang_liu
@@ -1412,7 +1411,7 @@ public class BusinessOrderRecordService {
 						+ "'";
 			}
 			if (vo.getBusinessOrderRecord().getComboId()!=null) {
-				hql = hql + " and comboID = '"
+				hql = hql + " and comboId = '"
 						+ vo.getBusinessOrderRecord().getComboId()
 						+ "'";
 			}
@@ -1444,6 +1443,70 @@ public class BusinessOrderRecordService {
 		return resList;
 	}
 
+	/**
+	 * 
+	 * @param firstletter
+	 * @param curPage
+	 * @param pageSize
+	 * @param orderField
+	 * @param direction
+	 * @return List<OrderVO>
+	 */
+	public List<PrintVO> listPrintVO(BusinessOrderVO vo) {
+		String hql = "from BusinessOrderRecord bor, BusinessGoods b,BusinessOrderGoodsRelation c,BusinessWeight d where c.orderRecordId=bor.id"
+				+ " and c.goodsId=b.id and b.goodsWeightId=d.id";
+		if (vo != null && vo.getBusinessOrderRecord() != null) {
+			BusinessOrderRecord businessOrderRecord = vo.getBusinessOrderRecord();
+			if (businessOrderRecord.getIsChild()!=null) {
+				hql = hql + " and bor.isChild = "
+						+ businessOrderRecord.getIsChild();
+			}
+			if (businessOrderRecord.getId()!=null) {
+				hql = hql + " and bor.id = "
+						+ businessOrderRecord.getId();
+			}
+			if (businessOrderRecord.getComboId()!=null) {
+				hql = hql + " and bor.comboId = "
+						+ businessOrderRecord.getComboId();
+			}
+		}
+		hql += " order by bor.id desc";
+		
+		List<Object[]> l = this.commonDao.getEntitiesByPropertiesWithHql(hql, 0,0);
+		List<PrintVO> resList = new ArrayList<PrintVO>();
+	    Long borId = null;
+	    PrintVO printVO =null;
+		for (int i = 0; i < l.size(); i++) {
+			Object[] o = l.get(i);
+			BusinessOrderRecord businessOrderRecord = (BusinessOrderRecord)o[0];
+			List<BusinessOrderVO> businessOrderVOList = new ArrayList<>();
+			if(businessOrderRecord.getId()==borId){
+				businessOrderVOList=printVO.getBusinessOrderVOList();
+			}else{
+				if(printVO!=null){
+					resList.add(printVO);
+				}
+				printVO = new PrintVO();
+			}
+			BusinessOrderVO businessOrderVO = new BusinessOrderVO();
+			BusinessGoodsVO businessGoodsVO = new BusinessGoodsVO();
+			businessGoodsVO.setBusinessGoods((BusinessGoods)o[1]);
+			businessGoodsVO.setBusinessWeight((BusinessWeight)o[3]);
+			businessOrderVO.setBusinessGoodsVO(businessGoodsVO);
+			businessOrderVO.setBusinessOrderGoodsRelation((BusinessOrderGoodsRelation)o[2]);
+			businessOrderVOList.add(businessOrderVO);
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String businessOrderRecordDeliveryStartTime = df.format(businessOrderRecord.getDeliveryStartTime());
+			printVO.setBusinessOrderRecordDeliveryStartTime(businessOrderRecordDeliveryStartTime);
+			printVO.setBusinessOrderVOList(businessOrderVOList);
+			printVO.setBusinessOrderRecord(businessOrderRecord);
+		}
+		if(printVO!=null){
+			resList.add(printVO);
+		}
+		return resList;
+	}
+	
 	public List<BusinessOrderGoodsRelation> findGoodsRelationList(Long orderId) {
 		String hql = "from BusinessOrderGoodsRelation where orderRecordId="
 				+ orderId;
