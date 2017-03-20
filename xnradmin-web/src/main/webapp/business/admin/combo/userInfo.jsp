@@ -56,6 +56,7 @@
 				for(var i=0;i<data.length;i++){
 					html  = '<table class="t1">';
 					html += ' <tr><td>订单号：</td><td>'+data[i].businessOrderRecord.orderNo+' </td></tr>';
+					html += ' <tr><td>配送状态：</td><td>'+data[i].businessOrderRecord.deliveryStatusName+' </td></tr>';
 					html += ' <tr><td>收货人信息：</td><td></td></tr>';
 					html += ' <tr><td>收货人姓名：</td><td>'+data[i].businessOrderRecord.userRealName+'</td></tr>';
 					html += ' <tr><td>收货人地址：</td><td>'+data[i].businessOrderRecord.provinceName+' '

@@ -1469,6 +1469,7 @@ public class BusinessOrderRecordService {
 				hql = hql + " and bor.comboId = "
 						+ businessOrderRecord.getComboId();
 			}
+			
 		}
 		hql += " order by bor.id desc";
 		
@@ -1495,9 +1496,13 @@ public class BusinessOrderRecordService {
 			businessOrderVO.setBusinessGoodsVO(businessGoodsVO);
 			businessOrderVO.setBusinessOrderGoodsRelation((BusinessOrderGoodsRelation)o[2]);
 			businessOrderVOList.add(businessOrderVO);
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String businessOrderRecordDeliveryStartTime = df.format(businessOrderRecord.getDeliveryStartTime());
-			printVO.setBusinessOrderRecordDeliveryStartTime(businessOrderRecordDeliveryStartTime);
+			if(businessOrderRecord.getDeliveryStartTime()!=null){
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String businessOrderRecordDeliveryStartTime = df.format(businessOrderRecord.getDeliveryStartTime());
+				printVO.setBusinessOrderRecordDeliveryStartTime(businessOrderRecordDeliveryStartTime);				
+			}else{
+				printVO.setBusinessOrderRecordDeliveryStartTime("无");	
+			}
 			printVO.setBusinessOrderVOList(businessOrderVOList);
 			printVO.setBusinessOrderRecord(businessOrderRecord);
 		}

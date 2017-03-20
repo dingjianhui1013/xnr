@@ -347,7 +347,6 @@ public class ComboService {
 					dao.savePseudoOrders(po);
 					timesTotal++;
 					it.remove();
-					break;
 				}
 		
 		}

@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import com.xnradmin.po.business.Combo;
 import com.xnradmin.po.business.ComboPlan;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.vo.business.BusinessOrderVO;
+import com.xnradmin.vo.business.ComboGoodsVO;
 import com.xnradmin.vo.business.ComboUserGoodsVO;
 import com.xnradmin.vo.business.ComboUserVO;
 import com.xnradmin.vo.business.ComboVO;
@@ -429,16 +431,20 @@ public class ComboAction extends ParentAction {
 		//一件商品一条数据 商品名，商品总数，配送总数，剩余配送数 
 		//根据用户套餐查询出套餐商品  查询该用户套餐所有子订单 汇总商品数量
 		//商品的ID 
-		Map<Integer,ComboUserGoodsVO> goodsMap = comboService
-				.findComboGoodsByComboUserId(comboUserVo.getCombo().getId());
+		Map<Integer,ComboUserGoodsVO> goodsMap = new HashMap<Integer, ComboUserGoodsVO>();
 		List<BusinessOrderVO> borList = comboService
 				.findBusinessOrderRelationVOByOrderId(comboUserVo.getComboUser().getOrderId(),comboUserVo.getCombo().getId());
 		List<ComboUserGoodsVO> cugVO = new ArrayList<ComboUserGoodsVO>();
 		for(BusinessOrderVO vo:borList){
 			ComboUserGoodsVO cgv = goodsMap.get(vo.getBusinessGoods().getId());
 			//配送数计算
-			if(cgv.getHasAllocateNumber()==null){
+			if(cgv==null){
+				cgv=new ComboUserGoodsVO();
+				ComboGoodsVO comboGoodsVO = new ComboGoodsVO();
+				comboGoodsVO.setBusinessGoods(vo.getBusinessGoods());
 				cgv.setHasAllocateNumber(vo.getBusinessOrderGoodsRelation().getGoodsCount());
+				cgv.setComboGoodsVO(comboGoodsVO);
+				goodsMap.put(vo.getBusinessGoods().getId(), cgv);
 			}else{
 				cgv.setHasAllocateNumber(cgv.getHasAllocateNumber()+vo.getBusinessOrderGoodsRelation().getGoodsCount());
 			}

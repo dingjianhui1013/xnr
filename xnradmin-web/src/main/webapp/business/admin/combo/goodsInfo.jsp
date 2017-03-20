@@ -24,7 +24,7 @@
 		<thead>
 			<tr>
 				<th width="50">商品名称</th>
-				<th width="50">套餐商品总数</th>
+				<!-- <th width="50">套餐商品总数</th> -->
 				<th width="50">已下单商品数</th>
 			</tr>
 		</thead>
@@ -34,7 +34,7 @@
 				<c:forEach items="${comboUserGoodsVOList}" var="loop" varStatus="status">
 					<tr target="sid_comboUserId" rel="${loop.comboGoodsVO.businessGoods.id}">
 						<td>${loop.comboGoodsVO.businessGoods.goodsName}</td>
-						<td>${loop.comboGoodsVO.comboGoods.goodsCount}</td>	
+						<%-- <td>${loop.comboGoodsVO.comboGoods.goodsCount}</td>	 --%>
 						<td>${loop.hasAllocateNumber}</td>
 					</tr>
 				</c:forEach>

@@ -86,7 +86,7 @@ function changeComboType(obj){
 	if(val==0){
 		var comboCycleDate =$('<span id="comboCycleDateSpan"><input type="text" id="comboCycleDate" name="comboCycleDate" class="date required textInput" dateFmt="yyyy-MM-dd" size="20"/><a class="inputDateButton" href="javascript:void(0)">选择</a></span>');
 		comboCycleDate.insertAfter($(obj));
-		$('#comboCycleDate').datepicker();
+		tr.find('#comboCycleDate').datepicker();
 		tr.append("<input type='hidden' name='.comboCycleStr' value=''>");
 	}else if(val==1){
 		var html = "<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle' onchange='writeTime(this,2)'>";
@@ -97,7 +97,7 @@ function changeComboType(obj){
 			html+= "  <select></span>"
 		var comboCycle =$(html);
 		comboCycle.insertAfter($(obj));
-		
+		tr.find("#comboCycle").trigger("change");
 	}else if(val==2){
 		var html = "<span id='comboCycleSpan'><select id='comboCycle' name='comboCycle' onchange='changeComboCycle(this)'>";
 		/* html+= "		<option value=''>请选择</option>"; */
@@ -107,6 +107,7 @@ function changeComboType(obj){
 		html+= "  <select></span>";
 		var comboCycle =$(html);
 		comboCycle.insertAfter($(obj));
+		tr.find("#comboCycle").trigger("change");
 	}
 }
 function changeComboCycle(obj){
@@ -126,6 +127,7 @@ function changeComboCycle(obj){
 			html+= "  <select></span>";
 			var comboCycleDate =$(html);
 			comboCycleDate.insertAfter($(obj));
+			tr.find("#comboCycleDate").trigger("change");
 		}
 	}
 }
@@ -329,7 +331,7 @@ $(function(){
 	<input type="hidden" value="${comboVo.combo.id}" name="comboVo.combo.id">
 		<!--  <h3 class="contentTitle">套餐商品列表</h3> -->
 		<div class="pageFormContent" layoutH="300" style="height: 320px;" >
-			<div class="tabs" style="display: none;">
+			<%-- <div class="tabs" style="display: none;">
 				<div class="tabsHeader">
 					<div class="tabsHeaderContent">
 						<ul>
@@ -419,7 +421,7 @@ $(function(){
 					<button type="button" onclick="countPrice()">计算总价</button>
 				</c:if>
 				<input id="goodsTotalCount" name="goodsTotalCount" type="text" size="25" class="required number"/>	
-			</fieldset> </div>
+			</fieldset> </div> --%>
 			<h3 class="contentTitle">套餐配送计划列表</h3>
 			<div class="tabs">
 				<div class="tabsHeader">

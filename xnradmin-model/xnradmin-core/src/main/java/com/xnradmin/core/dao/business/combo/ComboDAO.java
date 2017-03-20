@@ -105,6 +105,9 @@ public class ComboDAO{
 		l = commonDao.getEntitiesByPropertiesWithHql(hql,0,0);
 		for (int i = 0; i < l.size(); i++) {
 			Object[] obj = l.get(i);
+			if(i==0){
+				resVo.setCombo((Combo)obj[0]);
+			}
 			ComboPlanVO cpo = new ComboPlanVO();
 			ComboPlan cp = (ComboPlan)obj[1];
 			cpo.setComboPlan(cp);
