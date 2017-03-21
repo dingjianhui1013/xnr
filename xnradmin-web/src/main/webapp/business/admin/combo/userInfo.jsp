@@ -63,9 +63,9 @@
 							+data[i].businessOrderRecord.cityName+' '
 							+data[i].businessOrderRecord.countryName+' '+data[i].businessOrderRecord.userRealAddress+'</td></tr>';
 					html += ' <tr><td>收货人手机号：</td><td>'+data[i].businessOrderRecord.userRealMobile+'</td></tr>';
-					html += ' <tr><td>订单信息：</td></tr>';
-					html += ' <tr><td colspan="2">';
-					html += ' 	<table class="table">';
+					html += ' <tr><td>订单信息：</td><td></td></tr>';
+					html += ' <tr><td colspan="2" style="padding:0px;border-right:0px;">';
+					html += ' 	<table class="productInfo">';
 					html += ' 		<tr><td>商品名称</td><td>商品规格</td><td>商品数量</td><td>备注</td></tr>';
 					for(var j=0;j<data[i].businessOrderVOList.length;j++){
 						html += ' 		<tr><td>'+data[i].businessOrderVOList[j].businessGoodsVO.businessGoods.goodsName+'</td>';
@@ -78,7 +78,7 @@
 					html += ' <tr><td>配送日期</td><td>'+data[i].businessOrderRecordDeliveryStartTime+'</td></tr>';
 					html += ' </table>';
 				}
-				$("#print").html(html);
+				$("#print").append(html);
 				$("#print").jqprint();
 				$("#print").html("");
 			}
@@ -121,6 +121,7 @@
 	</div>
 	</form>
 </div>
+<div id="print"></div>
 <div class="pageContent">
 	<%-- <div class="panelBar">
 		<ul class="toolBar">
@@ -176,7 +177,7 @@
 			</c:if>		 
 		</tbody>
 	</table>
-	<div id="print"></div>
+	
 	<div class="panelBar">
 		<div class="pages">
 			<span>显示</span>

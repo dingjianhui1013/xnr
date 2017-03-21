@@ -1,28 +1,34 @@
+table{border-collapse:collapse;}
 .t1
 {
+	width:100%;
     clear: both;
-    border: 1px solid #c9dae4;
+    border: 1px solid #999;
+    margin-bottom:40px;
 }
 .t1 tr th
 {
     color: #0d487b;
     background: #f2f4f8 url(../CSS/Table/images/sj_title_pp.jpg) repeat-x left bottom;
     line-height: 28px;
-    border-bottom: 1px solid #9cb6cf;
+    border-bottom: 1px solid #999;
     border-top: 1px solid #e9edf3;
     font-weight: normal;
     text-shadow: #e6ecf3 1px 1px 0px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding:5px 0px;
 }
 .t1 tr td
 {
-    border-bottom: 1px solid #e9e9e9;
-    padding-bottom: 5px;
-    padding-top: 5px;
+    border-bottom: 1px solid #999;
+    padding:5px;
     color: #444;
-    border-top: 1px solid #FFFFFF;
-    padding-left: 5px;
-    padding-right: 5px;
+    border-top: 1px solid #999;
     word-break: break-all;
 }
+.t1 tr:last-child td{border-bottom:none;}
+.productInfo tr td{border-top:none;}
+.t1 tr td:first-child{border-right:1px solid #999}
+.productInfo{width:100%;}
+.productInfo tr:last-child td{border-bottom:none;}
+.productInfo tr:first-child td{background:#f2f2f2;}
+.productInfo tr:first-child td,.productInfo tr td:first-child{border-right:none;}
