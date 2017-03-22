@@ -3,7 +3,6 @@ package com.xnradmin.core.task;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +28,10 @@ import com.xnradmin.po.business.ComboUser;
 import com.xnradmin.po.business.PseudoOrders;
 import com.xnradmin.po.common.status.Status;
 import com.xnradmin.po.front.ReceiptAddress;
-import com.xnradmin.po.mall.order.ShoppingCart;
 import com.xnradmin.vo.business.ComboPlanVO;
 import com.xnradmin.vo.business.ComboUserVO;
-import com.xnradmin.vo.front.BusinessGoodsCartVo;
 
-@Service(value = "autoMakeOrder")
+@Service(value = "autoMakeOrder" )
 public class MakeOrderTask {
 	
 	@Autowired
@@ -52,8 +50,14 @@ public class MakeOrderTask {
 	@Autowired
 	private BusinessOrderGoodsRelationService orderGoodsRelationService;
 	
+	private static int processNumber = 0;
+	
     public void process() {
-        this.makeOrderTask();
+    	processNumber++;
+    	if(processNumber%3==0){
+    		processNumber=0;
+    		this.makeOrderTask();   		
+    	}
     }
 
     public void receipt()
